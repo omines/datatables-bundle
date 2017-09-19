@@ -12,6 +12,8 @@
     "require": {
         "php": "^7.0.8",
         "symfony/framework-bundle": "^3.0",
+        "symfony/property-access": "^3.0",
+        "symfony/translation": "^3.3",
         "twig/twig": "~1.8|^2"
     },
     "require-dev": {
