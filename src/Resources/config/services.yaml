@@ -1,0 +1,7 @@
+services:
+    Omines\DatatablesBundle\DatatableFactory:
+        arguments: ['%datatables.settings%', '%datatables.options%']
+
+    Omines\DatatablesBundle\Twig\DatatablesExtension:
+        arguments: ['@translator']
+        tags: ['twig.extension']

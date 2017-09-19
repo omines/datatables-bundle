@@ -1,0 +1,29 @@
+datatable:
+    common:
+        are_you_sure: Emin misiniz
+        you_need_to_select_at_least_one_element: En az bir eleman seçmeniz gerekir.
+        search: Bul
+        execute: "Yürütme"
+        ok: "OK"
+    datatable:
+        searchPlaceholder: ""
+        emptyTable:     ""
+        info:           " _TOTAL_ Kayıttan _START_ - _END_ Arası Kayıtlar"
+        infoEmpty:      "Kayıt Yok"
+        infoFiltered:   "( _MAX_ Kayıt İçerisinden Bulunan)"
+        infoPostFix:    ""
+        infoThousands:  ","
+        lengthMenu:     "Sayfada _MENU_ Kayıt Göster"
+        loadingRecords: ""
+        processing:     "İşleniyor..."
+        search:         "Bul:"
+        zeroRecords:    "Eşleşen Kayıt Bulunmadı"
+        paginate:
+            first:    "İlk"
+            last:     "Son"
+            next:     "Sonraki"
+            previous: "Önceki"
+        aria:
+            sortAscending:  ": activate to sort column ascending"
+            sortDescending: ": activate to sort column descending"
+

@@ -1,0 +1,10 @@
+<label>
+    <select data-search-column-index="{{ column.index }}">
+        {% if column.filter.placeholder != null %}
+            <option class="placeholder">{{ column.filter.placeholder|trans }}</option>
+        {% endif %}
+        {% for key, choice in column.filter.choices %}
+            <option value="{{ key }}">{{ choice }}</option>
+        {% endfor %}
+    </select>
+</label>

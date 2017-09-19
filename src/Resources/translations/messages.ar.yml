@@ -1,0 +1,25 @@
+datatable:
+    common:
+        are_you_sure: 'هل أنت متأكد ؟'
+        you_need_to_select_at_least_one_element: 'تحتاج إلى تحديد عنصر واحد على الأقل.'
+        search: 'بحث'
+        execute: تنفيذ
+        ok: حسنا
+    datatable:
+        searchPlaceholder: ""
+        processing:   "جاري التحميل..."
+        lengthMenu:   "أظهر مُدخلات _MENU_"
+        zeroRecords:  "لم يُعثر على أية سجلات"
+        info:         "إظهار _START_ إلى _END_ من أصل _TOTAL_ مُدخل"
+        infoEmpty:    "يعرض 0 إلى 0 من أصل 0 سجلّ"
+        infoFiltered: "(منتقاة من مجموع _MAX_ مُدخل)"
+        infoPostFix:  ""
+        search:       "ابحث:"
+        paginate:
+            first:    "الأول"
+            previous: "السابق"
+            next:     "التالي"
+            last:     "الأخير"
+        aria:
+            sortAscending:  "تفعيل لفرز العمود تصاعدي"
+            sortDescending: "تفعيل لفرز العمود الهابطة"

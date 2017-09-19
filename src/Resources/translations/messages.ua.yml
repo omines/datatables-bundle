@@ -1,0 +1,28 @@
+datatable:
+    common:
+        are_you_sure: Ти впевнений ?
+        you_need_to_select_at_least_one_element: Ви повинні вибрати хоча б один елемент.
+        search: Пошук
+        execute: "виконувати"
+        ok: "OK"
+    datatable:
+        searchPlaceholder: ""
+        emptyTable:     ""
+        info:           "Записи з _START_ по _END_ із _TOTAL_ записів"
+        infoEmpty:      "Записи з 0 по 0 із 0 записів"
+        infoFiltered:   "(відфільтровано з _MAX_ записів)"
+        infoPostFix:    ""
+        infoThousands:  ","
+        lengthMenu:     "Показати _MENU_ записів"
+        loadingRecords: ""
+        processing:     "Зачекайте..."
+        search:         "Пошук:"
+        zeroRecords:    "Записи відсутні."
+        paginate:
+            first:    "Перша"
+            last:     "Остання"
+            next:     "Наступна"
+            previous: "Попередня"
+        aria:
+            sortAscending:  ": активувати для сортування стовпців за зростанням"
+            sortDescending: ": активувати для сортування стовпців за спаданням"

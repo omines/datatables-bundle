@@ -1,0 +1,28 @@
+datatable:
+    common:
+        are_you_sure: Jesteś pewny ?
+        you_need_to_select_at_least_one_element: Musisz wybrać co najmniej jeden element.
+        search: Szukaj
+        execute: "Wykonać"
+        ok: "OK"
+    datatable:
+        searchPlaceholder: ""
+        emptyTable:     "Brak danych"
+        info:           "Pozycje od _START_ do _END_ z _TOTAL_ łącznie"
+        infoEmpty:      "Pozycji 0 z 0 dostępnych"
+        infoFiltered:   "(filtrowanie spośród _MAX_ dostępnych pozycji)"
+        infoPostFix:    ""
+        infoThousands:  " "
+        lengthMenu:     "Pokaż _MENU_ pozycji"
+        loadingRecords: "Wczytywanie..."
+        processing:     "Przetwarzanie..."
+        search:         "Szukaj:"
+        zeroRecords:    "Nie znaleziono pasujących pozycji"
+        paginate:
+            first:    "Pierwsza"
+            last:     "Ostatnia"
+            next:     "Następna"
+            previous: "Poprzednia"
+        aria:
+            sortAscending:  ": aktywuj, by posortować kolumnę rosnąco"
+            sortDescending: ": aktywuj, by posortować kolumnę malejąco"
