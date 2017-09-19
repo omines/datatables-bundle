@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: robbert
- * Date: 9/10/17
- * Time: 11:49 PM
+
+/*
+ * Symfony DataTables Bundle
+ * (c) Omines Internetbureau B.V. - https://omines.nl/
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Omines\DatatablesBundle\Processor\Doctrine\ORM;
@@ -51,7 +53,6 @@ class QueryBuilderProcessor implements ProcessorInterface
      */
     private $joins;
 
-
     public function __construct(EntityManager $manager, ClassMetadata $metadata)
     {
         $this->em = $manager;
@@ -59,7 +60,7 @@ class QueryBuilderProcessor implements ProcessorInterface
         $this->selectColumns = [];
         $this->joins = [];
         $this->entityName = $this->metadata->getName();
-        $this->entityShortName = strtolower($this->metadata->getReflectionClass()->getShortName());
+        $this->entityShortName = mb_strtolower($this->metadata->getReflectionClass()->getShortName());
         $this->rootEntityIdentifier = $this->getIdentifier($this->metadata);
     }
 
@@ -67,11 +68,12 @@ class QueryBuilderProcessor implements ProcessorInterface
     {
         foreach ($this->selectColumns as $key => $value) {
             if (false === empty($key)) {
-                $qb->addSelect('partial '.$key.'.{'.implode(',', $value).'}');
+                $qb->addSelect('partial ' . $key . '.{' . implode(',', $value) . '}');
             } else {
                 $qb->addSelect($value);
             }
         }
+
         return $this;
     }
 
@@ -80,6 +82,7 @@ class QueryBuilderProcessor implements ProcessorInterface
         foreach ($this->joins as $key => $value) {
             $qb->{$value['type']}($key, $value['alias']);
         }
+
         return $this;
     }
 
@@ -99,21 +102,23 @@ class QueryBuilderProcessor implements ProcessorInterface
     private function addSelectColumn($columnTableName, $data)
     {
         if (isset($this->selectColumns[$columnTableName])) {
-            if (!in_array($data, $this->selectColumns[$columnTableName])) {
+            if (!in_array($data, $this->selectColumns[$columnTableName], true)) {
                 $this->selectColumns[$columnTableName][] = $data;
             }
         } else {
             $this->selectColumns[$columnTableName][] = $data;
         }
+
         return $this;
     }
 
     private function addJoin($columnTableName, $alias, $type)
     {
-        $this->joins[$columnTableName] = array(
+        $this->joins[$columnTableName] = [
             'alias' => $alias,
             'type' => $type,
-        );
+        ];
+
         return $this;
     }
 
@@ -122,7 +127,7 @@ class QueryBuilderProcessor implements ProcessorInterface
         try {
             $metadata = $this->em->getMetadataFactory()->getMetadataFor($entityName);
         } catch (MappingException $e) {
-            throw new \Exception('DatatableQueryBuilder::getMetadata(): Given object '.$entityName.' is not a Doctrine Entity.');
+            throw new \Exception('DatatableQueryBuilder::getMetadata(): Given object ' . $entityName . ' is not a Doctrine Entity.');
         }
 
         return $metadata;
@@ -131,6 +136,7 @@ class QueryBuilderProcessor implements ProcessorInterface
     private function getIdentifier(ClassMetadata $metadata)
     {
         $identifiers = $metadata->getIdentifierFieldNames();
+
         return array_shift($identifiers);
     }
 
@@ -141,11 +147,12 @@ class QueryBuilderProcessor implements ProcessorInterface
             $currentAlias = $currentPart;
             $metadata = $this->metadata;
 
-            if ($column->getField() != null) {
+            if (null != $column->getField()) {
                 $parts = explode('.', $column->getField());
 
-                if(count($parts) > 1 && $parts[0] == $this->entityShortName)
+                if (count($parts) > 1 && $parts[0] == $this->entityShortName) {
                     array_shift($parts);
+                }
 
                 while (count($parts) > 1) {
                     $previousPart = $currentPart;

@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * Symfony DataTables Bundle
+ * (c) Omines Internetbureau B.V. - https://omines.nl/
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Omines\DatatablesBundle\Column;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -9,60 +17,61 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 
 abstract class AbstractColumn
 {
-    /** @var  int
+    /**
+     * @var int
      * @ORM\Column(type="string")
      */
     protected $index;
 
-    /** @var  string */
+    /** @var string */
     protected $name;
 
-    /** @var  string */
+    /** @var string */
     protected $label;
 
-    /** @var  bool */
+    /** @var bool */
     protected $visible;
 
-    /** @var  bool */
+    /** @var bool */
     protected $searchable;
 
-    /** @var  bool */
+    /** @var bool */
     protected $globalSearchable;
 
-    /** @var  string */
+    /** @var string */
     protected $searchValue;
 
-    /** @var  bool */
+    /** @var bool */
     protected $orderable;
 
-    /** @var  string */
+    /** @var string */
     protected $orderField;
 
-    /** @var  string */
+    /** @var string */
     protected $orderDirection;
 
-    /** @var  mixed */
+    /** @var mixed */
     protected $defaultValue;
 
-    /** @var  AbstractFilter */
+    /** @var AbstractFilter */
     protected $filter;
 
-    /** @var  string */
+    /** @var string */
     protected $field;
 
-    /** @var  string */
+    /** @var string */
     protected $propertyPath;
 
-    /** @var  string */
+    /** @var string */
     protected $joinType;
 
-    /** @var  array */
+    /** @var array */
     protected $options;
 
-    /** @var  PropertyAccess */
+    /** @var PropertyAccess */
     private $propertyAccessor;
 
-    /** @var  string */
+    /** @var string */
     private $class;
 
     /**
@@ -116,7 +125,7 @@ abstract class AbstractColumn
             'defaultValue' => '',
             'filter' => null,
             'joinType' => 'join',
-            'class' => null
+            'class' => null,
         ])
             ->setAllowedTypes('index', 'integer')
             ->setAllowedTypes('name', 'string')
@@ -132,7 +141,7 @@ abstract class AbstractColumn
             ->setAllowedTypes('joinType', ['null', 'string'])
             ->setAllowedTypes('class', ['null', 'string'])
             ->setAllowedValues('orderDirection', function ($value) {
-                return $value == null || in_array($value, ['ASC', 'DESC']);
+                return null == $value || in_array($value, ['ASC', 'DESC'], true);
             });
 
         return $this;
@@ -217,6 +226,7 @@ abstract class AbstractColumn
     {
         $this->searchable = $searchable;
     }
+
     /**
      * @return bool
      */
@@ -264,7 +274,6 @@ abstract class AbstractColumn
     {
         $this->propertyPath = $propertyPath;
     }
-
 
     /**
      * @return mixed
@@ -392,7 +401,7 @@ abstract class AbstractColumn
      */
     public function setFilter(array $filterClassAndOptions = null)
     {
-        if ($filterClassAndOptions != null) {
+        if (null != $filterClassAndOptions) {
             if (!isset($filterClassAndOptions[0]) || !is_string($filterClassAndOptions[0]) && !$filterClassAndOptions[0] instanceof AbstractFilter) {
                 throw new \Exception('AbstractColumn::setFilter(): Set a Filter class.');
             }
@@ -402,7 +411,7 @@ abstract class AbstractColumn
             }
 
             /** @var AbstractFilter $filter */
-            $filter = new $filterClassAndOptions[0];
+            $filter = new $filterClassAndOptions[0]();
             $filter->set(isset($filterClassAndOptions[1]) ? $filterClassAndOptions[1] : []);
 
             $this->filter = $filter;

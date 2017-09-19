@@ -1,22 +1,21 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Robbert Beesems
- * Date: 7/28/2017
- * Time: 2:34 PM
+
+/*
+ * Symfony DataTables Bundle
+ * (c) Omines Internetbureau B.V. - https://omines.nl/
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Omines\DatatablesBundle;
 
-use Omines\DatatablesBundle\Identity\AbstractIdentity;
-use Symfony\Component\HttpFoundation\RequestStack;
-
 class DatatableFactory
 {
-    /** @var  array */
+    /** @var array */
     protected $settings;
 
-    /** @var  array */
+    /** @var array */
     protected $options;
 
     /**

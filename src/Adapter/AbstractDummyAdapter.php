@@ -1,41 +1,43 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Robbert Beesems
- * Date: 9/14/2017
- * Time: 12:47 PM
+
+/*
+ * Symfony DataTables Bundle
+ * (c) Omines Internetbureau B.V. - https://omines.nl/
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Omines\DatatablesBundle\Adapter;
 
 use Omines\DatatablesBundle\DatatableState;
 
-abstract class AbstractDummyAdapter implements  AdapterInterface
+abstract class AbstractDummyAdapter implements AdapterInterface
 {
-    /** @var  DatatableState */
+    /** @var DatatableState */
     private $state;
 
-    function handleRequest(DatatableState $state)
+    public function handleRequest(DatatableState $state)
     {
         $this->state = $state;
     }
 
-    function getTotalRecords()
+    public function getTotalRecords()
     {
         return 0;
     }
 
-    function getTotalDisplayRecords()
+    public function getTotalDisplayRecords()
     {
         return 0;
     }
 
-    function getState()
+    public function getState()
     {
         return $this->state;
     }
 
-    function mapRow($row)
+    public function mapRow($row)
     {
         $result = [];
 

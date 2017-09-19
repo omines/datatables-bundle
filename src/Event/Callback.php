@@ -1,15 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: robbert
- * Date: 8/30/17
- * Time: 1:14 AM
+
+/*
+ * Symfony DataTables Bundle
+ * (c) Omines Internetbureau B.V. - https://omines.nl/
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Omines\DatatablesBundle\Event;
 
 /**
- * https://datatables.net/reference/option/
+ * https://datatables.net/reference/option/.
  */
 class Callback extends AbstractEvent
 {

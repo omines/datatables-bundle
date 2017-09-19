@@ -1,8 +1,15 @@
 <?php
 
+/*
+ * Symfony DataTables Bundle
+ * (c) Omines Internetbureau B.V. - https://omines.nl/
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Omines\DatatablesBundle\Adapter;
 
-use Omines\DatatablesBundle\Datatable;
 use Omines\DatatablesBundle\DatatableState;
 
 interface AdapterInterface
@@ -10,35 +17,35 @@ interface AdapterInterface
     /**
      * @param DatatableState $state
      */
-    function handleRequest(DatatableState $state);
+    public function handleRequest(DatatableState $state);
 
     /**
-     * get total records
+     * get total records.
      *
-     * @return integer
+     * @return int
      */
-    function getTotalRecords();
+    public function getTotalRecords();
 
     /**
-     * get total records after filtering
+     * Get total records after filtering.
      *
-     * @return integer
+     * @return int
      */
-    function getTotalDisplayRecords();
+    public function getTotalDisplayRecords();
 
     /**
      * @return DatatableState
      */
-    function getState();
+    public function getState();
 
     /**
      * @return array
      */
-    function getData();
+    public function getData();
 
     /**
      * @param $row
      * @return mixed
      */
-    function mapRow($row);
+    public function mapRow($row);
 }

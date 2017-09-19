@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * Symfony DataTables Bundle
+ * (c) Omines Internetbureau B.V. - https://omines.nl/
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Omines\DatatablesBundle\Filter;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -7,11 +15,10 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 
 abstract class AbstractFilter
 {
-
-    /** @var  string */
+    /** @var string */
     protected $template;
 
-    /** @var  string */
+    /** @var string */
     protected $operator;
 
     /** @var array */
@@ -51,7 +58,7 @@ abstract class AbstractFilter
     {
         $resolver->setDefaults([
             'template' => null,
-            'operator' => 'CONTAINS'
+            'operator' => 'CONTAINS',
         ])
            ->setAllowedTypes('template', 'string');
 
@@ -90,5 +97,5 @@ abstract class AbstractFilter
         $this->operator = $operator;
     }
 
-    public abstract function isValidValue($value);
+    abstract public function isValidValue($value);
 }

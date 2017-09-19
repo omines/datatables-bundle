@@ -1,27 +1,27 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: robbert
- * Date: 9/6/17
- * Time: 7:46 AM
+
+/*
+ * Symfony DataTables Bundle
+ * (c) Omines Internetbureau B.V. - https://omines.nl/
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Omines\DatatablesBundle;
-
 
 use Omines\DatatablesBundle\Column\AbstractColumn;
 
 class DatatableState
 {
-    /** @var  int */
+    /** @var int */
     private $start;
-    /** @var  int */
+    /** @var int */
     private $length;
-    /** @var  AbstractColumn[] */
+    /** @var AbstractColumn[] */
     private $columns;
-    /** @var  array */
+    /** @var array */
     private $search;
-
 
     public function __construct($start, $length, $columns, $search)
     {
@@ -30,7 +30,6 @@ class DatatableState
         $this->columns = $columns;
         $this->search = $search;
     }
-
 
     /**
      * @return int
@@ -47,7 +46,6 @@ class DatatableState
     {
         return $this->length;
     }
-
 
     /**
      * @return array

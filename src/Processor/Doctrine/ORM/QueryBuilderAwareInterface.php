@@ -1,17 +1,18 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: robbert
- * Date: 9/11/17
- * Time: 2:32 AM
+
+/*
+ * Symfony DataTables Bundle
+ * (c) Omines Internetbureau B.V. - https://omines.nl/
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Omines\DatatablesBundle\Processor\Doctrine\ORM;
-
 
 use Doctrine\ORM\QueryBuilder;
 
 interface QueryBuilderAwareInterface
 {
-    function setQueryBuilder(QueryBuilder $qb);
+    public function setQueryBuilder(QueryBuilder $qb);
 }

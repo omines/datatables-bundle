@@ -20,7 +20,6 @@ return PhpCsFixer\Config::create()
     ->setRules([
         '@Symfony' => true,
 
-        'declare_strict_types' => true,
         'strict_param' => true,
         'array_syntax' => ['syntax' => 'short'],
         'concat_space' => ['spacing' => 'one'],

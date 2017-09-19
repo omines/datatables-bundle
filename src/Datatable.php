@@ -1,14 +1,21 @@
 <?php
 
+/*
+ * Symfony DataTables Bundle
+ * (c) Omines Internetbureau B.V. - https://omines.nl/
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Omines\DatatablesBundle;
 
+use Omines\DatatablesBundle\Adapter\AdapterInterface;
+use Omines\DatatablesBundle\Column\AbstractColumn;
 use Omines\DatatablesBundle\Event\AbstractEvent;
 use Omines\DatatablesBundle\Event\Callback;
 use Omines\DatatablesBundle\Event\Event;
-use Symfony\Component\Form\Exception\LogicException;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Omines\DatatablesBundle\Adapter\AdapterInterface;
-use Omines\DatatablesBundle\Column\AbstractColumn;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -17,10 +24,10 @@ class Datatable
     /** @var AbstractColumn[] */
     protected $columns;
 
-    /** @var  Callback[] */
+    /** @var Callback[] */
     protected $callbacks;
 
-    /** @var  Event[] */
+    /** @var Event[] */
     protected $events;
 
     /** @var \Closure */
@@ -35,14 +42,14 @@ class Datatable
     /** @var \Closure */
     protected $rowFormatter;
 
-    /** @var  AdapterInterface */
+    /** @var AdapterInterface */
     protected $adapter;
 
     /** @var int */
     private $draw;
 
     /**
-     * class constructor
+     * class constructor.
      *
      * @param array $settings
      * @param array $options
@@ -70,7 +77,7 @@ class Datatable
     public function column($class, $options = [])
     {
         /** @var AbstractColumn $column */
-        $column = new $class;
+        $column = new $class();
         $column->set(array_merge(['index' => count($this->columns)], $options));
 
         $this->columns[] = $column;
@@ -86,7 +93,7 @@ class Datatable
     public function on($class, $options = [])
     {
         /** @var AbstractEvent $event */
-        $event = new $class;
+        $event = new $class();
         $event->set($options);
 
         switch ($class) {
@@ -97,7 +104,7 @@ class Datatable
                 $this->callbacks[] = $event;
                 break;
             default:
-                throw new LogicException("Class $class is neither an event or a callback");
+                throw new \LogicException("Class $class is neither an event or a callback");
         }
 
         return $this;
@@ -160,30 +167,31 @@ class Datatable
     public function handleRequest(Request $request)
     {
         $this->draw = $request->query->getInt('draw');
-        $start = (int)$request->get('start');
-        $length = (int)$request->get('length', 0);
+        $start = (int) $request->get('start');
+        $length = (int) $request->get('length', 0);
         $order = $request->get('order', []);
         $search = $request->get('search');
         $columns = $request->get('columns', []);
 
         $orders = array_map(function ($ele) {
-            return (int)$ele['column'];
+            return (int) $ele['column'];
         }, $order);
 
         foreach ($this->columns as $key => $column) {
-            if (($c = array_search($key, $orders)) !== false) {
+            if (false !== ($c = array_search($key, $orders, true))) {
                 if ($column->isOrderable()) {
                     $column->setOrderDirection($order[$c]['dir'] == 'asc' ? 'ASC' : 'DESC');
-                } else
+                } else {
                     throw new \LogicException('Column can not be ordered');
+                }
             }
 
-            if (strlen($columns[$key]['search']['value']) > 0 && $column->isSearchable() && $column->getFilter()->isValidValue($columns[$key]['search']['value'])) {
+            if (mb_strlen($columns[$key]['search']['value']) > 0 && $column->isSearchable() && $column->getFilter()->isValidValue($columns[$key]['search']['value'])) {
                 $column->setSearchValue($columns[$key]['search']['value']);
             }
         }
 
-        $this->adapter->handleRequest(new DatatableState($start, $length, $this->columns, strlen($search['value']) == 0 ? null : $search['value']));
+        $this->adapter->handleRequest(new DatatableState($start, $length, $this->columns, 0 == mb_strlen($search['value']) ? null : $search['value']));
 
         return $this;
     }
@@ -204,10 +212,10 @@ class Datatable
         }, $this->adapter->getData());
 
         $output = [
-            "draw" => $this->draw,
-            "recordsTotal" => $this->adapter->getTotalRecords(),
-            "recordsFiltered" => $this->adapter->getTotalDisplayRecords(),
-            "data" => $data
+            'draw' => $this->draw,
+            'recordsTotal' => $this->adapter->getTotalRecords(),
+            'recordsFiltered' => $this->adapter->getTotalDisplayRecords(),
+            'data' => $data,
         ];
 
         return new JsonResponse($output);
@@ -245,7 +253,7 @@ class Datatable
             'name' => 'datatable-' . rand(0, 100),
             'class' => 'table table-bordered',
             'language_from_cdn' => true,
-            'column_filter' => null
+            'column_filter' => null,
         ])
             ->setAllowedTypes('name', 'string')
             ->setAllowedTypes('class', 'string')
@@ -260,7 +268,7 @@ class Datatable
         $resolver->setDefaults([
             'jQueryUI' => true,
             'pagingType' => 'full_numbers',
-            'lengthMenu' => [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            'lengthMenu' => [[10, 25, 50, -1], [10, 25, 50, 'All']],
             'pageLength' => 10,
             'serverSide' => true,
             'processing' => true,
@@ -273,7 +281,7 @@ class Datatable
             'ajax' => true, //can contain the callback url
             'searchDelay' => 400,
             'dom' => 'lftrip',
-            'orderCellsTop' => true
+            'orderCellsTop' => true,
         ]);
 
         return $this;
