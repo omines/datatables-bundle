@@ -52,7 +52,7 @@ class DatatablesExtension extends \Twig_Extension
 
     public function datatableJs(\Twig_Environment $twig, Datatable $datatable, $options = [])
     {
-        return $twig->render('@Datatables/datatable.html.twig', [
+        return $twig->render('@Datatables/datatable_js.html.twig', [
             'datatable' => $datatable,
             'options' => $this->getOptions($datatable, $options),
         ]);

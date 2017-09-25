@@ -53,6 +53,10 @@ class DoctrineORMAdapter implements AdapterInterface
     /** @var DatatableState */
     private $state;
 
+    private $aliases;
+
+    private $identifierPropertyPath;
+
     public function __construct(Registry $registry, $class, $hydrationMode = Query::HYDRATE_OBJECT, $queryProcessors = null, $criteriaProcessors = null)
     {
         $this->manager = $registry->getManagerForClass($class);
@@ -63,6 +67,7 @@ class DoctrineORMAdapter implements AdapterInterface
         $this->displayRecords = 0;
         $this->totalRecords = 0;
         $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
+        $this->aliases = [];
 
         if (null == $queryProcessors) {
             $this->queryProcessors[] = new QueryBuilderProcessor($this->manager, $this->metadata);
@@ -181,15 +186,6 @@ class DoctrineORMAdapter implements AdapterInterface
         }
     }
 
-    private function mapPartsToPropertyPath(array $parts)
-    {
-        if (Query::HYDRATE_ARRAY == $this->hydrationMode) {
-            return '[' . implode('][', $parts) . ']';
-        } else {
-            return implode('.', $parts);
-        }
-    }
-
     public function handleRequest(DatatableState $state)
     {
         $this->state = $state;
@@ -198,7 +194,7 @@ class DoctrineORMAdapter implements AdapterInterface
 
         /** @var Query\Expr\From $fromClause */
         $fromClause = $this->queryBuilder->getDQLPart('from')[0];
-        $identifier = "{$fromClause->getAlias()}.{$this->metadata->getSingleIdentifierColumnName()}";
+        $identifier = "{$fromClause->getAlias()}.{$this->metadata->getSingleIdentifierFieldName()}";
 
         $this->totalRecords = $this->getCount($identifier);
 
@@ -212,18 +208,51 @@ class DoctrineORMAdapter implements AdapterInterface
             $this->queryBuilder->setFirstResult($state->getStart())->setMaxResults($state->getLength());
         }
 
-        //Determine mapping
+        /** @var Query\Expr\From $from */
+        foreach ($this->queryBuilder->getDQLPart('from') as $from) {
+            $this->aliases[$from->getAlias()] = [null, $this->manager->getMetadataFactory()->getMetadataFor($from->getFrom())];
+        }
+
+        foreach ($this->queryBuilder->getDQLPart('join') as $joins) {
+            /** @var Query\Expr\Join $join */
+            foreach ($joins as $join) {
+                list($origin, $target) = explode('.', $join->getJoin());
+
+                $mapping = $this->aliases[$origin][1]->getAssociationMapping($target);
+                $this->aliases[$join->getAlias()] = [$join->getJoin(), $this->manager->getMetadataFactory()->getMetadataFor($mapping['targetEntity'])];
+            }
+        }
+
+        $this->identifierPropertyPath = $this->mapPropertyPath($identifier);
+
         foreach ($state->getColumns() as $column) {
             if (null != $column->getField() && null == $column->getPropertyPath()) {
-                $path = null;
-                $parts = explode('.', $column->getField());
-
-                if ($parts[0] == $fromClause->getAlias()) {
-                    array_shift($parts);
-                }
-
-                $column->setPropertyPath($this->mapPartsToPropertyPath($parts));
+                $column->setPropertyPath($this->mapPropertyPath($column->getField()));
             }
+        }
+    }
+
+    /**
+     * @param string $field
+     * @return string
+     */
+    private function mapPropertyPath($field)
+    {
+        list($origin, $target) = explode('.', $field);
+
+        $path = [$target];
+        $current = $this->aliases[$origin][0];
+
+        while (null != $current) {
+            list($origin, $target) = explode('.', $current);
+            $path[] = $target;
+            $current = $this->aliases[$origin][0];
+        }
+
+        if (Query::HYDRATE_ARRAY == $this->hydrationMode) {
+            return '[' . implode('][', array_reverse($path)) . ']';
+        } else {
+            return implode('.', array_reverse($path));
         }
     }
 
@@ -244,7 +273,7 @@ class DoctrineORMAdapter implements AdapterInterface
 
     public function mapRow($row)
     {
-        $result['DT_RowId'] = $this->propertyAccessor->getValue($row, $this->mapPartsToPropertyPath([$this->metadata->getSingleIdentifierColumnName()]));
+        $result['DT_RowId'] = $this->propertyAccessor->getValue($row, $this->identifierPropertyPath);
 
         foreach ($this->state->getColumns() as $column) {
             $result[$column->getName()] = null == $column->getPropertyPath() ? $column->getDefaultValue() : $this->propertyAccessor->getValue($row, $column->getPropertyPath());
