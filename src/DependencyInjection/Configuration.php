@@ -23,12 +23,13 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->booleanNode('language_from_cdn')->defaultTrue()->end()
+                ->scalarNode('class')->end()
                 ->enumNode('column_filter')
-                    ->values(['thead', 'tfoot', 'both', null])->defaultNull()
+                ->values(['thead', 'tfoot', 'both', null])->defaultNull()
                 ->end()
                 ->arrayNode('options')
                     ->useAttributeAsKey('name')
-                    ->prototype('scalar')->end()
+                    ->prototype('variable')->end()
                 ->end()
             ->end()
         ;

@@ -282,6 +282,7 @@ class Datatable
             'searchDelay' => 400,
             'dom' => 'lftrip',
             'orderCellsTop' => true,
+            'stateSave' => false,
         ]);
 
         return $this;
