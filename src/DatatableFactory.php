@@ -32,10 +32,11 @@ class DatatableFactory
     /**
      * @param array $settings
      * @param array $options
+     * @param DatatableState $state
      * @return Datatable
      */
-    public function create(array $settings = [], array $options = [])
+    public function create(array $settings = [], array $options = [], DatatableState $state = null)
     {
-        return new Datatable(array_merge($this->settings, $settings), array_merge($this->options, $options));
+        return new Datatable(array_merge($this->settings, $settings), array_merge($this->options, $options), $state);
     }
 }

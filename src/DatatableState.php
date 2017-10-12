@@ -15,6 +15,8 @@ use Omines\DatatablesBundle\Column\AbstractColumn;
 class DatatableState
 {
     /** @var int */
+    private $draw;
+    /** @var int */
     private $start;
     /** @var int */
     private $length;
@@ -22,13 +24,32 @@ class DatatableState
     private $columns;
     /** @var array */
     private $search;
+    /** @var  boolean */
+    private $fromInitialRequest;
 
-    public function __construct($start, $length, $columns, $search)
+    public function __construct($start = 0, $length = -1, $columns = [], $search = "")
     {
+        $this->draw = 0;
         $this->start = $start;
         $this->length = $length;
         $this->columns = $columns;
         $this->search = $search;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDraw()
+    {
+        return $this->draw;
+    }
+
+    /**
+     * @param int $draw
+     */
+    public function setDraw($draw)
+    {
+        $this->draw = $draw;
     }
 
     /**
@@ -40,11 +61,27 @@ class DatatableState
     }
 
     /**
+     * @param int $start
+     */
+    public function setStart($start)
+    {
+        $this->start = $start;
+    }
+
+    /**
      * @return int
      */
     public function getLength()
     {
         return $this->length;
+    }
+
+    /**
+     * @param int $length
+     */
+    public function setLength($length)
+    {
+        $this->length = $length;
     }
 
     /**
@@ -56,11 +93,24 @@ class DatatableState
     }
 
     /**
+     * @param array $search
+     */
+    public function setSearch($search)
+    {
+        $this->search = $search;
+    }
+
+    /**
      * @return AbstractColumn[]
      */
     public function getColumns()
     {
         return $this->columns;
+    }
+
+    public function addColumn(AbstractColumn $column)
+    {
+        $this->columns[] = $column;
     }
 
     /**
@@ -70,5 +120,21 @@ class DatatableState
     public function getColumn($index)
     {
         return $this->columns[$index];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFromInitialRequest()
+    {
+        return $this->fromInitialRequest;
+    }
+
+    /**
+     * @param bool $fromInitialRequest
+     */
+    public function setFromInitialRequest($fromInitialRequest)
+    {
+        $this->fromInitialRequest = $fromInitialRequest;
     }
 }

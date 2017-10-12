@@ -10,6 +10,19 @@
 
 namespace Omines\DatatablesBundle\Column;
 
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
 class VirtualColumn extends AbstractColumn
 {
+    protected function configureOptions(OptionsResolver $resolver)
+    {
+        parent::configureOptions($resolver);
+
+        $resolver->setDefaults([
+            'orderable' => false,
+            'searchable' => false,
+        ]);
+
+        return $this;
+    }
 }

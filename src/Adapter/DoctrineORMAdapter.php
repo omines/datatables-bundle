@@ -15,6 +15,8 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use Omines\DatatablesBundle\Column\AbstractColumn;
+use Omines\DatatablesBundle\Column\Column;
 use Omines\DatatablesBundle\DatatableState;
 use Omines\DatatablesBundle\Processor\Doctrine\Common\CriteriaProcessor;
 use Omines\DatatablesBundle\Processor\Doctrine\ORM\QueryBuilderAwareInterface;
@@ -50,9 +52,6 @@ class DoctrineORMAdapter implements AdapterInterface
     /** @var \Symfony\Component\PropertyAccess\PropertyAccessor */
     private $propertyAccessor;
 
-    /** @var DatatableState */
-    private $state;
-
     private $aliases;
 
     private $identifierPropertyPath;
@@ -86,36 +85,28 @@ class DoctrineORMAdapter implements AdapterInterface
         return $this->manager;
     }
 
-    /**
-     * @return DatatableState
-     */
-    public function getState()
-    {
-        return $this->state;
-    }
-
-    private function process($processor)
+    private function process($processor, DatatableState $state)
     {
         if ($processor instanceof \Closure) {
-            return $processor($this);
+            return $processor($this, $state);
         } elseif ($processor instanceof ProcessorInterface) {
             if ($processor instanceof QueryBuilderAwareInterface) {
                 $processor->setQueryBuilder($this->queryBuilder);
             }
 
-            return $processor->process($this);
+            return $processor->process($this, $state);
         } else {
             throw new \LogicException('Expected Closure or ProcessorInterface');
         }
     }
 
-    protected function buildQuery()
+    protected function buildQuery(DatatableState $state)
     {
         $queryBuilder = null;
         $criteria = [];
 
         foreach ($this->queryProcessors as $processor) {
-            $result = $this->process($processor);
+            $result = $this->process($processor, $state);
 
             if (null == $result) {
                 continue;
@@ -138,12 +129,12 @@ class DoctrineORMAdapter implements AdapterInterface
         }
     }
 
-    protected function buildCriteria()
+    protected function buildCriteria(DatatableState $state)
     {
         $criteria = [];
 
         foreach ($this->criteriaProcessors as $processor) {
-            $result = $this->process($processor);
+            $result = $this->process($processor, $state);
 
             if (null == $result) {
                 continue;
@@ -159,9 +150,12 @@ class DoctrineORMAdapter implements AdapterInterface
         }
     }
 
-    protected function buildOrder()
+    /**
+     * @param AbstractColumn[] $columns
+     */
+    protected function buildOrder($columns)
     {
-        foreach ($this->state->getColumns() as $column) {
+        foreach ($columns as $column) {
             if ($column->isOrderable() && null != $column->getOrderField() && null != $column->getOrderDirection()) {
                 $this->queryBuilder->addOrderBy($column->getOrderField(), $column->getOrderDirection());
             }
@@ -186,11 +180,9 @@ class DoctrineORMAdapter implements AdapterInterface
         }
     }
 
-    public function handleRequest(DatatableState $state)
+    public function handleState(DatatableState $state)
     {
-        $this->state = $state;
-
-        $this->buildQuery();
+        $this->buildQuery($state);
 
         /** @var Query\Expr\From $fromClause */
         $fromClause = $this->queryBuilder->getDQLPart('from')[0];
@@ -198,11 +190,11 @@ class DoctrineORMAdapter implements AdapterInterface
 
         $this->totalRecords = $this->getCount($identifier);
 
-        $this->buildCriteria();
+        $this->buildCriteria($state);
 
         $this->displayRecords = $this->getCount($identifier);
 
-        $this->buildOrder();
+        $this->buildOrder($state->getColumns());
 
         if ($state->getLength() > 0) {
             $this->queryBuilder->setFirstResult($state->getStart())->setMaxResults($state->getLength());
@@ -230,6 +222,8 @@ class DoctrineORMAdapter implements AdapterInterface
                 $column->setPropertyPath($this->mapPropertyPath($column->getField()));
             }
         }
+
+        return $this;
     }
 
     /**
@@ -243,7 +237,7 @@ class DoctrineORMAdapter implements AdapterInterface
         $path = [$target];
         $current = $this->aliases[$origin][0];
 
-        while (null != $current) {
+        while ($current != null) {
             list($origin, $target) = explode('.', $current);
             $path[] = $target;
             $current = $this->aliases[$origin][0];
@@ -271,11 +265,20 @@ class DoctrineORMAdapter implements AdapterInterface
         return $this->queryBuilder->getQuery()->getResult($this->hydrationMode);
     }
 
-    public function mapRow($row)
+    /**
+     * @param AbstractColumn[] $columns
+     * @param $row
+     * @param bool $addIdentifier
+     * @return mixed
+     */
+    public function mapRow($columns, $row, $addIdentifier = true)
     {
-        $result['DT_RowId'] = $this->propertyAccessor->getValue($row, $this->identifierPropertyPath);
+        $result = [];
 
-        foreach ($this->state->getColumns() as $column) {
+        if ($addIdentifier)
+            $result['DT_RowId'] = $this->propertyAccessor->getValue($row, $this->identifierPropertyPath);
+
+        foreach ($columns as $column) {
             $result[$column->getName()] = null == $column->getPropertyPath() ? $column->getDefaultValue() : $this->propertyAccessor->getValue($row, $column->getPropertyPath());
         }
 

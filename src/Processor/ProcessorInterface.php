@@ -11,12 +11,14 @@
 namespace Omines\DatatablesBundle\Processor;
 
 use Omines\DatatablesBundle\Adapter\AdapterInterface;
+use Omines\DatatablesBundle\DatatableState;
 
 interface ProcessorInterface
 {
     /**
      * @param AdapterInterface $adapter
+     * @param DatatableState $state
      * @return mixed
      */
-    public function process(AdapterInterface $adapter);
+    public function process(AdapterInterface $adapter, DatatableState $state);
 }

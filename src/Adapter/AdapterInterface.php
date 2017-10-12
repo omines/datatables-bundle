@@ -10,14 +10,16 @@
 
 namespace Omines\DatatablesBundle\Adapter;
 
+use Omines\DatatablesBundle\Column\AbstractColumn;
 use Omines\DatatablesBundle\DatatableState;
 
 interface AdapterInterface
 {
     /**
      * @param DatatableState $state
+     * @return AdapterInterface
      */
-    public function handleRequest(DatatableState $state);
+    public function handleState(DatatableState $state);
 
     /**
      * get total records.
@@ -34,18 +36,15 @@ interface AdapterInterface
     public function getTotalDisplayRecords();
 
     /**
-     * @return DatatableState
-     */
-    public function getState();
-
-    /**
      * @return array
      */
     public function getData();
 
     /**
+     * @param AbstractColumn[] $columns
      * @param $row
+     * @param $addIdentifier
      * @return mixed
      */
-    public function mapRow($row);
+    public function mapRow($columns, $row, $addIdentifier);
 }

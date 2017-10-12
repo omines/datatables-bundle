@@ -23,7 +23,8 @@ class ChoiceFilter extends AbstractFilter
         parent::configureOptions($resolver);
 
         $resolver->setDefaults([
-            'template' => '@Datatables/Filter/select.html.twig',
+            'template_html' => '@Datatables/Filter/select.html.twig',
+            'template_js' => '@Datatables/Filter/select.js.twig',
             'placeholder' => null,
             'choices' => [],
         ])
@@ -67,6 +68,6 @@ class ChoiceFilter extends AbstractFilter
 
     public function isValidValue($value)
     {
-        return in_array($value, $this->choices, true);
+        return array_key_exists($value, $this->choices);
     }
 }

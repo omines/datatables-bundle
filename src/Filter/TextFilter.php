@@ -22,7 +22,8 @@ class TextFilter extends AbstractFilter
         parent::configureOptions($resolver);
 
         $resolver->setDefaults([
-            'template' => '@Datatables/Filter/text.html.twig',
+            'template_html' => '@Datatables/Filter/text.html.twig',
+            'template_js' => '@Datatables/Filter/text.js.twig',
             'placeholder' => null,
         ])
             ->setAllowedTypes('placeholder', ['null', 'string']);

@@ -21,17 +21,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class Datatable
 {
-    /** @var AbstractColumn[] */
-    protected $columns;
-
     /** @var Callback[] */
     protected $callbacks;
 
     /** @var Event[] */
     protected $events;
-
-    /** @var \Closure */
-    protected $filter;
 
     /** @var array */
     protected $options;
@@ -45,18 +39,20 @@ class Datatable
     /** @var AdapterInterface */
     protected $adapter;
 
-    /** @var int */
-    private $draw;
+    /** @var DatatableState */
+    private $state;
 
     /**
      * class constructor.
      *
      * @param array $settings
      * @param array $options
+     * @param DatatableState $state
      */
-    public function __construct($settings, $options)
+    public function __construct($settings, $options, DatatableState $state = null)
     {
-        $this->columns = [];
+        $this->state = $state ?: new DatatableState();
+
         $this->events = [];
         $this->callbacks = [];
 
@@ -78,9 +74,9 @@ class Datatable
     {
         /** @var AbstractColumn $column */
         $column = new $class();
-        $column->set(array_merge(['index' => count($this->columns)], $options));
+        $column->set(array_merge(['index' => count($this->state->getColumns())], $options));
 
-        $this->columns[] = $column;
+        $this->state->addColumn($column);
 
         return $this;
     }
@@ -122,14 +118,6 @@ class Datatable
     }
 
     /**
-     * @return AbstractColumn[]
-     */
-    public function getColumns()
-    {
-        return $this->columns;
-    }
-
-    /**
      * @return Callback[]
      */
     public function getCallbacks()
@@ -164,36 +152,82 @@ class Datatable
         return $this;
     }
 
+    /**
+     * @return DatatableState
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
+     * @param $start
+     * @return $this
+     */
+    public function setStart($start)
+    {
+        $this->state->setStart($start);
+
+        return $this;
+    }
+
+    /**
+     * @param $length
+     * @return $this
+     */
+    public function setLength($length)
+    {
+        $this->state->setLength($length);
+
+        return $this;
+    }
+
+    /**
+     * @param Request $request
+     * @return $this
+     */
     public function handleRequest(Request $request)
     {
-        $this->draw = $request->query->getInt('draw');
-        $start = (int) $request->get('start');
-        $length = (int) $request->get('length', 0);
-        $order = $request->get('order', []);
-        $search = $request->get('search');
-        $columns = $request->get('columns', []);
+        $this->state->setDraw($request->query->getInt('draw'));
+        $this->state->setFromInitialRequest($request->query->getInt('draw') == 0 && $this->getSetting('requestState') && $request->get($this->getRequestParam('state', true)) == 1);
 
-        $orders = array_map(function ($ele) {
-            return (int) $ele['column'];
-        }, $order);
+        if ($this->state->isFromInitialRequest() || $this->state->getDraw() > 0) {
+            $this->state->setStart($request->get($this->getRequestParam('start', $this->state->isFromInitialRequest())));
+            $this->state->setLength($request->get($this->getRequestParam('length', $this->state->isFromInitialRequest())));
+            $this->state->setSearch($request->get($this->getRequestParam('search', $this->state->isFromInitialRequest())));
 
-        foreach ($this->columns as $key => $column) {
-            if (false !== ($c = array_search($key, $orders, true))) {
+            foreach ($request->get($this->getRequestParam('order', $this->state->isFromInitialRequest()), []) as $order) {
+                $column = $this->getState()->getColumn($order['column']);
+
                 if ($column->isOrderable()) {
-                    $column->setOrderDirection($order[$c]['dir'] == 'asc' ? 'ASC' : 'DESC');
-                } else {
-                    throw new \LogicException('Column can not be ordered');
+                    $column->setOrderDirection($order['dir']);
                 }
             }
 
-            if (mb_strlen($columns[$key]['search']['value']) > 0 && $column->isSearchable() && $column->getFilter()->isValidValue($columns[$key]['search']['value'])) {
-                $column->setSearchValue($columns[$key]['search']['value']);
+            foreach ($request->get($this->getRequestParam('columns', $this->state->isFromInitialRequest()), []) as $key => $search) {
+                $column = $this->getState()->getColumn($key);
+                $value = $this->getState()->isFromInitialRequest() ? $search : $search['search']['value'];
+
+                if ($value != '' && $column->isSearchable() && $column->getFilter() != null && $column->getFilter()->isValidValue($value)) {
+                    $column->setSearchValue($value);
+                }
             }
         }
 
-        $this->adapter->handleRequest(new DatatableState($start, $length, $this->columns, 0 == mb_strlen($search['value']) ? null : $search['value']));
-
         return $this;
+    }
+
+    private function getRequestParam($name, $prefix)
+    {
+        if ($prefix)
+            return "{$this->getSetting('name')}_$name";
+        else
+            return $name;
+    }
+
+    public function getData()
+    {
+        return $this->mapData(false);
     }
 
     /**
@@ -201,8 +235,15 @@ class Datatable
      */
     public function getResponse()
     {
-        $data = array_map(function ($row) {
-            $result = $this->adapter->mapRow($row);
+        return new JsonResponse($this->mapData(true));
+    }
+
+    private function mapData($all = true)
+    {
+        $this->adapter->handleState($this->state);
+
+        $data = array_map(function ($row) use ($all) {
+            $result = $this->adapter->mapRow($this->state->getColumns(), $row, $all);
 
             if (!is_null($this->rowFormatter)) {
                 $result = call_user_func_array($this->rowFormatter, [$result, $row]);
@@ -211,14 +252,16 @@ class Datatable
             return $result;
         }, $this->adapter->getData());
 
-        $output = [
-            'draw' => $this->draw,
-            'recordsTotal' => $this->adapter->getTotalRecords(),
-            'recordsFiltered' => $this->adapter->getTotalDisplayRecords(),
-            'data' => $data,
-        ];
-
-        return new JsonResponse($output);
+        if ($all) {
+            return [
+                'draw' => $this->getState()->getDraw(),
+                'recordsTotal' => $this->adapter->getTotalRecords(),
+                'recordsFiltered' => $this->adapter->getTotalDisplayRecords(),
+                'data' => $data,
+            ];
+        } else {
+            return $data;
+        }
     }
 
     /**
@@ -250,15 +293,16 @@ class Datatable
     protected function configureSettings(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'name' => 'datatable-' . rand(0, 100),
+            'name' => 'datatable',
             'class' => 'table table-bordered',
-            'language_from_cdn' => true,
-            'column_filter' => null,
+            'languageFromCdn' => true,
+            'columnFilter' => null,
+            'requestState' => null
         ])
             ->setAllowedTypes('name', 'string')
             ->setAllowedTypes('class', 'string')
-            ->setAllowedTypes('language_from_cdn', 'bool')
-            ->setAllowedTypes('column_filter', ['null', 'string']);
+            ->setAllowedTypes('languageFromCdn', 'bool')
+            ->setAllowedTypes('columnFilter', ['null', 'string']);
 
         return $this;
     }
@@ -270,12 +314,14 @@ class Datatable
             'pagingType' => 'full_numbers',
             'lengthMenu' => [[10, 25, 50, -1], [10, 25, 50, 'All']],
             'pageLength' => 10,
+            'displayStart' => 0,
             'serverSide' => true,
             'processing' => true,
             'paging' => true,
             'lengthChange' => true,
             'ordering' => true,
             'searching' => false,
+            'search' => null,
             'autoWidth' => false,
             'order' => [],
             'ajax' => true, //can contain the callback url

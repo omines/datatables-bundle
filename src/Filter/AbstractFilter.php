@@ -16,7 +16,10 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 abstract class AbstractFilter
 {
     /** @var string */
-    protected $template;
+    protected $template_html;
+
+    /** @var string */
+    protected $template_js;
 
     /** @var string */
     protected $operator;
@@ -57,10 +60,10 @@ abstract class AbstractFilter
     protected function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'template' => null,
+            'template_html' => null,
+            'template_js' => null,
             'operator' => 'CONTAINS',
-        ])
-           ->setAllowedTypes('template', 'string');
+        ]);
 
         return $this;
     }
@@ -68,17 +71,33 @@ abstract class AbstractFilter
     /**
      * @return string
      */
-    public function getTemplate()
+    public function getTemplateHtml()
     {
-        return $this->template;
+        return $this->template_html;
     }
 
     /**
-     * @param string $template
+     * @param string $template_html
      */
-    public function setTemplate($template)
+    public function setTemplateHtml($template_html)
     {
-        $this->template = $template;
+        $this->template_html = $template_html;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTemplateJs()
+    {
+        return $this->template_js;
+    }
+
+    /**
+     * @param string $template_js
+     */
+    public function setTemplateJs($template_js)
+    {
+        $this->template_js = $template_js;
     }
 
     /**

@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Expr\Comparison;
 use Omines\DatatablesBundle\Adapter\AdapterInterface;
 use Omines\DatatablesBundle\Adapter\DoctrineORMAdapter;
+use Omines\DatatablesBundle\DatatableState;
 use Omines\DatatablesBundle\Processor\ProcessorInterface;
 
 class CriteriaProcessor implements ProcessorInterface
@@ -22,18 +23,18 @@ class CriteriaProcessor implements ProcessorInterface
      * @param AdapterInterface $adapter
      * @return Criteria
      */
-    public function process(AdapterInterface $adapter)
+    public function process(AdapterInterface $adapter, DatatableState $state)
     {
         /** @param DoctrineORMAdapter $adapter */
         $criteria = Criteria::create();
 
-        foreach ($adapter->getState()->getColumns() as $column) {
+        foreach ($state->getColumns() as $column) {
             if ($column->isSearchable() && null != $column->getSearchValue() && null != $column->getFilter()) {
                 $criteria->andWhere(new Comparison($column->getField(), $column->getFilter()->getOperator(), $column->getSearchValue()));
             }
 
-            if ($column->isGlobalSearchable() && null != $adapter->getState()->getSearch() && null != $column->getFilter()) {
-                $criteria->andWhere(new Comparison($column->getField(), $column->getFilter()->getOperator(), $adapter->getState()->getSearch()));
+            if ($column->isGlobalSearchable() && null != $state->getSearch() && null != $column->getFilter()) {
+                $criteria->andWhere(new Comparison($column->getField(), $column->getFilter()->getOperator(), $state->getSearch()));
             }
         }
 

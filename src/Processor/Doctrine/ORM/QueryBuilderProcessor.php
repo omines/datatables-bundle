@@ -15,6 +15,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\MappingException;
 use Doctrine\ORM\QueryBuilder;
 use Omines\DatatablesBundle\Adapter\AdapterInterface;
+use Omines\DatatablesBundle\DatatableState;
 use Omines\DatatablesBundle\Processor\ProcessorInterface;
 
 class QueryBuilderProcessor implements ProcessorInterface
@@ -140,9 +141,9 @@ class QueryBuilderProcessor implements ProcessorInterface
         return array_shift($identifiers);
     }
 
-    public function process(AdapterInterface $adapter)
+    public function process(AdapterInterface $adapter, DatatableState $state)
     {
-        foreach ($adapter->getState()->getColumns() as $key => $column) {
+        foreach ($state->getColumns() as $key => $column) {
             $currentPart = $this->entityShortName;
             $currentAlias = $currentPart;
             $metadata = $this->metadata;

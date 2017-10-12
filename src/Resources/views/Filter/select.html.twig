@@ -1,5 +1,8 @@
 <label>
-    <select data-search-column-index="{{ column.index }}">
+    <select
+            id="{{ datatable.setting('name') }}-column-{{ column.index }}"
+            data-search-column-index="{{ column.index }}"
+    >
         {% if column.filter.placeholder != null %}
             <option class="placeholder">{{ column.filter.placeholder|trans }}</option>
         {% endif %}
