@@ -279,7 +279,7 @@ class DoctrineORMAdapter implements AdapterInterface
             $result['DT_RowId'] = $this->propertyAccessor->getValue($row, $this->identifierPropertyPath);
 
         foreach ($columns as $column) {
-            $result[$column->getName()] = null == $column->getPropertyPath() ? $column->getDefaultValue() : $this->propertyAccessor->getValue($row, $column->getPropertyPath());
+            $result[$column->getName()] = null == $column->getPropertyPath() || !$this->propertyAccessor->isReadable($row, $column->getPropertyPath()) ? $column->getDefaultValue() : $this->propertyAccessor->getValue($row, $column->getPropertyPath());
         }
 
         return $result;
