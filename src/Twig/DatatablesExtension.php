@@ -72,7 +72,7 @@ class DatatablesExtension extends \Twig_Extension
                     'visible' => $column->isVisible(),
                     'className' => $column->getClass(),
                 ];
-            }, $datatable->getColumns());
+            }, $datatable->getState()->getColumns());
 
         if ($datatable->getSetting('language_from_cdn') && array_key_exists($locale, $this->languageCDNFile)) {
             $result['language'] = ['url' => "//cdn.datatables.net/plug-ins/1.10.15/i18n/{$this->languageCDNFile[$locale]}"];
