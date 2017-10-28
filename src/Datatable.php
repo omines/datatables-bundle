@@ -307,6 +307,10 @@ class Datatable
         return $this;
     }
 
+    /**
+     * @param OptionsResolver $resolver
+     * @return $this
+     */
     protected function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
