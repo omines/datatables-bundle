@@ -43,11 +43,11 @@ class DatatablesExtension extends \Twig_Extension
         ]);
     }
 
-    public function datatableHtml(\Twig_Environment $twig, Datatable $datatable)
+    public function datatableHtml(\Twig_Environment $twig, Datatable $datatable, $parameters = [])
     {
-        return $twig->render('@Datatables/datatable_html.html.twig', [
+        return $twig->render('@Datatables/datatable_html.html.twig', array_merge([
             'datatable' => $datatable,
-        ]);
+        ], $parameters));
     }
 
     public function datatableJs(\Twig_Environment $twig, Datatable $datatable, $options = [])
