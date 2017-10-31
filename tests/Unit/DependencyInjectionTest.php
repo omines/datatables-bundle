@@ -46,7 +46,7 @@ class DependencyInjectionTest extends TestCase
 
         // Default settings are meaningful
         $this->assertNotEmpty($settings = $container->getParameter('datatables.settings'));
-        $this->assertSame(true, $settings['language_from_cdn']);
-        $this->assertEmpty($settings['column_filter']);
+        $this->assertSame(true, $settings['languageFromCdn']);
+        $this->assertEmpty($settings['columnFilter']);
     }
 }
