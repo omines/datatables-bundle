@@ -16,7 +16,6 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Omines\DatatablesBundle\Column\AbstractColumn;
-use Omines\DatatablesBundle\Column\Column;
 use Omines\DatatablesBundle\DatatableState;
 use Omines\DatatablesBundle\Processor\Doctrine\Common\CriteriaProcessor;
 use Omines\DatatablesBundle\Processor\Doctrine\ORM\QueryBuilderAwareInterface;
@@ -68,11 +67,11 @@ class DoctrineORMAdapter implements AdapterInterface
         $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
         $this->aliases = [];
 
-        if (null == $queryProcessors) {
+        if (null === $queryProcessors) {
             $this->queryProcessors[] = new QueryBuilderProcessor($this->manager, $this->metadata);
         }
 
-        if (null == $criteriaProcessors) {
+        if (null === $criteriaProcessors) {
             $this->criteriaProcessors[] = new CriteriaProcessor();
         }
     }
@@ -108,7 +107,7 @@ class DoctrineORMAdapter implements AdapterInterface
         foreach ($this->queryProcessors as $processor) {
             $result = $this->process($processor, $state);
 
-            if (null == $result) {
+            if (null === $result) {
                 continue;
             } elseif ($result instanceof QueryBuilder) {
                 $queryBuilder = $result;
@@ -119,7 +118,7 @@ class DoctrineORMAdapter implements AdapterInterface
             }
         }
 
-        if (null == $queryBuilder) {
+        if (null === $queryBuilder) {
             throw new \LogicException('Expected a queryBuilder');
         }
         $this->queryBuilder = $queryBuilder;
@@ -136,7 +135,7 @@ class DoctrineORMAdapter implements AdapterInterface
         foreach ($this->criteriaProcessors as $processor) {
             $result = $this->process($processor, $state);
 
-            if (null == $result) {
+            if (null === $result) {
                 continue;
             } elseif ($result instanceof Criteria) {
                 $criteria[] = $result;
@@ -156,7 +155,7 @@ class DoctrineORMAdapter implements AdapterInterface
     protected function buildOrder($columns)
     {
         foreach ($columns as $column) {
-            if ($column->isOrderable() && null != $column->getOrderField() && null != $column->getOrderDirection()) {
+            if ($column->isOrderable() && null !== $column->getOrderField() && null !== $column->getOrderDirection()) {
                 $this->queryBuilder->addOrderBy($column->getOrderField(), $column->getOrderDirection());
             }
         }
@@ -218,7 +217,7 @@ class DoctrineORMAdapter implements AdapterInterface
         $this->identifierPropertyPath = $this->mapPropertyPath($identifier);
 
         foreach ($state->getColumns() as $column) {
-            if (null != $column->getField() && null == $column->getPropertyPath()) {
+            if (null !== $column->getField() && null === $column->getPropertyPath()) {
                 $column->setPropertyPath($this->mapPropertyPath($column->getField()));
             }
         }
@@ -237,13 +236,13 @@ class DoctrineORMAdapter implements AdapterInterface
         $path = [$target];
         $current = $this->aliases[$origin][0];
 
-        while ($current != null) {
+        while (null !== $current) {
             list($origin, $target) = explode('.', $current);
             $path[] = $target;
             $current = $this->aliases[$origin][0];
         }
 
-        if (Query::HYDRATE_ARRAY == $this->hydrationMode) {
+        if (Query::HYDRATE_ARRAY === $this->hydrationMode) {
             return '[' . implode('][', array_reverse($path)) . ']';
         } else {
             return implode('.', array_reverse($path));
@@ -275,11 +274,12 @@ class DoctrineORMAdapter implements AdapterInterface
     {
         $result = [];
 
-        if ($addIdentifier)
+        if ($addIdentifier) {
             $result['DT_RowId'] = $this->propertyAccessor->getValue($row, $this->identifierPropertyPath);
+        }
 
         foreach ($columns as $column) {
-            $result[$column->getName()] = null == $column->getPropertyPath() || !$this->propertyAccessor->isReadable($row, $column->getPropertyPath()) ? $column->getDefaultValue() : $this->propertyAccessor->getValue($row, $column->getPropertyPath());
+            $result[$column->getName()] = null === $column->getPropertyPath() || !$this->propertyAccessor->isReadable($row, $column->getPropertyPath()) ? $column->getDefaultValue() : $this->propertyAccessor->getValue($row, $column->getPropertyPath());
         }
 
         return $result;

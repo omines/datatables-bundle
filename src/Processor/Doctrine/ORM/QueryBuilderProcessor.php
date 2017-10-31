@@ -34,15 +34,11 @@ class QueryBuilderProcessor implements ProcessorInterface
      * @var string
      */
     private $entityName;
+
     /**
      * @var string
      */
     private $entityShortName;
-
-    /**
-     * @var mixed
-     */
-    private $rootEntityIdentifier;
 
     /**
      * @var array
@@ -54,6 +50,12 @@ class QueryBuilderProcessor implements ProcessorInterface
      */
     private $joins;
 
+    /**
+     * QueryBuilderProcessor constructor.
+     *
+     * @param EntityManager $manager
+     * @param ClassMetadata $metadata
+     */
     public function __construct(EntityManager $manager, ClassMetadata $metadata)
     {
         $this->em = $manager;
@@ -62,7 +64,6 @@ class QueryBuilderProcessor implements ProcessorInterface
         $this->joins = [];
         $this->entityName = $this->metadata->getName();
         $this->entityShortName = mb_strtolower($this->metadata->getReflectionClass()->getShortName());
-        $this->rootEntityIdentifier = $this->getIdentifier($this->metadata);
     }
 
     private function setSelectFrom(QueryBuilder $qb)
@@ -148,10 +149,10 @@ class QueryBuilderProcessor implements ProcessorInterface
             $currentAlias = $currentPart;
             $metadata = $this->metadata;
 
-            if (null != $column->getField()) {
+            if (null !== $column->getField()) {
                 $parts = explode('.', $column->getField());
 
-                if (count($parts) > 1 && $parts[0] == $this->entityShortName) {
+                if (count($parts) > 1 && $parts[0] === $this->entityShortName) {
                     array_shift($parts);
                 }
 

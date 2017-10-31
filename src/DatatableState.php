@@ -24,10 +24,10 @@ class DatatableState
     private $columns;
     /** @var array */
     private $search;
-    /** @var  boolean */
+    /** @var bool */
     private $fromInitialRequest;
 
-    public function __construct($start = 0, $length = -1, $columns = [], $search = "")
+    public function __construct($start = 0, $length = -1, $columns = [], $search = '')
     {
         $this->draw = 0;
         $this->start = $start;

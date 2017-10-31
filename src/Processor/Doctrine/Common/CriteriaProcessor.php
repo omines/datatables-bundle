@@ -29,11 +29,11 @@ class CriteriaProcessor implements ProcessorInterface
         $criteria = Criteria::create();
 
         foreach ($state->getColumns() as $column) {
-            if ($column->isSearchable() && null != $column->getSearchValue() && null != $column->getFilter()) {
+            if ($column->isSearchable() && null !== $column->getSearchValue() && null !== $column->getFilter()) {
                 $criteria->andWhere(new Comparison($column->getField(), $column->getFilter()->getOperator(), $column->getSearchValue()));
             }
 
-            if ($column->isGlobalSearchable() && null != $state->getSearch() && null != $column->getFilter()) {
+            if ($column->isGlobalSearchable() && null !== $state->getSearch() && null !== $column->getFilter()) {
                 $criteria->andWhere(new Comparison($column->getField(), $column->getFilter()->getOperator(), $state->getSearch()));
             }
         }

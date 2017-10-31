@@ -68,9 +68,6 @@ abstract class AbstractColumn
     /** @var array */
     protected $options;
 
-    /** @var PropertyAccess */
-    private $propertyAccessor;
-
     /** @var string */
     private $class;
 
@@ -80,7 +77,6 @@ abstract class AbstractColumn
     public function __construct()
     {
         $this->options = [];
-        $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
     }
 
     /**
@@ -141,7 +137,7 @@ abstract class AbstractColumn
             ->setAllowedTypes('joinType', ['null', 'string'])
             ->setAllowedTypes('class', ['null', 'string'])
             ->setAllowedValues('orderDirection', function ($value) {
-                return null == $value || in_array($value, ['ASC', 'DESC'], true);
+                return null === $value || in_array($value, ['ASC', 'DESC'], true);
             });
 
         return $this;
@@ -401,7 +397,7 @@ abstract class AbstractColumn
      */
     public function setFilter(array $filterClassAndOptions = null)
     {
-        if (null != $filterClassAndOptions) {
+        if (null !== $filterClassAndOptions) {
             if (!isset($filterClassAndOptions[0]) || !is_string($filterClassAndOptions[0]) && !$filterClassAndOptions[0] instanceof AbstractFilter) {
                 throw new \Exception('AbstractColumn::setFilter(): Set a Filter class.');
             }

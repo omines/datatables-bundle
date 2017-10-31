@@ -14,7 +14,6 @@ use Omines\DatatablesBundle\DatatablesBundle;
 use Omines\DatatablesBundle\DependencyInjection\Configuration;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\ArrayNode;
-use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**

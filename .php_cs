@@ -21,6 +21,7 @@ return PhpCsFixer\Config::create()
         '@Symfony' => true,
 
         'strict_param' => true,
+        'strict_comparison' => true,
         'array_syntax' => ['syntax' => 'short'],
         'concat_space' => ['spacing' => 'one'],
         'header_comment' => ['header' => $header, 'location' => 'after_open'],

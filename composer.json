@@ -20,10 +20,10 @@
     "require-dev": {
         "doctrine/doctrine-bundle": "^1.6",
         "doctrine/orm": "^2.5",
-        "friendsofphp/php-cs-fixer": "^2.4",
-        "phpunit/phpunit": "^6.1"
+        "friendsofphp/php-cs-fixer": "^2.7",
+        "phpunit/phpunit": "^6.4"
     },
-    "suggests": {
+    "suggest": {
         "doctrine/orm": "For full automated integration with Doctrine entities"
     },
     "autoload": {

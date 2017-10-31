@@ -189,7 +189,7 @@ class Datatable
     public function handleRequest(Request $request)
     {
         $this->state->setDraw($request->query->getInt('draw'));
-        $this->state->setFromInitialRequest($request->query->getInt('draw') == 0 && $this->getSetting('requestState') && $request->get($this->getRequestParam('state', true)) == 1);
+        $this->state->setFromInitialRequest(0 === $request->query->getInt('draw') && $this->getSetting('requestState') && 1 === $request->get($this->getRequestParam('state', true)));
 
         if ($this->state->isFromInitialRequest() || $this->state->getDraw() > 0) {
             $this->state->setStart($request->get($this->getRequestParam('start', $this->state->isFromInitialRequest())));
@@ -208,7 +208,7 @@ class Datatable
                 $column = $this->getState()->getColumn($key);
                 $value = $this->getState()->isFromInitialRequest() ? $search : $search['search']['value'];
 
-                if ($value != '' && $column->isSearchable() && $column->getFilter() != null && $column->getFilter()->isValidValue($value)) {
+                if ('' !== $value && $column->isSearchable() && null !== $column->getFilter() && $column->getFilter()->isValidValue($value)) {
                     $column->setSearchValue($value);
                 }
             }
@@ -219,10 +219,11 @@ class Datatable
 
     private function getRequestParam($name, $prefix)
     {
-        if ($prefix)
+        if ($prefix) {
             return "{$this->getSetting('name')}_$name";
-        else
+        } else {
             return $name;
+        }
     }
 
     public function getData()
@@ -297,7 +298,7 @@ class Datatable
             'class' => 'table table-bordered',
             'languageFromCdn' => true,
             'columnFilter' => null,
-            'requestState' => null
+            'requestState' => null,
         ])
             ->setAllowedTypes('name', 'string')
             ->setAllowedTypes('class', 'string')
