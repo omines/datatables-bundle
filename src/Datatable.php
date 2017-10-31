@@ -192,26 +192,7 @@ class Datatable
         $this->state->setFromInitialRequest(0 === $request->query->getInt('draw') && $this->getSetting('requestState') && 1 === $request->get($this->getRequestParam('state', true)));
 
         if ($this->state->isFromInitialRequest() || $this->state->getDraw() > 0) {
-            $this->state->setStart($request->get($this->getRequestParam('start', $this->state->isFromInitialRequest())));
-            $this->state->setLength($request->get($this->getRequestParam('length', $this->state->isFromInitialRequest())));
-            $this->state->setSearch($request->get($this->getRequestParam('search', $this->state->isFromInitialRequest())));
-
-            foreach ($request->get($this->getRequestParam('order', $this->state->isFromInitialRequest()), []) as $order) {
-                $column = $this->getState()->getColumn($order['column']);
-
-                if ($column->isOrderable()) {
-                    $column->setOrderDirection($order['dir']);
-                }
-            }
-
-            foreach ($request->get($this->getRequestParam('columns', $this->state->isFromInitialRequest()), []) as $key => $search) {
-                $column = $this->getState()->getColumn($key);
-                $value = $this->getState()->isFromInitialRequest() ? $search : $search['search']['value'];
-
-                if ('' !== $value && $column->isSearchable() && null !== $column->getFilter() && $column->getFilter()->isValidValue($value)) {
-                    $column->setSearchValue($value);
-                }
-            }
+            $this->handleInitialRequest($request);
         }
 
         return $this;
@@ -223,6 +204,30 @@ class Datatable
             return "{$this->getSetting('name')}_$name";
         } else {
             return $name;
+        }
+    }
+
+    private function handleInitialRequest(Request $request)
+    {
+        $this->state->setStart($request->get($this->getRequestParam('start', $this->state->isFromInitialRequest())));
+        $this->state->setLength($request->get($this->getRequestParam('length', $this->state->isFromInitialRequest())));
+        $this->state->setSearch($request->get($this->getRequestParam('search', $this->state->isFromInitialRequest())));
+
+        foreach ($request->get($this->getRequestParam('order', $this->state->isFromInitialRequest()), []) as $order) {
+            $column = $this->getState()->getColumn($order['column']);
+
+            if ($column->isOrderable()) {
+                $column->setOrderDirection($order['dir']);
+            }
+        }
+
+        foreach ($request->get($this->getRequestParam('columns', $this->state->isFromInitialRequest()), []) as $key => $search) {
+            $column = $this->getState()->getColumn($key);
+            $value = $this->getState()->isFromInitialRequest() ? $search : $search['search']['value'];
+
+            if ('' !== $value && $column->isSearchable() && null !== $column->getFilter() && $column->getFilter()->isValidValue($value)) {
+                $column->setSearchValue($value);
+            }
         }
     }
 
@@ -273,9 +278,13 @@ class Datatable
         return $this->settings;
     }
 
+    /**
+     * @param $name
+     * @return mixed|null
+     */
     public function getSetting($name)
     {
-        return $this->settings[$name];
+        return $this->settings[$name] ?? null;
     }
 
     /**
@@ -286,9 +295,13 @@ class Datatable
         return $this->options;
     }
 
+    /**
+     * @param $name
+     * @return mixed|null
+     */
     public function getOption($name)
     {
-        return $this->options[$name];
+        return $this->options[$name] ?? null;
     }
 
     protected function configureSettings(OptionsResolver $resolver)
