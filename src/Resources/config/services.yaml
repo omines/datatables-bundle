@@ -4,4 +4,4 @@ services:
 
     Omines\DatatablesBundle\Twig\DatatablesExtension:
         arguments: ['@translator']
-        tags: ['twig.extension']
+        tags: [ { name: 'twig.extension' } ]

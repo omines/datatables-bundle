@@ -1,7 +1,7 @@
 {
     "name": "omines/datatables-bundle",
     "type": "symfony-bundle",
-    "description": "Symfony Ajax Datagrid Bundle",
+    "description": "Symfony DataTables Bundle",
     "keywords": ["symfony","jquery","datatable", "datatables", "bundle"],
     "license": "MIT",
     "authors": [
@@ -14,6 +14,7 @@
         "symfony/framework-bundle": "^3.0",
         "symfony/property-access": "^3.0",
         "symfony/translation": "^3.3",
+        "symfony/yaml": "^3.0",
         "twig/twig": "~1.8|^2"
     },
     "require-dev": {
@@ -27,6 +28,9 @@
     },
     "autoload": {
         "psr-4": { "Omines\\DatatablesBundle\\": "src/"}
+    },
+    "autoload-dev": {
+      "psr-4": { "Tests\\": "tests/"}
     },
     "prefer-stable": true,
     "config": {
