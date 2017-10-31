@@ -8,10 +8,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Omines\DatatablesBundle;
+namespace Omines\DataTablesBundle;
 
+use Omines\DataTablesBundle\DependencyInjection\DataTablesExtension;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class DatatablesBundle extends Bundle
+class DataTablesBundle extends Bundle
 {
+    public function getContainerExtension()
+    {
+        return new DataTablesExtension();
+    }
 }

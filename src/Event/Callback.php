@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Omines\DatatablesBundle\Event;
+namespace Omines\DataTablesBundle\Event;
 
 /**
  * https://datatables.net/reference/option/.

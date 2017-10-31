@@ -10,8 +10,8 @@
 
 namespace Tests\Unit;
 
-use Omines\DatatablesBundle\DatatablesBundle;
-use Omines\DatatablesBundle\DependencyInjection\Configuration;
+use Omines\DataTablesBundle\DataTablesBundle;
+use Omines\DataTablesBundle\DependencyInjection\Configuration;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\ArrayNode;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -33,7 +33,7 @@ class DependencyInjectionTest extends TestCase
 
     public function testExtension()
     {
-        $bundle = new DatatablesBundle();
+        $bundle = new DataTablesBundle();
         $extension = $bundle->getContainerExtension();
         $this->assertSame('datatables', $extension->getAlias());
 

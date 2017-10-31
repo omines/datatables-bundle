@@ -10,10 +10,10 @@
 
 namespace Tests\Unit;
 
-use Omines\DatatablesBundle\Datatable;
-use Omines\DatatablesBundle\DatatableFactory;
-use Omines\DatatablesBundle\DatatablesBundle;
-use Omines\DatatablesBundle\DatatableState;
+use Omines\DataTablesBundle\DataTable;
+use Omines\DataTablesBundle\DataTableFactory;
+use Omines\DataTablesBundle\DataTablesBundle;
+use Omines\DataTablesBundle\DataTableState;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -25,13 +25,13 @@ class DataTableTest extends TestCase
 {
     public function testBundle()
     {
-        $bundle = new DatatablesBundle();
-        $this->assertSame('DatatablesBundle', $bundle->getName());
+        $bundle = new DataTablesBundle();
+        $this->assertSame('DataTablesBundle', $bundle->getName());
     }
 
     public function testFactory()
     {
-        $factory = new DatatableFactory(['class' => 'foo'], ['dom' => 'bar']);
+        $factory = new DataTableFactory(['class' => 'foo'], ['dom' => 'bar']);
 
         $table = $factory->create(['name' => 'bar'], ['pageLength' => 684]);
         $this->assertSame('bar', $table->getSetting('name'));
@@ -51,7 +51,7 @@ class DataTableTest extends TestCase
      */
     public function testInvalidSetting()
     {
-        new Datatable(['setting' => 'foo'], []);
+        new DataTable(['setting' => 'foo'], []);
     }
 
     /**
@@ -59,12 +59,12 @@ class DataTableTest extends TestCase
      */
     public function testInvalidOption()
     {
-        new Datatable([], ['option' => 'bar']);
+        new DataTable([], ['option' => 'bar']);
     }
 
-    public function testDatatableState()
+    public function testDataTableState()
     {
-        $state = new DatatableState();
+        $state = new DataTableState();
 
         // Test sane defaults
         $this->assertSame(0, $state->getStart());
@@ -77,8 +77,8 @@ class DataTableTest extends TestCase
     /**
      * @expectedException \InvalidArgumentException
      */
-    public function testDatatableStateInvalidColumn()
+    public function testDataTableStateInvalidColumn()
     {
-        (new DatatableState())->getColumn(5);
+        (new DataTableState())->getColumn(5);
     }
 }

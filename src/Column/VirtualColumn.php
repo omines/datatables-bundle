@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Omines\DatatablesBundle\Column;
+namespace Omines\DataTablesBundle\Column;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 

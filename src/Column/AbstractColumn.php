@@ -8,10 +8,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Omines\DatatablesBundle\Column;
+namespace Omines\DataTablesBundle\Column;
 
 use Doctrine\ORM\Mapping as ORM;
-use Omines\DatatablesBundle\Filter\AbstractFilter;
+use Omines\DataTablesBundle\Filter\AbstractFilter;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 

@@ -8,14 +8,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Omines\DatatablesBundle\DependencyInjection;
+namespace Omines\DataTablesBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
-class DatatablesExtension extends Extension
+class DataTablesExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -31,5 +31,11 @@ class DatatablesExtension extends Extension
 
         $container->setParameter('datatables.options', $options);
         $container->setParameter('datatables.settings', $settings);
+    }
+
+    public function getAlias()
+    {
+        // Default would underscore the camelcase unintuitively
+        return 'datatables';
     }
 }

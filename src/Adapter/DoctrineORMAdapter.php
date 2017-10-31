@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Omines\DatatablesBundle\Adapter;
+namespace Omines\DataTablesBundle\Adapter;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Collections\Criteria;
@@ -16,12 +16,12 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
-use Omines\DatatablesBundle\Column\AbstractColumn;
-use Omines\DatatablesBundle\DatatableState;
-use Omines\DatatablesBundle\Processor\Doctrine\Common\CriteriaProcessor;
-use Omines\DatatablesBundle\Processor\Doctrine\ORM\QueryBuilderAwareInterface;
-use Omines\DatatablesBundle\Processor\Doctrine\ORM\QueryBuilderProcessor;
-use Omines\DatatablesBundle\Processor\ProcessorInterface;
+use Omines\DataTablesBundle\Column\AbstractColumn;
+use Omines\DataTablesBundle\DataTableState;
+use Omines\DataTablesBundle\Processor\Doctrine\Common\CriteriaProcessor;
+use Omines\DataTablesBundle\Processor\Doctrine\ORM\QueryBuilderAwareInterface;
+use Omines\DataTablesBundle\Processor\Doctrine\ORM\QueryBuilderProcessor;
+use Omines\DataTablesBundle\Processor\ProcessorInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class DoctrineORMAdapter implements AdapterInterface
@@ -89,7 +89,7 @@ class DoctrineORMAdapter implements AdapterInterface
         return $this->manager;
     }
 
-    private function process($processor, DatatableState $state)
+    private function process($processor, DataTableState $state)
     {
         if ($processor instanceof \Closure) {
             return $processor($this, $state);
@@ -104,7 +104,7 @@ class DoctrineORMAdapter implements AdapterInterface
         }
     }
 
-    protected function buildQuery(DatatableState $state)
+    protected function buildQuery(DataTableState $state)
     {
         $queryBuilder = null;
         $criteria = [];
@@ -133,7 +133,7 @@ class DoctrineORMAdapter implements AdapterInterface
         }
     }
 
-    protected function buildCriteria(DatatableState $state)
+    protected function buildCriteria(DataTableState $state)
     {
         $criteria = [];
 
@@ -184,7 +184,7 @@ class DoctrineORMAdapter implements AdapterInterface
         }
     }
 
-    public function handleState(DatatableState $state)
+    public function handleState(DataTableState $state)
     {
         $this->buildQuery($state);
 

@@ -27,7 +27,7 @@
         "doctrine/orm": "For full automated integration with Doctrine entities"
     },
     "autoload": {
-        "psr-4": { "Omines\\DatatablesBundle\\": "src/"}
+        "psr-4": { "Omines\\DataTablesBundle\\": "src/"}
     },
     "autoload-dev": {
       "psr-4": { "Tests\\": "tests/"}

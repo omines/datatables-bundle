@@ -8,13 +8,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Omines\DatatablesBundle\Twig;
+namespace Omines\DataTablesBundle\Twig;
 
-use Omines\DatatablesBundle\Column\AbstractColumn;
-use Omines\DatatablesBundle\Datatable;
+use Omines\DataTablesBundle\Column\AbstractColumn;
+use Omines\DataTablesBundle\DataTable;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class DatatablesExtension extends \Twig_Extension
+class DataTablesExtension extends \Twig_Extension
 {
     protected $translator;
 
@@ -35,30 +35,30 @@ class DatatablesExtension extends \Twig_Extension
         ];
     }
 
-    public function datatable(\Twig_Environment $twig, Datatable $datatable, $options = [])
+    public function datatable(\Twig_Environment $twig, DataTable $datatable, $options = [])
     {
-        return $twig->render('@Datatables/datatable.html.twig', [
+        return $twig->render('@DataTables/datatable.html.twig', [
             'datatable' => $datatable,
             'options' => $this->getOptions($datatable, $options),
         ]);
     }
 
-    public function datatableHtml(\Twig_Environment $twig, Datatable $datatable, $parameters = [])
+    public function datatableHtml(\Twig_Environment $twig, DataTable $datatable, $parameters = [])
     {
-        return $twig->render('@Datatables/datatable_html.html.twig', array_merge([
+        return $twig->render('@DataTables/datatable_html.html.twig', array_merge([
             'datatable' => $datatable,
         ], $parameters));
     }
 
-    public function datatableJs(\Twig_Environment $twig, Datatable $datatable, $options = [])
+    public function datatableJs(\Twig_Environment $twig, DataTable $datatable, $options = [])
     {
-        return $twig->render('@Datatables/datatable_js.html.twig', [
+        return $twig->render('@DataTables/datatable_js.html.twig', [
             'datatable' => $datatable,
             'options' => $this->getOptions($datatable, $options),
         ]);
     }
 
-    private function getOptions(Datatable $datatable, $options)
+    private function getOptions(DataTable $datatable, $options)
     {
         $locale = $this->translator->getLocale();
         $result = array_merge($datatable->getOptions(), $options);
@@ -111,7 +111,7 @@ class DatatablesExtension extends \Twig_Extension
      */
     public function getName()
     {
-        return 'DatatablesBundle';
+        return 'DataTablesBundle';
     }
 
     protected $callbackMethodName = [

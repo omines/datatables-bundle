@@ -8,17 +8,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Omines\DatatablesBundle\Processor;
+namespace Omines\DataTablesBundle\Processor;
 
-use Omines\DatatablesBundle\Adapter\AdapterInterface;
-use Omines\DatatablesBundle\DatatableState;
+use Omines\DataTablesBundle\Adapter\AdapterInterface;
+use Omines\DataTablesBundle\DataTableState;
 
 interface ProcessorInterface
 {
     /**
      * @param AdapterInterface $adapter
-     * @param DatatableState $state
+     * @param DataTableState $state
      * @return mixed
      */
-    public function process(AdapterInterface $adapter, DatatableState $state);
+    public function process(AdapterInterface $adapter, DataTableState $state);
 }

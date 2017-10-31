@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Omines\DatatablesBundle\Filter;
+namespace Omines\DataTablesBundle\Filter;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -22,8 +22,8 @@ class TextFilter extends AbstractFilter
         parent::configureOptions($resolver);
 
         $resolver->setDefaults([
-            'template_html' => '@Datatables/Filter/text.html.twig',
-            'template_js' => '@Datatables/Filter/text.js.twig',
+            'template_html' => '@DataTables/Filter/text.html.twig',
+            'template_js' => '@DataTables/Filter/text.js.twig',
             'placeholder' => null,
         ])
             ->setAllowedTypes('placeholder', ['null', 'string']);

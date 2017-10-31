@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Omines\DatatablesBundle\Processor\Doctrine\ORM;
+namespace Omines\DataTablesBundle\Processor\Doctrine\ORM;
 
 use Doctrine\ORM\QueryBuilder;
 

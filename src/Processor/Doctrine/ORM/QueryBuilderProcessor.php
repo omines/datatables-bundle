@@ -8,15 +8,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Omines\DatatablesBundle\Processor\Doctrine\ORM;
+namespace Omines\DataTablesBundle\Processor\Doctrine\ORM;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\MappingException;
 use Doctrine\ORM\QueryBuilder;
-use Omines\DatatablesBundle\Adapter\AdapterInterface;
-use Omines\DatatablesBundle\DatatableState;
-use Omines\DatatablesBundle\Processor\ProcessorInterface;
+use Omines\DataTablesBundle\Adapter\AdapterInterface;
+use Omines\DataTablesBundle\DataTableState;
+use Omines\DataTablesBundle\Processor\ProcessorInterface;
 
 class QueryBuilderProcessor implements ProcessorInterface
 {
@@ -129,7 +129,7 @@ class QueryBuilderProcessor implements ProcessorInterface
         try {
             $metadata = $this->em->getMetadataFactory()->getMetadataFor($entityName);
         } catch (MappingException $e) {
-            throw new \Exception('DatatableQueryBuilder::getMetadata(): Given object ' . $entityName . ' is not a Doctrine Entity.');
+            throw new \Exception('DataTableQueryBuilder::getMetadata(): Given object ' . $entityName . ' is not a Doctrine Entity.');
         }
 
         return $metadata;
@@ -142,7 +142,7 @@ class QueryBuilderProcessor implements ProcessorInterface
         return array_shift($identifiers);
     }
 
-    public function process(AdapterInterface $adapter, DatatableState $state)
+    public function process(AdapterInterface $adapter, DataTableState $state)
     {
         foreach ($state->getColumns() as $key => $column) {
             $currentPart = $this->entityShortName;

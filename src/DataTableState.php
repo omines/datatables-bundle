@@ -8,11 +8,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Omines\DatatablesBundle;
+namespace Omines\DataTablesBundle;
 
-use Omines\DatatablesBundle\Column\AbstractColumn;
+use Omines\DataTablesBundle\Column\AbstractColumn;
 
-class DatatableState
+/**
+ * DataTableState.
+ *
+ * @author Robbert Beesems <robbert.beesems@omines.com>
+ */
+class DataTableState
 {
     /** @var int */
     private $draw;
@@ -26,14 +31,14 @@ class DatatableState
     /** @var AbstractColumn[] */
     private $columns;
 
-    /** @var array */
+    /** @var string */
     private $search;
 
     /** @var bool */
     private $fromInitialRequest;
 
     /**
-     * DatatableState constructor.
+     * DataTableState constructor.
      *
      * @param int $start
      * @param int $length
@@ -98,7 +103,7 @@ class DatatableState
     }
 
     /**
-     * @return array
+     * @return string
      */
     public function getSearch()
     {
@@ -121,6 +126,9 @@ class DatatableState
         return $this->columns;
     }
 
+    /**
+     * @param AbstractColumn $column
+     */
     public function addColumn(AbstractColumn $column)
     {
         $this->columns[] = $column;

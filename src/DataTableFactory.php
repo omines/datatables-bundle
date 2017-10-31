@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Omines\DatatablesBundle;
+namespace Omines\DataTablesBundle;
 
-class DatatableFactory
+class DataTableFactory
 {
     /** @var array */
     protected $settings;
@@ -19,7 +19,7 @@ class DatatableFactory
     protected $options;
 
     /**
-     * DatatableFactory constructor.
+     * DataTableFactory constructor.
      * @param array $settings
      * @param array $options
      */
@@ -32,11 +32,11 @@ class DatatableFactory
     /**
      * @param array $settings
      * @param array $options
-     * @param DatatableState $state
-     * @return Datatable
+     * @param DataTableState $state
+     * @return DataTable
      */
-    public function create(array $settings = [], array $options = [], DatatableState $state = null)
+    public function create(array $settings = [], array $options = [], DataTableState $state = null)
     {
-        return new Datatable(array_merge($this->settings, $settings), array_merge($this->options, $options), $state);
+        return new DataTable(array_merge($this->settings, $settings), array_merge($this->options, $options), $state);
     }
 }

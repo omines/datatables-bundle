@@ -8,18 +8,18 @@
  * file that was distributed with this source code.
  */
 
-namespace Omines\DatatablesBundle\Adapter;
+namespace Omines\DataTablesBundle\Adapter;
 
-use Omines\DatatablesBundle\Column\AbstractColumn;
-use Omines\DatatablesBundle\DatatableState;
+use Omines\DataTablesBundle\Column\AbstractColumn;
+use Omines\DataTablesBundle\DataTableState;
 
 interface AdapterInterface
 {
     /**
-     * @param DatatableState $state
+     * @param DataTableState $state
      * @return AdapterInterface
      */
-    public function handleState(DatatableState $state);
+    public function handleState(DataTableState $state);
 
     /**
      * get total records.

@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Omines\DatatablesBundle\Filter;
+namespace Omines\DataTablesBundle\Filter;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -23,8 +23,8 @@ class ChoiceFilter extends AbstractFilter
         parent::configureOptions($resolver);
 
         $resolver->setDefaults([
-            'template_html' => '@Datatables/Filter/select.html.twig',
-            'template_js' => '@Datatables/Filter/select.js.twig',
+            'template_html' => '@DataTables/Filter/select.html.twig',
+            'template_js' => '@DataTables/Filter/select.js.twig',
             'placeholder' => null,
             'choices' => [],
         ])

@@ -8,16 +8,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Omines\DatatablesBundle\Adapter;
+namespace Omines\DataTablesBundle\Adapter;
 
-use Omines\DatatablesBundle\DatatableState;
+use Omines\DataTablesBundle\DataTableState;
 
 abstract class AbstractDummyAdapter implements AdapterInterface
 {
-    /** @var DatatableState */
+    /** @var DataTableState */
     private $state;
 
-    public function handleRequest(DatatableState $state)
+    public function handleRequest(DataTableState $state)
     {
         $this->state = $state;
     }

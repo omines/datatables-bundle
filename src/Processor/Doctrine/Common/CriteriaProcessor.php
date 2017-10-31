@@ -8,14 +8,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Omines\DatatablesBundle\Processor\Doctrine\Common;
+namespace Omines\DataTablesBundle\Processor\Doctrine\Common;
 
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Expr\Comparison;
-use Omines\DatatablesBundle\Adapter\AdapterInterface;
-use Omines\DatatablesBundle\Adapter\DoctrineORMAdapter;
-use Omines\DatatablesBundle\DatatableState;
-use Omines\DatatablesBundle\Processor\ProcessorInterface;
+use Omines\DataTablesBundle\Adapter\AdapterInterface;
+use Omines\DataTablesBundle\Adapter\DoctrineORMAdapter;
+use Omines\DataTablesBundle\DataTableState;
+use Omines\DataTablesBundle\Processor\ProcessorInterface;
 
 class CriteriaProcessor implements ProcessorInterface
 {
@@ -23,7 +23,7 @@ class CriteriaProcessor implements ProcessorInterface
      * @param AdapterInterface $adapter
      * @return Criteria
      */
-    public function process(AdapterInterface $adapter, DatatableState $state)
+    public function process(AdapterInterface $adapter, DataTableState $state)
     {
         /** @param DoctrineORMAdapter $adapter */
         $criteria = Criteria::create();

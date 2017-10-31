@@ -8,18 +8,18 @@
  * file that was distributed with this source code.
  */
 
-namespace Omines\DatatablesBundle;
+namespace Omines\DataTablesBundle;
 
-use Omines\DatatablesBundle\Adapter\AdapterInterface;
-use Omines\DatatablesBundle\Column\AbstractColumn;
-use Omines\DatatablesBundle\Event\AbstractEvent;
-use Omines\DatatablesBundle\Event\Callback;
-use Omines\DatatablesBundle\Event\Event;
+use Omines\DataTablesBundle\Adapter\AdapterInterface;
+use Omines\DataTablesBundle\Column\AbstractColumn;
+use Omines\DataTablesBundle\Event\AbstractEvent;
+use Omines\DataTablesBundle\Event\Callback;
+use Omines\DataTablesBundle\Event\Event;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class Datatable
+class DataTable
 {
     const DEFAULT_SETTINGS = [
         'name' => 'datatable',
@@ -69,7 +69,7 @@ class Datatable
     /** @var AdapterInterface */
     protected $adapter;
 
-    /** @var DatatableState */
+    /** @var DataTableState */
     private $state;
 
     /**
@@ -77,11 +77,11 @@ class Datatable
      *
      * @param array $settings
      * @param array $options
-     * @param DatatableState $state
+     * @param DataTableState $state
      */
-    public function __construct($settings, $options, DatatableState $state = null)
+    public function __construct($settings, $options, DataTableState $state = null)
     {
-        $this->state = $state ?: new DatatableState();
+        $this->state = $state ?: new DataTableState();
 
         $this->events = [];
         $this->callbacks = [];
@@ -183,7 +183,7 @@ class Datatable
     }
 
     /**
-     * @return DatatableState
+     * @return DataTableState
      */
     public function getState()
     {
