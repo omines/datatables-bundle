@@ -12,6 +12,8 @@ namespace Tests\Unit;
 
 use Omines\DatatablesBundle\Datatable;
 use Omines\DatatablesBundle\DatatableFactory;
+use Omines\DatatablesBundle\DatatablesBundle;
+use Omines\DatatablesBundle\DatatableState;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -21,6 +23,12 @@ use PHPUnit\Framework\TestCase;
  */
 class DataTableTest extends TestCase
 {
+    public function testBundle()
+    {
+        $bundle = new DatatablesBundle();
+        $this->assertSame('DatatablesBundle', $bundle->getName());
+    }
+
     public function testFactory()
     {
         $factory = new DatatableFactory(['class' => 'foo'], ['dom' => 'bar']);
@@ -52,5 +60,25 @@ class DataTableTest extends TestCase
     public function testInvalidOption()
     {
         new Datatable([], ['option' => 'bar']);
+    }
+
+    public function testDatatableState()
+    {
+        $state = new DatatableState();
+
+        // Test sane defaults
+        $this->assertSame(0, $state->getStart());
+        $this->assertSame(-1, $state->getLength());
+        $this->assertSame(0, $state->getDraw());
+        $this->assertSame('', $state->getSearch());
+        $this->assertEmpty($state->getColumns());
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testDatatableStateInvalidColumn()
+    {
+        (new DatatableState())->getColumn(5);
     }
 }

@@ -16,17 +16,30 @@ class DatatableState
 {
     /** @var int */
     private $draw;
+
     /** @var int */
     private $start;
+
     /** @var int */
     private $length;
+
     /** @var AbstractColumn[] */
     private $columns;
+
     /** @var array */
     private $search;
+
     /** @var bool */
     private $fromInitialRequest;
 
+    /**
+     * DatatableState constructor.
+     *
+     * @param int $start
+     * @param int $length
+     * @param array $columns
+     * @param string $search
+     */
     public function __construct($start = 0, $length = -1, $columns = [], $search = '')
     {
         $this->draw = 0;
@@ -119,6 +132,10 @@ class DatatableState
      */
     public function getColumn($index)
     {
+        if ($index < 0 || $index > count($this->columns)) {
+            throw new \InvalidArgumentException(sprintf('There is no column with index %d', $index));
+        }
+
         return $this->columns[$index];
     }
 

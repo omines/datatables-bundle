@@ -25,16 +25,16 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-            ->booleanNode('languageFromCdn')->defaultTrue()->end()
-            ->booleanNode('requestState')->defaultTrue()->end()
-            ->scalarNode('class')->end()
-            ->enumNode('columnFilter')
-            ->values(['thead', 'tfoot', 'both', null])->defaultNull()
-            ->end()
-            ->arrayNode('options')
-            ->useAttributeAsKey('name')
-            ->prototype('variable')->end()
-            ->end()
+                ->booleanNode('languageFromCdn')->defaultTrue()->end()
+                ->booleanNode('requestState')->defaultTrue()->end()
+                ->scalarNode('class')->end()
+                ->enumNode('columnFilter')
+                    ->values(['thead', 'tfoot', 'both', null])->defaultNull()
+                    ->end()
+                ->arrayNode('options')
+                    ->useAttributeAsKey('name')
+                    ->prototype('variable')->end()
+                ->end()
             ->end()
         ;
 

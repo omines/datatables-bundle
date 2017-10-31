@@ -21,6 +21,36 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class Datatable
 {
+    const DEFAULT_SETTINGS = [
+        'name' => 'datatable',
+        'class' => 'table table-bordered',
+        'languageFromCdn' => true,
+        'columnFilter' => null,
+        'requestState' => null,
+    ];
+
+    const DEFAULT_OPTIONS = [
+        'jQueryUI' => true,
+        'pagingType' => 'full_numbers',
+        'lengthMenu' => [[10, 25, 50, -1], [10, 25, 50, 'All']],
+        'pageLength' => 10,
+        'displayStart' => 0,
+        'serverSide' => true,
+        'processing' => true,
+        'paging' => true,
+        'lengthChange' => true,
+        'ordering' => true,
+        'searching' => false,
+        'search' => null,
+        'autoWidth' => false,
+        'order' => [],
+        'ajax' => true, //can contain the callback url
+        'searchDelay' => 400,
+        'dom' => 'lftrip',
+        'orderCellsTop' => true,
+        'stateSave' => false,
+    ];
+
     /** @var Callback[] */
     protected $callbacks;
 
@@ -306,13 +336,7 @@ class Datatable
 
     protected function configureSettings(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'name' => 'datatable',
-            'class' => 'table table-bordered',
-            'languageFromCdn' => true,
-            'columnFilter' => null,
-            'requestState' => null,
-        ])
+        $resolver->setDefaults(self::DEFAULT_SETTINGS)
             ->setAllowedTypes('name', 'string')
             ->setAllowedTypes('class', 'string')
             ->setAllowedTypes('languageFromCdn', 'bool')
@@ -327,27 +351,7 @@ class Datatable
      */
     protected function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'jQueryUI' => true,
-            'pagingType' => 'full_numbers',
-            'lengthMenu' => [[10, 25, 50, -1], [10, 25, 50, 'All']],
-            'pageLength' => 10,
-            'displayStart' => 0,
-            'serverSide' => true,
-            'processing' => true,
-            'paging' => true,
-            'lengthChange' => true,
-            'ordering' => true,
-            'searching' => false,
-            'search' => null,
-            'autoWidth' => false,
-            'order' => [],
-            'ajax' => true, //can contain the callback url
-            'searchDelay' => 400,
-            'dom' => 'lftrip',
-            'orderCellsTop' => true,
-            'stateSave' => false,
-        ]);
+        $resolver->setDefaults(self::DEFAULT_OPTIONS);
 
         return $this;
     }
