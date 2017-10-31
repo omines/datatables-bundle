@@ -16,10 +16,13 @@ before_script:
   - composer update --no-interaction --no-progress $COMPOSER_FLAGS
 
 script:
-  - ./vendor/bin/phpunit -v
+  - ./vendor/bin/phpunit -v --coverage-text --coverage-clover=coverage.clover
 
-#after_script:
-#  - php vendor/bin/coveralls -v
+after_script:
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+
+#
 #
 #after_success:
 #  - if  [ $TRAVIS_PHP_VERSION = '7.1' ] && [ $TRAVIS_BRANCH = 'master' ] && [ $TRAVIS_PULL_REQUEST = 'false' ] && [ $COMPOSER_FLAGS = '']; then sh bin/generate-api; fi

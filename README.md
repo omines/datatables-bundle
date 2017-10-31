@@ -5,6 +5,7 @@
 [![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/omines/datatables-bundle.svg?style=flat-square)](https://scrutinizer-ci.com/g/omines/datatables-bundle/code-structure)
 [![Quality Score](https://img.shields.io/scrutinizer/g/omines/datatables-bundle.svg?style=flat-square)](https://scrutinizer-ci.com/g/omines/datatables-bundle)
 [![Total Downloads](https://img.shields.io/packagist/dt/omines/datatables-bundle.svg?style=flat-square)](https://packagist.org/packages/omines/datatables-bundle)
+[![SensioLabs Insight](https://img.shields.io/sensiolabs/i/05d79ba2-cba4-4201-a17a-2868c51f9c6c.svg)](https://insight.sensiolabs.com/projects/05d79ba2-cba4-4201-a17a-2868c51f9c6c)
 
 ## Installation
 

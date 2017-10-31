@@ -1,0 +1,6 @@
+tools:
+    external_code_coverage:
+        timeout: 600
+        runs: 3
+    php_analyzer: true
+    php_code_coverage: false
