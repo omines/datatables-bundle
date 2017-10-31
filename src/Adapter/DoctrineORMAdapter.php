@@ -13,6 +13,7 @@ namespace Omines\DatatablesBundle\Adapter;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Omines\DatatablesBundle\Column\AbstractColumn;
@@ -37,6 +38,7 @@ class DoctrineORMAdapter implements AdapterInterface
     /** @var ProcessorInterface[]|\Closure[] */
     private $criteriaProcessors;
 
+    /** @var \Doctrine\Common\Persistence\Mapping\ClassMetadata|ClassMetadata */
     private $metadata;
 
     /** @var QueryBuilder */
@@ -51,13 +53,16 @@ class DoctrineORMAdapter implements AdapterInterface
     /** @var \Symfony\Component\PropertyAccess\PropertyAccessor */
     private $propertyAccessor;
 
+    /** @var array */
     private $aliases;
 
     private $identifierPropertyPath;
 
     public function __construct(Registry $registry, $class, $hydrationMode = Query::HYDRATE_OBJECT, $queryProcessors = null, $criteriaProcessors = null)
     {
-        $this->manager = $registry->getManagerForClass($class);
+        if (null === ($this->manager = $registry->getManagerForClass($class))) {
+            throw new \LogicException(sprintf('There is no Entity Manage for class %s', $class));
+        }
         $this->metadata = $this->manager->getClassMetadata($class);
         $this->hydrationMode = $hydrationMode;
         $this->queryProcessors = $queryProcessors;
