@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Tests\Fixtures\AppBundle\Controller;
 
+use Omines\DataTablesBundle\DataTableFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 /**
@@ -23,6 +24,10 @@ class HomeController extends Controller
 {
     public function showAction()
     {
-        return $this->render('@App/home.html.twig');
+        $datatable = $this->get(DataTableFactory::class)->create();
+
+        return $this->render('@App/home.html.twig', [
+            'datatable' => $datatable,
+        ]);
     }
 }
