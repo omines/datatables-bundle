@@ -129,7 +129,7 @@ class DoctrineORMAdapter implements AdapterInterface
         $criteria = [];
 
         foreach ($this->queryProcessors as $processor) {
-            $this->runProcessor($processor, $queryBuilder, $criteria);
+            $this->runProcessor($processor, $state, $queryBuilder, $criteria);
         }
 
         if (null === $queryBuilder) {
@@ -147,7 +147,7 @@ class DoctrineORMAdapter implements AdapterInterface
      * @param QueryBuilder $queryBuilder
      * @param array $criteria
      */
-    protected function runProcessor(ProcessorInterface $processor, QueryBuilder &$queryBuilder, array &$criteria)
+    protected function runProcessor(ProcessorInterface $processor, DataTableState $state, QueryBuilder &$queryBuilder, array &$criteria)
     {
         $result = $this->process($processor, $state);
 
