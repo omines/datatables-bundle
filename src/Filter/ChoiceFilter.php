@@ -18,8 +18,14 @@ class ChoiceFilter extends AbstractFilter
 {
     /** @var string */
     protected $placeholder;
-    protected $choices;
 
+    /** @var array */
+    protected $choices = [];
+
+    /**
+     * @param OptionsResolver $resolver
+     * @return $this
+     */
     protected function configureOptions(OptionsResolver $resolver)
     {
         parent::configureOptions($resolver);

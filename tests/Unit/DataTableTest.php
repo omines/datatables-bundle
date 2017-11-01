@@ -19,6 +19,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use Omines\DataTablesBundle\Column\Column;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableFactory;
 use Omines\DataTablesBundle\DataTablesBundle;
@@ -81,6 +82,16 @@ class DataTableTest extends TestCase
         $this->assertSame(0, $state->getDraw());
         $this->assertSame('', $state->getSearch());
         $this->assertEmpty($state->getColumns());
+
+        $state->setStart(5);
+        $state->setLength(10);
+        $state->setSearch('foo');
+        $state->addColumn(new Column());
+
+        $this->assertSame(5, $state->getStart());
+        $this->assertSame(10, $state->getLength());
+        $this->assertSame('foo', $state->getSearch());
+        $this->assertInstanceOf(Column::class, $state->getColumn(0));
     }
 
     /**

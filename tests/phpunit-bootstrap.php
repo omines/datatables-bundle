@@ -25,13 +25,16 @@ if (!class_exists('\PHPUnit\Framework\TestCase', true)) {
     class_alias('\PHPUnit\Framework\TestCase', '\PHPUnit_Framework_TestCase');
 }
 
+// Clean up from previous runs
 @exec('rm -r /tmp/datatables-bundle');
 
+// Create basic DB schema
 $kernel = new AppKernel('test', false);
 $output = new ConsoleOutput();
 $application = new Application($kernel);
 $application->get('doctrine:schema:update')->run(new StringInput('--force'), $output);
 
+// Fill some basic fixtures
 $em = $kernel->getContainer()->get('doctrine')->getManagerForClass(Person::class);
 for ($i = 0; 125 !== $i; ++$i) {
     $em->persist(new Person('FirstName' . $i, 'LastName' . $i));
