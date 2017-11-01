@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Fixtures;
+namespace Tests\Fixtures\AppBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 

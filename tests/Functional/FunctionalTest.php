@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Tests\Functional;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * FunctionalTest.
@@ -27,6 +28,14 @@ class FunctionalTest extends WebTestCase
         $client->request('GET', '/');
         $response = $client->getResponse();
 
-        $this->assertTrue($response->isSuccessful());
+        $this->assertSuccessful($response);
+    }
+
+    private function assertSuccessful(Response $response)
+    {
+        if (!$response->isSuccessful()) {
+            echo sprintf("---- Response failed with %d ----\n%s\n------------------\n", $response->getStatusCode(), $response->getContent());
+            $this->fail(sprintf('Response failed with HTTP status code %d', $response->getStatusCode()));
+        }
     }
 }

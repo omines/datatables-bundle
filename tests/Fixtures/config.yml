@@ -8,6 +8,10 @@ framework:
     http_method_override: true
     test: ~
 
+twig:
+    debug: true
+    strict_variables: true
+
 datatables:
     class: 'table table-striped data-table'
     options:

@@ -10,11 +10,8 @@
 
 declare(strict_types=1);
 
-use Omines\DataTablesBundle\DataTablesBundle;
-use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpKernel\Kernel;
-use Tests\Fixtures\AppBundle;
 
 /**
  * AppKernel.
@@ -26,9 +23,10 @@ class AppKernel extends Kernel
     public function registerBundles()
     {
         return [
-            new FrameworkBundle(),
-            new DataTablesBundle(),
-            new AppBundle(),
+            new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
+            new Symfony\Bundle\TwigBundle\TwigBundle(),
+            new Omines\DataTablesBundle\DataTablesBundle(),
+            new Tests\Fixtures\AppBundle\AppBundle(),
         ];
     }
 

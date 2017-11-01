@@ -10,19 +10,19 @@
 
 declare(strict_types=1);
 
-namespace Tests\Fixtures\Controller;
+namespace Tests\Fixtures\AppBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 /**
  * HomeController.
  *
  * @author Niels Keurentjes <niels.keurentjes@omines.com>
  */
-class HomeController
+class HomeController extends Controller
 {
     public function showAction()
     {
-        return Response::create('Test');
+        return $this->render('@App/home.html.twig');
     }
 }

@@ -21,8 +21,8 @@
         "php": "^7.0.8",
         "symfony/framework-bundle": "^3.3",
         "symfony/property-access": "^3.0",
-        "symfony/translation": "^3.0",
-        "symfony/yaml": "^3.0",
+        "symfony/translation": "^3.2",
+        "symfony/yaml": "^3.3",
         "twig/twig": "~1.8|^2"
     },
     "require-dev": {
@@ -32,7 +32,9 @@
         "phpunit/phpunit": "^5.7.23||^6.1",
         "symfony/browser-kit": "~3.0|~4.0",
         "symfony/dom-crawler": "~3.0|~4.0",
-        "symfony/phpunit-bridge": "^3.0"
+        "symfony/phpunit-bridge": "^3.0",
+        "symfony/templating": "^3.0",
+        "symfony/twig-bundle": "^3.0"
     },
     "suggest": {
         "doctrine/orm": "For full automated integration with Doctrine entities"
