@@ -10,6 +10,13 @@
 
 declare(strict_types=1);
 
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Input\StringInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Tests\Fixtures\AppKernel;
+
+require __DIR__ . '/../vendor/autoload.php';
+
 // Polyfill PHPUnit 6.0 both ways
 if (!class_exists('\PHPUnit\Framework\TestCase', true)) {
     class_alias('\PHPUnit_Framework_TestCase', '\PHPUnit\Framework\TestCase');
@@ -17,4 +24,8 @@ if (!class_exists('\PHPUnit\Framework\TestCase', true)) {
     class_alias('\PHPUnit\Framework\TestCase', '\PHPUnit_Framework_TestCase');
 }
 
-exec('rm -r /tmp/datatables-bundle/cache');
+@exec('rm -r /tmp/datatables-bundle/cache');
+
+$output = new ConsoleOutput();
+$application = new Application(new AppKernel('test', false));
+$application->find('doctrine:schema:update')->run(new StringInput('--force'), $output);

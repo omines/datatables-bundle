@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Tests\Fixtures\AppBundle\Controller;
 
+use Omines\DataTablesBundle\Column\Column;
+use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -24,7 +26,12 @@ class HomeController extends Controller
 {
     public function showAction()
     {
+        /** @var DataTable $datatable */
         $datatable = $this->get(DataTableFactory::class)->create();
+        $datatable
+            ->column(Column::class, ['label' => 'foo', 'field' => 'bar'])
+            ->column(Column::class, ['label' => 'bar', 'field' => 'foo', 'name' => 'test'])
+        ;
 
         return $this->render('@App/home.html.twig', [
             'datatable' => $datatable,

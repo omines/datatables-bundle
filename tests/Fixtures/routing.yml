@@ -1,3 +1,15 @@
 home:
-    path:           /
-    defaults:	    { _controller: "AppBundle:Home:show" }
+    path:       /
+    defaults:	{ _controller: "AppBundle:Home:show" }
+
+plain:
+    path:       /plain
+    defaults:   { _controller: "AppBundle:Plain:table" }
+
+type:
+    path:       /type
+    defaults:   { _controller: "AppBundle:Type:table" }
+
+service:
+    path:       /service
+    defaults:   { _controller: "AppBundle:Service:table" }

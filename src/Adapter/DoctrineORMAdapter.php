@@ -147,7 +147,7 @@ class DoctrineORMAdapter implements AdapterInterface
      * @param QueryBuilder $queryBuilder
      * @param array $criteria
      */
-    protected function runProcessor(ProcessorInterface $processor, DataTableState $state, QueryBuilder &$queryBuilder, array &$criteria)
+    protected function runProcessor(ProcessorInterface $processor, DataTableState $state, QueryBuilder &$queryBuilder = null, array &$criteria = [])
     {
         $result = $this->process($processor, $state);
 
@@ -205,12 +205,12 @@ class DoctrineORMAdapter implements AdapterInterface
         if (empty($gb) || !in_array($identifier, $gb, true)) {
             $qb->select($qb->expr()->count($identifier));
 
-            return $qb->getQuery()->getSingleScalarResult();
+            return (int) $qb->getQuery()->getSingleScalarResult();
         } else {
             $qb->resetDQLPart('groupBy');
             $qb->select($qb->expr()->countDistinct($identifier));
 
-            return $qb->getQuery()->getSingleScalarResult();
+            return (int) $qb->getQuery()->getSingleScalarResult();
         }
     }
 
@@ -266,7 +266,11 @@ class DoctrineORMAdapter implements AdapterInterface
      */
     private function mapPropertyPath($field)
     {
-        list($origin, $target) = explode('.', $field);
+        $parts = explode('.', $field);
+        if (count($parts) < 2) {
+            throw new \RuntimeException(sprintf('Field name "%s" must consist at least of an alias and a field separated with a period', $field));
+        }
+        list($origin, $target) = $parts;
 
         $path = [$target];
         $current = $this->aliases[$origin][0];

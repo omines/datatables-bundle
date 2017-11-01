@@ -8,9 +8,19 @@ framework:
     http_method_override: true
     test: ~
 
+doctrine:
+    dbal:
+        driver: pdo_sqlite
+        path: '%kernel.root_dir%/data.sqlite'
+
+    orm:
+        auto_generate_proxy_classes: '%kernel.debug%'
+        naming_strategy: doctrine.orm.naming_strategy.underscore
+        auto_mapping: true
+
 twig:
-    debug: true
-    strict_variables: true
+    debug: '%kernel.debug%'
+    strict_variables: '%kernel.debug%'
 
 datatables:
     class: 'table table-striped data-table'
