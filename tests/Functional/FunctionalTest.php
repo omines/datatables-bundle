@@ -50,14 +50,19 @@ class FunctionalTest extends WebTestCase
         $this->assertSame(125, $json->recordsTotal);
         $this->assertSame(125, $json->recordsFiltered);
         $this->assertCount(125, $json->data);
+
+        $sample = $json->data[5];
+        $this->assertSame('FirstName5', $sample->name);
+        $this->assertSame('LastName5', $sample->{'column-2'});
+        $this->assertSame('FirstName5 LastName5', $sample->fullName);
     }
 
-//    public function testTypeDataTable()
-//    {
-//        $json = $this->callDataTableUrl('/type');
-//
-//        $this->assertSame(0, $json->draw);
-//    }
+    public function testTypeDataTable()
+    {
+        $json = $this->callDataTableUrl('/type');
+
+        $this->assertSame(0, $json->draw);
+    }
 
 //    public function testServiceDataTable()
 //    {

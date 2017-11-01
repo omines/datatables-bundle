@@ -1,0 +1,4 @@
+services:
+    Tests\Fixtures\AppBundle\DataTable\Type:
+        autowire: true
+        autoconfigure: true

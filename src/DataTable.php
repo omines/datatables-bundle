@@ -37,7 +37,7 @@ class DataTable
     ];
 
     const DEFAULT_OPTIONS = [
-        'jQueryUI' => true,
+        'jQueryUI' => false,
         'pagingType' => 'full_numbers',
         'lengthMenu' => [[10, 25, 50, -1], [10, 25, 50, 'All']],
         'pageLength' => 10,
@@ -283,6 +283,9 @@ class DataTable
 
     private function mapData($all = true)
     {
+        if (null === $this->adapter) {
+            throw new \LogicException('No adapter was configured to retrieve data');
+        }
         $this->adapter->handleState($this->state);
 
         $data = array_map(function ($row) use ($all) {
@@ -341,6 +344,10 @@ class DataTable
         return $this->options[$name] ?? null;
     }
 
+    /**
+     * @param OptionsResolver $resolver
+     * @return $this
+     */
     protected function configureSettings(OptionsResolver $resolver)
     {
         $resolver->setDefaults(self::DEFAULT_SETTINGS)

@@ -26,7 +26,7 @@ if (!class_exists('\PHPUnit\Framework\TestCase', true)) {
 }
 
 // Clean up from previous runs
-@exec('rm -r /tmp/datatables-bundle');
+@exec('rm -rf /tmp/datatables-bundle');
 
 // Create basic DB schema
 $kernel = new AppKernel('test', false);

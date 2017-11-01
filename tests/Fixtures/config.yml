@@ -1,3 +1,6 @@
+imports:
+    - { resource: services.yml }
+
 framework:
     secret: '1234567890'
     router:

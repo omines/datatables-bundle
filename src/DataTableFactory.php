@@ -41,4 +41,28 @@ class DataTableFactory
     {
         return new DataTable(array_merge($this->settings, $settings), array_merge($this->options, $options), $state);
     }
+
+    /**
+     * @param string $name
+     * @param array $settings
+     * @param array $options
+     * @param DataTableState|null $state
+     * @return DataTable
+     */
+    public function createFromType(string $name, array $settings = [], array $options = [], DataTableState $state = null)
+    {
+        $dataTable = $this->create($settings, $options, $state);
+
+        // Support fully-qualified class names
+        if (class_exists($name) && in_array(DataTableTypeInterface::class, class_implements($name), true)) {
+            /** @var DataTableTypeInterface $type */
+            $type = new $name();
+        } else {
+            throw new \InvalidArgumentException(sprintf('Could not load type "%s"', $name));
+        }
+
+        $type->configure($dataTable);
+
+        return $dataTable;
+    }
 }

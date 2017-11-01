@@ -14,7 +14,7 @@ namespace Omines\DataTablesBundle\Adapter;
 
 use Omines\DataTablesBundle\DataTableState;
 
-abstract class AbstractDummyAdapter implements AdapterInterface
+abstract class AbstractAdapter implements AdapterInterface
 {
     /** @var DataTableState */
     private $state;
@@ -39,11 +39,14 @@ abstract class AbstractDummyAdapter implements AdapterInterface
         return $this->state;
     }
 
-    public function mapRow($row)
+    /**
+     * {@inheritdoc}
+     */
+    public function mapRow($columns, $row, $addIdentifier)
     {
         $result = [];
 
-        foreach ($this->state->getColumns() as $column) {
+        foreach ($columns as $column) {
             $result[$column->getName()] = $column->getDefaultValue();
         }
 

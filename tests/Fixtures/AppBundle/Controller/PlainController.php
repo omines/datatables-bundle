@@ -34,6 +34,7 @@ class PlainController extends Controller
             ->column(Column::class, ['label' => 'id', 'field' => 'person.id'])
             ->column(Column::class, ['label' => 'firstName', 'name' => 'name', 'field' => 'person.firstName'])
             ->column(Column::class, ['label' => 'lastName', 'field' => 'person.lastName'])
+            ->column(Column::class, ['label' => 'fullName', 'name' => 'fullName'])
             ->format(function ($row, Person $person) {
                 $row['fullName'] = $person->getFirstName() . ' ' . $person->getLastName();
 

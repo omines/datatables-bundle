@@ -44,7 +44,7 @@ class Column extends AbstractColumn
             'field' => null,
             'propertyPath' => null,
         ])
-            ->setAllowedTypes('field', 'string')
+            ->setAllowedTypes('field', ['null', 'string'])
             ->setAllowedTypes('propertyPath', ['null', 'string']);
 
         return $this;
