@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Omines\DataTablesBundle\Processor\Doctrine\Common;
 
 use Doctrine\Common\Collections\Criteria;

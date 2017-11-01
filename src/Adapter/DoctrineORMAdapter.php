@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Omines\DataTablesBundle\Adapter;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -58,7 +60,16 @@ class DoctrineORMAdapter implements AdapterInterface
 
     private $identifierPropertyPath;
 
-    public function __construct(Registry $registry, $class, $hydrationMode = Query::HYDRATE_OBJECT, $queryProcessors = null, $criteriaProcessors = null)
+    /**
+     * DoctrineORMAdapter constructor.
+     *
+     * @param Registry $registry
+     * @param $class
+     * @param int $hydrationMode
+     * @param array|null $queryProcessors
+     * @param array|null $criteriaProcessors
+     */
+    public function __construct(Registry $registry, $class, $hydrationMode = Query::HYDRATE_OBJECT, array $queryProcessors = null, array $criteriaProcessors = null)
     {
         if (null === ($this->manager = $registry->getManagerForClass($class))) {
             throw new \LogicException(sprintf('There is no Entity Manage for class %s', $class));
@@ -89,6 +100,11 @@ class DoctrineORMAdapter implements AdapterInterface
         return $this->manager;
     }
 
+    /**
+     * @param $processor
+     * @param DataTableState $state
+     * @return mixed
+     */
     private function process($processor, DataTableState $state)
     {
         if ($processor instanceof \Closure) {
@@ -104,27 +120,20 @@ class DoctrineORMAdapter implements AdapterInterface
         }
     }
 
+    /**
+     * @param DataTableState $state
+     */
     protected function buildQuery(DataTableState $state)
     {
         $queryBuilder = null;
         $criteria = [];
 
         foreach ($this->queryProcessors as $processor) {
-            $result = $this->process($processor, $state);
-
-            if (null === $result) {
-                continue;
-            } elseif ($result instanceof QueryBuilder) {
-                $queryBuilder = $result;
-            } elseif ($result instanceof Criteria) {
-                $criteria = $result;
-            } else {
-                throw new \LogicException("Can't handle processor result");
-            }
+            $this->runProcessor($processor, $queryBuilder, $criteria);
         }
 
         if (null === $queryBuilder) {
-            throw new \LogicException('Expected a queryBuilder');
+            throw new \LogicException('Query processors must yield an instance of QueryBuilder');
         }
         $this->queryBuilder = $queryBuilder;
 
@@ -133,6 +142,27 @@ class DoctrineORMAdapter implements AdapterInterface
         }
     }
 
+    /**
+     * @param ProcessorInterface $processor
+     * @param QueryBuilder $queryBuilder
+     * @param array $criteria
+     */
+    protected function runProcessor(ProcessorInterface $processor, QueryBuilder &$queryBuilder, array &$criteria)
+    {
+        $result = $this->process($processor, $state);
+
+        if ($result instanceof QueryBuilder) {
+            $queryBuilder = $result;
+        } elseif ($result instanceof Criteria) {
+            $criteria[] = $result;
+        } elseif (null !== $result) {
+            throw new \LogicException('Unexpected processor result - expected QueryBuilder or Criteria or NULL');
+        }
+    }
+
+    /**
+     * @param DataTableState $state
+     */
     protected function buildCriteria(DataTableState $state)
     {
         $criteria = [];

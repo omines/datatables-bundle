@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Omines\DataTablesBundle;
 
 use Omines\DataTablesBundle\Adapter\AdapterInterface;
@@ -19,6 +21,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * DataTable.
+ *
+ * @author Robbert Beesems <robbert.beesems@omines.com>
+ */
 class DataTable
 {
     const DEFAULT_SETTINGS = [

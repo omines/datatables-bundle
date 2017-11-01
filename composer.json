@@ -6,9 +6,17 @@
     "license": "MIT",
     "authors": [
         {
-            "name":   "Robbert Beesems"
+            "name": "Robbert Beesems",
+            "homepage": "https://omines.nl/"        },
+        {
+            "name": "Niels Keurentjes",
+            "email": "niels.keurentjes@omines.com",
+            "homepage": "https://omines.nl/"
         }
     ],
+    "support": {
+      "issues": "https://github.com/omines/datatables-bundle/issues"
+    },
     "require": {
         "php": "^7.0.8",
         "symfony/framework-bundle": "^3.0",
@@ -21,7 +29,10 @@
         "doctrine/doctrine-bundle": "^1.6",
         "doctrine/orm": "^2.5",
         "friendsofphp/php-cs-fixer": "^2.7",
-        "phpunit/phpunit": "^6.1"
+        "phpunit/phpunit": "^6.1",
+        "symfony/browser-kit": "~3.0|~4.0",
+        "symfony/dom-crawler": "~3.0|~4.0",
+        "symfony/phpunit-bridge": "^3.0"
     },
     "suggest": {
         "doctrine/orm": "For full automated integration with Doctrine entities"

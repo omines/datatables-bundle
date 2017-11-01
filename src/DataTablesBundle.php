@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Omines\DataTablesBundle;
 
 use Omines\DataTablesBundle\DependencyInjection\DataTablesExtension;

@@ -10,11 +10,10 @@
 
 declare(strict_types=1);
 
-namespace Omines\DataTablesBundle\Processor\Doctrine\ORM;
+namespace Tests\Fixtures;
 
-use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-interface QueryBuilderAwareInterface
+class AppBundle extends Bundle
 {
-    public function setQueryBuilder(QueryBuilder $qb);
 }

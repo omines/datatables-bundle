@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Omines\DataTablesBundle\Processor\Doctrine\ORM;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
