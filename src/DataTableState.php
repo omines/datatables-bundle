@@ -113,7 +113,7 @@ class DataTableState
     }
 
     /**
-     * @param array $search
+     * @param string $search
      */
     public function setSearch($search)
     {
