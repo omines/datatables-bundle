@@ -22,7 +22,7 @@ Then add the bundle to your kernel's bundle registration:
 public function registerBundles()
 {
     ...
-    new DataTablesBundle(),
+    new \Omines\DataTablesBundle\DataTablesBundle(),
     ...
 }
 ```

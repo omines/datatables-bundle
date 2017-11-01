@@ -1,8 +1,11 @@
 <?php
 
 /*
- * DataTables Bundle
- * (c) 2017 Omines Internetbureau B.V. - https://omines.nl
+ * Symfony DataTables Bundle
+ * (c) Omines Internetbureau B.V. - https://omines.nl/
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 declare(strict_types=1);
@@ -13,7 +16,7 @@ use Omines\DataTablesBundle\Filter\ChoiceFilter;
 use PHPUnit\Framework\TestCase;
 
 /**
- * FilterTest
+ * FilterTest.
  *
  * @author Niels Keurentjes <niels.keurentjes@omines.com>
  */
