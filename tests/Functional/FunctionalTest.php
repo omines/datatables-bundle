@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Tests\Functional;
 
+use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\Fixtures\AppKernel;
@@ -23,11 +24,18 @@ use Tests\Fixtures\AppKernel;
  */
 class FunctionalTest extends WebTestCase
 {
+    /** @var Client */
+    private $client;
+
+    protected function setUp()
+    {
+        $this->client = self::createClient();
+    }
+
     public function testFrontend()
     {
-        $client = self::createClient();
-        $crawler = $client->request('GET', '/');
-        $this->assertSuccessful($response = $client->getResponse());
+        $crawler = $this->client->request('GET', '/');
+        $this->assertSuccessful($response = $this->client->getResponse());
 
         // Verify HTML and JS were correctly inserted
         $this->assertSame(1, $crawler->filter('script:contains("var callbacks")')->count(), 'the Javascript is correctly inserted');
@@ -36,18 +44,35 @@ class FunctionalTest extends WebTestCase
 
     public function testPlainDataTable()
     {
-        $client = self::createClient();
-        $client->request('GET', '/plain');
-        $this->assertSuccessful($response = $client->getResponse());
+        $json = $this->callDataTableUrl('/plain');
 
+        $this->assertSame(0, $json->draw);
+        $this->assertSame(125, $json->recordsTotal);
+        $this->assertSame(125, $json->recordsFiltered);
+        $this->assertCount(125, $json->data);
+    }
+
+//    public function testTypeDataTable()
+//    {
+//        $json = $this->callDataTableUrl('/type');
+//
+//        $this->assertSame(0, $json->draw);
+//    }
+
+//    public function testServiceDataTable()
+//    {
+//        $json = $this->callDataTableUrl('/service');
+//
+//        $this->assertSame(0, $json->draw);
+//    }
+
+    private function callDataTableUrl(string $url)
+    {
+        $this->client->request('GET', $url);
+        $this->assertSuccessful($response = $this->client->getResponse());
         $this->assertContains('application/json', $response->headers->get('Content-type'));
 
-        echo $response->getContent();
-        $json = json_decode($response->getContent());
-        $this->assertSame(0, $json->draw);
-        $this->assertSame(0, $json->recordsTotal);
-        $this->assertSame(0, $json->recordsFiltered);
-        $this->assertEmpty($json->data);
+        return json_decode($response->getContent());
     }
 
     private function assertSuccessful(Response $response)
