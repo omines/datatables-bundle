@@ -39,7 +39,7 @@ class AppKernel extends Kernel
 
     public function getRootDir()
     {
-        return '/tmp';
+        return '/tmp/datatables-bundle';
     }
 
     public function getProjectDir()

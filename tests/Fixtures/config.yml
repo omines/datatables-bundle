@@ -4,12 +4,14 @@ framework:
         resource: '%kernel.project_dir%/routing.yml'
         strict_requirements: ~
     default_locale: 'en'
-    session:
-        handler_id: session.handler.native_file
-        save_path: '/tmp/sessions'
     fragments: ~
     http_method_override: true
-    php_errors:
-        log: true
     test: ~
 
+datatables:
+    class: 'table table-striped data-table'
+    options:
+        pagingType: 'simple_numbers'
+        lengthMenu : [10, 25, 50, 100, 250, 500, 1000, 2500]
+        pageLength: 50
+        dom: "<'row' <'col-sm-12' tr>><'row' <'col-sm-6'l><'col-sm-6 text-right'pi>>"

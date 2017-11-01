@@ -19,9 +19,9 @@
     },
     "require": {
         "php": "^7.0.8",
-        "symfony/framework-bundle": "^3.0",
+        "symfony/framework-bundle": "^3.3",
         "symfony/property-access": "^3.0",
-        "symfony/translation": "^3.3",
+        "symfony/translation": "^3.0",
         "symfony/yaml": "^3.0",
         "twig/twig": "~1.8|^2"
     },
@@ -29,7 +29,7 @@
         "doctrine/doctrine-bundle": "^1.6",
         "doctrine/orm": "^2.5",
         "friendsofphp/php-cs-fixer": "^2.7",
-        "phpunit/phpunit": "^6.1",
+        "phpunit/phpunit": "^5.7.23||^6.1",
         "symfony/browser-kit": "~3.0|~4.0",
         "symfony/dom-crawler": "~3.0|~4.0",
         "symfony/phpunit-bridge": "^3.0"
