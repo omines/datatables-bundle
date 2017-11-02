@@ -41,13 +41,14 @@
         "symfony/twig-bundle": "^3.3"
     },
     "suggest": {
+        "doctrine/doctrine-bundle": "For integrated access to Doctrine object managers",
         "doctrine/orm": "For full automated integration with Doctrine entities"
     },
     "autoload": {
         "psr-4": { "Omines\\DataTablesBundle\\": "src/"}
     },
     "autoload-dev": {
-      "psr-4": { "Tests\\": "tests/"}
+        "psr-4": { "Tests\\": "tests/"}
     },
     "prefer-stable": true,
     "config": {

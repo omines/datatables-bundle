@@ -5,6 +5,8 @@ services:
 
     Omines\DataTablesBundle\DataTableFactory:
         arguments: ['%datatables.settings%', '%datatables.options%']
+        calls:
+            - ['setDoctrine', ['@?doctrine']]
         public: true
 
     Omines\DataTablesBundle\Twig\DataTablesExtension: ~

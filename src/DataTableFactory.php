@@ -12,12 +12,16 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle;
 
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 
 class DataTableFactory
 {
     /** @var ServiceLocator */
     protected $typeLocator;
+
+    /** @var Registry */
+    protected $registry;
 
     /** @var array */
     protected $settings;
@@ -35,6 +39,14 @@ class DataTableFactory
     {
         $this->settings = $settings;
         $this->options = $options;
+    }
+
+    /**
+     * @param Registry $registry
+     */
+    public function setDoctrine(Registry $registry)
+    {
+        $this->registry = $registry;
     }
 
     /**

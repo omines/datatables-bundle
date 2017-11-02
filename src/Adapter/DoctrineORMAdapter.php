@@ -101,7 +101,7 @@ class DoctrineORMAdapter implements AdapterInterface
     }
 
     /**
-     * @param \Closure|ProcessorInterface $processor
+     * @param callable|ProcessorInterface $processor
      * @param DataTableState $state
      * @return mixed
      */
@@ -144,7 +144,7 @@ class DoctrineORMAdapter implements AdapterInterface
     }
 
     /**
-     * @param \Closure|ProcessorInterface $processor
+     * @param callable|ProcessorInterface $processor
      * @param QueryBuilder $queryBuilder
      * @param array $criteria
      */
