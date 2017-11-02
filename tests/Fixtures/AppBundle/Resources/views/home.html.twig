@@ -4,12 +4,17 @@
     <title>Testpage</title>
 </head>
 <body>
-<div id="table">
-{{ datatable_html(datatable, {className: 'table-bordered'}) }}
+<h2>Table 1</h2>
+<div id="table1">
+    {{ datatable_html(datatable1, {className: 'table-bordered'}) }}
 </div>
-{{ datatable_js(datatable, { responsive: true, searching: true, dom:'<"html5buttons"B>lTfgitp', buttons: [
+{{ datatable_js(datatable1, { responsive: true, searching: true, dom:'<"html5buttons"B>lTfgitp', buttons: [
     'copy', 'csv', { extend: 'excel', title: 'domains'}, { extend: 'pdf', title: 'domains'}, { extend: 'print' }
     ]})
 }}
+<h2>Table 2</h2>
+<div id="table2">
+    {{ datatable(datatable2) }}
+</div>
 </body>
 </html>

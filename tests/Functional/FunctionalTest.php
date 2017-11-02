@@ -38,8 +38,8 @@ class FunctionalTest extends WebTestCase
         $this->assertSuccessful($response = $this->client->getResponse());
 
         // Verify HTML and JS were correctly inserted
-        $this->assertSame(1, $crawler->filter('script:contains("var callbacks")')->count(), 'the Javascript is correctly inserted');
-        $this->assertSame(2, $crawler->filter('table#datatable thead th')->count(), 'the HTML is correctly generated');
+        $this->assertSame(2, $crawler->filter('script:contains("var callbacks")')->count(), 'the Javascript is correctly inserted');
+        $this->assertSame(4, $crawler->filter('table thead th')->count(), 'the HTML is correctly generated');
     }
 
     public function testPlainDataTable()

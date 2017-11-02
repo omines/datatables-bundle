@@ -86,7 +86,7 @@ abstract class AbstractColumn
      */
     public function set(array $options)
     {
-        if (!isset($options['name'])) {
+        if (!isset($options['name']) && isset($options['index'])) {
             $options['name'] = "column-{$options['index']}";
         }
 
@@ -110,7 +110,7 @@ abstract class AbstractColumn
     protected function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'index' => null,
+            'index' => 1,
             'name' => null,
             'label' => null,
             'visible' => true,
@@ -125,6 +125,9 @@ abstract class AbstractColumn
             'joinType' => 'join',
             'class' => null,
         ])
+            ->setRequired([
+                'index',
+            ])
             ->setAllowedTypes('index', 'integer')
             ->setAllowedTypes('name', 'string')
             ->setAllowedTypes('label', ['null', 'string'])

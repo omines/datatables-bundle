@@ -26,15 +26,25 @@ class HomeController extends Controller
 {
     public function showAction()
     {
-        /** @var DataTable $datatable */
-        $datatable = $this->get(DataTableFactory::class)->create();
-        $datatable
+        /** @var DataTable $datatable1 */
+        $datatable1 = $this->get(DataTableFactory::class)->create();
+        $datatable1
+            ->column(Column::class, ['label' => 'foo', 'field' => 'bar'])
+            ->column(Column::class, ['label' => 'bar', 'field' => 'foo', 'name' => 'test'])
+        ;
+
+        /** @var DataTable $datatable2 */
+        $datatable2 = $this->get(DataTableFactory::class)->create([
+            'languageFromCdn' => true,
+        ]);
+        $datatable2
             ->column(Column::class, ['label' => 'foo', 'field' => 'bar'])
             ->column(Column::class, ['label' => 'bar', 'field' => 'foo', 'name' => 'test'])
         ;
 
         return $this->render('@App/home.html.twig', [
-            'datatable' => $datatable,
+            'datatable1' => $datatable1,
+            'datatable2' => $datatable2,
         ]);
     }
 }

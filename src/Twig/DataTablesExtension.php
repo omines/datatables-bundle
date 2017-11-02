@@ -37,6 +37,14 @@ class DataTablesExtension extends \Twig_Extension
         ];
     }
 
+    /**
+     * @param \Twig_Environment $twig
+     * @param DataTable $datatable
+     * @param array $options
+     * @return string
+     *
+     * @todo Call parameters are inconsistent now amongst these 3 functions
+     */
     public function datatable(\Twig_Environment $twig, DataTable $datatable, $options = [])
     {
         return $twig->render('@DataTables/datatable.html.twig', [
