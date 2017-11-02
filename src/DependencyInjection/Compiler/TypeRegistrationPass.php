@@ -46,6 +46,7 @@ class TypeRegistrationPass implements CompilerPassInterface
             ->setArguments([$types])
         ;
 
-        $container->getDefinition(DataTableFactory::class)->setArgument(0, $locator);
+        $container->getDefinition(DataTableFactory::class)
+            ->addMethodCall('setTypeLocator', [$locator]);
     }
 }

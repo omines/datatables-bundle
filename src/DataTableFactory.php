@@ -28,15 +28,21 @@ class DataTableFactory
     /**
      * DataTableFactory constructor.
      *
-     * @param ServiceLocator $typeLocator
      * @param array $settings
      * @param array $options
      */
-    public function __construct(ServiceLocator $typeLocator, array $settings, array $options)
+    public function __construct(array $settings, array $options)
     {
-        $this->typeLocator = $typeLocator;
         $this->settings = $settings;
         $this->options = $options;
+    }
+
+    /**
+     * @param ServiceLocator $typeLocator
+     */
+    public function setTypeLocator(ServiceLocator $typeLocator)
+    {
+        $this->typeLocator = $typeLocator;
     }
 
     /**
@@ -61,7 +67,7 @@ class DataTableFactory
     {
         $dataTable = $this->create($settings, $options, $state);
 
-        if ($this->typeLocator->has($name)) {
+        if (null !== $this->typeLocator && $this->typeLocator->has($name)) {
             $type = $this->typeLocator->get($name);
         } elseif (class_exists($name) && in_array(DataTableTypeInterface::class, class_implements($name), true)) {
             $type = new $name();
