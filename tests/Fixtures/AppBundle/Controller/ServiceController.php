@@ -12,11 +12,24 @@ declare(strict_types=1);
 
 namespace Tests\Fixtures\AppBundle\Controller;
 
+use Omines\DataTablesBundle\DataTableFactory;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+use Tests\Fixtures\AppBundle\DataTable\Type\ServicePersonTableType;
+
 /**
  * ServiceController.
  *
  * @author Niels Keurentjes <niels.keurentjes@omines.com>
  */
-class ServiceController
+class ServiceController extends Controller
 {
+    public function tableAction(Request $request)
+    {
+        /** @var DataTableFactory $factory */
+        $factory = $this->get(DatatableFactory::class);
+        $datatable = $factory->createFromType(ServicePersonTableType::class, ['name' => 'persons'], ['order' => [[1, 'asc']]]);
+
+        return $datatable->handleRequest($request)->getResponse();
+    }
 }

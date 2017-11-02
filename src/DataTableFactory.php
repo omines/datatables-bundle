@@ -12,8 +12,13 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle;
 
+use Symfony\Component\DependencyInjection\ServiceLocator;
+
 class DataTableFactory
 {
+    /** @var ServiceLocator */
+    protected $typeLocator;
+
     /** @var array */
     protected $settings;
 
@@ -22,11 +27,14 @@ class DataTableFactory
 
     /**
      * DataTableFactory constructor.
+     *
+     * @param ServiceLocator $typeLocator
      * @param array $settings
      * @param array $options
      */
-    public function __construct(array $settings, array $options)
+    public function __construct(ServiceLocator $typeLocator, array $settings, array $options)
     {
+        $this->typeLocator = $typeLocator;
         $this->settings = $settings;
         $this->options = $options;
     }
@@ -53,14 +61,15 @@ class DataTableFactory
     {
         $dataTable = $this->create($settings, $options, $state);
 
-        // Support fully-qualified class names
-        if (class_exists($name) && in_array(DataTableTypeInterface::class, class_implements($name), true)) {
-            /** @var DataTableTypeInterface $type */
+        if ($this->typeLocator->has($name)) {
+            $type = $this->typeLocator->get($name);
+        } elseif (class_exists($name) && in_array(DataTableTypeInterface::class, class_implements($name), true)) {
             $type = new $name();
         } else {
             throw new \InvalidArgumentException(sprintf('Could not load type "%s"', $name));
         }
 
+        /* @var DataTableTypeInterface $type */
         $type->configure($dataTable);
 
         return $dataTable;

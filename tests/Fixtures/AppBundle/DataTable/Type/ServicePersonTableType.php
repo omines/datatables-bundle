@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Tests\Fixtures\AppBundle\DataTable\Type;
 
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableTypeInterface;
 
@@ -22,6 +23,19 @@ use Omines\DataTablesBundle\DataTableTypeInterface;
  */
 class ServicePersonTableType implements DataTableTypeInterface
 {
+    /** @var Registry */
+    private $registry;
+
+    /**
+     * ServicePersonTableType constructor.
+     *
+     * @param Registry $registry
+     */
+    public function __construct(Registry $registry)
+    {
+        $this->registry = $registry;
+    }
+
     /**
      * {@inheritdoc}
      */

@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle\DependencyInjection;
 
+use Omines\DataTablesBundle\DataTableTypeInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
@@ -33,6 +34,8 @@ class DataTablesExtension extends Extension
 
         $container->setParameter('datatables.options', $options);
         $container->setParameter('datatables.settings', $settings);
+
+        $container->registerForAutoconfiguration(DataTableTypeInterface::class)->addTag('datatables.type');
     }
 
     public function getAlias()
