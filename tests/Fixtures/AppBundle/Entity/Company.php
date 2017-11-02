@@ -61,7 +61,7 @@ class Company
     /**
      * @return int
      */
-    public function getId(): int
+    public function getId()
     {
         return $this->id;
     }
@@ -69,7 +69,7 @@ class Company
     /**
      * @return string
      */
-    public function getName(): string
+    public function getName()
     {
         return $this->name;
     }
@@ -86,7 +86,7 @@ class Company
      * @param string $name
      * @return self
      */
-    public function setName(string $name): Company
+    public function setName(string $name)
     {
         $this->name = $name;
 
