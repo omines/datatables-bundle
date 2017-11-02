@@ -1,7 +1,10 @@
 services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
     Omines\DataTablesBundle\DataTableFactory:
         arguments: ['%datatables.settings%', '%datatables.options%']
+        public: true
 
-    Omines\DataTablesBundle\Twig\DataTablesExtension:
-        arguments: ['@translator']
-        tags: [ { name: 'twig.extension' } ]
+    Omines\DataTablesBundle\Twig\DataTablesExtension: ~

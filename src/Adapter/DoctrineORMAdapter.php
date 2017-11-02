@@ -101,13 +101,13 @@ class DoctrineORMAdapter implements AdapterInterface
     }
 
     /**
-     * @param $processor
+     * @param \Closure|ProcessorInterface $processor
      * @param DataTableState $state
      * @return mixed
      */
     private function process($processor, DataTableState $state)
     {
-        if ($processor instanceof \Closure) {
+        if (is_callable($processor)) {
             return $processor($this, $state);
         } elseif ($processor instanceof ProcessorInterface) {
             if ($processor instanceof QueryBuilderAwareInterface) {
@@ -116,7 +116,8 @@ class DoctrineORMAdapter implements AdapterInterface
 
             return $processor->process($this, $state);
         } else {
-            throw new \LogicException('Expected Closure or ProcessorInterface');
+            $type = is_object($processor) ? get_class($processor) : gettype($processor);
+            throw new \LogicException('Expected Closure or ProcessorInterface, not ' . $type);
         }
     }
 
@@ -143,11 +144,11 @@ class DoctrineORMAdapter implements AdapterInterface
     }
 
     /**
-     * @param ProcessorInterface $processor
+     * @param \Closure|ProcessorInterface $processor
      * @param QueryBuilder $queryBuilder
      * @param array $criteria
      */
-    protected function runProcessor(ProcessorInterface $processor, DataTableState $state, QueryBuilder &$queryBuilder = null, array &$criteria = [])
+    protected function runProcessor($processor, DataTableState $state, QueryBuilder &$queryBuilder = null, array &$criteria = [])
     {
         $result = $this->process($processor, $state);
 
