@@ -12,16 +12,17 @@ declare(strict_types=1);
 
 namespace Tests\Fixtures\AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Person.
+ * Company.
  *
  * @author Niels Keurentjes <niels.keurentjes@omines.com>
  *
  * @ORM\Entity
  */
-class Person
+class Company
 {
     /**
      * @var int
@@ -37,34 +38,24 @@ class Person
      *
      * @ORM\Column(type="string", nullable=false)
      */
-    private $firstName;
+    private $name;
 
     /**
-     * @var string
+     * @var ArrayCollection|array
      *
-     * @ORM\Column(type="string", nullable=false)
+     * @ORM\OneToMany(targetEntity="Company", mappedBy="company")
      */
-    private $lastName;
+    private $employees;
 
     /**
-     * @var Company
+     * Company constructor.
      *
-     * @ORM\ManyToOne(targetEntity="Company", inversedBy="employees")
+     * @param string $name
      */
-    private $company;
-
-    /**
-     * Person constructor.
-     *
-     * @param string $firstName
-     * @param string $lastName
-     * @param Company $company
-     */
-    public function __construct(string $firstName, string $lastName, Company $company)
+    public function __construct(string $name)
     {
-        $this->firstName = $firstName;
-        $this->lastName = $lastName;
-        $this->company = $company;
+        $this->name = $name;
+        $this->employees = new ArrayCollection();
     }
 
     /**
@@ -78,24 +69,27 @@ class Person
     /**
      * @return string
      */
-    public function getFirstName(): string
+    public function getName(): string
     {
-        return $this->firstName;
+        return $this->name;
     }
 
     /**
-     * @return string
+     * @return Person[]|ArrayCollection
      */
-    public function getLastName(): string
+    public function getEmployees()
     {
-        return $this->lastName;
+        return $this->employees;
     }
 
     /**
-     * @return Company
+     * @param string $name
+     * @return self
      */
-    public function getCompany(): Company
+    public function setName(string $name): Company
     {
-        return $this->company;
+        $this->name = $name;
+
+        return $this;
     }
 }

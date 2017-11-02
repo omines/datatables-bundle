@@ -64,15 +64,15 @@ class DoctrineORMAdapter implements AdapterInterface
      * DoctrineORMAdapter constructor.
      *
      * @param Registry $registry
-     * @param $class
+     * @param string $class
      * @param int $hydrationMode
      * @param array|null $queryProcessors
      * @param array|null $criteriaProcessors
      */
-    public function __construct(Registry $registry, $class, $hydrationMode = Query::HYDRATE_OBJECT, array $queryProcessors = null, array $criteriaProcessors = null)
+    public function __construct(Registry $registry, string $class, $hydrationMode = Query::HYDRATE_OBJECT, array $queryProcessors = null, array $criteriaProcessors = null)
     {
         if (null === ($this->manager = $registry->getManagerForClass($class))) {
-            throw new \LogicException(sprintf('There is no Entity Manage for class %s', $class));
+            throw new \LogicException(sprintf('There is no Entity Manager for class %s', $class));
         }
         $this->metadata = $this->manager->getClassMetadata($class);
         $this->hydrationMode = $hydrationMode;

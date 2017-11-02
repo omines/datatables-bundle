@@ -69,6 +69,7 @@ class FunctionalTest extends WebTestCase
         $json = $this->callDataTableUrl('/service');
 
         $this->assertSame(0, $json->draw);
+        $this->assertStringStartsWith('Company ', $json->data[0]->company);
     }
 
     private function callDataTableUrl(string $url)

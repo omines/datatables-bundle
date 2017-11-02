@@ -49,6 +49,7 @@ class ServicePersonTableType implements DataTableTypeInterface
             ->column(Column::class, ['label' => 'firstName', 'name' => 'name', 'field' => 'person.firstName'])
             ->column(Column::class, ['label' => 'lastName', 'field' => 'person.lastName'])
             ->column(Column::class, ['label' => 'fullName', 'name' => 'fullName'])
+            ->column(Column::class, ['label' => 'employer', 'name' => 'company', 'field' => 'company.name'])
             ->format(function ($row, Person $person) {
                 $row['fullName'] = $person->getFirstName() . ' ' . $person->getLastName();
 
