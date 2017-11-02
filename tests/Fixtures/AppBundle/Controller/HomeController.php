@@ -35,7 +35,7 @@ class HomeController extends Controller
 
         /** @var DataTable $datatable2 */
         $datatable2 = $this->get(DataTableFactory::class)->create([
-            'languageFromCdn' => true,
+            'languageFromCdn' => false,
         ]);
         $datatable2
             ->column(Column::class, ['label' => 'foo', 'field' => 'bar'])

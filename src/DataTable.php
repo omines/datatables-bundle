@@ -29,8 +29,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class DataTable
 {
     const DEFAULT_SETTINGS = [
-        'name' => 'datatable',
-        'class' => 'table table-bordered',
+        'name' => 'dt',
+        'className' => 'table table-bordered',
         'languageFromCdn' => true,
         'columnFilter' => null,
         'requestState' => null,
@@ -352,7 +352,7 @@ class DataTable
     {
         $resolver->setDefaults(self::DEFAULT_SETTINGS)
             ->setAllowedTypes('name', 'string')
-            ->setAllowedTypes('class', 'string')
+            ->setAllowedTypes('className', 'string')
             ->setAllowedTypes('languageFromCdn', 'bool')
             ->setAllowedTypes('columnFilter', ['null', 'string']);
 
