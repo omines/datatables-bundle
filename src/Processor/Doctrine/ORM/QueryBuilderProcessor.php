@@ -151,6 +151,10 @@ class QueryBuilderProcessor implements ProcessorInterface
             $currentAlias = $currentPart;
             $metadata = $this->metadata;
 
+            // TODO: Is this a good idea?
+            if (null === $column->getField() && isset($this->metadata->fieldMappings[$column->getName()])) {
+                $column->setField($this->entityShortName . '.' . $column->getName());
+            }
             if (null !== $column->getField()) {
                 $parts = explode('.', $column->getField());
 

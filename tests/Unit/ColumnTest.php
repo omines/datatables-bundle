@@ -24,8 +24,7 @@ class ColumnTest extends TestCase
 {
     public function testVirtualColumn()
     {
-        $column = new VirtualColumn();
-        $column->set(['name' => 'foobar', 'index' => 1]);
+        $column = new VirtualColumn(['name' => 'foobar', 'index' => 1]);
 
         $this->assertFalse($column->isSearchable());
         $this->assertFalse($column->isOrderable());

@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle;
 
+use Omines\DataTablesBundle\DependencyInjection\Compiler\AdapterRegistrationPass;
 use Omines\DataTablesBundle\DependencyInjection\Compiler\TypeRegistrationPass;
 use Omines\DataTablesBundle\DependencyInjection\DataTablesExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -26,6 +27,7 @@ class DataTablesBundle extends Bundle
     {
         parent::build($container);
 
+        $container->addCompilerPass(new AdapterRegistrationPass());
         $container->addCompilerPass(new TypeRegistrationPass());
     }
 

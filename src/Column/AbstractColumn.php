@@ -12,17 +12,17 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle\Column;
 
-use Doctrine\ORM\Mapping as ORM;
 use Omines\DataTablesBundle\Filter\AbstractFilter;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 abstract class AbstractColumn
 {
-    /**
-     * @var int
-     * @ORM\Column(type="string")
-     */
+    /** @var array<string, OptionsResolver> */
+    private static $resolversByClass = [];
+
+    /** @var int */
     protected $index;
 
     /** @var string */
@@ -30,6 +30,12 @@ abstract class AbstractColumn
 
     /** @var string */
     protected $label;
+
+    /** @var string */
+    protected $field;
+
+    /** @var string */
+    protected $data;
 
     /** @var bool */
     protected $visible;
@@ -59,9 +65,6 @@ abstract class AbstractColumn
     protected $filter;
 
     /** @var string */
-    protected $field;
-
-    /** @var string */
     protected $propertyPath;
 
     /** @var string */
@@ -76,23 +79,14 @@ abstract class AbstractColumn
     /**
      * AbstractColumn constructor.
      */
-    public function __construct()
+    public function __construct(array $options = [])
     {
-        $this->options = [];
-    }
-
-    /**
-     * @param array $options
-     */
-    public function set(array $options)
-    {
-        if (!isset($options['name']) && isset($options['index'])) {
-            $options['name'] = "column-{$options['index']}";
+        $class = get_class($this);
+        if (!isset(self::$resolversByClass[$class])) {
+            self::$resolversByClass[$class] = new OptionsResolver();
+            $this->configureOptions(self::$resolversByClass[$class]);
         }
-
-        $resolver = new OptionsResolver();
-        $this->configureOptions($resolver);
-        $this->options = $resolver->resolve($options);
+        $this->options = self::$resolversByClass[$class]->resolve($options);
 
         $accessor = PropertyAccess::createPropertyAccessorBuilder()
             ->enableMagicCall()
@@ -111,8 +105,12 @@ abstract class AbstractColumn
     {
         $resolver->setDefaults([
             'index' => 1,
-            'name' => null,
+            'name' => function (Options $options) {
+                return "column-{$options['index']}";
+            },
             'label' => null,
+            'data' => null,
+            'field' => null,
             'visible' => true,
             'orderable' => true,
             'orderField' => null,
@@ -131,6 +129,7 @@ abstract class AbstractColumn
             ->setAllowedTypes('index', 'integer')
             ->setAllowedTypes('name', 'string')
             ->setAllowedTypes('label', ['null', 'string'])
+            ->setAllowedTypes('data', ['null', 'string', 'callable'])
             ->setAllowedTypes('visible', 'boolean')
             ->setAllowedTypes('orderable', 'boolean')
             ->setAllowedTypes('orderField', ['null', 'string'])
@@ -194,6 +193,22 @@ abstract class AbstractColumn
     public function setLabel($label)
     {
         $this->label = $label;
+    }
+
+    /**
+     * @return callable|string|null
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * @param callable|string|null $data
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
     }
 
     /**

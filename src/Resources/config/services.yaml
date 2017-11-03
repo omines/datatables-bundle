@@ -3,10 +3,13 @@ services:
         autowire: true
         autoconfigure: true
 
+    Omines\DataTablesBundle\:
+        resource: '../../{Adapter,Twig}/*'
+
     Omines\DataTablesBundle\DataTableFactory:
         arguments: ['%datatables.settings%', '%datatables.options%']
-        calls:
-            - ['setDoctrine', ['@?doctrine']]
+#        calls:
+#            - ['setDoctrine', ['@?doctrine']]
         public: true
 
-    Omines\DataTablesBundle\Twig\DataTablesExtension: ~
+#    Omines\DataTablesBundle\Twig\DataTablesExtension: ~

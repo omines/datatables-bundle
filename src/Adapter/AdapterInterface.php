@@ -18,6 +18,11 @@ use Omines\DataTablesBundle\DataTableState;
 interface AdapterInterface
 {
     /**
+     * @param array $options
+     */
+    public function configure(array $options);
+
+    /**
      * @param DataTableState $state
      * @return AdapterInterface
      */
