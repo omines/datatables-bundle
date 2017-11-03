@@ -70,7 +70,7 @@ class Person
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -78,7 +78,7 @@ class Person
     /**
      * @return string
      */
-    public function getFirstName()
+    public function getFirstName(): string
     {
         return $this->firstName;
     }
@@ -86,7 +86,7 @@ class Person
     /**
      * @return string
      */
-    public function getLastName()
+    public function getLastName(): string
     {
         return $this->lastName;
     }
@@ -94,7 +94,7 @@ class Person
     /**
      * @return Company
      */
-    public function getCompany()
+    public function getCompany(): Company
     {
         return $this->company;
     }

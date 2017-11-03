@@ -37,7 +37,7 @@ class DataTableState
     private $search;
 
     /** @var bool */
-    private $fromInitialRequest;
+    private $fromInitialRequest = false;
 
     /**
      * DataTableState constructor.
@@ -59,7 +59,7 @@ class DataTableState
     /**
      * @return int
      */
-    public function getDraw()
+    public function getDraw(): int
     {
         return $this->draw;
     }
@@ -67,7 +67,7 @@ class DataTableState
     /**
      * @param int $draw
      */
-    public function setDraw($draw)
+    public function setDraw(int $draw)
     {
         $this->draw = $draw;
     }
@@ -75,7 +75,7 @@ class DataTableState
     /**
      * @return int
      */
-    public function getStart()
+    public function getStart(): int
     {
         return $this->start;
     }
@@ -83,7 +83,7 @@ class DataTableState
     /**
      * @param int $start
      */
-    public function setStart($start)
+    public function setStart(int $start)
     {
         $this->start = $start;
     }
@@ -91,7 +91,7 @@ class DataTableState
     /**
      * @return int
      */
-    public function getLength()
+    public function getLength(): int
     {
         return $this->length;
     }
@@ -99,7 +99,7 @@ class DataTableState
     /**
      * @param int $length
      */
-    public function setLength($length)
+    public function setLength(int $length)
     {
         $this->length = $length;
     }
@@ -107,7 +107,7 @@ class DataTableState
     /**
      * @return string
      */
-    public function getSearch()
+    public function getSearch(): string
     {
         return $this->search;
     }
@@ -115,7 +115,7 @@ class DataTableState
     /**
      * @param string $search
      */
-    public function setSearch($search)
+    public function setSearch(string $search)
     {
         $this->search = $search;
     }
@@ -137,10 +137,10 @@ class DataTableState
     }
 
     /**
-     * @param $index
+     * @param int $index
      * @return AbstractColumn
      */
-    public function getColumn($index)
+    public function getColumn(int $index): AbstractColumn
     {
         if ($index < 0 || $index > count($this->columns)) {
             throw new \InvalidArgumentException(sprintf('There is no column with index %d', $index));
@@ -152,7 +152,7 @@ class DataTableState
     /**
      * @return bool
      */
-    public function isFromInitialRequest()
+    public function isFromInitialRequest(): bool
     {
         return $this->fromInitialRequest;
     }
@@ -160,7 +160,7 @@ class DataTableState
     /**
      * @param bool $fromInitialRequest
      */
-    public function setFromInitialRequest($fromInitialRequest)
+    public function setFromInitialRequest(bool $fromInitialRequest)
     {
         $this->fromInitialRequest = $fromInitialRequest;
     }

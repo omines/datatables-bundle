@@ -21,7 +21,6 @@ interface DataTableTypeInterface
 {
     /**
      * @param DataTable $dataTable
-     * @return mixed
      */
     public function configure(DataTable $dataTable);
 }

@@ -29,6 +29,7 @@
     },
     "require-dev": {
         "ext-pdo_sqlite": "*",
+        "doctrine/common": "^2.6",
         "doctrine/doctrine-bundle": "^1.6.7",
         "doctrine/orm": "^2.5",
         "friendsofphp/php-cs-fixer": "^2.7",
