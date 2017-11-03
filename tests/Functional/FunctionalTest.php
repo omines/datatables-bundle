@@ -45,6 +45,7 @@ class FunctionalTest extends WebTestCase
 
     public function testPlainDataTable()
     {
+        $this->client->enableProfiler();
         $json = $this->callDataTableUrl('/plain');
 
         $this->assertSame(0, $json->draw);
