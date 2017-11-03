@@ -150,9 +150,14 @@ class QueryBuilderProcessor implements ProcessorInterface
             $currentPart = $this->entityShortName;
             $currentAlias = $currentPart;
             $metadata = $this->metadata;
+            $field = $column->getField();
 
-            if (null !== $column->getField()) {
-                $parts = explode('.', $column->getField());
+            // TODO: Is this a good idea?
+            if (!isset($field) && isset($this->metadata->fieldMappings[$column->getName()])) {
+                $field = $this->entityShortName . '.' . $column->getName();
+            }
+            if (null !== $field) {
+                $parts = explode('.', $field);
 
                 if (count($parts) > 1 && $parts[0] === $this->entityShortName) {
                     array_shift($parts);

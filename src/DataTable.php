@@ -17,6 +17,7 @@ use Omines\DataTablesBundle\Column\AbstractColumn;
 use Omines\DataTablesBundle\Event\AbstractEvent;
 use Omines\DataTablesBundle\Event\Callback;
 use Omines\DataTablesBundle\Event\Event;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -58,6 +59,15 @@ class DataTable
         'stateSave' => false,
     ];
 
+    const SORT_ASCENDING = 'asc';
+    const SORT_DESCENDING = 'desc';
+
+    /** @var ServiceLocator */
+    private $adapterLocator;
+
+    /** @var array<string, AbstractColumn> */
+    protected $columns;
+
     /** @var Callback[] */
     protected $callbacks;
 
@@ -80,15 +90,17 @@ class DataTable
     private $state;
 
     /**
-     * class constructor.
+     * DataTable constructor.
      *
      * @param array $settings
      * @param array $options
      * @param DataTableState $state
+     * @param ServiceLocator $adapterLocator
      */
-    public function __construct($settings, $options, DataTableState $state = null)
+    public function __construct(array $settings = [], array $options = [], DataTableState $state = null, ServiceLocator $adapterLocator = null)
     {
-        $this->state = $state ?: new DataTableState();
+        $this->state = $state ?? new DataTableState($this);
+        $this->adapterLocator = $adapterLocator;
 
         $this->events = [];
         $this->callbacks = [];
@@ -103,15 +115,15 @@ class DataTable
     }
 
     /**
-     * @param string $class
+     * @param string $name
+     * @param string $type
      * @param array $options
      * @return $this
      */
-    public function column($class, $options = [])
+    public function add(string $name, string $type, array $options = [])
     {
-        /** @var AbstractColumn $column */
-        $column = new $class();
-        $column->set(array_merge(['index' => count($this->state->getColumns())], $options));
+        // TODO: Make this a ton more intelligent
+        $this->columns[] = $column = new $type(array_merge(['name' => $name, 'index' => count($this->columns)], $options));
 
         $this->state->addColumn($column);
 
@@ -163,6 +175,27 @@ class DataTable
     }
 
     /**
+     * @param int $index
+     * @return AbstractColumn
+     */
+    public function getColumn(int $index): AbstractColumn
+    {
+        if ($index < 0 || $index >= count($this->columns)) {
+            throw new \InvalidArgumentException(sprintf('There is no column with index %d', $index));
+        }
+
+        return $this->columns[$index];
+    }
+
+    /**
+     * @return AbstractColumn[]
+     */
+    public function getColumns(): array
+    {
+        return $this->columns;
+    }
+
+    /**
      * @return Event[]
      */
     public function getEvents()
@@ -179,12 +212,23 @@ class DataTable
     }
 
     /**
-     * @param AdapterInterface $adapter
+     * @param string|AdapterInterface $adapter
      * @return $this
      */
-    public function setAdapter(AdapterInterface $adapter)
+    public function setAdapter($adapter, array $options = [])
     {
-        $this->adapter = $adapter;
+        if (is_string($adapter)) {
+            if (null !== $this->adapterLocator && $this->adapterLocator->has($adapter)) {
+                $this->adapter = $this->adapterLocator->get($adapter);
+            } elseif (class_exists($adapter) && in_array(AdapterInterface::class, class_implements($adapter), true)) {
+                $this->adapter = new $adapter();
+            } else {
+                throw new \InvalidArgumentException(sprintf('Could not resolve adapter "%s" to a service or class', $name));
+            }
+        } else {
+            $this->adapter = $adapter;
+        }
+        $this->adapter->configure($options);
 
         return $this;
     }
@@ -342,6 +386,32 @@ class DataTable
     public function getOption($name)
     {
         return $this->options[$name] ?? null;
+    }
+
+    /**
+     * @param int|string $column
+     * @param string $direction
+     * @return self
+     */
+    public function setDefaultSort($column, string $direction = self::SORT_ASCENDING)
+    {
+        @trigger_error('setDefaultSort not implemented yet', E_USER_WARNING);
+
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @return self
+     */
+    public function setName(string $name): self
+    {
+        if (empty($name)) {
+            throw new \InvalidArgumentException('DataTable name cannot be empty');
+        }
+        $this->settings['name'] = $name;
+
+        return $this;
     }
 
     /**

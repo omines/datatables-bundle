@@ -10,6 +10,8 @@ framework:
     fragments: ~
     http_method_override: true
     test: ~
+    profiler:
+        collect: false
 
 doctrine:
     dbal:

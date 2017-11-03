@@ -12,9 +12,8 @@ declare(strict_types=1);
 
 namespace Tests\Fixtures\AppBundle\Controller;
 
-use Omines\DataTablesBundle\Column\Column;
-use Omines\DataTablesBundle\DataTable;
-use Omines\DataTablesBundle\DataTableFactory;
+use Omines\DataTablesBundle\Column\TextColumn;
+use Omines\DataTablesBundle\Controller\DataTablesTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 /**
@@ -24,22 +23,22 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
  */
 class HomeController extends Controller
 {
+    use DataTablesTrait;
+
     public function showAction()
     {
-        /** @var DataTable $datatable1 */
-        $datatable1 = $this->get(DataTableFactory::class)->create();
+        $datatable1 = $this->createDataTable();
         $datatable1
-            ->column(Column::class, ['label' => 'foo', 'field' => 'bar'])
-            ->column(Column::class, ['label' => 'bar', 'field' => 'foo', 'name' => 'test'])
+            ->add('col1', TextColumn::class, ['label' => 'foo', 'field' => 'bar'])
+            ->add('col2', TextColumn::class, ['label' => 'bar', 'field' => 'foo'])
         ;
 
-        /** @var DataTable $datatable2 */
-        $datatable2 = $this->get(DataTableFactory::class)->create([
+        $datatable2 = $this->createDataTable([
             'languageFromCdn' => false,
         ]);
         $datatable2
-            ->column(Column::class, ['label' => 'foo', 'field' => 'bar'])
-            ->column(Column::class, ['label' => 'bar', 'field' => 'foo', 'name' => 'test'])
+            ->add('col3', TextColumn::class, ['label' => 'foo', 'field' => 'bar'])
+            ->add('col4', TextColumn::class, ['label' => 'bar', 'field' => 'foo'])
         ;
 
         return $this->render('@App/home.html.twig', [

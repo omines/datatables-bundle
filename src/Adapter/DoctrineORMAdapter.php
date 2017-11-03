@@ -24,10 +24,14 @@ use Omines\DataTablesBundle\Processor\Doctrine\Common\CriteriaProcessor;
 use Omines\DataTablesBundle\Processor\Doctrine\ORM\QueryBuilderAwareInterface;
 use Omines\DataTablesBundle\Processor\Doctrine\ORM\QueryBuilderProcessor;
 use Omines\DataTablesBundle\Processor\ProcessorInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class DoctrineORMAdapter implements AdapterInterface
 {
+    /** @var Registry */
+    private $registry;
+
     /** @var int */
     private $hydrationMode;
 
@@ -64,31 +68,49 @@ class DoctrineORMAdapter implements AdapterInterface
      * DoctrineORMAdapter constructor.
      *
      * @param Registry $registry
-     * @param string $class
-     * @param int $hydrationMode
-     * @param array|null $queryProcessors
-     * @param array|null $criteriaProcessors
      */
-    public function __construct(Registry $registry, string $class, $hydrationMode = Query::HYDRATE_OBJECT, array $queryProcessors = null, array $criteriaProcessors = null)
+    public function __construct(Registry $registry)
     {
-        if (null === ($this->manager = $registry->getManagerForClass($class))) {
-            throw new \LogicException(sprintf('There is no Entity Manager for class %s', $class));
-        }
-        $this->metadata = $this->manager->getClassMetadata($class);
-        $this->hydrationMode = $hydrationMode;
-        $this->queryProcessors = $queryProcessors;
-        $this->criteriaProcessors = $criteriaProcessors;
+        $this->registry = $registry;
+
         $this->displayRecords = 0;
         $this->totalRecords = 0;
         $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
         $this->aliases = [];
+    }
 
-        if (null === $queryProcessors) {
-            $this->queryProcessors[] = new QueryBuilderProcessor($this->manager, $this->metadata);
+    /**
+     * {@inheritdoc}
+     */
+    public function configure(array $options)
+    {
+        $resolver = new OptionsResolver();
+        $this->configureOptions($resolver);
+        $options = $resolver->resolve($options);
+
+        if (isset($options['entity'])) {
+            if (null === ($this->manager = $this->registry->getManagerForClass($options['entity']))) {
+                throw new \LogicException(sprintf('There is no manager for entity "%s"', $options['entity']));
+            }
+            $this->metadata = $this->manager->getClassMetadata($options['entity']);
+        } else {
+            $this->manager = $this->registry->getManager();
+            $this->metadata = null;
         }
 
-        if (null === $criteriaProcessors) {
-            $this->criteriaProcessors[] = new CriteriaProcessor();
+        $this->hydrationMode = $options['hydrate'];
+        $this->queryProcessors = (array) $options['query'];
+        $this->criteriaProcessors = (array) $options['criteria'];
+
+        if (empty($this->queryProcessors)) {
+            if (!$this->metadata) {
+                throw new \LogicException("You must provide either the 'entity' option, or at least one Query Processor in the 'query' option");
+            }
+            $this->queryProcessors = [new QueryBuilderProcessor($this->manager, $this->metadata)];
+        }
+
+        if (empty($this->criteriaProcessors)) {
+            $this->criteriaProcessors = [new CriteriaProcessor()];
         }
     }
 
@@ -323,5 +345,23 @@ class DoctrineORMAdapter implements AdapterInterface
         }
 
         return $result;
+    }
+
+    /**
+     * @param OptionsResolver $resolver
+     */
+    protected function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'entity' => null,
+            'hydrate' => Query::HYDRATE_OBJECT,
+            'query' => [],
+            'criteria' => [],
+        ])
+            ->setAllowedTypes('entity', ['string', 'null'])
+            ->setAllowedTypes('hydrate', 'int')
+            ->setAllowedTypes('query', ['array', 'class'])
+            ->setAllowedTypes('criteria', ['array', 'class'])
+        ;
     }
 }

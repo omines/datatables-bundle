@@ -19,11 +19,11 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 
 /**
- * TypeRegistrationPass.
+ * AdapterRegistrationPass.
  *
  * @author Niels Keurentjes <niels.keurentjes@omines.com>
  */
-class TypeRegistrationPass implements CompilerPassInterface
+class AdapterRegistrationPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}
@@ -32,7 +32,7 @@ class TypeRegistrationPass implements CompilerPassInterface
     {
         // Inject tagged types into the factory
         $types = [];
-        foreach ($container->findTaggedServiceIds('datatables.type') as $serviceId => $tag) {
+        foreach ($container->findTaggedServiceIds('datatables.adapter') as $serviceId => $tag) {
             $serviceDefinition = $container->getDefinition($serviceId);
             if ($serviceDefinition->isPublic()) {
                 $serviceDefinition->setPublic(false);
@@ -41,12 +41,12 @@ class TypeRegistrationPass implements CompilerPassInterface
         }
 
         $locator = $container
-            ->register('datatables.type_locator', ServiceLocator::class)
+            ->register('datatables.adapter_locator', ServiceLocator::class)
             ->addTag('container.service_locator')
             ->setArguments([$types])
         ;
 
         $container->getDefinition(DataTableFactory::class)
-            ->addMethodCall('setTypeLocator', [$locator]);
+            ->addMethodCall('setAdapterLocator', [$locator]);
     }
 }

@@ -12,16 +12,18 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 
 class DataTableFactory
 {
     /** @var ServiceLocator */
+    protected $adapterLocator;
+
+    /** @var ServiceLocator */
     protected $typeLocator;
 
-    /** @var Registry */
-    protected $registry;
+    /** @var array<string, DataTableTypeInterface> */
+    protected $resolvedTypes = [];
 
     /** @var array */
     protected $settings;
@@ -42,11 +44,11 @@ class DataTableFactory
     }
 
     /**
-     * @param Registry $registry
+     * @param ServiceLocator $adapterLocator
      */
-    public function setDoctrine(Registry $registry)
+    public function setAdapterLocator(ServiceLocator $adapterLocator)
     {
-        $this->registry = $registry;
+        $this->adapterLocator = $adapterLocator;
     }
 
     /**
@@ -65,26 +67,34 @@ class DataTableFactory
      */
     public function create(array $settings = [], array $options = [], DataTableState $state = null)
     {
-        return new DataTable(array_merge($this->settings, $settings), array_merge($this->options, $options), $state);
+        return new DataTable(array_merge($this->settings, $settings), array_merge($this->options, $options), $state, $this->adapterLocator);
     }
 
     /**
-     * @param string $name
+     * @param string|DataTableTypeInterface $type
      * @param array $settings
      * @param array $options
      * @param DataTableState|null $state
      * @return DataTable
      */
-    public function createFromType(string $name, array $settings = [], array $options = [], DataTableState $state = null)
+    public function createFromType($type, array $settings = [], array $options = [], DataTableState $state = null)
     {
         $dataTable = $this->create($settings, $options, $state);
 
-        if (null !== $this->typeLocator && $this->typeLocator->has($name)) {
-            $type = $this->typeLocator->get($name);
-        } elseif (class_exists($name) && in_array(DataTableTypeInterface::class, class_implements($name), true)) {
-            $type = new $name();
-        } else {
-            throw new \InvalidArgumentException(sprintf('Could not load type "%s"', $name));
+        if (is_string($type)) {
+            $name = $type;
+            if (isset($this->resolvedTypes[$name])) {
+                $type = $this->resolvedTypes[$name];
+            } else {
+                if (null !== $this->typeLocator && $this->typeLocator->has($name)) {
+                    $type = $this->typeLocator->get($type);
+                } elseif (class_exists($name) && in_array(DataTableTypeInterface::class, class_implements($name), true)) {
+                    $type = new $name();
+                } else {
+                    throw new \InvalidArgumentException(sprintf('Could not resolve type "%s" to a service or class', $name));
+                }
+                $this->resolvedTypes[$name] = $type;
+            }
         }
 
         /* @var DataTableTypeInterface $type */

@@ -13,9 +13,9 @@ declare(strict_types=1);
 namespace Tests\Fixtures\AppBundle\Controller;
 
 use Omines\DataTablesBundle\Adapter\DoctrineORMAdapter;
-use Omines\DataTablesBundle\Column\Column;
+use Omines\DataTablesBundle\Column\TextColumn;
+use Omines\DataTablesBundle\Controller\DataTablesTrait;
 use Omines\DataTablesBundle\DataTable;
-use Omines\DataTablesBundle\DataTableFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Tests\Fixtures\AppBundle\Entity\Person;
@@ -27,20 +27,29 @@ use Tests\Fixtures\AppBundle\Entity\Person;
  */
 class PlainController extends Controller
 {
+    use DataTablesTrait;
+
     public function tableAction(Request $request)
     {
-        /** @var DataTable $datatable */
-        $datatable = $this->get(DatatableFactory::class)->create(['name' => 'persons'], ['order' => [[1, 'asc']]])
-            ->column(Column::class, ['label' => 'id', 'field' => 'person.id'])
-            ->column(Column::class, ['label' => 'firstName', 'name' => 'name', 'field' => 'person.firstName'])
-            ->column(Column::class, ['label' => 'lastName', 'field' => 'person.lastName'])
-            ->column(Column::class, ['label' => 'fullName', 'name' => 'fullName'])
-            ->format(function ($row, Person $person) {
-                $row['fullName'] = $person->getFirstName() . ' ' . $person->getLastName();
-
-                return $row;
-            })
-            ->setAdapter(new DoctrineORMAdapter($this->getDoctrine(), Person::class));
+        $datatable = $this->createDataTable()
+            ->setName('persons')
+            ->setDefaultSort('lastName', DataTable::SORT_ASCENDING)
+            ->add('id', TextColumn::class, ['field' => 'person.id'])
+            ->add('firstName', TextColumn::class)
+            ->add('lastName', TextColumn::class, ['field' => 'person.lastName'])
+            ->add('fullName', TextColumn::class, [
+                'data' => function (Person $person) {
+                    return $person->getFirstName() . ' <img src="https://symfony.com/images/v5/logos/sf-positive.svg"> ' . $person->getLastName();
+                },
+            ])
+            ->add('buttons', TextColumn::class, [
+                'raw' => true,
+                'data' => '<button>Click me</button>',
+            ])
+            ->setAdapter(DoctrineORMAdapter::class, [
+                'entity' => Person::class,
+            ])
+        ;
 
         return $datatable->handleRequest($request)->getResponse();
     }

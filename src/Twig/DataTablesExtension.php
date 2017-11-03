@@ -80,7 +80,7 @@ class DataTablesExtension extends \Twig_Extension
                     'orderable' => $column->isOrderable(),
                     'searchable' => $column->isSearchable(),
                     'visible' => $column->isVisible(),
-                    'className' => $column->getClass(),
+                    'className' => $column->getClassName(),
                 ];
             }, $datatable->getState()->getColumns());
 

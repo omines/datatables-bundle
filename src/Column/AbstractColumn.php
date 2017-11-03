@@ -12,95 +12,35 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle\Column;
 
-use Doctrine\ORM\Mapping as ORM;
+use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\Filter\AbstractFilter;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 
+/**
+ * AbstractColumn.
+ *
+ * @author Niels Keurentjes <niels.keurentjes@omines.com>
+ */
 abstract class AbstractColumn
 {
-    /**
-     * @var int
-     * @ORM\Column(type="string")
-     */
-    protected $index;
+    /** @var array<string, OptionsResolver> */
+    private static $resolversByClass = [];
 
-    /** @var string */
-    protected $name;
-
-    /** @var string */
-    protected $label;
-
-    /** @var bool */
-    protected $visible;
-
-    /** @var bool */
-    protected $searchable;
-
-    /** @var bool */
-    protected $globalSearchable;
-
-    /** @var string */
-    protected $searchValue;
-
-    /** @var bool */
-    protected $orderable;
-
-    /** @var string */
-    protected $orderField;
-
-    /** @var string */
-    protected $orderDirection;
-
-    /** @var mixed */
-    protected $defaultValue;
-
-    /** @var AbstractFilter */
-    protected $filter;
-
-    /** @var string */
-    protected $field;
-
-    /** @var string */
-    protected $propertyPath;
-
-    /** @var string */
-    protected $joinType;
-
-    /** @var array */
+    /** @var array<string, mixed> */
     protected $options;
-
-    /** @var string */
-    private $class;
 
     /**
      * AbstractColumn constructor.
      */
-    public function __construct()
+    public function __construct(array $options = [])
     {
-        $this->options = [];
-    }
-
-    /**
-     * @param array $options
-     */
-    public function set(array $options)
-    {
-        if (!isset($options['name']) && isset($options['index'])) {
-            $options['name'] = "column-{$options['index']}";
+        $class = get_class($this);
+        if (!isset(self::$resolversByClass[$class])) {
+            self::$resolversByClass[$class] = new OptionsResolver();
+            $this->configureOptions(self::$resolversByClass[$class]);
         }
-
-        $resolver = new OptionsResolver();
-        $this->configureOptions($resolver);
-        $this->options = $resolver->resolve($options);
-
-        $accessor = PropertyAccess::createPropertyAccessorBuilder()
-            ->enableMagicCall()
-            ->getPropertyAccessor();
-
-        foreach ($this->options as $setter => $value) {
-            $accessor->setValue($this, $setter, $value);
-        }
+        $this->options = self::$resolversByClass[$class]->resolve($options);
     }
 
     /**
@@ -109,28 +49,35 @@ abstract class AbstractColumn
      */
     protected function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'index' => 1,
-            'name' => null,
-            'label' => null,
-            'visible' => true,
-            'orderable' => true,
-            'orderField' => null,
-            'orderDirection' => null,
-            'searchable' => true,
-            'searchValue' => null,
-            'globalSearchable' => true,
-            'defaultValue' => '',
-            'filter' => null,
-            'joinType' => 'join',
-            'class' => null,
-        ])
+        $resolver
+            ->setDefaults([
+                'index' => 1,
+                'name' => function (Options $options) { return "column-{$options['index']}"; },
+                'label' => function (Options $options) { return $options['field']; },
+                'data' => null,
+                'field' => null,
+                'propertyPath' => null,
+                'visible' => true,
+                'orderable' => true,
+                'orderField' => function (Options $options) { return $options['field']; },
+                'orderDirection' => null,
+                'searchable' => true,
+                'searchValue' => null,
+                'globalSearchable' => true,
+                'defaultValue' => '',
+                'filter' => null,
+                'joinType' => 'join',
+                'className' => null,
+            ])
             ->setRequired([
                 'index',
             ])
             ->setAllowedTypes('index', 'integer')
             ->setAllowedTypes('name', 'string')
             ->setAllowedTypes('label', ['null', 'string'])
+            ->setAllowedTypes('data', ['null', 'string', 'callable'])
+            ->setAllowedTypes('field', ['null', 'string'])
+            ->setAllowedTypes('propertyPath', ['null', 'string'])
             ->setAllowedTypes('visible', 'boolean')
             ->setAllowedTypes('orderable', 'boolean')
             ->setAllowedTypes('orderField', ['null', 'string'])
@@ -140,9 +87,9 @@ abstract class AbstractColumn
             ->setAllowedTypes('searchValue', ['null', 'string'])
             ->setAllowedTypes('filter', ['null', 'array'])
             ->setAllowedTypes('joinType', ['null', 'string'])
-            ->setAllowedTypes('class', ['null', 'string'])
+            ->setAllowedTypes('className', ['null', 'string'])
             ->setAllowedValues('orderDirection', function ($value) {
-                return null === $value || in_array($value, ['ASC', 'DESC'], true);
+                return null === $value || in_array(mb_strtolower($value), [DataTable::SORT_ASCENDING, DataTable::SORT_DESCENDING], true);
             });
 
         return $this;
@@ -151,97 +98,25 @@ abstract class AbstractColumn
     /**
      * @return int
      */
-    public function getIndex()
+    public function getIndex(): int
     {
-        return $this->index;
-    }
-
-    /**
-     * @param int $index
-     */
-    public function setIndex($index)
-    {
-        $this->index = $index;
+        return $this->options['index'];
     }
 
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
-        return $this->name;
+        return $this->options['name'];
     }
 
     /**
-     * @param string $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * @return string
+     * @return string|null
      */
     public function getLabel()
     {
-        return $this->label;
-    }
-
-    /**
-     * @param string $label
-     */
-    public function setLabel($label)
-    {
-        $this->label = $label;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isVisible()
-    {
-        return $this->visible;
-    }
-
-    /**
-     * @param bool $visible
-     */
-    public function setVisible($visible)
-    {
-        $this->visible = $visible;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isSearchable()
-    {
-        return $this->searchable;
-    }
-
-    /**
-     * @param bool $searchable
-     */
-    public function setSearchable($searchable)
-    {
-        $this->searchable = $searchable;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isOrderable()
-    {
-        return $this->orderable;
-    }
-
-    /**
-     * @param bool $orderable
-     */
-    public function setOrderable($orderable)
-    {
-        $this->orderable = $orderable;
+        return $this->options['label'];
     }
 
     /**
@@ -249,15 +124,7 @@ abstract class AbstractColumn
      */
     public function getField()
     {
-        return $this->field;
-    }
-
-    /**
-     * @param string $field
-     */
-    public function setField($field)
-    {
-        $this->field = $field;
+        return $this->options['field'];
     }
 
     /**
@@ -265,15 +132,39 @@ abstract class AbstractColumn
      */
     public function getPropertyPath()
     {
-        return $this->propertyPath;
+        return $this->options['propertyPath'];
     }
 
     /**
-     * @param string $propertyPath
+     * @return callable|string|null
      */
-    public function setPropertyPath($propertyPath)
+    public function getData()
     {
-        $this->propertyPath = $propertyPath;
+        return $this->data;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isVisible(): bool
+    {
+        return $this->options['visible'];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSearchable(): bool
+    {
+        return $this->options['searchable'];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOrderable(): bool
+    {
+        return $this->options['orderable'];
     }
 
     /**
@@ -285,115 +176,61 @@ abstract class AbstractColumn
     }
 
     /**
-     * @param $defaultValue
-     */
-    public function setDefaultValue($defaultValue)
-    {
-        $this->defaultValue = $defaultValue;
-    }
-
-    /**
      * @return AbstractFilter
+     *
+     * @todo Is this return hint correct?
      */
     public function getFilter()
     {
-        return $this->filter;
+        return $this->options['filter'];
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getSearchValue()
     {
-        return $this->searchValue;
+        return $this->options['searchValue'];
     }
 
     /**
-     * @param string $searchValue
-     */
-    public function setSearchValue($searchValue)
-    {
-        $this->searchValue = $searchValue;
-    }
-
-    /**
-     * @return string
+     * @return string|null
      */
     public function getOrderField()
     {
-        return $this->orderField;
+        return $this->options['orderField'];
     }
 
     /**
-     * @param string $orderField
-     */
-    public function setOrderField($orderField)
-    {
-        $this->orderField = $orderField;
-    }
-
-    /**
-     * @return string
+     * @return string|null
      */
     public function getOrderDirection()
     {
-        return $this->orderDirection;
+        return $this->options['orderDirection'];
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
     public function getJoinType()
     {
-        return $this->joinType;
-    }
-
-    /**
-     * @param mixed $joinType
-     */
-    public function setJoinType($joinType)
-    {
-        $this->joinType = $joinType;
-    }
-
-    /**
-     * @param string $orderDirection
-     */
-    public function setOrderDirection($orderDirection)
-    {
-        $this->orderDirection = $orderDirection;
+        return $this->options['joinType'];
     }
 
     /**
      * @return bool
      */
-    public function isGlobalSearchable()
+    public function isGlobalSearchable(): bool
     {
-        return $this->globalSearchable;
-    }
-
-    /**
-     * @param bool $globalSearchable
-     */
-    public function setGlobalSearchable($globalSearchable)
-    {
-        $this->globalSearchable = $globalSearchable;
+        return $this->options['globalSearchable'];
     }
 
     /**
      * @return string
      */
-    public function getClass()
+    public function getClassName()
     {
-        return $this->class;
-    }
-
-    /**
-     * @param string $class
-     */
-    public function setClass($class)
-    {
-        $this->class = $class;
+        return $this->options['className'];
     }
 
     /**
@@ -402,6 +239,7 @@ abstract class AbstractColumn
      */
     public function setFilter(array $filterClassAndOptions = null)
     {
+        throw new \LogicException('Is this being used?');
         if (null !== $filterClassAndOptions) {
             if (!isset($filterClassAndOptions[0]) || !is_string($filterClassAndOptions[0]) && !$filterClassAndOptions[0] instanceof AbstractFilter) {
                 throw new \Exception('AbstractColumn::setFilter(): Set a Filter class.');

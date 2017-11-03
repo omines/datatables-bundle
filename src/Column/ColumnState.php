@@ -10,21 +10,27 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit;
-
-use Omines\DataTablesBundle\Column\TextColumn;
-use PHPUnit\Framework\TestCase;
+namespace Omines\DataTablesBundle\Column;
 
 /**
- * ColumnTest.
+ * ColumnState.
  *
  * @author Niels Keurentjes <niels.keurentjes@omines.com>
+ *
+ * @internal
  */
-class ColumnTest extends TestCase
+class ColumnState
 {
-    public function testTextColumn()
+    /** @var AbstractColumn */
+    private $column;
+
+    /**
+     * ColumnState constructor.
+     *
+     * @param AbstractColumn $column
+     */
+    public function __construct(AbstractColumn $column)
     {
-        $column = new TextColumn();
-        $this->assertFalse($column->isRaw());
+        $this->column = $column;
     }
 }

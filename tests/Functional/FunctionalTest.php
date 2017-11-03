@@ -34,6 +34,7 @@ class FunctionalTest extends WebTestCase
 
     public function testFrontend()
     {
+        $this->client->enableProfiler();
         $crawler = $this->client->request('GET', '/');
         $this->assertSuccessful($response = $this->client->getResponse());
 
@@ -52,8 +53,10 @@ class FunctionalTest extends WebTestCase
         $this->assertCount(125, $json->data);
 
         $sample = $json->data[5];
-        $this->assertSame('FirstName5', $sample->name);
-        $this->assertSame('LastName5', $sample->{'column-2'});
+        $this->assertSame('FirstName5', $sample->firstName);
+        $this->assertSame('LastName5', $sample->lastName);
+
+        $this->markTestIncomplete('Formatting functionality not yet done');
         $this->assertSame('FirstName5 LastName5', $sample->fullName);
     }
 
@@ -74,6 +77,7 @@ class FunctionalTest extends WebTestCase
 
     private function callDataTableUrl(string $url)
     {
+        $this->client->enableProfiler();
         $this->client->request('GET', $url);
         $this->assertSuccessful($response = $this->client->getResponse());
         $this->assertContains('application/json', $response->headers->get('Content-type'));
@@ -84,7 +88,13 @@ class FunctionalTest extends WebTestCase
     private function assertSuccessful(Response $response)
     {
         if (!$response->isSuccessful()) {
-            echo sprintf("---- Response failed with %d ----\n%s\n------------------\n", $response->getStatusCode(), $response->getContent());
+            if ($profile = $this->client->getProfile()) {
+                $content = print_r($profile->getCollector('exception')->getException()->toArray(), true);
+            } else {
+                $content = strip_tags($response->getContent());
+            }
+
+            echo sprintf("---- Response failed with %d ----\n%s\n------------------\n", $response->getStatusCode(), $content);
             $this->fail(sprintf('Response failed with HTTP status code %d', $response->getStatusCode()));
         }
     }

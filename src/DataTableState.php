@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Omines\DataTablesBundle;
 
 use Omines\DataTablesBundle\Column\AbstractColumn;
+use Omines\DataTablesBundle\Column\ColumnState;
 
 /**
  * DataTableState.
@@ -21,6 +22,9 @@ use Omines\DataTablesBundle\Column\AbstractColumn;
  */
 class DataTableState
 {
+    /** @var DataTable */
+    private $dataTable;
+
     /** @var int */
     private $draw;
 
@@ -30,7 +34,7 @@ class DataTableState
     /** @var int */
     private $length;
 
-    /** @var AbstractColumn[] */
+    /** @var ColumnState[] */
     private $columns;
 
     /** @var string */
@@ -42,13 +46,15 @@ class DataTableState
     /**
      * DataTableState constructor.
      *
+     * @param DataTable $dataTable
      * @param int $start
      * @param int $length
-     * @param array $columns
+     * @param ColumnState[] $columns
      * @param string $search
      */
-    public function __construct($start = 0, $length = -1, $columns = [], $search = '')
+    public function __construct(DataTable $dataTable, int $start = 0, int $length = -1, array $columns = [], string $search = '')
     {
+        $this->dataTable = $dataTable;
         $this->draw = 0;
         $this->start = $start;
         $this->length = $length;
@@ -123,7 +129,15 @@ class DataTableState
     /**
      * @return AbstractColumn[]
      */
-    public function getColumns()
+    public function getColumns(): array
+    {
+        return $this->dataTable->getColumns();
+    }
+
+    /**
+     * @return ColumnState[]
+     */
+    public function getColumnStates(): array
     {
         return $this->columns;
     }
@@ -133,16 +147,16 @@ class DataTableState
      */
     public function addColumn(AbstractColumn $column)
     {
-        $this->columns[] = $column;
+        $this->columns[$column->getName()] = new ColumnState($column);
     }
 
     /**
      * @param int $index
      * @return AbstractColumn
      */
-    public function getColumn(int $index): AbstractColumn
+    public function getColumnState(int $index): AbstractColumn
     {
-        if ($index < 0 || $index > count($this->columns)) {
+        if ($index < 0 || $index >= count($this->columns)) {
             throw new \InvalidArgumentException(sprintf('There is no column with index %d', $index));
         }
 
