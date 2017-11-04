@@ -12,11 +12,11 @@ declare(strict_types=1);
 
 namespace Tests\Fixtures\AppBundle\DataTable\Type;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Omines\DataTablesBundle\Adapter\DoctrineORMAdapter;
-use Omines\DataTablesBundle\Column\Column;
+use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableTypeInterface;
+use Symfony\Component\Routing\RouterInterface;
 use Tests\Fixtures\AppBundle\Entity\Person;
 
 /**
@@ -26,17 +26,17 @@ use Tests\Fixtures\AppBundle\Entity\Person;
  */
 class ServicePersonTableType implements DataTableTypeInterface
 {
-    /** @var Registry */
-    private $registry;
+    /** @var RouterInterface */
+    private $router;
 
     /**
      * ServicePersonTableType constructor.
      *
-     * @param Registry $registry
+     * @param RouterInterface $router
      */
-    public function __construct(Registry $registry)
+    public function __construct(RouterInterface $router)
     {
-        $this->registry = $registry;
+        $this->router = $router;
     }
 
     /**
@@ -45,16 +45,24 @@ class ServicePersonTableType implements DataTableTypeInterface
     public function configure(DataTable $dataTable)
     {
         $dataTable
-            ->column(Column::class, ['label' => 'id', 'field' => 'person.id'])
-            ->column(Column::class, ['label' => 'firstName', 'name' => 'name', 'field' => 'person.firstName'])
-            ->column(Column::class, ['label' => 'lastName', 'field' => 'person.lastName'])
-            ->column(Column::class, ['label' => 'fullName', 'name' => 'fullName'])
-            ->column(Column::class, ['label' => 'employer', 'name' => 'company', 'field' => 'company.name'])
+            ->add('id', TextColumn::class)
+            ->add('firstName', TextColumn::class, ['name' => 'name', 'field' => 'person.firstName'])
+            ->add('lastName', TextColumn::class, ['field' => 'person.lastName'])
+            ->add('fullName', TextColumn::class, ['name' => 'fullName'])
+            ->add('company', TextColumn::class, ['label' => 'employer', 'name' => 'company', 'field' => 'company.name'])
+            ->add('link', TextColumn::class, [
+                'data' => function(Person $person) {
+                    return sprintf('<a href="%s">%s, %s</a>', $this->router->generate('home'), $person->getLastName(), $person->getFirstName());
+                },
+            ])
             ->format(function ($row, Person $person) {
                 $row['fullName'] = $person->getFirstName() . ' ' . $person->getLastName();
 
                 return $row;
             })
-            ->setAdapter(new DoctrineORMAdapter($this->registry, Person::class));
+            ->setAdapter(DoctrineORMAdapter::class, [
+                'entity' => Person::class,
+            ])
+        ;
     }
 }

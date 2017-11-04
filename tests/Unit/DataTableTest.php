@@ -20,6 +20,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use Omines\DataTablesBundle\Column\Column;
+use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableFactory;
 use Omines\DataTablesBundle\DataTablesBundle;
@@ -86,7 +87,7 @@ class DataTableTest extends TestCase
         $state->setStart(5);
         $state->setLength(10);
         $state->setSearch('foo');
-        $state->addColumn(new Column());
+        $state->addColumn(new TextColumn());
 
         $this->assertSame(5, $state->getStart());
         $this->assertSame(10, $state->getLength());

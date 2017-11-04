@@ -12,12 +12,10 @@ declare(strict_types=1);
 
 namespace Tests\Fixtures\AppBundle\DataTable\Type;
 
-use Omines\DataTablesBundle\Adapter\AbstractAdapter;
-use Omines\DataTablesBundle\Column\Column;
+use Omines\DataTablesBundle\Adapter\ArrayAdapter;
+use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
-use Omines\DataTablesBundle\DataTableState;
 use Omines\DataTablesBundle\DataTableTypeInterface;
-use Tests\Fixtures\AppBundle\Entity\Person;
 
 /**
  * RegularPersonTableType.
@@ -32,21 +30,15 @@ class RegularPersonTableType implements DataTableTypeInterface
     public function configure(DataTable $dataTable)
     {
         $dataTable
-            ->column(Column::class, ['label' => 'id', 'field' => 'person.id'])
-            ->column(Column::class, ['label' => 'firstName', 'name' => 'name', 'field' => 'person.firstName'])
-            ->column(Column::class, ['label' => 'lastName', 'field' => 'person.lastName'])
-            ->setAdapter(new class() extends AbstractAdapter {
-                public function handleState(DataTableState $state)
-                {
-                    return $this;
-                }
-
-                public function getData()
-                {
-                    return [
-                        ['foo' => 'bar', 'bar' => 'foo'],
-                    ];
-                }
-            });
+            ->add('firstName', TextColumn::class)
+            ->add('lastName', TextColumn::class)
+            ->setAdapter(ArrayAdapter::class, [
+                ['firstName' => 'Donald', 'lastName' => 'Trump'],
+                ['firstName' => 'Barack', 'lastName' => 'Obama'],
+                ['firstName' => 'George W.', 'lastName' => 'Bush'],
+                ['firstName' => 'Bill', 'lastName' => 'Clinton'],
+                ['firstName' => 'George H.W.', 'lastName' => 'Bush'],
+                ['firstName' => 'Ronald', 'lastName' => 'Reagan'],
+            ]);
     }
 }
