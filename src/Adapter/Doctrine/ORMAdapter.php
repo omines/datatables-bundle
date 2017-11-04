@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Omines\DataTablesBundle\Adapter;
+namespace Omines\DataTablesBundle\Adapter\Doctrine;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Collections\Criteria;
@@ -18,6 +18,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use Omines\DataTablesBundle\Adapter\AdapterInterface;
 use Omines\DataTablesBundle\Column\AbstractColumn;
 use Omines\DataTablesBundle\DataTableState;
 use Omines\DataTablesBundle\Processor\Doctrine\Common\CriteriaProcessor;
@@ -27,7 +28,7 @@ use Omines\DataTablesBundle\Processor\ProcessorInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
-class DoctrineORMAdapter implements AdapterInterface
+class ORMAdapter implements AdapterInterface
 {
     /** @var Registry */
     private $registry;
@@ -62,6 +63,7 @@ class DoctrineORMAdapter implements AdapterInterface
     /** @var array */
     private $aliases;
 
+    /** @var string */
     private $identifierPropertyPath;
 
     /**
@@ -112,14 +114,6 @@ class DoctrineORMAdapter implements AdapterInterface
         if (empty($this->criteriaProcessors)) {
             $this->criteriaProcessors = [new CriteriaProcessor()];
         }
-    }
-
-    /**
-     * @return EntityManager
-     */
-    public function getManager()
-    {
-        return $this->manager;
     }
 
     /**

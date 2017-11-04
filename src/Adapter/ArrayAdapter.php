@@ -22,17 +22,7 @@ use Omines\DataTablesBundle\DataTableState;
 class ArrayAdapter implements AdapterInterface
 {
     /** @var array */
-    private $data;
-
-    /**
-     * ArrayAdapter constructor.
-     *
-     * @param array $data Optional initial data
-     */
-    public function __construct(array $data = [])
-    {
-        $this->data = $data;
-    }
+    private $data = [];
 
     /**
      * {@inheritdoc}
@@ -45,51 +35,9 @@ class ArrayAdapter implements AdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function handleState(DataTableState $state)
+    public function getData(DataTableState $state): ResultSetInterface
     {
-        // TODO: Implement handleState() method.
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getTotalRecords()
-    {
-        return count($this->data);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getTotalDisplayRecords()
-    {
-        return count($this->data);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getData()
-    {
-        return $this->data;
-    }
-
-    /**
-     * @param array $data
-     * @return self
-     */
-    public function setData(array $data): self
-    {
-        $this->data = $data;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function mapRow($columns, $row, $addIdentifier)
-    {
-        return $row;
+        // TODO: Apply search
+        return new ArrayResultSet(array_slice($this->data, $state->getStart(), $state->getLength()), count($this->data));
     }
 }

@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Tests\Fixtures\AppBundle\Controller;
 
-use Omines\DataTablesBundle\Adapter\DoctrineORMAdapter;
+use Omines\DataTablesBundle\Adapter\ORMAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\Controller\DataTablesTrait;
 use Omines\DataTablesBundle\DataTable;
@@ -46,7 +46,7 @@ class PlainController extends Controller
                 'raw' => true,
                 'data' => '<button>Click me</button>',
             ])
-            ->setAdapter(DoctrineORMAdapter::class, [
+            ->setAdapter(ORMAdapter::class, [
                 'entity' => Person::class,
             ])
         ;

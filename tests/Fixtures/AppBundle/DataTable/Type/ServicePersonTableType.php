@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Tests\Fixtures\AppBundle\DataTable\Type;
 
-use Omines\DataTablesBundle\Adapter\DoctrineORMAdapter;
+use Omines\DataTablesBundle\Adapter\ORMAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableTypeInterface;
@@ -51,7 +51,7 @@ class ServicePersonTableType implements DataTableTypeInterface
             ->add('fullName', TextColumn::class, ['name' => 'fullName'])
             ->add('company', TextColumn::class, ['label' => 'employer', 'name' => 'company', 'field' => 'company.name'])
             ->add('link', TextColumn::class, [
-                'data' => function(Person $person) {
+                'data' => function (Person $person) {
                     return sprintf('<a href="%s">%s, %s</a>', $this->router->generate('home'), $person->getLastName(), $person->getFirstName());
                 },
             ])
@@ -60,7 +60,7 @@ class ServicePersonTableType implements DataTableTypeInterface
 
                 return $row;
             })
-            ->setAdapter(DoctrineORMAdapter::class, [
+            ->setAdapter(ORMAdapter::class, [
                 'entity' => Person::class,
             ])
         ;

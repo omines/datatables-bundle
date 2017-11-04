@@ -15,7 +15,7 @@ namespace Omines\DataTablesBundle\Processor\Doctrine\Common;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Expr\Comparison;
 use Omines\DataTablesBundle\Adapter\AdapterInterface;
-use Omines\DataTablesBundle\Adapter\DoctrineORMAdapter;
+use Omines\DataTablesBundle\Adapter\ORMAdapter;
 use Omines\DataTablesBundle\DataTableState;
 use Omines\DataTablesBundle\Processor\ProcessorInterface;
 
@@ -27,7 +27,7 @@ class CriteriaProcessor implements ProcessorInterface
      */
     public function process(AdapterInterface $adapter, DataTableState $state)
     {
-        /** @param DoctrineORMAdapter $adapter */
+        /** @param ORMAdapter $adapter */
         $criteria = Criteria::create();
 
         foreach ($state->getColumns() as $column) {

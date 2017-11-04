@@ -12,46 +12,27 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle\Adapter;
 
-use Omines\DataTablesBundle\Column\AbstractColumn;
 use Omines\DataTablesBundle\DataTableState;
 
+/**
+ * AdapterInterface.
+ *
+ * @author Niels Keurentjes <niels.keurentjes@omines.com>
+ */
 interface AdapterInterface
 {
     /**
+     * Provides initial configuration to the adapter.
+     *
      * @param array $options
      */
     public function configure(array $options);
 
     /**
+     * Processes the datatable's state into a result set fit for further processing.
+     *
      * @param DataTableState $state
-     * @return AdapterInterface
+     * @return ResultSetInterface
      */
-    public function handleState(DataTableState $state);
-
-    /**
-     * get total records.
-     *
-     * @return int
-     */
-    public function getTotalRecords();
-
-    /**
-     * Get total records after filtering.
-     *
-     * @return int
-     */
-    public function getTotalDisplayRecords();
-
-    /**
-     * @return array
-     */
-    public function getData();
-
-    /**
-     * @param AbstractColumn[] $columns
-     * @param $row
-     * @param $addIdentifier
-     * @return mixed
-     */
-    public function mapRow($columns, $row, $addIdentifier);
+    public function getData(DataTableState $state): ResultSetInterface;
 }
