@@ -39,6 +39,7 @@ class RegularPersonTableType implements DataTableTypeInterface
                 ['firstName' => 'Bill', 'lastName' => 'Clinton'],
                 ['firstName' => 'George H.W.', 'lastName' => 'Bush'],
                 ['firstName' => 'Ronald', 'lastName' => 'Reagan'],
-            ]);
+            ])
+        ;
     }
 }

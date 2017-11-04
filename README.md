@@ -11,6 +11,8 @@
 This bundle provides convenient integration of the popular [DataTables](https://datatables.net/) jQuery library
 for realtime AJAX tables in your Symfony 3.3+ application.
 
+This library is currently under initial development and only fit for internal use.
+
 ## Installation
 
 To install, use composer:
@@ -30,17 +32,45 @@ public function registerBundles()
 
 ## Usage
 
-TBD.
+To render the most basic static table, implement a controller like this:
+```php
+use Omines\DataTablesBundle\DataTablesTrait;
+use Omines\DataTablesBundle\Adapter\ArrayAdapter;
+use Omines\DataTablesBundle\Column\TextColumn;
 
-## Testing
+class MyController
+{
+    use DataTablesTrait;
+    
+    public function showAction(Request $request)
+    {
+        $table = $this->createDataTable()
+            ->add('firstName', TextColumn::class)
+            ->add('lastName', TextColumn::class)
+            ->setAdapter(ArrayAdapter::class, [
+                ['firstName' => 'Donald', 'lastName' => 'Trump'],
+                ['firstName' => 'Barack', 'lastName' => 'Obama'],
+            ])
+            ->handleRequest($request);
+        
+        if ($request->isXmlHttpRequest()) {
+            return $table->getResponse();
+        }
+        
+        $this->render('list.html.twig', ['datatable' => $table]);
+    }
+}
 
-```bash
-$ ./vendor/bin/phpunit
 ```
+Now in `list.html.twig` render the required HTML and JS with:
+```twig
+{{ datatable(datatable)) }}
+```
+More advanced examples will follow.
 
 ## Contributing
 
-Please see [CONTRIBUTING](https://github.com/omines/datatables-bundle/blob/master/CONTRIBUTING.md) for details.
+Please see [CONTRIBUTING.md](https://github.com/omines/datatables-bundle/blob/master/CONTRIBUTING.md) for details.
 
 ## Legal
 
