@@ -67,7 +67,7 @@ class DataTable
     private $adapterLocator;
 
     /** @var array<string, AbstractColumn> */
-    protected $columns;
+    protected $columns = [];
 
     /** @var Callback[] */
     protected $callbacks;
