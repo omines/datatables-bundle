@@ -29,7 +29,9 @@ class TextColumn extends AbstractColumn
      */
     public function normalize($value): string
     {
-        return (string) $value;
+        $value = (string) $value;
+
+        return $this->isRaw() ? $value : htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE);
     }
 
     /**

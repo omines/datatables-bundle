@@ -44,12 +44,31 @@ abstract class AbstractColumn
     }
 
     /**
-     * The normalize function is responsible for converting column-appropriate input to a string.
+     * The transform function is responsible for converting column-appropriate input to a datatables-usable type.
      *
-     * @param mixed $value
-     * @return string
+     * @param mixed $context All relevant data of the entire row
+     * @param mixed|null $value The single value of the column, if mapping makes it possible to derive one
+     * @return mixed
      */
-    abstract public function normalize($value): string;
+    public function transform($context, $value = null)
+    {
+        $data = $this->options['data'];
+        if (is_callable($data)) {
+            $value = call_user_func($data, $context, $value);
+        } elseif (empty($value)) {
+            $value = $data;
+        }
+
+        return $this->normalize($value);
+    }
+
+    /**
+     * The normalize function is responsible for converting parsed and processed data to a datatables-usable type.
+     *
+     * @param mixed $value The single value of the column
+     * @return mixed
+     */
+    abstract public function normalize($value);
 
     /**
      * @param OptionsResolver $resolver

@@ -56,9 +56,8 @@ class FunctionalTest extends WebTestCase
         $sample = $json->data[5];
         $this->assertSame('FirstName5', $sample->firstName);
         $this->assertSame('LastName5', $sample->lastName);
-
-        $this->markTestIncomplete('Formatting functionality not yet done');
-        $this->assertSame('FirstName5 LastName5', $sample->fullName);
+        $this->assertSame('FirstName5 &lt;img src=&quot;https://symfony.com/images/v5/logos/sf-positive.svg&quot;&gt; LastName5', $sample->fullName);
+        $this->assertContains('<button', $sample->buttons);
     }
 
     public function testTypeDataTable()

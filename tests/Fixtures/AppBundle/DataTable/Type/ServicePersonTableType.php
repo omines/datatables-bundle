@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Tests\Fixtures\AppBundle\DataTable\Type;
 
-use Omines\DataTablesBundle\Adapter\ORMAdapter;
+use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableTypeInterface;

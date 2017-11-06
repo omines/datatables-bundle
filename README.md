@@ -76,11 +76,11 @@ In the example above we could also create a class `DataTable\Type\PresidentsTabl
 and make it implement `Omines\DataTablesBundle\DataTableTypeInterface`. We can then use:
 
 ```php
-    $table = $this->>createDataTableFromType(PresidentsTableType::class)
+    $table = $this->createDataTableFromType(PresidentsTableType::class)
         ->handleRequest($request);
 ```
-This ensures your controllers stay lean and short and only delegate. Of course you can modify the base type
-to fit the controller's specific needs before calling `handleRequest`.
+This ensures your controllers stay lean and short, and only delegate tasks. Of course you can modify
+the base type to fit the controller's specific needs before calling `handleRequest`.
 
 If you need dependencies injected just register `PresidentsTableType` as a service in the container, and
 tag it with `datatables.type`. Or just use `autoconfigure:true` as is recommended Symfony practice.

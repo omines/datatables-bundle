@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Omines\DataTablesBundle;
 
 use Omines\DataTablesBundle\Adapter\AdapterInterface;
-use Omines\DataTablesBundle\Adapter\ArrayResultSet;
 use Omines\DataTablesBundle\Adapter\ResultSetInterface;
 use Omines\DataTablesBundle\Column\AbstractColumn;
 use Omines\DataTablesBundle\Event\AbstractEvent;
@@ -345,20 +344,8 @@ class DataTable
         if (null === $this->adapter) {
             throw new \LogicException('No adapter was configured to retrieve data');
         }
-        $resultSet = $this->adapter->getData($this->state);
 
-        $data = array_map(function ($row) {
-            //$result = $this->adapter->mapRow($this->state->getColumns(), $row, $all);
-
-            if (!is_null($this->rowFormatter)) {
-                $result = call_user_func_array($this->rowFormatter, [$result, $row]);
-            }
-
-            return $result;
-        }, $resultSet->getData());
-
-        // TODO: Totally borked yaya, needs to adapt the result set inline
-        return new ArrayResultSet($data, $resultSet->getTotalRecords(), $resultSet->getTotalDisplayRecords());
+        return $this->adapter->getData($this->state);
     }
 
     /**

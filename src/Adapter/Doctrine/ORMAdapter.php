@@ -25,7 +25,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
- * ORMAdapter
+ * ORMAdapter.
  *
  * @author Niels Keurentjes <niels.keurentjes@omines.com>
  * @author Robbert Beesems <robbert.beesems@omines.com>
@@ -131,18 +131,19 @@ class ORMAdapter extends DoctrineAdapter
             $row = [];
             // TODO: Make adding ID optional
             //if ($addIdentifier) {
-                $row['DT_RowId'] = $accessor->getValue($entity, $identifierPropertyPath);
+            $row['DT_RowId'] = $accessor->getValue($entity, $identifierPropertyPath);
             //}
 
             foreach ($state->getColumns() as $column) {
                 $value = null === $column->getPropertyPath() || !$accessor->isReadable($entity, $column->getPropertyPath()) ? $column->getDefaultValue() : $accessor->getValue($entity, $column->getPropertyPath());
-                $row[$column->getName()] = $column->normalize($value);
+                $row[$column->getName()] = $column->transform($entity, $value);
             }
             $data[] = $row;
 
             // Release memory by detaching from Doctrine
             $this->manager->detach($entity);
         }
+
         return new ArrayResultSet($data, $totalRecords, $displayRecords);
     }
 
