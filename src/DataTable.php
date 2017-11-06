@@ -299,9 +299,11 @@ class DataTable
 
     private function handleInitialRequest(Request $request)
     {
-        $this->state->setStart($request->get($this->getRequestParam('start', $this->state->isFromInitialRequest())) ?? 0);
-        $this->state->setLength($request->get($this->getRequestParam('length', $this->state->isFromInitialRequest())) ?? -1);
-        $this->state->setSearch($request->get($this->getRequestParam('search', $this->state->isFromInitialRequest())) ?? '');
+        $search = $request->get($this->getRequestParam('search', $this->state->isFromInitialRequest()), []);
+
+        $this->state->setStart((int) $request->get($this->getRequestParam('start', $this->state->isFromInitialRequest()), 0));
+        $this->state->setLength((int) $request->get($this->getRequestParam('length', $this->state->isFromInitialRequest()), -1));
+        $this->state->setSearch($search['value'] ?? '');
 
         foreach ($request->get($this->getRequestParam('order', $this->state->isFromInitialRequest()), []) as $order) {
             $column = $this->getState()->getColumn($order['column']);
