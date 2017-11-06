@@ -44,6 +44,14 @@ abstract class AbstractColumn
     }
 
     /**
+     * The normalize function is responsible for converting column-appropriate input to a string.
+     *
+     * @param mixed $value
+     * @return string
+     */
+    abstract public function normalize($value): string;
+
+    /**
      * @param OptionsResolver $resolver
      * @return $this
      */
@@ -255,5 +263,16 @@ abstract class AbstractColumn
 
             $this->filter = $filter;
         }
+    }
+
+    /**
+     * @param string $path
+     * @return $this
+     */
+    public function setPropertyPath(string $path)
+    {
+        $this->options['propertyPath'] = $path;
+
+        return $this;
     }
 }

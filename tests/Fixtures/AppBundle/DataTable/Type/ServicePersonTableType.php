@@ -60,7 +60,7 @@ class ServicePersonTableType implements DataTableTypeInterface
 
                 return $row;
             })
-            ->setAdapter(ORMAdapter::class, [
+            ->createAdapter(ORMAdapter::class, [
                 'entity' => Person::class,
             ])
         ;

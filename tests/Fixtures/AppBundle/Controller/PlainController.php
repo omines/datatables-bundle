@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Tests\Fixtures\AppBundle\Controller;
 
-use Omines\DataTablesBundle\Adapter\ORMAdapter;
+use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\Controller\DataTablesTrait;
 use Omines\DataTablesBundle\DataTable;
@@ -42,11 +42,12 @@ class PlainController extends Controller
                     return $person->getFirstName() . ' <img src="https://symfony.com/images/v5/logos/sf-positive.svg"> ' . $person->getLastName();
                 },
             ])
+            ->add('employer', TextColumn::class, ['field' => 'company.name'])
             ->add('buttons', TextColumn::class, [
                 'raw' => true,
                 'data' => '<button>Click me</button>',
             ])
-            ->setAdapter(ORMAdapter::class, [
+            ->createAdapter(ORMAdapter::class, [
                 'entity' => Person::class,
             ])
         ;

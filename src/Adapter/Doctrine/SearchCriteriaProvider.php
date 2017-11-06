@@ -10,26 +10,25 @@
 
 declare(strict_types=1);
 
-namespace Omines\DataTablesBundle\Processor\Doctrine\Common;
+namespace Omines\DataTablesBundle\Adapter\Doctrine;
 
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Expr\Comparison;
-use Omines\DataTablesBundle\Adapter\AdapterInterface;
-use Omines\DataTablesBundle\Adapter\ORMAdapter;
 use Omines\DataTablesBundle\DataTableState;
-use Omines\DataTablesBundle\Processor\ProcessorInterface;
 
-class CriteriaProcessor implements ProcessorInterface
+/**
+ * SearchCriteriaProcessor.
+ *
+ * @author Niels Keurentjes <niels.keurentjes@omines.com>
+ */
+class SearchCriteriaProvider implements CriteriaProviderInterface
 {
     /**
-     * @param AdapterInterface $adapter
-     * @return Criteria
+     * {@inheritdoc}
      */
-    public function process(AdapterInterface $adapter, DataTableState $state)
+    public function process(DataTableState $state)
     {
-        /** @param ORMAdapter $adapter */
         $criteria = Criteria::create();
-
         foreach ($state->getColumns() as $column) {
             if ($column->isSearchable() && null !== $column->getSearchValue() && null !== $column->getFilter()) {
                 $criteria->andWhere(new Comparison($column->getField(), $column->getFilter()->getOperator(), $column->getSearchValue()));

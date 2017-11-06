@@ -27,6 +27,14 @@ class TextColumn extends AbstractColumn
     /**
      * {@inheritdoc}
      */
+    public function normalize($value): string
+    {
+        return (string) $value;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function configureOptions(OptionsResolver $resolver)
     {
         parent::configureOptions($resolver);

@@ -13,6 +13,8 @@ declare(strict_types=1);
 namespace Omines\DataTablesBundle;
 
 use Omines\DataTablesBundle\Adapter\AdapterInterface;
+use Omines\DataTablesBundle\Adapter\ArrayResultSet;
+use Omines\DataTablesBundle\Adapter\ResultSetInterface;
 use Omines\DataTablesBundle\Column\AbstractColumn;
 use Omines\DataTablesBundle\Event\AbstractEvent;
 use Omines\DataTablesBundle\Event\Callback;
@@ -198,7 +200,7 @@ class DataTable
     /**
      * @return Event[]
      */
-    public function getEvents()
+    public function getEvents(): array
     {
         return $this->events;
     }
@@ -206,29 +208,37 @@ class DataTable
     /**
      * @return AdapterInterface
      */
-    public function getAdapter()
+    public function getAdapter(): AdapterInterface
     {
         return $this->adapter;
     }
 
     /**
-     * @param string|AdapterInterface $adapter
-     * @return $this
+     * @param string $adapter
+     * @return DataTable
      */
-    public function setAdapter($adapter, array $options = [])
+    public function createAdapter(string $adapter, array $options = []): self
     {
-        if (is_string($adapter)) {
-            if (null !== $this->adapterLocator && $this->adapterLocator->has($adapter)) {
-                $this->adapter = $this->adapterLocator->get($adapter);
-            } elseif (class_exists($adapter) && in_array(AdapterInterface::class, class_implements($adapter), true)) {
-                $this->adapter = new $adapter();
-            } else {
-                throw new \InvalidArgumentException(sprintf('Could not resolve adapter "%s" to a service or class', $name));
-            }
+        if (null !== $this->adapterLocator && $this->adapterLocator->has($adapter)) {
+            return $this->setAdapter($this->adapterLocator->get($adapter), $options);
+        } elseif (class_exists($adapter) && in_array(AdapterInterface::class, class_implements($adapter), true)) {
+            return $this->setAdapter(new $adapter(), $options);
         } else {
-            $this->adapter = $adapter;
+            throw new \InvalidArgumentException(sprintf('Could not resolve adapter type "%s" to a service or class implementing AdapterInterface', $adapter));
         }
-        $this->adapter->configure($options);
+    }
+
+    /**
+     * @param AdapterInterface $adapter
+     * @param array|null $options
+     * @return DataTable
+     */
+    public function setAdapter(AdapterInterface $adapter, array $options = null): self
+    {
+        if (null !== $options) {
+            $adapter->configure($options);
+        }
+        $this->adapter = $adapter;
 
         return $this;
     }
@@ -312,27 +322,32 @@ class DataTable
         }
     }
 
-    public function getData()
-    {
-        return $this->mapData(false);
-    }
-
     /**
      * @return JsonResponse
      */
     public function getResponse()
     {
-        return new JsonResponse($this->mapData(true));
+        $resultSet = $this->getResultSet();
+
+        return new JsonResponse([
+            'draw' => $this->getState()->getDraw(),
+            'recordsTotal' => $resultSet->getTotalRecords(),
+            'recordsFiltered' => $resultSet->getTotalDisplayRecords(),
+            'data' => $resultSet->getData(),
+        ]);
     }
 
-    private function mapData($all = true)
+    /**
+     * @return ResultSetInterface
+     */
+    protected function getResultSet(): ResultSetInterface
     {
         if (null === $this->adapter) {
             throw new \LogicException('No adapter was configured to retrieve data');
         }
-        $this->adapter->handleState($this->state);
+        $resultSet = $this->adapter->getData($this->state);
 
-        $data = array_map(function ($row) use ($all) {
+        $data = array_map(function ($row) {
             $result = $this->adapter->mapRow($this->state->getColumns(), $row, $all);
 
             if (!is_null($this->rowFormatter)) {
@@ -340,18 +355,12 @@ class DataTable
             }
 
             return $result;
-        }, $this->adapter->getData());
+        }, $resultSet->getData());
 
-        if ($all) {
-            return [
-                'draw' => $this->getState()->getDraw(),
-                'recordsTotal' => $this->adapter->getTotalRecords(),
-                'recordsFiltered' => $this->adapter->getTotalDisplayRecords(),
-                'data' => $data,
-            ];
-        } else {
-            return $data;
-        }
+        // TODO: Totally borked yaya
+        return new ArrayResultSet($data, $resultSet->getTotalRecords(), $resultSet->getTotalDisplayRecords());
+
+        //return $resultSet;
     }
 
     /**

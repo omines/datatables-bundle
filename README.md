@@ -32,7 +32,7 @@ public function registerBundles()
 
 ## Usage
 
-To render the most basic static table, implement a controller like this:
+To render the most basic table with predefined data, implement a controller like this:
 ```php
 use Omines\DataTablesBundle\DataTablesTrait;
 use Omines\DataTablesBundle\Adapter\ArrayAdapter;
@@ -47,7 +47,7 @@ class MyController
         $table = $this->createDataTable()
             ->add('firstName', TextColumn::class)
             ->add('lastName', TextColumn::class)
-            ->setAdapter(ArrayAdapter::class, [
+            ->createAdapter(ArrayAdapter::class, [
                 ['firstName' => 'Donald', 'lastName' => 'Trump'],
                 ['firstName' => 'Barack', 'lastName' => 'Obama'],
             ])
@@ -62,7 +62,7 @@ class MyController
 }
 
 ```
-Now in `list.html.twig` render the required HTML and JS with:
+Now in your Twig template render the required HTML and JS with:
 ```twig
 {{ datatable(datatable)) }}
 ```

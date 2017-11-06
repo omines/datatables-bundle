@@ -29,7 +29,7 @@ interface AdapterInterface
     public function configure(array $options);
 
     /**
-     * Processes the datatable's state into a result set fit for further processing.
+     * Processes a datatable's state into a result set fit for further processing.
      *
      * @param DataTableState $state
      * @return ResultSetInterface

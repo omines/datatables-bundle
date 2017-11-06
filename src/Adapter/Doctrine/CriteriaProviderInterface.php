@@ -10,17 +10,21 @@
 
 declare(strict_types=1);
 
-namespace Omines\DataTablesBundle\Processor;
+namespace Omines\DataTablesBundle\Adapter\Doctrine;
 
-use Omines\DataTablesBundle\Adapter\AdapterInterface;
+use Doctrine\Common\Collections\Criteria;
 use Omines\DataTablesBundle\DataTableState;
 
-interface ProcessorInterface
+/**
+ * CriteriaProviderInterface.
+ *
+ * @author Niels Keurentjes <niels.keurentjes@omines.com>
+ */
+interface CriteriaProviderInterface
 {
     /**
-     * @param AdapterInterface $adapter
      * @param DataTableState $state
-     * @return mixed
+     * @return Criteria|null
      */
-    public function process(AdapterInterface $adapter, DataTableState $state);
+    public function process(DataTableState $state);
 }

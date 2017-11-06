@@ -32,7 +32,7 @@ class RegularPersonTableType implements DataTableTypeInterface
         $dataTable
             ->add('firstName', TextColumn::class)
             ->add('lastName', TextColumn::class)
-            ->setAdapter(ArrayAdapter::class, [
+            ->createAdapter(ArrayAdapter::class, [
                 ['firstName' => 'Donald', 'lastName' => 'Trump'],
                 ['firstName' => 'Barack', 'lastName' => 'Obama'],
                 ['firstName' => 'George W.', 'lastName' => 'Bush'],
