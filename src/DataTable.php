@@ -348,7 +348,7 @@ class DataTable
         $resultSet = $this->adapter->getData($this->state);
 
         $data = array_map(function ($row) {
-            $result = $this->adapter->mapRow($this->state->getColumns(), $row, $all);
+            //$result = $this->adapter->mapRow($this->state->getColumns(), $row, $all);
 
             if (!is_null($this->rowFormatter)) {
                 $result = call_user_func_array($this->rowFormatter, [$result, $row]);
@@ -357,10 +357,8 @@ class DataTable
             return $result;
         }, $resultSet->getData());
 
-        // TODO: Totally borked yaya
+        // TODO: Totally borked yaya, needs to adapt the result set inline
         return new ArrayResultSet($data, $resultSet->getTotalRecords(), $resultSet->getTotalDisplayRecords());
-
-        //return $resultSet;
     }
 
     /**

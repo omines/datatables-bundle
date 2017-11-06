@@ -180,7 +180,7 @@ abstract class AbstractColumn
      */
     public function getDefaultValue()
     {
-        return $this->defaultValue;
+        return $this->options['defaultValue'];
     }
 
     /**

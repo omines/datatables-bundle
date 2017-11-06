@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle\Adapter\Doctrine;
 
-use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
@@ -23,7 +22,14 @@ use Omines\DataTablesBundle\Adapter\ResultSetInterface;
 use Omines\DataTablesBundle\DataTableState;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
+/**
+ * ORMAdapter
+ *
+ * @author Niels Keurentjes <niels.keurentjes@omines.com>
+ * @author Robbert Beesems <robbert.beesems@omines.com>
+ */
 class ORMAdapter extends DoctrineAdapter
 {
     /** @var EntityManager */
@@ -36,16 +42,10 @@ class ORMAdapter extends DoctrineAdapter
     private $hydrationMode;
 
     /** @var QueryBuilderProcessorInterface[] */
-    private $queryProcessors;
-
-    /** @var \Symfony\Component\PropertyAccess\PropertyAccessor */
-    private $propertyAccessor;
+    private $queryBuilderProcessors;
 
     /** @var array */
     private $aliases;
-
-    /** @var string */
-    private $identifierPropertyPath;
 
     /**
      * {@inheritdoc}
@@ -72,7 +72,7 @@ class ORMAdapter extends DoctrineAdapter
 
         // Set options
         $this->hydrationMode = $options['hydrate'];
-        $this->queryProcessors = $options['query'];
+        $this->queryBuilderProcessors = $options['query'];
     }
 
     /**
@@ -113,15 +113,37 @@ class ORMAdapter extends DoctrineAdapter
             }
         }
 
-        $this->identifierPropertyPath = $this->mapPropertyPath($identifier);
-
+        $identifierPropertyPath = $this->mapPropertyPath($identifier);
         foreach ($state->getColumns() as $column) {
-            if (null !== $column->getField() && null === $column->getPropertyPath()) {
-                $column->setPropertyPath($this->mapPropertyPath($column->getField()));
+            if (null === $column->getPropertyPath()) {
+                if (null === ($field = $column->getField())) {
+                    $field = "{$fromClause->getAlias()}.{$column->getName()}";
+                }
+                $column->setPropertyPath($this->mapPropertyPath($field));
             }
         }
 
-        return new ArrayResultSet($builder->getQuery()->getResult($this->hydrationMode), $totalRecords, $displayRecords);
+        // TODO: Support query parameters
+        $data = [];
+        $accessor = PropertyAccess::createPropertyAccessor();
+        foreach ($builder->getQuery()->iterate([], $this->hydrationMode) as $result) {
+            $entity = $result[0];
+            $row = [];
+            // TODO: Make adding ID optional
+            //if ($addIdentifier) {
+                $row['DT_RowId'] = $accessor->getValue($entity, $identifierPropertyPath);
+            //}
+
+            foreach ($state->getColumns() as $column) {
+                $value = null === $column->getPropertyPath() || !$accessor->isReadable($entity, $column->getPropertyPath()) ? $column->getDefaultValue() : $accessor->getValue($entity, $column->getPropertyPath());
+                $row[$column->getName()] = $column->normalize($value);
+            }
+            $data[] = $row;
+
+            // Release memory by detaching from Doctrine
+            $this->manager->detach($entity);
+        }
+        return new ArrayResultSet($data, $totalRecords, $displayRecords);
     }
 
     /**
@@ -157,7 +179,8 @@ class ORMAdapter extends DoctrineAdapter
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->manager->createQueryBuilder();
 
-        foreach ($this->queryProcessors as $processor) {
+        // Run all query builder processors in order
+        foreach ($this->queryBuilderProcessors as $processor) {
             $processor->process($queryBuilder, $state);
         }
 
@@ -240,7 +263,6 @@ class ORMAdapter extends DoctrineAdapter
                 }
 
                 return new class($value) implements QueryBuilderProcessorInterface {
-                    /** @var callable */
                     private $callable;
 
                     public function __construct(callable $value)
@@ -250,7 +272,7 @@ class ORMAdapter extends DoctrineAdapter
 
                     public function process(QueryBuilder $queryBuilder, DataTableState $state)
                     {
-                        return $this->callable($queryBuilder, $state);
+                        return call_user_func($this->callable, $queryBuilder, $state);
                     }
                 };
             });
@@ -373,14 +395,5 @@ class ORMAdapter extends DoctrineAdapter
 //    {
 //        $result = [];
 //
-//        if ($addIdentifier) {
-//            $result['DT_RowId'] = $this->propertyAccessor->getValue($row, $this->identifierPropertyPath);
-//        }
-//
-//        foreach ($columns as $column) {
-//            $result[$column->getName()] = null === $column->getPropertyPath() || !$this->propertyAccessor->isReadable($row, $column->getPropertyPath()) ? $column->getDefaultValue() : $this->propertyAccessor->getValue($row, $column->getPropertyPath());
-//        }
-//
-//        return $result;
 //    }
 }

@@ -86,9 +86,9 @@ abstract class DoctrineAdapter implements AdapterInterface
                         $this->callable = $value;
                     }
 
-                    public function process(Criteria $criteria, DataTableState $state)
+                    public function process(DataTableState $state)
                     {
-                        return $this->callable($criteria, $state);
+                        return call_user_func($this->callable, $state);
                     }
                 };
             });

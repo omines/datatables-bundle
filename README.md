@@ -66,6 +66,60 @@ Now in your Twig template render the required HTML and JS with:
 ```twig
 {{ datatable(datatable)) }}
 ```
+
+#### Making a separate datatable type
+
+Having the table configuration in your controller is convenient, but not practical for reusable or
+extensible tables, or highly customized tables.
+
+In the example above we could also create a class `DataTable\Type\PresidentsTableType` in our app bundle,
+and make it implement `Omines\DataTablesBundle\DataTableTypeInterface`. We can then use:
+
+```php
+    $table = $this->>createDataTableFromType(PresidentsTableType::class)
+        ->handleRequest($request);
+```
+This ensures your controllers stay lean and short and only delegate. Of course you can modify the base type
+to fit the controller's specific needs before calling `handleRequest`.
+
+If you need dependencies injected just register `PresidentsTableType` as a service in the container, and
+tag it with `datatables.type`. Or just use `autoconfigure:true` as is recommended Symfony practice.
+
+### Doctrine integration
+
+If you have installed `doctrine/doctrine-bundle` several convenient wrappers are available to easily make
+highly flexible tables.
+
+#### Doctrine ORM
+
+If you have installed `doctrine/orm` you can use the provided `ORMAdapter`. Assume a simple `Employee` table
+with some basic fields and a ManyToOne relationship to `Company`:
+```php
+use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
+...
+
+        $table = $this->createDataTable()
+            ->add('firstName', TextColumn::class)
+            ->add('lastName', TextColumn::class)
+            ->add('company', TextColumn::class, ['field' => 'company.name'])
+            ->createAdapter(ORMAdapter::class, [
+                'entity' => Employee::class,
+            ])
+```
+That's all actually! The table will even be searchable.
+ 
+Underneath a lot of "magic" is happening in this most simple of examples. The first 2 columns automatically
+have their `field` option defaulted to the "root entity" of the adapter, with the field identical to their
+name. The adapter itself did not get a query, and as such injected the `AutomaticQueryBuilder` supplied by
+this bundle, which scans the metadata and automatically joins and selects the right data based on the fields.
+Secondly, since no criteria processors were supplied a default `SearchCriteriaProvider` was injected to
+apply global search to all mapped fields.
+
+Of course, all of this is just convenient default. For more complex scenarios you can supply your own query
+builders and criteria providers, and even chain them together to easily implement multiple slightly different
+tables in your site.
+
+### Advanced
 More advanced examples will follow.
 
 ## Contributing
