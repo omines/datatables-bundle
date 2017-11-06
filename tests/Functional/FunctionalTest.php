@@ -56,6 +56,7 @@ class FunctionalTest extends WebTestCase
         $sample = $json->data[5];
         $this->assertSame('FirstName5', $sample->firstName);
         $this->assertSame('LastName5', $sample->lastName);
+        $this->assertSame('14-04-2017', $sample->employedSince);
         $this->assertSame('FirstName5 &lt;img src=&quot;https://symfony.com/images/v5/logos/sf-positive.svg&quot;&gt; LastName5', $sample->fullName);
         $this->assertContains('<button', $sample->buttons);
     }
@@ -75,6 +76,8 @@ class FunctionalTest extends WebTestCase
 
         $this->assertSame(2, $json->draw);
         $this->assertStringStartsWith('Company ', $json->data[0]->company);
+        $this->markTestSkipped('Row level formatting is still missing');
+        $this->assertSame('test', $json->data[0]->fullName);
     }
 
     private function callDataTableUrl(string $url)

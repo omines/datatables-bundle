@@ -21,9 +21,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class TextColumn extends AbstractColumn
 {
-    /** @var bool */
-    protected $raw;
-
     /**
      * {@inheritdoc}
      */
