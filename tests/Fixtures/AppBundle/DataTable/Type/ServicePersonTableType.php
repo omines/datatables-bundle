@@ -55,8 +55,8 @@ class ServicePersonTableType implements DataTableTypeInterface
                     return sprintf('<a href="%s">%s, %s</a>', $this->router->generate('home'), $person->getLastName(), $person->getFirstName());
                 },
             ])
-            ->format(function ($row, Person $person) {
-                $row['fullName'] = $person->getFirstName() . ' ' . $person->getLastName();
+            ->format(function ($row) {
+                $row['fullName'] = "{$row['firstName']} {$row['lastName']}";
 
                 return $row;
             })

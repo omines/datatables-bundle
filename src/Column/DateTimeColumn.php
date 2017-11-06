@@ -1,8 +1,11 @@
 <?php
 
 /*
- * DataTables Bundle
- * (c) 2017 Omines Internetbureau B.V. - https://omines.nl
+ * Symfony DataTables Bundle
+ * (c) Omines Internetbureau B.V. - https://omines.nl/
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 declare(strict_types=1);
@@ -12,14 +15,14 @@ namespace Omines\DataTablesBundle\Column;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * DateTimeColumn
+ * DateTimeColumn.
  *
  * @author Niels Keurentjes <niels.keurentjes@omines.com>
  */
 class DateTimeColumn extends AbstractColumn
 {
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function normalize($value)
     {
@@ -28,6 +31,7 @@ class DateTimeColumn extends AbstractColumn
         } elseif (!$value instanceof \DateTimeInterface) {
             $value = new \DateTime($value);
         }
+
         return $value->format($this->options['format']);
     }
 

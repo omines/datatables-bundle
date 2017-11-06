@@ -81,7 +81,7 @@ class DataTable
     /** @var array */
     protected $settings;
 
-    /** @var \Closure */
+    /** @var callable */
     protected $rowFormatter;
 
     /** @var AdapterInterface */
@@ -157,10 +157,10 @@ class DataTable
     }
 
     /**
-     * @param \Closure $formatter
+     * @param callable $formatter
      * @return $this
      */
-    public function format(\Closure $formatter)
+    public function format(callable $formatter)
     {
         $this->rowFormatter = $formatter;
 
