@@ -1,7 +1,7 @@
 <table id="{{ datatable.setting('name') }}" class="{{ datatable.setting('className') }}{% if className is defined %} {{ className }}{% endif %}">
     <thead>
     <tr>
-        {% for column in datatable.state.columns %}
+        {% for column in datatable.columns %}
             <th>{{ column.label|trans }}</th>
         {% endfor %}
     </tr>

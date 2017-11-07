@@ -91,13 +91,13 @@ abstract class AbstractColumn
                 'searchable' => true,
                 'searchValue' => null,
                 'globalSearchable' => true,
-                'defaultValue' => '',
                 'filter' => null,
                 'joinType' => 'join',
                 'className' => null,
             ])
             ->setRequired([
                 'index',
+                'name',
             ])
             ->setAllowedTypes('index', 'integer')
             ->setAllowedTypes('name', 'string')
@@ -167,7 +167,7 @@ abstract class AbstractColumn
      */
     public function getData()
     {
-        return $this->data;
+        return $this->options['data'];
     }
 
     /**
@@ -192,14 +192,6 @@ abstract class AbstractColumn
     public function isOrderable(): bool
     {
         return $this->options['orderable'];
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDefaultValue()
-    {
-        return $this->options['defaultValue'];
     }
 
     /**

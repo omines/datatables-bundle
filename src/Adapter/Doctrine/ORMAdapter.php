@@ -135,7 +135,7 @@ class ORMAdapter extends DoctrineAdapter
             //}
 
             foreach ($state->getColumns() as $column) {
-                $value = null === $column->getPropertyPath() || !$accessor->isReadable($entity, $column->getPropertyPath()) ? $column->getDefaultValue() : $accessor->getValue($entity, $column->getPropertyPath());
+                $value = null === $column->getPropertyPath() || !$accessor->isReadable($entity, $column->getPropertyPath()) ? $column->getData() : $accessor->getValue($entity, $column->getPropertyPath());
                 $row[$column->getName()] = $column->transform($entity, $value);
             }
             $data[] = $row;

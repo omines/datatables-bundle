@@ -27,7 +27,7 @@ class DateTimeColumn extends AbstractColumn
     public function normalize($value)
     {
         if (null === $value) {
-            return $this->getDefaultValue();
+            return $this->getData();
         } elseif (!$value instanceof \DateTimeInterface) {
             $value = new \DateTime($value);
         }

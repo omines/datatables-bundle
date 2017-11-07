@@ -66,8 +66,11 @@ class DataTable
     /** @var ServiceLocator */
     private $adapterLocator;
 
-    /** @var array<string, AbstractColumn> */
+    /** @var AbstractColumn[] */
     protected $columns = [];
+
+    /** @var array<string, AbstractColumn> */
+    protected $columnsByName = [];
 
     /** @var Callback[] */
     protected $callbacks;
@@ -123,10 +126,14 @@ class DataTable
      */
     public function add(string $name, string $type, array $options = [])
     {
-        // TODO: Make this a ton more intelligent
-        $this->columns[] = $column = new $type(array_merge(['name' => $name, 'index' => count($this->columns)], $options));
+        if (isset($this->columnsByName[$name])) {
+            throw new \RuntimeException(sprintf("There already is a column with name '%s'", $name));
+        }
 
-        $this->state->addColumn($column);
+        // TODO: Make this a ton more intelligent. Also, is index really needed?
+        /* @var AbstractColumn $column */
+        $this->columns[] = $column = new $type(array_merge(['name' => $name, 'index' => count($this->columns)], $options));
+        $this->columnsByName[$column->getName()] = $column;
 
         return $this;
     }
@@ -186,6 +193,19 @@ class DataTable
         }
 
         return $this->columns[$index];
+    }
+
+    /**
+     * @param string $name
+     * @return AbstractColumn
+     */
+    public function getColumnByName(string $name): AbstractColumn
+    {
+        if (!isset($this->columnsByName[$name])) {
+            throw new \InvalidArgumentException(sprintf("There is no column named '%s'", $name));
+        }
+
+        return $this->columnsByName[$name];
     }
 
     /**
@@ -299,21 +319,24 @@ class DataTable
 
     private function handleInitialRequest(Request $request)
     {
-        $search = $request->get($this->getRequestParam('search', $this->state->isFromInitialRequest()), []);
+        $state = $this->getState();
+        $isInitial = $state->isFromInitialRequest();
+        $search = $request->get($this->getRequestParam('search', $isInitial), []);
 
-        $this->state->setStart((int) $request->get($this->getRequestParam('start', $this->state->isFromInitialRequest()), 0));
-        $this->state->setLength((int) $request->get($this->getRequestParam('length', $this->state->isFromInitialRequest()), -1));
-        $this->state->setSearch($search['value'] ?? '');
+        $state->setStart((int) $request->get($this->getRequestParam('start', $isInitial), 0));
+        $state->setLength((int) $request->get($this->getRequestParam('length', $isInitial), -1));
+        $state->setGlobalSearch($search['value'] ?? '');
 
-        foreach ($request->get($this->getRequestParam('order', $this->state->isFromInitialRequest()), []) as $order) {
-            $column = $this->getState()->getColumn($order['column']);
+        $state->setOrderBy([]);
+        foreach ($request->get($this->getRequestParam('order', $isInitial), []) as $order) {
+            $column = $this->getColumn((int) $order['column']);
 
             if ($column->isOrderable()) {
-                $column->setOrderDirection($order['dir']);
+                $state->addOrderBy($column, $order['dir']);
             }
         }
 
-        foreach ($request->get($this->getRequestParam('columns', $this->state->isFromInitialRequest()), []) as $key => $search) {
+        foreach ($request->get($this->getRequestParam('columns', $isInitial), []) as $key => $search) {
             $column = $this->getState()->getColumn($key);
             $value = $this->getState()->isFromInitialRequest() ? $search : $search['search']['value'];
 

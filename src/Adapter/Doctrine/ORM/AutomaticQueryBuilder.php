@@ -65,7 +65,7 @@ class AutomaticQueryBuilder implements QueryBuilderProcessorInterface
      */
     public function process(QueryBuilder $builder, DataTableState $state)
     {
-        foreach ($state->getColumns() as $key => $column) {
+        foreach ($state->getDataTable()->getColumns() as $column) {
             $currentPart = $this->entityShortName;
             $currentAlias = $currentPart;
             $metadata = $this->metadata;

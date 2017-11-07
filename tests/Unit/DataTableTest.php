@@ -19,8 +19,6 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use Omines\DataTablesBundle\Column\Column;
-use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableFactory;
 use Omines\DataTablesBundle\DataTablesBundle;
@@ -81,27 +79,30 @@ class DataTableTest extends TestCase
         $this->assertSame(0, $state->getStart());
         $this->assertSame(-1, $state->getLength());
         $this->assertSame(0, $state->getDraw());
-        $this->assertSame('', $state->getSearch());
-        $this->assertEmpty($state->getColumnStates());
+        $this->assertSame('', $state->getGlobalSearch());
 
         $state->setStart(5);
         $state->setLength(10);
-        $state->setSearch('foo');
-        $state->addColumn(new TextColumn());
+        $state->setGlobalSearch('foo');
 
         $this->assertSame(5, $state->getStart());
         $this->assertSame(10, $state->getLength());
-        $this->assertSame('foo', $state->getSearch());
-
-        $this->markTestIncomplete('Column states not yet done');
-        $this->assertInstanceOf(Column::class, $state->getColumnState(0));
+        $this->assertSame('foo', $state->getGlobalSearch());
     }
 
     /**
      * @expectedException \InvalidArgumentException
      */
-    public function testDataTableStateInvalidColumn()
+    public function testDataTableInvalidColumn()
     {
-        (new DataTableState(new DataTable()))->getColumnState(5);
+        (new DataTable())->getColumn(5);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testDataTableInvalidColumnByName()
+    {
+        (new DataTable())->getColumnByName('foo');
     }
 }

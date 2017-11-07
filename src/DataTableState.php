@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Omines\DataTablesBundle;
 
 use Omines\DataTablesBundle\Column\AbstractColumn;
-use Omines\DataTablesBundle\Column\ColumnState;
 
 /**
  * DataTableState.
@@ -26,19 +25,19 @@ class DataTableState
     private $dataTable;
 
     /** @var int */
-    private $draw;
+    private $draw = 0;
 
     /** @var int */
-    private $start;
+    private $start = 0;
 
     /** @var int */
-    private $length;
-
-    /** @var ColumnState[] */
-    private $columns;
+    private $length = -1;
 
     /** @var string */
-    private $search;
+    private $globalSearch = '';
+
+    /** @var array */
+    private $orderBy = [];
 
     /** @var bool */
     private $fromInitialRequest = false;
@@ -47,19 +46,18 @@ class DataTableState
      * DataTableState constructor.
      *
      * @param DataTable $dataTable
-     * @param int $start
-     * @param int $length
-     * @param ColumnState[] $columns
-     * @param string $search
      */
-    public function __construct(DataTable $dataTable, int $start = 0, int $length = -1, array $columns = [], string $search = '')
+    public function __construct(DataTable $dataTable)
     {
         $this->dataTable = $dataTable;
-        $this->draw = 0;
-        $this->start = $start;
-        $this->length = $length;
-        $this->columns = $columns;
-        $this->search = $search;
+    }
+
+    /**
+     * @return DataTable
+     */
+    public function getDataTable(): DataTable
+    {
+        return $this->dataTable;
     }
 
     /**
@@ -72,10 +70,13 @@ class DataTableState
 
     /**
      * @param int $draw
+     * @return $this
      */
     public function setDraw(int $draw)
     {
         $this->draw = $draw;
+
+        return $this;
     }
 
     /**
@@ -88,10 +89,13 @@ class DataTableState
 
     /**
      * @param int $start
+     * @return $this
      */
     public function setStart(int $start)
     {
         $this->start = $start;
+
+        return $this;
     }
 
     /**
@@ -104,63 +108,32 @@ class DataTableState
 
     /**
      * @param int $length
+     * @return $this
      */
     public function setLength(int $length)
     {
         $this->length = $length;
+
+        return $this;
     }
 
     /**
      * @return string
      */
-    public function getSearch(): string
+    public function getGlobalSearch(): string
     {
-        return $this->search;
+        return $this->globalSearch;
     }
 
     /**
-     * @param string $search
+     * @param string $globalSearch
+     * @return $this
      */
-    public function setSearch(string $search)
+    public function setGlobalSearch(string $globalSearch)
     {
-        $this->search = $search;
-    }
+        $this->globalSearch = $globalSearch;
 
-    /**
-     * @return AbstractColumn[]
-     */
-    public function getColumns(): array
-    {
-        return $this->dataTable->getColumns();
-    }
-
-    /**
-     * @return ColumnState[]
-     */
-    public function getColumnStates(): array
-    {
-        return $this->columns;
-    }
-
-    /**
-     * @param AbstractColumn $column
-     */
-    public function addColumn(AbstractColumn $column)
-    {
-        $this->columns[$column->getName()] = new ColumnState($column);
-    }
-
-    /**
-     * @param int $index
-     * @return AbstractColumn
-     */
-    public function getColumnState(int $index): AbstractColumn
-    {
-        if ($index < 0 || $index >= count($this->columns)) {
-            throw new \InvalidArgumentException(sprintf('There is no column with index %d', $index));
-        }
-
-        return $this->columns[$index];
+        return $this;
     }
 
     /**
@@ -173,9 +146,43 @@ class DataTableState
 
     /**
      * @param bool $fromInitialRequest
+     * @return $this
      */
     public function setFromInitialRequest(bool $fromInitialRequest)
     {
         $this->fromInitialRequest = $fromInitialRequest;
+
+        return $this;
+    }
+
+    /**
+     * @param AbstractColumn $column
+     * @param string $direction
+     * @return $this
+     */
+    public function addOrderBy(AbstractColumn $column, string $direction = DataTable::SORT_ASCENDING)
+    {
+        $this->orderBy[] = [$column, $direction];
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOrderBy(): array
+    {
+        return $this->orderBy;
+    }
+
+    /**
+     * @param array $orderBy
+     * @return self
+     */
+    public function setOrderBy(array $orderBy = []): self
+    {
+        $this->orderBy = $orderBy;
+
+        return $this;
     }
 }

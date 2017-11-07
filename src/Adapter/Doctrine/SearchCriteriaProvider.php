@@ -34,8 +34,8 @@ class SearchCriteriaProvider implements CriteriaProviderInterface
                 $criteria->andWhere(new Comparison($column->getField(), $column->getFilter()->getOperator(), $column->getSearchValue()));
             }
 
-            if ($column->isGlobalSearchable() && null !== $state->getSearch() && null !== $column->getFilter()) {
-                $criteria->andWhere(new Comparison($column->getField(), $column->getFilter()->getOperator(), $state->getSearch()));
+            if ($column->isGlobalSearchable() && null !== $state->getGlobalSearch() && null !== $column->getFilter()) {
+                $criteria->andWhere(new Comparison($column->getField(), $column->getFilter()->getOperator(), $state->getGlobalSearch()));
             }
         }
 
