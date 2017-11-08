@@ -53,12 +53,15 @@ abstract class AbstractColumn
     {
         $data = $this->options['data'];
         if (is_callable($data)) {
-            $value = call_user_func($data, $context, $value);
+            $value = call_user_func($data, $value, $context);
         } elseif (empty($value)) {
             $value = $data;
         }
 
-        return $this->normalize($value);
+        // Allow easy postprocessing of normalized values through formatter
+        $value = $this->normalize($value);
+        $format = $this->options['format'];
+        return is_callable($format) ? call_user_func($format, $value, $context) : $value;
     }
 
     /**
@@ -92,6 +95,7 @@ abstract class AbstractColumn
                 'filter' => null,
                 'joinType' => 'join',
                 'className' => null,
+                'format' => null,
             ])
             ->setRequired([
                 'index',
@@ -111,7 +115,9 @@ abstract class AbstractColumn
             ->setAllowedTypes('searchValue', ['null', 'string'])
             ->setAllowedTypes('filter', ['null', 'array'])
             ->setAllowedTypes('joinType', ['null', 'string'])
-            ->setAllowedTypes('className', ['null', 'string']);
+            ->setAllowedTypes('className', ['null', 'string'])
+            ->setAllowedTypes('format', ['null', 'callable'])
+        ;
 
         return $this;
     }
@@ -236,6 +242,14 @@ abstract class AbstractColumn
     public function getClassName()
     {
         return $this->options['className'];
+    }
+
+    /**
+     * @return callable|null
+     */
+    public function getFormat()
+    {
+        return $this->options['format'];
     }
 
     /**
