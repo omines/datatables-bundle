@@ -47,7 +47,6 @@ class FunctionalTest extends WebTestCase
 
     public function testPlainDataTable()
     {
-        $this->client->enableProfiler();
         $json = $this->callDataTableUrl('/plain?draw=1&start=25&length=50&order[0][column]=0&order[0][dir]=desc');
 
         $this->assertSame(1, $json->draw);
@@ -80,8 +79,12 @@ class FunctionalTest extends WebTestCase
 
         $this->assertSame(2, $json->draw);
         $this->assertStringStartsWith('Company ', $json->data[0]->company);
-        $this->markTestSkipped('Row level formatting is still missing');
-        $this->assertSame('test', $json->data[0]->fullName);
+        $this->assertSame('LastName0 (Company 0)', $json->data[0]->fullName);
+
+//        $json = $this->callDataTableUrl('/service?draw=2&order[0][column]=2&order[0][dir]=desc&search[value]=ast2&columns[1][search][value]=24');
+//
+//        $this->assertStringStartsWith('Company ', $json->data[0]->company);
+//        $this->assertSame('LastName0 (Company 0)', $json->data[0]->fullName);
     }
 
     private function callDataTableUrl(string $url)

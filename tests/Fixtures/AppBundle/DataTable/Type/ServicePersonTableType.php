@@ -17,6 +17,7 @@ use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableTypeInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Tests\Fixtures\AppBundle\Entity\Company;
 use Tests\Fixtures\AppBundle\Entity\Person;
 
 /**
@@ -55,8 +56,8 @@ class ServicePersonTableType implements DataTableTypeInterface
                     return sprintf('<a href="%s">%s, %s</a>', $this->router->generate('home'), $person->getLastName(), $person->getFirstName());
                 },
             ])
-            ->format(function ($row) {
-                $row['fullName'] = "{$row['firstName']} {$row['lastName']}";
+            ->setTransformer(function ($row, Person $person) {
+                $row['fullName'] = sprintf('%s (%s)', $person->getLastName(), $person->getCompany()->getName());
 
                 return $row;
             })

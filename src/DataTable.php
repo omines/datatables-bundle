@@ -85,7 +85,7 @@ class DataTable
     protected $settings;
 
     /** @var callable */
-    protected $rowFormatter;
+    protected $transformer;
 
     /** @var AdapterInterface */
     protected $adapter;
@@ -157,17 +157,6 @@ class DataTable
             default:
                 throw new \LogicException("Class $class is neither an event or a callback");
         }
-
-        return $this;
-    }
-
-    /**
-     * @param callable $formatter
-     * @return $this
-     */
-    public function format(callable $formatter)
-    {
-        $this->rowFormatter = $formatter;
 
         return $this;
     }
@@ -335,12 +324,11 @@ class DataTable
         }
 
         foreach ($request->get($this->getRequestParam('columns', $isInitial), []) as $key => $search) {
-            // TODO: Test and fix this behavior
-            $column = $this->getState()->getColumn($key);
+            $column = $this->getColumn((int) $key);
             $value = $this->getState()->isFromInitialRequest() ? $search : $search['search']['value'];
 
-            if ('' !== $value && $column->isSearchable() && null !== $column->getFilter() && $column->getFilter()->isValidValue($value)) {
-                $column->setSearchValue($value);
+            if ($column->isSearchable() && !empty($value) && null !== $column->getFilter() && $column->getFilter()->isValidValue($value)) {
+                $state->setColumnSearch($column, $value);
             }
         }
     }
@@ -390,6 +378,14 @@ class DataTable
     }
 
     /**
+     * @return callable|null
+     */
+    public function getTransformer()
+    {
+        return $this->transformer;
+    }
+
+    /**
      * @return array
      */
     public function getOptions()
@@ -431,6 +427,17 @@ class DataTable
             throw new \InvalidArgumentException('DataTable name cannot be empty');
         }
         $this->settings['name'] = $name;
+
+        return $this;
+    }
+
+    /**
+     * @param callable $formatter
+     * @return $this
+     */
+    public function setTransformer(callable $formatter)
+    {
+        $this->transformer = $formatter;
 
         return $this;
     }

@@ -2,4 +2,3 @@ services:
     Tests\Fixtures\AppBundle\DataTable\Type\ServicePersonTableType:
         autowire: true
         autoconfigure: true
-        public: false           # Tests whether the service is automatically published

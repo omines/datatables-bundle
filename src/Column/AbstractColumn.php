@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle\Column;
 
-use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\Filter\AbstractFilter;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -87,7 +86,6 @@ abstract class AbstractColumn
                 'visible' => true,
                 'orderable' => true,
                 'orderField' => function (Options $options) { return $options['field']; },
-                'orderDirection' => null,
                 'searchable' => true,
                 'searchValue' => null,
                 'globalSearchable' => true,
@@ -108,16 +106,12 @@ abstract class AbstractColumn
             ->setAllowedTypes('visible', 'boolean')
             ->setAllowedTypes('orderable', 'boolean')
             ->setAllowedTypes('orderField', ['null', 'string'])
-            ->setAllowedTypes('orderDirection', ['null', 'string'])
             ->setAllowedTypes('searchable', 'boolean')
             ->setAllowedTypes('globalSearchable', 'boolean')
             ->setAllowedTypes('searchValue', ['null', 'string'])
             ->setAllowedTypes('filter', ['null', 'array'])
             ->setAllowedTypes('joinType', ['null', 'string'])
-            ->setAllowedTypes('className', ['null', 'string'])
-            ->setAllowedValues('orderDirection', function ($value) {
-                return null === $value || in_array(mb_strtolower($value), [DataTable::SORT_ASCENDING, DataTable::SORT_DESCENDING], true);
-            });
+            ->setAllowedTypes('className', ['null', 'string']);
 
         return $this;
     }
@@ -223,14 +217,6 @@ abstract class AbstractColumn
     /**
      * @return string|null
      */
-    public function getOrderDirection()
-    {
-        return $this->options['orderDirection'];
-    }
-
-    /**
-     * @return string|null
-     */
     public function getJoinType()
     {
         return $this->options['joinType'];
@@ -258,7 +244,6 @@ abstract class AbstractColumn
      */
     public function setFilter(array $filterClassAndOptions = null)
     {
-        throw new \LogicException('Is this being used?');
         if (null !== $filterClassAndOptions) {
             if (!isset($filterClassAndOptions[0]) || !is_string($filterClassAndOptions[0]) && !$filterClassAndOptions[0] instanceof AbstractFilter) {
                 throw new \Exception('AbstractColumn::setFilter(): Set a Filter class.');
@@ -274,6 +259,7 @@ abstract class AbstractColumn
 
             $this->filter = $filter;
         }
+        throw new \LogicException('Is this being used?');
     }
 
     /**

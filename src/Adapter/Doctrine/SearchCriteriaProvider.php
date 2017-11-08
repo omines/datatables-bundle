@@ -36,16 +36,23 @@ class SearchCriteriaProvider implements CriteriaProviderInterface
             $search = $searchInfo['search'];
 
             if ($column->isSearchable() && !empty($search) && null !== $column->getFilter()) {
-                $criteria->andWhere(new Comparison($column->getField(), $column->getFilter()->getOperator(), $search));
+                $this->addSearch($criteria, $column, $search);
             }
         }
 
-        foreach ($state->getDataTable()->getColumns() as $column) {
-            if ($column->isGlobalSearchable() && null !== $state->getGlobalSearch() && null !== $column->getFilter()) {
-                $criteria->andWhere(new Comparison($column->getField(), $column->getFilter()->getOperator(), $state->getGlobalSearch()));
+        if (!empty($globalSearch = $state->getGlobalSearch())) {
+            foreach ($state->getDataTable()->getColumns() as $column) {
+                if ($column->isGlobalSearchable() && null !== $state->getGlobalSearch() && null !== $column->getFilter()) {
+                    $this->addSearch($criteria, $column, $globalSearch);
+                }
             }
         }
 
         return $criteria;
+    }
+
+    private function addSearch(Criteria $criteria, AbstractColumn $column, string $search)
+    {
+        $criteria->andWhere(new Comparison($column->getField(), $column->getFilter()->getOperator(), $search));
     }
 }

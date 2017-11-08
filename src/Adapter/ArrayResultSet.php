@@ -65,12 +65,4 @@ class ArrayResultSet implements ResultSetInterface
     {
         return $this->data;
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function mapRow($columns, $row, $addIdentifier): array
-    {
-        return $row;
-    }
 }

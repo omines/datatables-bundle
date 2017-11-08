@@ -145,6 +145,7 @@ class ORMAdapter extends DoctrineAdapter
         // TODO: Support query parameters
         $data = [];
         $accessor = PropertyAccess::createPropertyAccessor();
+        $transformer = $state->getDataTable()->getTransformer();
         foreach ($query->iterate([], $this->hydrationMode) as $result) {
             $entity = $result[0];
             $row = [];
@@ -155,6 +156,9 @@ class ORMAdapter extends DoctrineAdapter
             foreach ($state->getDataTable()->getColumns() as $column) {
                 $value = null === $column->getPropertyPath() || !$accessor->isReadable($entity, $column->getPropertyPath()) ? $column->getData() : $accessor->getValue($entity, $column->getPropertyPath());
                 $row[$column->getName()] = $column->transform($entity, $value);
+            }
+            if ($transformer) {
+                $row = call_user_func($transformer, $row, $entity);
             }
             $data[] = $row;
 

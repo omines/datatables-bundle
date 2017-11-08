@@ -38,12 +38,4 @@ interface ResultSetInterface
      * @return array
      */
     public function getData(): array;
-
-    /**
-     * @param AbstractColumn[] $columns
-     * @param $row
-     * @param $addIdentifier
-     * @return mixed
-     */
-    public function mapRow($columns, $row, $addIdentifier): array;
 }
