@@ -13,3 +13,7 @@ type:
 service:
     path:       /service
     defaults:   { _controller: "AppBundle:Service:table" }
+
+custom:
+    path:       /custom
+    defaults:   { _controller: "AppBundle:CustomQuery:table" }

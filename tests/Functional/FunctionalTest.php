@@ -87,6 +87,14 @@ class FunctionalTest extends WebTestCase
 //        $this->assertSame('LastName0 (Company 0)', $json->data[0]->fullName);
     }
 
+    public function testCustomDataTable()
+    {
+        $json = $this->callDataTableUrl('/custom?draw=2');
+
+        $this->assertSame(2, $json->draw);
+        $this->assertStringStartsWith('Company ', $json->data[0]->company);
+    }
+
     private function callDataTableUrl(string $url)
     {
         $this->client->enableProfiler();

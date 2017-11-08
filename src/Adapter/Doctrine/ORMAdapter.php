@@ -267,25 +267,26 @@ class ORMAdapter extends DoctrineAdapter
             ->setAllowedTypes('hydrate', 'int')
             ->setAllowedTypes('query', [QueryBuilderProcessorInterface::class, 'array', 'callable'])
             ->setNormalizer('query', function (Options $options, $value) {
-                if (is_object($value)) {
-                    return [$value];
-                } elseif (!is_callable($value)) {
+                if (is_callable($value)) {
+                    return [new class($value) implements QueryBuilderProcessorInterface {
+                        private $callable;
+
+                        public function __construct(callable $value)
+                        {
+                            $this->callable = $value;
+                        }
+
+                        public function process(QueryBuilder $queryBuilder, DataTableState $state)
+                        {
+                            return call_user_func($this->callable, $queryBuilder, $state);
+                        }
+                    }];
+                } elseif (is_array($value)) {
                     return $value;
                 }
 
-                return new class($value) implements QueryBuilderProcessorInterface {
-                    private $callable;
-
-                    public function __construct(callable $value)
-                    {
-                        $this->callable = $value;
-                    }
-
-                    public function process(QueryBuilder $queryBuilder, DataTableState $state)
-                    {
-                        return call_user_func($this->callable, $queryBuilder, $state);
-                    }
-                };
-            });
+                return [$value];
+            })
+        ;
     }
 }
