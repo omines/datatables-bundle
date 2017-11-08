@@ -72,25 +72,25 @@ abstract class DoctrineAdapter implements AdapterInterface
             ->setNormalizer('criteria', function (Options $options, $value) {
                 if (null === $value) {
                     return [new SearchCriteriaProvider()];
-                } elseif (is_object($value)) {
-                    return [$value];
-                } elseif (!is_callable($value)) {
+                } elseif (is_callable($value)) {
+                    return [new class($value) implements CriteriaProviderInterface {
+                        private $callable;
+
+                        public function __construct(callable $value)
+                        {
+                            $this->callable = $value;
+                        }
+
+                        public function process(DataTableState $state)
+                        {
+                            return call_user_func($this->callable, $state);
+                        }
+                    }];
+                } elseif (is_array($value)) {
                     return $value;
                 }
 
-                return new class($value) implements CriteriaProviderInterface {
-                    private $callable;
-
-                    public function __construct(callable $value)
-                    {
-                        $this->callable = $value;
-                    }
-
-                    public function process(DataTableState $state)
-                    {
-                        return call_user_func($this->callable, $state);
-                    }
-                };
+                return [$value];
             });
     }
 }

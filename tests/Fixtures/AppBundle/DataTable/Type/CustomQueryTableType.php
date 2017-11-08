@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Tests\Fixtures\AppBundle\DataTable\Type;
 
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Collections\Expr\Comparison;
 use Doctrine\ORM\QueryBuilder;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
@@ -45,6 +47,9 @@ class CustomQueryTableType implements DataTableTypeInterface
                         ->from(Person::class, 'p')
                         ->leftJoin('p.company', 'c')
                     ;
+                },
+                'criteria' => function () {
+                    return Criteria::create()->andWhere(new Comparison('c.name', Comparison::CONTAINS, 'ny 2'));
                 },
             ])
         ;

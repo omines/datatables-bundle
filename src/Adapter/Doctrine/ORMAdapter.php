@@ -56,19 +56,12 @@ class ORMAdapter extends DoctrineAdapter
         parent::handleOptions($options);
 
         // Enable automated mode or just get the general default entity manager
-        if (isset($options['entity'])) {
-            if (null === ($this->manager = $this->registry->getManagerForClass($options['entity']))) {
-                throw new \LogicException(sprintf('There is no manager for entity "%s"', $options['entity']));
-            }
-            $this->metadata = $this->manager->getClassMetadata($options['entity']);
-            if (empty($options['query'])) {
-                $options['query'] = [new AutomaticQueryBuilder($this->manager, $this->metadata)];
-            }
-        } else {
-            if (empty($options['query'])) {
-                throw new \LogicException("You must either provide the 'entity' property or at least one query processor");
-            }
-            $this->manager = $this->registry->getManager();
+        if (null === ($this->manager = $this->registry->getManagerForClass($options['entity']))) {
+            throw new \LogicException(sprintf('There is no manager for entity "%s"', $options['entity']));
+        }
+        $this->metadata = $this->manager->getClassMetadata($options['entity']);
+        if (empty($options['query'])) {
+            $options['query'] = [new AutomaticQueryBuilder($this->manager, $this->metadata)];
         }
 
         // Set options
