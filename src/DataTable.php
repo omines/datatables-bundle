@@ -335,6 +335,7 @@ class DataTable
         }
 
         foreach ($request->get($this->getRequestParam('columns', $isInitial), []) as $key => $search) {
+            // TODO: Test and fix this behavior
             $column = $this->getState()->getColumn($key);
             $value = $this->getState()->isFromInitialRequest() ? $search : $search['search']['value'];
 
@@ -410,9 +411,12 @@ class DataTable
      * @param string $direction
      * @return self
      */
-    public function setDefaultSort($column, string $direction = self::SORT_ASCENDING)
+    public function addOrderBy($column, string $direction = self::SORT_ASCENDING)
     {
-        @trigger_error('setDefaultSort not implemented yet', E_USER_WARNING);
+        if (!$column instanceof AbstractColumn) {
+            $column = is_int($column) ? $this->getColumn($column) : $this->getColumnByName((string) $column);
+        }
+        $this->options['order'][] = [$column->getIndex(), $direction];
 
         return $this;
     }

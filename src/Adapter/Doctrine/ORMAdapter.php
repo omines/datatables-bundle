@@ -129,16 +129,28 @@ class ORMAdapter extends DoctrineAdapter
             }
         }
 
+        return new ArrayResultSet($this->getQueryData($builder->getQuery(), $state, $identifierPropertyPath), $totalRecords, $displayRecords);
+    }
+
+    /**
+     * Performs an incrementally processing fetch on the provided query.
+     *
+     * @param Query $query
+     * @param DataTableState $state
+     * @param string|null $identifierPropertyPath supply this parameter to inject the identifier in the result rows
+     * @return array
+     */
+    protected function getQueryData(Query $query, DataTableState $state, string $identifierPropertyPath = null): array
+    {
         // TODO: Support query parameters
         $data = [];
         $accessor = PropertyAccess::createPropertyAccessor();
-        foreach ($builder->getQuery()->iterate([], $this->hydrationMode) as $result) {
+        foreach ($query->iterate([], $this->hydrationMode) as $result) {
             $entity = $result[0];
             $row = [];
-            // TODO: Make adding ID optional
-            //if ($addIdentifier) {
-            $row['DT_RowId'] = $accessor->getValue($entity, $identifierPropertyPath);
-            //}
+            if ($identifierPropertyPath) {
+                $row['DT_RowId'] = $accessor->getValue($entity, $identifierPropertyPath);
+            }
 
             foreach ($state->getDataTable()->getColumns() as $column) {
                 $value = null === $column->getPropertyPath() || !$accessor->isReadable($entity, $column->getPropertyPath()) ? $column->getData() : $accessor->getValue($entity, $column->getPropertyPath());
@@ -150,7 +162,7 @@ class ORMAdapter extends DoctrineAdapter
             $this->manager->detach($entity);
         }
 
-        return new ArrayResultSet($data, $totalRecords, $displayRecords);
+        return $data;
     }
 
     /**
@@ -272,123 +284,4 @@ class ORMAdapter extends DoctrineAdapter
                 };
             });
     }
-
-//
-//    /**
-//     * @param callable|ProcessorInterface $processor
-//     * @param DataTableState $state
-//     * @return mixed
-//     */
-//    private function process($processor, DataTableState $state)
-//    {
-//        if (is_callable($processor)) {
-//            return $processor($this, $state);
-//        } elseif ($processor instanceof ProcessorInterface) {
-//            if ($processor instanceof QueryBuilderAwareInterface) {
-//                $processor->setQueryBuilder($this->queryBuilder);
-//            }
-//
-//            return $processor->process($this, $state);
-//        } else {
-//            $type = is_object($processor) ? get_class($processor) : gettype($processor);
-//            throw new \LogicException('Expected Closure or ProcessorInterface, not ' . $type);
-//        }
-//    }
-//
-//
-//
-//    /**
-//     * @param callable|ProcessorInterface $processor
-//     * @param QueryBuilder $queryBuilder
-//     * @param array $criteria
-//     */
-//    protected function runProcessor($processor, DataTableState $state, QueryBuilder &$queryBuilder = null, array &$criteria = [])
-//    {
-//        $result = $this->process($processor, $state);
-//
-//        if ($result instanceof QueryBuilder) {
-//            $queryBuilder = $result;
-//        } elseif ($result instanceof Criteria) {
-//            $criteria[] = $result;
-//        } elseif (null !== $result) {
-//            throw new \LogicException('Unexpected processor result - expected QueryBuilder or Criteria or NULL');
-//        }
-//    }
-//
-
-//
-//    public function handleState(DataTableState $state)
-//    {
-//        $this->createQueryBuilder($state);
-//
-//        /** @var Query\Expr\From $fromClause */
-//        $fromClause = $this->queryBuilder->getDQLPart('from')[0];
-//        $identifier = "{$fromClause->getAlias()}.{$this->metadata->getSingleIdentifierFieldName()}";
-//
-//        $this->totalRecords = $this->getCount($identifier);
-//
-//        $this->buildCriteria($state);
-//
-//        $this->displayRecords = $this->getCount($identifier);
-//
-//        $this->buildOrder($state->getColumns());
-//
-//        if ($state->getLength() > 0) {
-//            $this->queryBuilder->setFirstResult($state->getStart())->setMaxResults($state->getLength());
-//        }
-//
-//        /** @var Query\Expr\From $from */
-//        foreach ($this->queryBuilder->getDQLPart('from') as $from) {
-//            $this->aliases[$from->getAlias()] = [null, $this->manager->getMetadataFactory()->getMetadataFor($from->getFrom())];
-//        }
-//
-//        foreach ($this->queryBuilder->getDQLPart('join') as $joins) {
-//            /** @var Query\Expr\Join $join */
-//            foreach ($joins as $join) {
-//                list($origin, $target) = explode('.', $join->getJoin());
-//
-//                $mapping = $this->aliases[$origin][1]->getAssociationMapping($target);
-//                $this->aliases[$join->getAlias()] = [$join->getJoin(), $this->manager->getMetadataFactory()->getMetadataFor($mapping['targetEntity'])];
-//            }
-//        }
-//
-//        $this->identifierPropertyPath = $this->mapPropertyPath($identifier);
-//
-//        foreach ($state->getColumns() as $column) {
-//            if (null !== $column->getField() && null === $column->getPropertyPath()) {
-//                $column->setPropertyPath($this->mapPropertyPath($column->getField()));
-//            }
-//        }
-//
-//        return $this;
-//    }
-//
-
-//
-//    public function getTotalRecords()
-//    {
-//        return $this->totalRecords;
-//    }
-//
-//    public function getTotalDisplayRecords()
-//    {
-//        return $this->displayRecords;
-//    }
-//
-////    public function getData()
-////    {
-////        return $this->queryBuilder->getQuery()->getResult($this->hydrationMode);
-////    }
-//
-//    /**
-//     * @param AbstractColumn[] $columns
-//     * @param $row
-//     * @param bool $addIdentifier
-//     * @return mixed
-//     */
-//    public function mapRow($columns, $row, $addIdentifier = true)
-//    {
-//        $result = [];
-//
-//    }
 }

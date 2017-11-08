@@ -34,7 +34,6 @@ class PlainController extends Controller
     {
         $datatable = $this->createDataTable()
             ->setName('persons')
-            ->setDefaultSort('lastName', DataTable::SORT_ASCENDING)
             ->add('id', TextColumn::class, ['field' => 'person.id'])
             ->add('firstName', TextColumn::class)
             ->add('lastName', TextColumn::class, ['field' => 'person.lastName'])
@@ -49,6 +48,8 @@ class PlainController extends Controller
                 'raw' => true,
                 'data' => '<button>Click me</button>',
             ])
+            ->addOrderBy('lastName', DataTable::SORT_ASCENDING)
+            ->addOrderBy('firstName', DataTable::SORT_DESCENDING)
             ->createAdapter(ORMAdapter::class, [
                 'entity' => Person::class,
             ])

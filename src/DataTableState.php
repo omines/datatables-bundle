@@ -18,6 +18,8 @@ use Omines\DataTablesBundle\Column\AbstractColumn;
  * DataTableState.
  *
  * @author Robbert Beesems <robbert.beesems@omines.com>
+ *
+ * @internal bundle users should never access this class directly, or depend on its API not to change
  */
 class DataTableState
 {
@@ -198,8 +200,16 @@ class DataTableState
         return $this->searchColumns;
     }
 
-    public function setColumnSearch(AbstractColumn $column, string $search, bool $isRegex = false)
+    /**
+     * @param AbstractColumn $column
+     * @param string $search
+     * @param bool $isRegex
+     * @return self
+     */
+    public function setColumnSearch(AbstractColumn $column, string $search, bool $isRegex = false): self
     {
         $this->searchColumns[$column->getName()] = [$column, $search, $isRegex];
+
+        return $this;
     }
 }

@@ -14,7 +14,9 @@ namespace Tests\Functional;
 
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Debug\Exception\FlattenException;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\DataCollector\ExceptionDataCollector;
 use Tests\Fixtures\AppKernel;
 
 /**
@@ -97,7 +99,14 @@ class FunctionalTest extends WebTestCase
         if (!$response->isSuccessful()) {
             if ($profile = $this->client->getProfile()) {
                 $content = '';
-                foreach ($profile->getCollector('exception')->getException()->toArray() as $exception) {
+
+                /** @var ExceptionDataCollector $collector */
+                $collector = $profile->getCollector('exception');
+
+                /** @var FlattenException $exception */
+                $exception = $collector->getException();
+
+                foreach ($exception->toArray() as $exception) {
                     $content .= "{$exception['class']}: {$exception['message']}\n";
                     foreach ($exception['trace'] as $trace) {
                         $content .= "    {$trace['file']}:{$trace['line']}\n";
