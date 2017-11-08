@@ -86,20 +86,28 @@ class DataTableFactory
             if (isset($this->resolvedTypes[$name])) {
                 $type = $this->resolvedTypes[$name];
             } else {
-                if (null !== $this->typeLocator && $this->typeLocator->has($name)) {
-                    $type = $this->typeLocator->get($type);
-                } elseif (class_exists($name) && in_array(DataTableTypeInterface::class, class_implements($name), true)) {
-                    $type = new $name();
-                } else {
-                    throw new \InvalidArgumentException(sprintf('Could not resolve type "%s" to a service or class', $name));
-                }
-                $this->resolvedTypes[$name] = $type;
+                $this->resolvedTypes[$name] = $type = $this->resolveType($name);
             }
         }
 
-        /* @var DataTableTypeInterface $type */
         $type->configure($dataTable);
 
         return $dataTable;
+    }
+
+    /**
+     * Resolves a dynamic type to an instance via services or instantiation.
+     *
+     * @param string $type
+     * @return DataTableTypeInterface
+     */
+    private function resolveType(string $type): DataTableTypeInterface
+    {
+        if (null !== $this->typeLocator && $this->typeLocator->has($type)) {
+            return $this->typeLocator->get($type);
+        } elseif (class_exists($type) && in_array(DataTableTypeInterface::class, class_implements($type), true)) {
+            return new $type();
+        }
+        throw new \InvalidArgumentException(sprintf('Could not resolve type "%s" to a service or class', $type));
     }
 }

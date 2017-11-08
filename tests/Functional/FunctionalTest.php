@@ -46,19 +46,21 @@ class FunctionalTest extends WebTestCase
     public function testPlainDataTable()
     {
         $this->client->enableProfiler();
-        $json = $this->callDataTableUrl('/plain?draw=1&start=25&length=50&order[0][column]=0&order[0][dir]=asc');
+        $json = $this->callDataTableUrl('/plain?draw=1&start=25&length=50&order[0][column]=0&order[0][dir]=desc');
 
-        $this->assertSame(0, $json->draw);
+        $this->assertSame(1, $json->draw);
         $this->assertSame(125, $json->recordsTotal);
         $this->assertSame(125, $json->recordsFiltered);
-        $this->assertCount(125, $json->data);
+        $this->assertCount(50, $json->data);
 
         $sample = $json->data[5];
-        $this->assertSame('FirstName5', $sample->firstName);
-        $this->assertSame('LastName5', $sample->lastName);
-        $this->assertSame('14-04-2017', $sample->employedSince);
-        $this->assertSame('FirstName5 &lt;img src=&quot;https://symfony.com/images/v5/logos/sf-positive.svg&quot;&gt; LastName5', $sample->fullName);
+        $this->assertSame('FirstName94', $sample->firstName);
+        $this->assertSame('LastName94', $sample->lastName);
+        $this->assertNull($sample->employedSince);
+        $this->assertSame('FirstName94 &lt;img src=&quot;https://symfony.com/images/v5/logos/sf-positive.svg&quot;&gt; LastName94', $sample->fullName);
         $this->assertContains('<button', $sample->buttons);
+
+        $this->assertSame('04-07-2016', $json->data[6]->employedSince);
     }
 
     public function testTypeDataTable()
@@ -94,7 +96,13 @@ class FunctionalTest extends WebTestCase
     {
         if (!$response->isSuccessful()) {
             if ($profile = $this->client->getProfile()) {
-                $content = print_r($profile->getCollector('exception')->getException()->toArray(), true);
+                $content = '';
+                foreach ($profile->getCollector('exception')->getException()->toArray() as $exception) {
+                    $content .= "{$exception['class']}: {$exception['message']}\n";
+                    foreach ($exception['trace'] as $trace) {
+                        $content .= "    {$trace['file']}:{$trace['line']}\n";
+                    }
+                }
             } else {
                 $content = strip_tags($response->getContent());
             }

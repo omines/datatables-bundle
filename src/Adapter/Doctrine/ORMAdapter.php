@@ -19,6 +19,7 @@ use Omines\DataTablesBundle\Adapter\ArrayResultSet;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORM\AutomaticQueryBuilder;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORM\QueryBuilderProcessorInterface;
 use Omines\DataTablesBundle\Adapter\ResultSetInterface;
+use Omines\DataTablesBundle\Column\AbstractColumn;
 use Omines\DataTablesBundle\DataTableState;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -92,7 +93,12 @@ class ORMAdapter extends DoctrineAdapter
         $displayRecords = $this->getCount($builder, $identifier);
 
         // Apply definitive view state for current 'page' of the table
-        $this->buildOrder($builder, $state->getColumns());
+        foreach ($state->getOrderBy() as list($column, $direction)) {
+            /** @var AbstractColumn $column */
+            if ($column->isOrderable() && null !== $column->getOrderField()) {
+                $builder->addOrderBy($column->getOrderField(), $direction);
+            }
+        }
         if ($state->getLength() > 0) {
             $builder->setFirstResult($state->getStart())->setMaxResults($state->getLength());
         }
@@ -114,7 +120,7 @@ class ORMAdapter extends DoctrineAdapter
         }
 
         $identifierPropertyPath = $this->mapPropertyPath($identifier);
-        foreach ($state->getColumns() as $column) {
+        foreach ($state->getDataTable()->getColumns() as $column) {
             if (null === $column->getPropertyPath()) {
                 if (null === ($field = $column->getField())) {
                     $field = "{$fromClause->getAlias()}.{$column->getName()}";
@@ -134,7 +140,7 @@ class ORMAdapter extends DoctrineAdapter
             $row['DT_RowId'] = $accessor->getValue($entity, $identifierPropertyPath);
             //}
 
-            foreach ($state->getColumns() as $column) {
+            foreach ($state->getDataTable()->getColumns() as $column) {
                 $value = null === $column->getPropertyPath() || !$accessor->isReadable($entity, $column->getPropertyPath()) ? $column->getData() : $accessor->getValue($entity, $column->getPropertyPath());
                 $row[$column->getName()] = $column->transform($entity, $value);
             }
@@ -155,18 +161,6 @@ class ORMAdapter extends DoctrineAdapter
         foreach ($this->criteriaProcessors as $processor) {
             if ($criteria = $processor->process($state)) {
                 $queryBuilder->addCriteria($criteria);
-            }
-        }
-    }
-
-    /**
-     * @param AbstractColumn[] $columns
-     */
-    protected function buildOrder($columns)
-    {
-        foreach ($columns as $column) {
-            if ($column->isOrderable() && null !== $column->getOrderField() && null !== $column->getOrderDirection()) {
-                $this->queryBuilder->addOrderBy($column->getOrderField(), $column->getOrderDirection());
             }
         }
     }

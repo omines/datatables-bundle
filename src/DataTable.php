@@ -73,10 +73,10 @@ class DataTable
     protected $columnsByName = [];
 
     /** @var Callback[] */
-    protected $callbacks;
+    protected $callbacks = [];
 
     /** @var Event[] */
-    protected $events;
+    protected $events = [];
 
     /** @var array */
     protected $options;
@@ -106,9 +106,6 @@ class DataTable
         $this->state = $state ?? new DataTableState($this);
         $this->adapterLocator = $adapterLocator;
 
-        $this->events = [];
-        $this->callbacks = [];
-
         $resolver = new OptionsResolver();
         $this->configureOptions($resolver);
         $this->options = $resolver->resolve($options);
@@ -126,11 +123,12 @@ class DataTable
      */
     public function add(string $name, string $type, array $options = [])
     {
+        // Ensure name is unique
         if (isset($this->columnsByName[$name])) {
             throw new \RuntimeException(sprintf("There already is a column with name '%s'", $name));
         }
 
-        // TODO: Make this a ton more intelligent. Also, is index really needed?
+        // TODO: Is index really needed?
         /* @var AbstractColumn $column */
         $this->columns[] = $column = new $type(array_merge(['name' => $name, 'index' => count($this->columns)], $options));
         $this->columnsByName[$column->getName()] = $column;

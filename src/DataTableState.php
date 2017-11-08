@@ -37,6 +37,9 @@ class DataTableState
     private $globalSearch = '';
 
     /** @var array */
+    private $searchColumns = [];
+
+    /** @var array */
     private $orderBy = [];
 
     /** @var bool */
@@ -184,5 +187,19 @@ class DataTableState
         $this->orderBy = $orderBy;
 
         return $this;
+    }
+
+    /**
+     * Returns an array of column-level searches.
+     * @return array
+     */
+    public function getSearchColumns(): array
+    {
+        return $this->searchColumns;
+    }
+
+    public function setColumnSearch(AbstractColumn $column, string $search, bool $isRegex = false)
+    {
+        $this->searchColumns[$column->getName()] = [$column, $search, $isRegex];
     }
 }

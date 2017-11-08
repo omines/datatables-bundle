@@ -14,6 +14,7 @@ namespace Omines\DataTablesBundle\Adapter\Doctrine;
 
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Expr\Comparison;
+use Omines\DataTablesBundle\Column\AbstractColumn;
 use Omines\DataTablesBundle\DataTableState;
 
 /**
@@ -29,11 +30,17 @@ class SearchCriteriaProvider implements CriteriaProviderInterface
     public function process(DataTableState $state)
     {
         $criteria = Criteria::create();
-        foreach ($state->getColumns() as $column) {
-            if ($column->isSearchable() && null !== $column->getSearchValue() && null !== $column->getFilter()) {
-                $criteria->andWhere(new Comparison($column->getField(), $column->getFilter()->getOperator(), $column->getSearchValue()));
-            }
+        foreach ($state->getSearchColumns() as $searchInfo) {
+            /** @var AbstractColumn $column */
+            $column = $searchInfo['column'];
+            $search = $searchInfo['search'];
 
+            if ($column->isSearchable() && !empty($search) && null !== $column->getFilter()) {
+                $criteria->andWhere(new Comparison($column->getField(), $column->getFilter()->getOperator(), $search));
+            }
+        }
+
+        foreach ($state->getDataTable()->getColumns() as $column) {
             if ($column->isGlobalSearchable() && null !== $state->getGlobalSearch() && null !== $column->getFilter()) {
                 $criteria->andWhere(new Comparison($column->getField(), $column->getFilter()->getOperator(), $state->getGlobalSearch()));
             }
