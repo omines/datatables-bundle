@@ -45,11 +45,11 @@ abstract class AbstractColumn
     /**
      * The transform function is responsible for converting column-appropriate input to a datatables-usable type.
      *
-     * @param mixed $context All relevant data of the entire row
      * @param mixed|null $value The single value of the column, if mapping makes it possible to derive one
+     * @param mixed $context All relevant data of the entire row
      * @return mixed
      */
-    public function transform($context, $value = null)
+    public function transform($value = null, $context)
     {
         $data = $this->options['data'];
         if (is_callable($data)) {
@@ -58,10 +58,14 @@ abstract class AbstractColumn
             $value = $data;
         }
 
-        // Allow easy postprocessing of normalized values through formatter
+        // Allow easy postprocessing of normalized values through renderer
         $value = $this->normalize($value);
-        $format = $this->options['format'];
-        return is_callable($format) ? call_user_func($format, $value, $context) : $value;
+        if (is_string($render = $this->options['render'])) {
+            return sprintf($render, $value);
+        } elseif(is_callable($render)) {
+            return call_user_func($render, $value, $context);
+        }
+        return $value;
     }
 
     /**
@@ -80,9 +84,7 @@ abstract class AbstractColumn
     {
         $resolver
             ->setDefaults([
-                'index' => 1,
-                'name' => function (Options $options) { return "column-{$options['index']}"; },
-                'label' => function (Options $options) { return $options['field']; },
+                'label' => function (Options $options) { return $options['name']; },
                 'data' => null,
                 'field' => null,
                 'propertyPath' => null,
@@ -95,7 +97,7 @@ abstract class AbstractColumn
                 'filter' => null,
                 'joinType' => 'join',
                 'className' => null,
-                'format' => null,
+                'render' => null,
             ])
             ->setRequired([
                 'index',
@@ -116,7 +118,7 @@ abstract class AbstractColumn
             ->setAllowedTypes('filter', ['null', 'array'])
             ->setAllowedTypes('joinType', ['null', 'string'])
             ->setAllowedTypes('className', ['null', 'string'])
-            ->setAllowedTypes('format', ['null', 'callable'])
+            ->setAllowedTypes('render', ['null', 'string', 'callable'])
         ;
 
         return $this;
@@ -274,16 +276,5 @@ abstract class AbstractColumn
             $this->filter = $filter;
         }
         throw new \LogicException('Is this being used?');
-    }
-
-    /**
-     * @param string $path
-     * @return $this
-     */
-    public function setPropertyPath(string $path)
-    {
-        $this->options['propertyPath'] = $path;
-
-        return $this;
     }
 }

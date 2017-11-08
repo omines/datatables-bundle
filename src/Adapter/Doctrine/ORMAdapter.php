@@ -48,6 +48,12 @@ class ORMAdapter extends DoctrineAdapter
     /** @var array */
     private $aliases;
 
+    /** @var array */
+    private $fieldMap = [];
+
+    /** @var array */
+    private $propertyPathMap = [];
+
     /**
      * {@inheritdoc}
      */
@@ -85,17 +91,6 @@ class ORMAdapter extends DoctrineAdapter
         $this->buildCriteria($builder, $state);
         $displayRecords = $this->getCount($builder, $identifier);
 
-        // Apply definitive view state for current 'page' of the table
-        foreach ($state->getOrderBy() as list($column, $direction)) {
-            /** @var AbstractColumn $column */
-            if ($column->isOrderable() && null !== $column->getOrderField()) {
-                $builder->addOrderBy($column->getOrderField(), $direction);
-            }
-        }
-        if ($state->getLength() > 0) {
-            $builder->setFirstResult($state->getStart())->setMaxResults($state->getLength());
-        }
-
         /** @var Query\Expr\From $from */
         foreach ($builder->getDQLPart('from') as $from) {
             $this->aliases[$from->getAlias()] = [null, $this->manager->getMetadataFactory()->getMetadataFor($from->getFrom())];
@@ -112,14 +107,26 @@ class ORMAdapter extends DoctrineAdapter
             }
         }
 
+        // Perform mapping of all referred fields and implied fields
         $identifierPropertyPath = $this->mapPropertyPath($identifier);
         foreach ($state->getDataTable()->getColumns() as $column) {
-            if (null === $column->getPropertyPath()) {
-                if (null === ($field = $column->getField())) {
-                    $field = "{$fromClause->getAlias()}.{$column->getName()}";
-                }
-                $column->setPropertyPath($this->mapPropertyPath($field));
+            $this->fieldMap[$column->getName()] = $field = $column->getField() ?: "{$fromClause->getAlias()}.{$column->getName()}";
+            $this->propertyPathMap[$column->getName()] = $column->getPropertyPath() ?: $this->mapPropertyPath($field);
+        }
+
+        // Apply definitive view state for current 'page' of the table
+        foreach ($state->getOrderBy() as list($column, $direction)) {
+            /** @var AbstractColumn $column */
+            $orderField = $column->getOrderField() ?: $this->fieldMap[$column->getName()] ?? null;
+            if ($column->isOrderable() && !empty($orderField)) {
+                $builder->addOrderBy($orderField, $direction);
             }
+        }
+        if ($state->getLength() > 0) {
+            $builder
+                ->setFirstResult($state->getStart())
+                ->setMaxResults($state->getLength())
+            ;
         }
 
         return new ArrayResultSet($this->getQueryData($builder->getQuery(), $state, $identifierPropertyPath), $totalRecords, $displayRecords);
@@ -147,8 +154,9 @@ class ORMAdapter extends DoctrineAdapter
             }
 
             foreach ($state->getDataTable()->getColumns() as $column) {
-                $value = null === $column->getPropertyPath() || !$accessor->isReadable($entity, $column->getPropertyPath()) ? $column->getData() : $accessor->getValue($entity, $column->getPropertyPath());
-                $row[$column->getName()] = $column->transform($entity, $value);
+                $propertyPath = $this->propertyPathMap[$column->getName()];
+                $value = ($propertyPath && $accessor->isReadable($entity, $propertyPath)) ? $accessor->getValue($entity, $propertyPath) : null;
+                $row[$column->getName()] = $column->transform($value, $entity);
             }
             if ($transformer) {
                 $row = call_user_func($transformer, $row, $entity);
