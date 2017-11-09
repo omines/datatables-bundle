@@ -98,7 +98,7 @@ abstract class AbstractColumn
     {
         $resolver
             ->setDefaults([
-                'label' => function (Options $options) { return $options['name']; },
+                'label' => null,
                 'data' => null,
                 'field' => null,
                 'propertyPath' => null,
@@ -159,7 +159,7 @@ abstract class AbstractColumn
      */
     public function getLabel()
     {
-        return $this->options['label'];
+        return $this->options['label'] ?? "{$this->dataTable->getName()}.columns.{$this->getName()}";
     }
 
     /**

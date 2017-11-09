@@ -218,6 +218,14 @@ class DataTable
     }
 
     /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->settings['name'];
+    }
+
+    /**
      * @return AdapterInterface
      */
     public function getAdapter(): AdapterInterface
