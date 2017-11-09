@@ -24,6 +24,7 @@ use Omines\DataTablesBundle\DataTableFactory;
 use Omines\DataTablesBundle\DataTablesBundle;
 use Omines\DataTablesBundle\DataTableState;
 use PHPUnit\Framework\TestCase;
+use Tests\Fixtures\AppBundle\DataTable\Type\RegularPersonTableType;
 
 /**
  * DataTableTest.
@@ -53,6 +54,28 @@ class DataTableTest extends TestCase
         $this->assertSame('foo', $table->getOption('dom'));
         $this->assertNull($table->getSetting('none'));
         $this->assertNull($table->getOption('invalid'));
+    }
+
+    public function testFactoryRemembersInstances()
+    {
+        $factory = new DataTableFactory([], []);
+        $reflection = new \ReflectionClass(DataTableFactory::class);
+        $property = $reflection->getProperty('resolvedTypes');
+        $property->setAccessible(true);
+
+        $this->assertEmpty($property->getValue($factory));
+        $factory->createFromType(RegularPersonTableType::class);
+        $factory->createFromType(RegularPersonTableType::class);
+        $this->assertCount(1, $property->getValue($factory));
+    }
+
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Could not resolve type
+     */
+    public function testFactoryFailsOnInvalidType()
+    {
+        (new DataTableFactory([], []))->createFromType('foobar');
     }
 
     /**
