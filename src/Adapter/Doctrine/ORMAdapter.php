@@ -149,7 +149,7 @@ class ORMAdapter extends DoctrineAdapter
         foreach ($query->iterate([], $this->hydrationMode) as $result) {
             $entity = $result[0];
             $row = [];
-            if ($identifierPropertyPath) {
+            if (null !== $identifierPropertyPath) {
                 $row['DT_RowId'] = $accessor->getValue($entity, $identifierPropertyPath);
             }
 

@@ -40,25 +40,41 @@ class ArrayAdapter implements AdapterInterface
     {
         // TODO: Apply search
 
+        $page = array_slice($this->data, $state->getStart(), $state->getLength());
+        $map = [];
+        foreach ($state->getDataTable()->getColumns() as $column) {
+            unset($propertyPath);
+            if (empty($propertyPath = $column->getPropertyPath()) && !empty($field = $column->getField() ?? $column->getName())) {
+                $propertyPath = "[$field]";
+            }
+            if (null !== $propertyPath) {
+                $map[$column->getName()] = $propertyPath;
+            }
+        }
+
+        return new ArrayResultSet(iterator_to_array($this->processData($state, $page, $map)), count($this->data));
+    }
+
+    /**
+     * @param DataTableState $state
+     * @param array $data
+     * @param array $map
+     * @return \Generator
+     */
+    protected function processData(DataTableState $state, array $data, array $map)
+    {
         $transformer = $state->getDataTable()->getTransformer();
         $accessor = PropertyAccess::createPropertyAccessor();
-        $page = array_map(function ($result) use ($state, $transformer, $accessor) {
+        foreach ($data as $result) {
             $row = [];
             foreach ($state->getDataTable()->getColumns() as $column) {
-                unset($propertyPath);
-                if (empty($propertyPath = $column->getPropertyPath()) && !empty($field = $column->getField() ?? $column->getName())) {
-                    $propertyPath = "[$field]";
-                }
-                $value = ($propertyPath && $accessor->isReadable($result, $propertyPath)) ? $accessor->getValue($result, $propertyPath) : null;
+                $value = (!empty($propertyPath = $map[$column->getName()]) && $accessor->isReadable($result, $propertyPath)) ? $accessor->getValue($result, $propertyPath) : null;
                 $row[$column->getName()] = $column->transform($value, $result);
             }
             if ($transformer) {
                 $row = call_user_func($transformer, $row, $result);
             }
-
-            return $row;
-        }, array_slice($this->data, $state->getStart(), $state->getLength()));
-
-        return new ArrayResultSet($page, count($this->data));
+            yield $row;
+        }
     }
 }

@@ -58,8 +58,17 @@ abstract class AbstractColumn
             $value = $data;
         }
 
-        // Allow easy postprocessing of normalized values through renderer
-        $value = $this->normalize($value);
+        return $this->render($this->normalize($value));
+    }
+
+    /**
+     * Apply final modifications before rendering to result.
+     *
+     * @param mixed $value
+     * @return mixed|string
+     */
+    protected function render($value)
+    {
         if (is_string($render = $this->options['render'])) {
             return sprintf($render, $value);
         } elseif (is_callable($render)) {
