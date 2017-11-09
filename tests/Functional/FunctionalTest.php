@@ -82,10 +82,11 @@ class FunctionalTest extends WebTestCase
         $this->assertStringStartsWith('Company ', $json->data[0]->company);
         $this->assertSame('LastName0 (Company 0)', $json->data[0]->fullName);
 
-        $json = $this->callDataTableUrl('/service?draw=2&order[0][column]=2&order[0][dir]=desc&search[value]=ast2&columns[1][search][value]=24');
+        $json = $this->callDataTableUrl('/service?draw=2&order[0][column]=2&order[0][dir]=desc&search[value]=24&columns[1][search][value]=24');
 
+        $this->assertCount(2, $json->data);
         $this->assertStringStartsWith('Company ', $json->data[0]->company);
-        $this->assertSame('LastName99 (Company 4)', $json->data[0]->fullName);
+        $this->assertSame('LastName24 (Company 4)', $json->data[0]->fullName);
     }
 
     public function testCustomDataTable()

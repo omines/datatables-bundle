@@ -62,16 +62,17 @@ abstract class AbstractColumn
             $value = $data;
         }
 
-        return $this->render($this->normalize($value));
+        return $this->render($this->normalize($value), $context);
     }
 
     /**
      * Apply final modifications before rendering to result.
      *
      * @param mixed $value
+     * @param mixed $context All relevant data of the entire row
      * @return mixed|string
      */
-    protected function render($value)
+    protected function render($value, $context)
     {
         if (is_string($render = $this->options['render'])) {
             return sprintf($render, $value);
@@ -280,9 +281,10 @@ abstract class AbstractColumn
      * @param DataTable $dataTable
      * @return self
      */
-    public function setDataTable(DataTable $dataTable): AbstractColumn
+    public function setDataTable(DataTable $dataTable): self
     {
         $this->dataTable = $dataTable;
+
         return $this;
     }
 }

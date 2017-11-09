@@ -15,7 +15,6 @@ namespace Omines\DataTablesBundle\Adapter\Doctrine;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Expr\Comparison;
 use Doctrine\Common\Collections\Expr\CompositeExpression;
-use Doctrine\ORM\Query\Expr;
 use Omines\DataTablesBundle\Column\AbstractColumn;
 use Omines\DataTablesBundle\DataTableState;
 
