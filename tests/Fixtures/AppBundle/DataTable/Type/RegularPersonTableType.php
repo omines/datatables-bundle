@@ -34,7 +34,7 @@ class RegularPersonTableType implements DataTableTypeInterface
             ->add('firstName', TextColumn::class)
             ->add('lastName', TextColumn::class)
             ->add('lastActivity', DateTimeColumn::class, [
-                'data' => function ($row) {
+                'data' => function () {
                     return '2017-1-1 12:34:56';
                 },
                 'format' => 'd-m-Y',
@@ -47,6 +47,11 @@ class RegularPersonTableType implements DataTableTypeInterface
                 ['firstName' => 'George H.W.', 'lastName' => 'Bush'],
                 ['firstName' => 'Ronald', 'lastName' => 'Reagan'],
             ])
+            ->setTransformer(function ($row) {
+                $row['lastName'] = mb_strtoupper($row['lastName']);
+
+                return $row;
+            })
         ;
     }
 }

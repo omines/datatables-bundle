@@ -50,10 +50,10 @@ abstract class AbstractColumn
      * The transform function is responsible for converting column-appropriate input to a datatables-usable type.
      *
      * @param mixed|null $value The single value of the column, if mapping makes it possible to derive one
-     * @param mixed $context All relevant data of the entire row
+     * @param mixed|null $context All relevant data of the entire row
      * @return mixed
      */
-    public function transform($value = null, $context)
+    public function transform($value = null, $context = null)
     {
         $data = $this->options['data'];
         if (is_callable($data)) {
@@ -107,7 +107,6 @@ abstract class AbstractColumn
                 'orderable' => true,
                 'orderField' => function (Options $options) { return $options['field']; },
                 'searchable' => true,
-                'searchValue' => null,
                 'globalSearchable' => true,
                 'filter' => null,
                 'joinType' => 'join',
@@ -129,7 +128,6 @@ abstract class AbstractColumn
             ->setAllowedTypes('orderField', ['null', 'string'])
             ->setAllowedTypes('searchable', 'boolean')
             ->setAllowedTypes('globalSearchable', 'boolean')
-            ->setAllowedTypes('searchValue', ['null', 'string'])
             ->setAllowedTypes('filter', ['null', 'array'])
             ->setAllowedTypes('joinType', ['null', 'string'])
             ->setAllowedTypes('className', ['null', 'string'])
@@ -224,14 +222,6 @@ abstract class AbstractColumn
     /**
      * @return string|null
      */
-    public function getSearchValue()
-    {
-        return $this->options['searchValue'];
-    }
-
-    /**
-     * @return string|null
-     */
     public function getOrderField()
     {
         return $this->options['orderField'];
@@ -259,14 +249,6 @@ abstract class AbstractColumn
     public function getClassName()
     {
         return $this->options['className'];
-    }
-
-    /**
-     * @return callable|null
-     */
-    public function getFormat()
-    {
-        return $this->options['format'];
     }
 
     /**

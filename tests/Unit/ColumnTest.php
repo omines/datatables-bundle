@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use Omines\DataTablesBundle\Column\TextColumn;
+use Omines\DataTablesBundle\DataTable;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -24,7 +25,32 @@ class ColumnTest extends TestCase
 {
     public function testTextColumn()
     {
-        $column = new TextColumn(['name' => 'test', 'index' => 1]);
+        $column = new TextColumn([
+            'name' => 'test',
+            'index' => 1,
+            'data' => 'bar',
+            'render' => 'foo%s',
+        ]);
+
         $this->assertFalse($column->isRaw());
+        $this->assertSame('foobar', $column->transform(null));
+
+        $column->setDataTable(new DataTable(['name' => 'foo']));
+        $this->assertSame('foo', $column->getDataTable()->getName());
+    }
+
+    public function testColumnWithClosureRenderer()
+    {
+        $column = new TextColumn([
+            'name' => 'test',
+            'index' => 1,
+            'data' => 'bar',
+            'render' => function ($value) {
+                return mb_strtoupper($value);
+            },
+        ]);
+
+        $this->assertFalse($column->isRaw());
+        $this->assertSame('BAR', $column->transform(null));
     }
 }

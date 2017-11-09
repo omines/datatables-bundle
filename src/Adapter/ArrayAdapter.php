@@ -40,7 +40,8 @@ class ArrayAdapter implements AdapterInterface
     {
         // TODO: Apply search
 
-        $page = array_slice($this->data, $state->getStart(), $state->getLength());
+        $length = $state->getLength();
+        $page = $length > 0 ? array_slice($this->data, $state->getStart(), $state->getLength()) : $this->data;
         $map = [];
         foreach ($state->getDataTable()->getColumns() as $column) {
             unset($propertyPath);
