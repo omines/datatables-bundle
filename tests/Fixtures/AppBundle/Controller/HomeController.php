@@ -34,7 +34,7 @@ class HomeController extends Controller
         ;
 
         $datatable2 = $this->createDataTable([
-            'languageFromCdn' => false,
+            'language_from_cdn' => false,
         ]);
         $datatable2
             ->add('col3', TextColumn::class, ['label' => 'foo', 'field' => 'bar'])

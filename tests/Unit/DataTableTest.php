@@ -41,16 +41,16 @@ class DataTableTest extends TestCase
 
     public function testFactory()
     {
-        $factory = new DataTableFactory(['className' => 'foo'], ['dom' => 'bar']);
+        $factory = new DataTableFactory(['class_name' => 'foo'], ['dom' => 'bar']);
 
         $table = $factory->create(['name' => 'bar'], ['pageLength' => 684]);
         $this->assertSame('bar', $table->getSetting('name'));
-        $this->assertSame('foo', $table->getSetting('className'));
+        $this->assertSame('foo', $table->getSetting('class_name'));
         $this->assertSame('bar', $table->getOption('dom'));
         $this->assertSame(684, $table->getOption('pageLength'));
 
-        $table = $factory->create(['className' => 'bar'], ['dom' => 'foo']);
-        $this->assertSame('bar', $table->getSetting('className'));
+        $table = $factory->create(['class_name' => 'bar'], ['dom' => 'foo']);
+        $this->assertSame('bar', $table->getSetting('class_name'));
         $this->assertSame('foo', $table->getOption('dom'));
         $this->assertNull($table->getSetting('none'));
         $this->assertNull($table->getOption('invalid'));

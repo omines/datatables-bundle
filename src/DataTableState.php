@@ -78,7 +78,7 @@ class DataTableState
      * @param mixed $context
      * @return self
      */
-    public function setContext($context): DataTableState
+    public function setContext($context): self
     {
         $this->context = $context;
 
