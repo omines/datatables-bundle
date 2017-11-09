@@ -24,7 +24,7 @@ class ColumnTest extends TestCase
 {
     public function testTextColumn()
     {
-        $column = new TextColumn();
+        $column = new TextColumn(['name' => 'test', 'index' => 1]);
         $this->assertFalse($column->isRaw());
     }
 }

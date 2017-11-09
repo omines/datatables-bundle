@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Omines\DataTablesBundle\Adapter;
 
 use Omines\DataTablesBundle\DataTableState;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
  * ArrayAdapter.
@@ -38,6 +39,26 @@ class ArrayAdapter implements AdapterInterface
     public function getData(DataTableState $state): ResultSetInterface
     {
         // TODO: Apply search
-        return new ArrayResultSet(array_slice($this->data, $state->getStart(), $state->getLength()), count($this->data));
+
+        $transformer = $state->getDataTable()->getTransformer();
+        $accessor = PropertyAccess::createPropertyAccessor();
+        $page = array_map(function ($result) use ($state, $transformer, $accessor) {
+            $row = [];
+            foreach ($state->getDataTable()->getColumns() as $column) {
+                unset($propertyPath);
+                if (empty($propertyPath = $column->getPropertyPath()) && !empty($field = $column->getField() ?? $column->getName())) {
+                    $propertyPath = "[$field]";
+                }
+                $value = ($propertyPath && $accessor->isReadable($result, $propertyPath)) ? $accessor->getValue($result, $propertyPath) : null;
+                $row[$column->getName()] = $column->transform($value, $result);
+            }
+            if ($transformer) {
+                $row = call_user_func($transformer, $row, $result);
+            }
+
+            return $row;
+        }, array_slice($this->data, $state->getStart(), $state->getLength()));
+
+        return new ArrayResultSet($page, count($this->data));
     }
 }

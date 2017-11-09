@@ -53,7 +53,7 @@ abstract class AbstractColumn
     {
         $data = $this->options['data'];
         if (is_callable($data)) {
-            $value = call_user_func($data, $value, $context);
+            $value = call_user_func($data, $context, $value);
         } elseif (empty($value)) {
             $value = $data;
         }
@@ -62,9 +62,10 @@ abstract class AbstractColumn
         $value = $this->normalize($value);
         if (is_string($render = $this->options['render'])) {
             return sprintf($render, $value);
-        } elseif(is_callable($render)) {
+        } elseif (is_callable($render)) {
             return call_user_func($render, $value, $context);
         }
+
         return $value;
     }
 

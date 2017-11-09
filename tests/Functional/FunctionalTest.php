@@ -71,6 +71,7 @@ class FunctionalTest extends WebTestCase
         $this->assertSame(0, $json->draw);
         $this->assertSame(6, $json->recordsTotal);
         $this->assertSame('Donald', $json->data[0]->firstName);
+        $this->assertSame('01-01-2017', $json->data[0]->lastActivity);
     }
 
     public function testServiceDataTable()

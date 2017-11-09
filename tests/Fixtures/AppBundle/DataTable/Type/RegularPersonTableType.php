@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Tests\Fixtures\AppBundle\DataTable\Type;
 
 use Omines\DataTablesBundle\Adapter\ArrayAdapter;
+use Omines\DataTablesBundle\Column\DateTimeColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableTypeInterface;
@@ -32,6 +33,12 @@ class RegularPersonTableType implements DataTableTypeInterface
         $dataTable
             ->add('firstName', TextColumn::class)
             ->add('lastName', TextColumn::class)
+            ->add('lastActivity', DateTimeColumn::class, [
+                'data' => function ($row) {
+                    return '2017-1-1 12:34:56';
+                },
+                'format' => 'd-m-Y',
+            ])
             ->createAdapter(ArrayAdapter::class, [
                 ['firstName' => 'Donald', 'lastName' => 'Trump'],
                 ['firstName' => 'Barack', 'lastName' => 'Obama'],

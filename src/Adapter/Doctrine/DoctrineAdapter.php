@@ -73,7 +73,8 @@ abstract class DoctrineAdapter implements AdapterInterface
                 if (null === $value) {
                     return [new SearchCriteriaProvider()];
                 }
-                return array_map(function($value) {
+
+                return array_map(function ($value) {
                     if (is_callable($value)) {
                         return new class($value) implements CriteriaProviderInterface {
                             private $callable;
@@ -91,7 +92,7 @@ abstract class DoctrineAdapter implements AdapterInterface
                     }
 
                     return $value;
-                }, (array)$value);
+                }, (array) $value);
             });
     }
 }
