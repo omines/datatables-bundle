@@ -32,10 +32,11 @@ class DataTable
 {
     const DEFAULT_SETTINGS = [
         'name' => 'dt',
-        'className' => 'table table-bordered',
-        'languageFromCdn' => true,
-        'columnFilter' => null,
-        'requestState' => null,
+        'class_name' => 'table table-bordered',
+        'column_filter' => null,
+        'language_from_cdn' => true,
+        'request_state' => null,
+        'translation_domain' => 'messages',
     ];
 
     const DEFAULT_OPTIONS = [
@@ -113,6 +114,10 @@ class DataTable
         $resolver = new OptionsResolver();
         $this->configureSettings($resolver);
         $this->settings = $resolver->resolve($settings);
+
+        if (null !== $this->settings['column_filter']) {
+            throw new \LogicException("The 'column_filter' setting is currently not supported and must be null");
+        }
     }
 
     /**
@@ -132,6 +137,7 @@ class DataTable
         /* @var AbstractColumn $column */
         $this->columns[] = $column = new $type(array_merge(['name' => $name, 'index' => count($this->columns)], $options));
         $this->columnsByName[$column->getName()] = $column;
+        $column->setDataTable($this);
 
         return $this;
     }
@@ -403,7 +409,7 @@ class DataTable
     }
 
     /**
-     * @param int|string $column
+     * @param int|string|AbstractColumn $column
      * @param string $direction
      * @return self
      */
@@ -413,6 +419,17 @@ class DataTable
             $column = is_int($column) ? $this->getColumn($column) : $this->getColumnByName((string) $column);
         }
         $this->options['order'][] = [$column->getIndex(), $direction];
+
+        return $this;
+    }
+
+    /**
+     * @param mixed $context
+     * @return self
+     */
+    public function setContext($context): self
+    {
+        $this->state->setContext($context);
 
         return $this;
     }
@@ -450,9 +467,11 @@ class DataTable
     {
         $resolver->setDefaults(self::DEFAULT_SETTINGS)
             ->setAllowedTypes('name', 'string')
-            ->setAllowedTypes('className', 'string')
-            ->setAllowedTypes('languageFromCdn', 'bool')
-            ->setAllowedTypes('columnFilter', ['null', 'string']);
+            ->setAllowedTypes('class_name', 'string')
+            ->setAllowedTypes('column_filter', ['null', 'string'])
+            ->setAllowedTypes('language_from_cdn', 'bool')
+            ->setAllowedTypes('translation_domain', 'string')
+        ;
 
         return $this;
     }

@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle\Column;
 
+use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\Filter\AbstractFilter;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -25,6 +26,9 @@ abstract class AbstractColumn
 {
     /** @var array<string, OptionsResolver> */
     private static $resolversByClass = [];
+
+    /** @var DataTable */
+    private $dataTable;
 
     /** @var array<string, mixed> */
     protected $options;
@@ -79,7 +83,7 @@ abstract class AbstractColumn
     }
 
     /**
-     * The normalize function is responsible for converting parsed and processed data to a datatables-usable type.
+     * The normalize function is responsible for converting parsed and processed data to a datatables-appropriate type.
      *
      * @param mixed $value The single value of the column
      * @return mixed
@@ -265,26 +269,20 @@ abstract class AbstractColumn
     }
 
     /**
-     * @param array $filterClassAndOptions
-     * @throws \Exception
+     * @return DataTable
      */
-    public function setFilter(array $filterClassAndOptions = null)
+    public function getDataTable(): DataTable
     {
-        if (null !== $filterClassAndOptions) {
-            if (!isset($filterClassAndOptions[0]) || !is_string($filterClassAndOptions[0]) && !$filterClassAndOptions[0] instanceof AbstractFilter) {
-                throw new \Exception('AbstractColumn::setFilter(): Set a Filter class.');
-            }
+        return $this->dataTable;
+    }
 
-            if (isset($filterClassAndOptions[1]) && !is_array($filterClassAndOptions[1])) {
-                throw new \Exception('AbstractColumn::setFilter(): Set an options array.');
-            }
-
-            /** @var AbstractFilter $filter */
-            $filter = new $filterClassAndOptions[0]();
-            $filter->set(isset($filterClassAndOptions[1]) ? $filterClassAndOptions[1] : []);
-
-            $this->filter = $filter;
-        }
-        throw new \LogicException('Is this being used?');
+    /**
+     * @param DataTable $dataTable
+     * @return self
+     */
+    public function setDataTable(DataTable $dataTable): AbstractColumn
+    {
+        $this->dataTable = $dataTable;
+        return $this;
     }
 }

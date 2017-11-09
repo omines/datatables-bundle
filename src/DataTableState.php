@@ -18,8 +18,6 @@ use Omines\DataTablesBundle\Column\AbstractColumn;
  * DataTableState.
  *
  * @author Robbert Beesems <robbert.beesems@omines.com>
- *
- * @internal bundle users should never access this class directly, or depend on its API not to change
  */
 class DataTableState
 {
@@ -47,6 +45,9 @@ class DataTableState
     /** @var bool */
     private $fromInitialRequest = false;
 
+    /** @var mixed */
+    protected $context;
+
     /**
      * DataTableState constructor.
      *
@@ -63,6 +64,25 @@ class DataTableState
     public function getDataTable(): DataTable
     {
         return $this->dataTable;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getContext()
+    {
+        return $this->context;
+    }
+
+    /**
+     * @param mixed $context
+     * @return self
+     */
+    public function setContext($context): DataTableState
+    {
+        $this->context = $context;
+
+        return $this;
     }
 
     /**

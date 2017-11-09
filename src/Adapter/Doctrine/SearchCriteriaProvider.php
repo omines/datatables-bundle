@@ -14,6 +14,8 @@ namespace Omines\DataTablesBundle\Adapter\Doctrine;
 
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Expr\Comparison;
+use Doctrine\Common\Collections\Expr\CompositeExpression;
+use Doctrine\ORM\Query\Expr;
 use Omines\DataTablesBundle\Column\AbstractColumn;
 use Omines\DataTablesBundle\DataTableState;
 
@@ -36,23 +38,20 @@ class SearchCriteriaProvider implements CriteriaProviderInterface
             $search = $searchInfo['search'];
 
             if ($column->isSearchable() && !empty($search) && null !== $column->getFilter()) {
-                $this->addSearch($criteria, $column, $search);
+                $criteria->andWhere(new Comparison($column->getField(), $column->getFilter()->getOperator(), $search));
             }
         }
 
         if (!empty($globalSearch = $state->getGlobalSearch())) {
+            $comparisons = [];
             foreach ($state->getDataTable()->getColumns() as $column) {
-                if ($column->isGlobalSearchable() && null !== $state->getGlobalSearch() && null !== $column->getFilter()) {
-                    $this->addSearch($criteria, $column, $globalSearch);
+                if ($column->isGlobalSearchable() && null !== $state->getGlobalSearch() && $column->getField()) {
+                    $comparisons[] = new Comparison($column->getField(), Comparison::CONTAINS, $globalSearch);
                 }
             }
+            $criteria->andWhere(new CompositeExpression(CompositeExpression::TYPE_OR, $comparisons));
         }
 
         return $criteria;
-    }
-
-    private function addSearch(Criteria $criteria, AbstractColumn $column, string $search)
-    {
-        $criteria->andWhere(new Comparison($column->getField(), $column->getFilter()->getOperator(), $search));
     }
 }

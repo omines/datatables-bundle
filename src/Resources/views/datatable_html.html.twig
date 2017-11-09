@@ -1,19 +1,19 @@
-<table id="{{ datatable.setting('name') }}" class="{{ datatable.setting('className') }}{% if className is defined %} {{ className }}{% endif %}">
+<table id="{{ datatable.setting('name') }}" class="{{ datatable.setting('class_name') }}{% if className is defined %} {{ className }}{% endif %}">
     <thead>
     <tr>
         {% for column in datatable.columns %}
             <th>{{ column.label|trans }}</th>
         {% endfor %}
     </tr>
-    {% if datatable.option('searching') and datatable.setting('columnFilter') in ['both', 'thead'] %}
+    {% if datatable.option('searching') and datatable.setting('column_filter') in ['both', 'thead'] %}
         <tr class="datatable-filters">
-            {% for column in datatable.state.columns %}
+            {% for column in datatable.columns %}
                 <td>{% if column.filter != null %}{% include column.filter.templateHtml %}{% endif %}</td>
             {% endfor %}
         </tr>
     {% endif %}
     </thead>
-    {% if datatable.option('searching') and datatable.setting('columnFilter') in ['both', 'tfoot'] %}
+    {% if datatable.option('searching') and datatable.setting('column_filter') in ['both', 'tfoot'] %}
         <tfoot>
         <tr class="datatable-filters">
             {% for column in datatable.columns %}
