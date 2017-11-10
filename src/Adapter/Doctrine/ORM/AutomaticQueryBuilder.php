@@ -16,6 +16,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\MappingException;
 use Doctrine\ORM\QueryBuilder;
+use Omines\DataTablesBundle\Column\AbstractColumn;
 use Omines\DataTablesBundle\DataTableState;
 
 /**
@@ -66,43 +67,47 @@ class AutomaticQueryBuilder implements QueryBuilderProcessorInterface
     public function process(QueryBuilder $builder, DataTableState $state)
     {
         foreach ($state->getDataTable()->getColumns() as $column) {
-            $currentPart = $this->entityShortName;
-            $currentAlias = $currentPart;
-            $metadata = $this->metadata;
-            $field = $column->getField();
-
-            // TODO: Is this a good idea? Probably not in this form....
-            if (!isset($field) && isset($this->metadata->fieldMappings[$column->getName()])) {
-                $field = $this->entityShortName . '.' . $column->getName();
-            }
-            if (null !== $field) {
-                $parts = explode('.', $field);
-
-                if (count($parts) > 1 && $parts[0] === $this->entityShortName) {
-                    array_shift($parts);
-                }
-
-                while (count($parts) > 1) {
-                    $previousPart = $currentPart;
-                    $previousAlias = $currentAlias;
-                    $currentPart = array_shift($parts);
-                    $currentAlias = ($previousPart === $this->entityShortName ? '' : $previousPart . '_') . $currentPart;
-
-                    if (!array_key_exists($previousAlias . '.' . $currentPart, $this->joins)) {
-                        $this->addJoin($previousAlias . '.' . $currentPart, $currentAlias, $column->getJoinType());
-                    }
-
-                    $metadata = $this->setIdentifierFromAssociation($currentAlias, $currentPart, $metadata);
-                }
-
-                $this->addSelectColumn($currentAlias, $this->getIdentifier($metadata));
-                $this->addSelectColumn($currentAlias, $parts[0]);
-            }
+            $this->processColumn($column);
         }
-
         $builder->from($this->entityName, $this->entityShortName);
         $this->setSelectFrom($builder);
         $this->setJoins($builder);
+    }
+
+    protected function processColumn(AbstractColumn $column)
+    {
+        $currentPart = $this->entityShortName;
+        $currentAlias = $currentPart;
+        $metadata = $this->metadata;
+        $field = $column->getField();
+
+        // TODO: Is this a good idea? Probably not in this form....
+        if (!isset($field) && isset($this->metadata->fieldMappings[$column->getName()])) {
+            $field = $this->entityShortName . '.' . $column->getName();
+        }
+        if (null !== $field) {
+            $parts = explode('.', $field);
+
+            if (count($parts) > 1 && $parts[0] === $this->entityShortName) {
+                array_shift($parts);
+            }
+
+            while (count($parts) > 1) {
+                $previousPart = $currentPart;
+                $previousAlias = $currentAlias;
+                $currentPart = array_shift($parts);
+                $currentAlias = ($previousPart === $this->entityShortName ? '' : $previousPart . '_') . $currentPart;
+
+                if (!array_key_exists($previousAlias . '.' . $currentPart, $this->joins)) {
+                    $this->addJoin($previousAlias . '.' . $currentPart, $currentAlias, $column->getJoinType());
+                }
+
+                $metadata = $this->setIdentifierFromAssociation($currentAlias, $currentPart, $metadata);
+            }
+
+            $this->addSelectColumn($currentAlias, $this->getIdentifier($metadata));
+            $this->addSelectColumn($currentAlias, $parts[0]);
+        }
     }
 
     private function addSelectColumn($columnTableName, $data)

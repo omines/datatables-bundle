@@ -287,15 +287,19 @@ class DataTable
         return $this;
     }
 
-    private function getRequestParam($name, $prefix)
+    /**
+     * @param string $name
+     * @param bool $prefix
+     * @return string
+     */
+    private function getRequestParam(string $name, bool $prefix = false)
     {
-        if ($prefix) {
-            return "{$this->getSetting('name')}_$name";
-        } else {
-            return $name;
-        }
+        return $prefix ? "{$this->getSetting('name')}_$name" : $name;
     }
 
+    /**
+     * @param Request $request
+     */
     private function handleInitialRequest(Request $request)
     {
         $state = $this->getState();
@@ -306,7 +310,14 @@ class DataTable
         $state->setLength((int) $request->get($this->getRequestParam('length', $isInitial), -1));
         $state->setGlobalSearch($search['value'] ?? '');
 
-        $state->setOrderBy([]);
+        $this->handleOrderBy($request);
+        $this->handleSearch($request);
+    }
+
+    private function handleOrderBy(Request $request)
+    {
+        $state = $this->getState()->setOrderBy([]);
+        $isInitial = $state->isFromInitialRequest();
         foreach ($request->get($this->getRequestParam('order', $isInitial), []) as $order) {
             $column = $this->getColumn((int) $order['column']);
 
@@ -314,7 +325,12 @@ class DataTable
                 $state->addOrderBy($column, $order['dir']);
             }
         }
+    }
 
+    private function handleSearch(Request $request)
+    {
+        $state = $this->getState();
+        $isInitial = $state->isFromInitialRequest();
         foreach ($request->get($this->getRequestParam('columns', $isInitial), []) as $key => $search) {
             $column = $this->getColumn((int) $key);
             $value = $this->getState()->isFromInitialRequest() ? $search : $search['search']['value'];
