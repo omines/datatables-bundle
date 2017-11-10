@@ -12,7 +12,9 @@ declare(strict_types=1);
 
 namespace Tests\Fixtures\AppBundle\DataTable\Type;
 
+use Omines\DataTablesBundle\Adapter\Doctrine\ORM\AutomaticQueryBuilder;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
+use Omines\DataTablesBundle\Adapter\Doctrine\SearchCriteriaProvider;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableTypeInterface;
@@ -63,6 +65,9 @@ class ServicePersonTableType implements DataTableTypeInterface
             })
             ->createAdapter(ORMAdapter::class, [
                 'entity' => Person::class,
+                'criteria' => [
+                    new SearchCriteriaProvider(),
+                ],
             ])
         ;
     }

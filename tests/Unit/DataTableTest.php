@@ -19,12 +19,16 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use Omines\DataTablesBundle\Adapter\ArrayAdapter;
+use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableFactory;
 use Omines\DataTablesBundle\DataTablesBundle;
-use Omines\DataTablesBundle\DataTableState;
+use Omines\DataTablesBundle\Event\Callback;
+use Omines\DataTablesBundle\Event\Event;
 use PHPUnit\Framework\TestCase;
 use Tests\Fixtures\AppBundle\DataTable\Type\RegularPersonTableType;
+use Tests\Unit\Helper\InvalidEvent;
 
 /**
  * DataTableTest.
@@ -48,12 +52,16 @@ class DataTableTest extends TestCase
         $this->assertSame('foo', $table->getSetting('class_name'));
         $this->assertSame('bar', $table->getOption('dom'));
         $this->assertSame(684, $table->getOption('pageLength'));
+        $this->assertArrayHasKey('name', $table->getSettings());
 
         $table = $factory->create(['class_name' => 'bar'], ['dom' => 'foo']);
         $this->assertSame('bar', $table->getSetting('class_name'));
         $this->assertSame('foo', $table->getOption('dom'));
         $this->assertNull($table->getSetting('none'));
         $this->assertNull($table->getOption('invalid'));
+
+        $table->setAdapter(new ArrayAdapter());
+        $this->assertInstanceOf(ArrayAdapter::class, $table->getAdapter());
     }
 
     public function testFactoryRemembersInstances()
@@ -67,6 +75,40 @@ class DataTableTest extends TestCase
         $factory->createFromType(RegularPersonTableType::class);
         $factory->createFromType(RegularPersonTableType::class);
         $this->assertCount(1, $property->getValue($factory));
+    }
+
+    public function testDataTableState()
+    {
+        $datatable = new DataTable();
+        $state = $datatable->getState();
+        $datatable->setContext(684);
+
+        // Test sane defaults
+        $this->assertSame(0, $state->getStart());
+        $this->assertSame(-1, $state->getLength());
+        $this->assertSame(0, $state->getDraw());
+        $this->assertSame('', $state->getGlobalSearch());
+        $this->assertSame(684, $state->getContext());
+
+        $state->setStart(5);
+        $state->setLength(10);
+        $state->setGlobalSearch('foo');
+
+        $this->assertSame(5, $state->getStart());
+        $this->assertSame(10, $state->getLength());
+        $this->assertSame('foo', $state->getGlobalSearch());
+    }
+
+    public function testEventsAndCallbacks()
+    {
+        $datatable = new DataTable();
+        $options = ['type' => 'test', 'template' => 'foo.html.twig'];
+
+        $datatable->on(Event::class, $options);
+        $datatable->on(Callback::class, $options);
+
+        $this->assertCount(1, $datatable->getCallbacks());
+        $this->assertCount(1, $datatable->getEvents());
     }
 
     /**
@@ -94,25 +136,6 @@ class DataTableTest extends TestCase
         new DataTable([], ['option' => 'bar']);
     }
 
-    public function testDataTableState()
-    {
-        $state = new DataTableState(new DataTable());
-
-        // Test sane defaults
-        $this->assertSame(0, $state->getStart());
-        $this->assertSame(-1, $state->getLength());
-        $this->assertSame(0, $state->getDraw());
-        $this->assertSame('', $state->getGlobalSearch());
-
-        $state->setStart(5);
-        $state->setLength(10);
-        $state->setGlobalSearch('foo');
-
-        $this->assertSame(5, $state->getStart());
-        $this->assertSame(10, $state->getLength());
-        $this->assertSame('foo', $state->getGlobalSearch());
-    }
-
     /**
      * @expectedException \InvalidArgumentException
      */
@@ -127,5 +150,76 @@ class DataTableTest extends TestCase
     public function testDataTableInvalidColumnByName()
     {
         (new DataTable())->getColumnByName('foo');
+    }
+
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage setting is currently not supported
+     */
+    public function testColumnFilterIsProhibited()
+    {
+        (new DataTable(['column_filter' => 'thead']));
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage There already is a column with name
+     */
+    public function testDuplicateColumnNameThrows()
+    {
+        (new DataTable())
+            ->add('foo', TextColumn::class)
+            ->add('foo', TextColumn::class)
+        ;
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Could not resolve adapter type
+     */
+    public function testInvalidAdapterThrows()
+    {
+        (new DataTable())
+            ->createAdapter('foo\bar')
+        ;
+    }
+
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage No adapter was configured to retrieve data
+     */
+    public function testMissingAdapterThrows()
+    {
+        (new DataTable())->getResponse();
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage DataTable name cannot be empty
+     */
+    public function testEmptyNameThrows()
+    {
+        (new DataTable())->setName('');
+    }
+
+    /**
+     * @expectedException \Error
+     * @expectedExceptionMessage Class 'foo' not found
+     */
+    public function testInvalidEventThrows()
+    {
+        (new DataTable())->on('foo');
+    }
+
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage neither an event or a callback
+     */
+    public function testInvalidEventClassThrows()
+    {
+        (new DataTable())->on(InvalidEvent::class, [
+            'type' => 'test',
+            'template' => 'foo.html.twig',
+        ]);
     }
 }

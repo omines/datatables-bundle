@@ -272,28 +272,6 @@ class DataTable
     }
 
     /**
-     * @param $start
-     * @return $this
-     */
-    public function setStart($start)
-    {
-        $this->state->setStart($start);
-
-        return $this;
-    }
-
-    /**
-     * @param $length
-     * @return $this
-     */
-    public function setLength($length)
-    {
-        $this->state->setLength($length);
-
-        return $this;
-    }
-
-    /**
      * @param Request $request
      * @return $this
      */
