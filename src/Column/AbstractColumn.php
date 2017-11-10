@@ -211,8 +211,6 @@ abstract class AbstractColumn
 
     /**
      * @return AbstractFilter
-     *
-     * @todo Is this return hint correct?
      */
     public function getFilter()
     {

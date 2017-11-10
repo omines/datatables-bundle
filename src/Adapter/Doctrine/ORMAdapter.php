@@ -142,7 +142,6 @@ class ORMAdapter extends DoctrineAdapter
      */
     protected function getQueryData(Query $query, DataTableState $state, string $identifierPropertyPath = null): array
     {
-        // TODO: Support query parameters
         $data = [];
         $accessor = PropertyAccess::createPropertyAccessor();
         $transformer = $state->getDataTable()->getTransformer();
@@ -152,6 +151,7 @@ class ORMAdapter extends DoctrineAdapter
             if (null !== $identifierPropertyPath) {
                 $row['DT_RowId'] = $accessor->getValue($entity, $identifierPropertyPath);
             }
+            //$data[] = $this->map($row);
 
             foreach ($state->getDataTable()->getColumns() as $column) {
                 $propertyPath = $this->propertyPathMap[$column->getName()];
@@ -251,8 +251,6 @@ class ORMAdapter extends DoctrineAdapter
 
     /**
      * @param OptionsResolver $resolver
-     *
-     * @todo Make entity optional by extracting count/ID logic
      */
     protected function configureOptions(OptionsResolver $resolver)
     {
@@ -260,11 +258,11 @@ class ORMAdapter extends DoctrineAdapter
 
         $resolver
             ->setDefaults([
-                'entity' => null,
                 'hydrate' => Query::HYDRATE_OBJECT,
                 'query' => [],
             ])
-            ->setAllowedTypes('entity', ['string']) //, 'null'])
+            ->setRequired('entity')
+            ->setAllowedTypes('entity', ['string'])
             ->setAllowedTypes('hydrate', 'int')
             ->setAllowedTypes('query', [QueryBuilderProcessorInterface::class, 'array', 'callable'])
             ->setNormalizer('query', function (Options $options, $value) {

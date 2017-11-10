@@ -38,8 +38,6 @@ class ArrayAdapter implements AdapterInterface
      */
     public function getData(DataTableState $state): ResultSetInterface
     {
-        // TODO: Apply search
-
         $length = $state->getLength();
         $page = $length > 0 ? array_slice($this->data, $state->getStart(), $state->getLength()) : $this->data;
         $map = [];
@@ -53,7 +51,8 @@ class ArrayAdapter implements AdapterInterface
             }
         }
 
-        return new ArrayResultSet(iterator_to_array($this->processData($state, $page, $map)), count($this->data));
+        $data = iterator_to_array($this->processData($state, $page, $map));
+        return new ArrayResultSet($data, count($this->data), count($data));
     }
 
     /**
@@ -65,12 +64,21 @@ class ArrayAdapter implements AdapterInterface
     protected function processData(DataTableState $state, array $data, array $map)
     {
         $transformer = $state->getDataTable()->getTransformer();
+        $search = $state->getGlobalSearch() ?: null;
         $accessor = PropertyAccess::createPropertyAccessor();
         foreach ($data as $result) {
             $row = [];
+            $match = (null === $search);
             foreach ($state->getDataTable()->getColumns() as $column) {
                 $value = (!empty($propertyPath = $map[$column->getName()]) && $accessor->isReadable($result, $propertyPath)) ? $accessor->getValue($result, $propertyPath) : null;
+                $value = $column->transform($value, $result);
+                if (!$match) {
+                    $match = (stripos($value, $search) !== false);
+                }
                 $row[$column->getName()] = $column->transform($value, $result);
+            }
+            if (!$match) {
+                continue;
             }
             if ($transformer) {
                 $row = call_user_func($transformer, $row, $result);
