@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Omines\DataTablesBundle\Event;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 
 abstract class AbstractEvent
 {
@@ -26,17 +25,6 @@ abstract class AbstractEvent
     /** @var array */
     protected $vars;
 
-    /** @var array */
-    protected $options;
-
-    /**
-     * AbstractEvent constructor.
-     */
-    public function __construct()
-    {
-        $this->options = [];
-    }
-
     /**
      * @param array $options
      */
@@ -44,14 +32,8 @@ abstract class AbstractEvent
     {
         $resolver = new OptionsResolver();
         $this->configureOptions($resolver);
-        $this->options = $resolver->resolve($options);
-
-        $accessor = PropertyAccess::createPropertyAccessorBuilder()
-            ->enableMagicCall()
-            ->getPropertyAccessor();
-
-        foreach ($this->options as $setter => $value) {
-            $accessor->setValue($this, $setter, $value);
+        foreach ($resolver->resolve($options) as $key => $value) {
+            $this->$key = $value;
         }
     }
 
@@ -82,14 +64,6 @@ abstract class AbstractEvent
     }
 
     /**
-     * @param string $type
-     */
-    public function setType(string $type)
-    {
-        $this->type = $type;
-    }
-
-    /**
      * @return string
      */
     public function getTemplate()
@@ -98,26 +72,10 @@ abstract class AbstractEvent
     }
 
     /**
-     * @param string $template
-     */
-    public function setTemplate(string $template)
-    {
-        $this->template = $template;
-    }
-
-    /**
      * @return array
      */
     public function getVars()
     {
         return $this->vars;
-    }
-
-    /**
-     * @param array $vars
-     */
-    public function setVars(array $vars)
-    {
-        $this->vars = $vars;
     }
 }

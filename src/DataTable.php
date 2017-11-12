@@ -134,7 +134,6 @@ class DataTable
             throw new \RuntimeException(sprintf("There already is a column with name '%s'", $name));
         }
 
-        // TODO: Is index really needed?
         /* @var AbstractColumn $column */
         $this->columns[] = $column = new $type(array_merge(['name' => $name, 'index' => count($this->columns)], $options));
         $this->columnsByName[$column->getName()] = $column;

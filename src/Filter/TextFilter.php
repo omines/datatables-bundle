@@ -23,11 +23,12 @@ class TextFilter extends AbstractFilter
     {
         parent::configureOptions($resolver);
 
-        $resolver->setDefaults([
-            'template_html' => '@DataTables/Filter/text.html.twig',
-            'template_js' => '@DataTables/Filter/text.js.twig',
-            'placeholder' => null,
-        ])
+        $resolver
+            ->setDefaults([
+                'template_html' => '@DataTables/Filter/text.html.twig',
+                'template_js' => '@DataTables/Filter/text.js.twig',
+                'placeholder' => null,
+            ])
             ->setAllowedTypes('placeholder', ['null', 'string']);
 
         return $this;
@@ -42,14 +43,10 @@ class TextFilter extends AbstractFilter
     }
 
     /**
-     * @param string $placeholder
+     * @param $value
+     * @return bool
      */
-    public function setPlaceholder($placeholder)
-    {
-        $this->placeholder = $placeholder;
-    }
-
-    public function isValidValue($value)
+    public function isValidValue($value): bool
     {
         return true;
     }

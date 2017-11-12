@@ -260,7 +260,7 @@ class DataTableState
      */
     public function setColumnSearch(AbstractColumn $column, string $search, bool $isRegex = false): self
     {
-        $this->searchColumns[$column->getName()] = [$column, $search, $isRegex];
+        $this->searchColumns[$column->getName()] = ['column' => $column, 'search' => $search, 'regex' => $isRegex];
 
         return $this;
     }

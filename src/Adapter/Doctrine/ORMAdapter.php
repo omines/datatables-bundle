@@ -151,7 +151,6 @@ class ORMAdapter extends DoctrineAdapter
             if (null !== $identifierPropertyPath) {
                 $row['DT_RowId'] = $accessor->getValue($entity, $identifierPropertyPath);
             }
-            //$data[] = $this->map($row);
 
             foreach ($state->getDataTable()->getColumns() as $column) {
                 $propertyPath = $this->propertyPathMap[$column->getName()];

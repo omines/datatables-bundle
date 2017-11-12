@@ -31,14 +31,17 @@ class FilterTest extends TestCase
         $this->assertEmpty($filter->getChoices());
         $this->assertNull($filter->getPlaceholder());
 
-        $filter->setChoices(['foo' => 'bar', 'bar' => 'baz']);
+        $filter->set([
+            'choices' => ['foo' => 'bar', 'bar' => 'baz'],
+            'operator' => 'bar',
+            'placeholder' => 'foobar',
+            'template_html' => 'foobar.html',
+        ]);
+
         $this->assertTrue($filter->isValidValue('foo'));
         $this->assertFalse($filter->isValidValue('baz'));
-
-        $filter->set([
-            'template_html' => 'foobar.html',
-            'operator' => 'bar',
-        ]);
+        $this->assertCount(2, $filter->getChoices());
+        $this->assertSame('foobar', $filter->getPlaceholder());
         $this->assertSame('foobar.html', $filter->getTemplateHtml());
         $this->assertSame('@DataTables/Filter/select.js.twig', $filter->getTemplateJs());
         $this->assertSame('bar', $filter->getOperator());
@@ -55,9 +58,11 @@ class FilterTest extends TestCase
         $filter->set([
             'template_js' => 'foobar.js',
             'operator' => 'foo',
+            'placeholder' => 'baz',
         ]);
         $this->assertSame('@DataTables/Filter/text.html.twig', $filter->getTemplateHtml());
         $this->assertSame('foobar.js', $filter->getTemplateJs());
         $this->assertSame('foo', $filter->getOperator());
+        $this->assertSame('baz', $filter->getPlaceholder());
     }
 }

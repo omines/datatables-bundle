@@ -102,7 +102,7 @@ class DataTableTest extends TestCase
         $this->assertSame(10, $state->getLength());
         $this->assertSame('foo', $state->getGlobalSearch());
         $this->assertCount(2, $state->getOrderBy());
-        $this->assertSame('bar', $state->getSearchColumns()['foo'][1]);
+        $this->assertSame('bar', $state->getSearchColumns()['foo']['search']);
     }
 
     public function testEventsAndCallbacks()

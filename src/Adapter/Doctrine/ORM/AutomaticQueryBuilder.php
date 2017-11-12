@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle\Adapter\Doctrine\ORM;
 
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\MappingException;
 use Doctrine\ORM\QueryBuilder;
 use Omines\DataTablesBundle\Column\AbstractColumn;
@@ -23,8 +23,6 @@ use Omines\DataTablesBundle\DataTableState;
  * AutomaticQueryBuilder.
  *
  * @author Niels Keurentjes <niels.keurentjes@omines.com>
- *
- * @todo Make stateless
  */
 class AutomaticQueryBuilder implements QueryBuilderProcessorInterface
 {
@@ -66,8 +64,10 @@ class AutomaticQueryBuilder implements QueryBuilderProcessorInterface
      */
     public function process(QueryBuilder $builder, DataTableState $state)
     {
-        foreach ($state->getDataTable()->getColumns() as $column) {
-            $this->processColumn($column);
+        if (empty($this->selectColumns) && empty($this->joins)) {
+            foreach ($state->getDataTable()->getColumns() as $column) {
+                $this->processColumn($column);
+            }
         }
         $builder->from($this->entityName, $this->entityShortName);
         $this->setSelectFrom($builder);
@@ -140,23 +140,22 @@ class AutomaticQueryBuilder implements QueryBuilderProcessorInterface
         return array_shift($identifiers);
     }
 
-    private function getMetadata($entityName)
+    /**
+     * @param string $entityName
+     * @return ClassMetadata
+     * @throws \Exception
+     */
+    private function getMetadata(string $entityName): ClassMetadata
     {
         try {
-            $metadata = $this->em->getMetadataFactory()->getMetadataFor($entityName);
+            return $this->em->getMetadataFactory()->getMetadataFor($entityName);
         } catch (MappingException $e) {
             throw new \Exception('DataTableQueryBuilder::getMetadata(): Given object ' . $entityName . ' is not a Doctrine Entity.');
         }
-
-        return $metadata;
     }
 
-    private function setIdentifierFromAssociation($association, $key, $metadata = null)
+    private function setIdentifierFromAssociation(string $association, string $key, ClassMetadata $metadata)
     {
-        if (null === $metadata) {
-            $metadata = $this->metadata;
-        }
-
         $targetEntityClass = $metadata->getAssociationTargetClass($key);
         $targetMetadata = $this->getMetadata($targetEntityClass);
         $this->addSelectColumn($association, $this->getIdentifier($targetMetadata));

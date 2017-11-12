@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Omines\DataTablesBundle\Filter;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 
 abstract class AbstractFilter
 {
@@ -26,17 +25,6 @@ abstract class AbstractFilter
     /** @var string */
     protected $operator;
 
-    /** @var array */
-    protected $options;
-
-    /**
-     * AbstractEvent constructor.
-     */
-    public function __construct()
-    {
-        $this->options = [];
-    }
-
     /**
      * @param array $options
      */
@@ -44,14 +32,9 @@ abstract class AbstractFilter
     {
         $resolver = new OptionsResolver();
         $this->configureOptions($resolver);
-        $this->options = $resolver->resolve($options);
 
-        $accessor = PropertyAccess::createPropertyAccessorBuilder()
-            ->enableMagicCall()
-            ->getPropertyAccessor();
-
-        foreach ($this->options as $setter => $value) {
-            $accessor->setValue($this, $setter, $value);
+        foreach ($resolver->resolve($options) as $key => $value) {
+            $this->$key = $value;
         }
     }
 
@@ -79,27 +62,11 @@ abstract class AbstractFilter
     }
 
     /**
-     * @param string $template_html
-     */
-    public function setTemplateHtml($template_html)
-    {
-        $this->template_html = $template_html;
-    }
-
-    /**
      * @return string
      */
     public function getTemplateJs()
     {
         return $this->template_js;
-    }
-
-    /**
-     * @param string $template_js
-     */
-    public function setTemplateJs($template_js)
-    {
-        $this->template_js = $template_js;
     }
 
     /**
@@ -111,12 +78,8 @@ abstract class AbstractFilter
     }
 
     /**
-     * @param string $operator
+     * @param mixed $value
+     * @return bool
      */
-    public function setOperator($operator)
-    {
-        $this->operator = $operator;
-    }
-
-    abstract public function isValidValue($value);
+    abstract public function isValidValue($value): bool;
 }

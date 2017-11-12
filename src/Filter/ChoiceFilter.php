@@ -30,12 +30,13 @@ class ChoiceFilter extends AbstractFilter
     {
         parent::configureOptions($resolver);
 
-        $resolver->setDefaults([
-            'template_html' => '@DataTables/Filter/select.html.twig',
-            'template_js' => '@DataTables/Filter/select.js.twig',
-            'placeholder' => null,
-            'choices' => [],
-        ])
+        $resolver
+            ->setDefaults([
+                'template_html' => '@DataTables/Filter/select.html.twig',
+                'template_js' => '@DataTables/Filter/select.js.twig',
+                'placeholder' => null,
+                'choices' => [],
+            ])
             ->setAllowedTypes('placeholder', ['null', 'string'])
             ->setAllowedTypes('choices', ['array']);
 
@@ -51,14 +52,6 @@ class ChoiceFilter extends AbstractFilter
     }
 
     /**
-     * @param string $placeholder
-     */
-    public function setPlaceholder($placeholder)
-    {
-        $this->placeholder = $placeholder;
-    }
-
-    /**
      * @return mixed
      */
     public function getChoices()
@@ -67,14 +60,9 @@ class ChoiceFilter extends AbstractFilter
     }
 
     /**
-     * @param mixed $choices
+     * {@inheritdoc}
      */
-    public function setChoices($choices)
-    {
-        $this->choices = $choices;
-    }
-
-    public function isValidValue($value)
+    public function isValidValue($value): bool
     {
         return array_key_exists($value, $this->choices);
     }
