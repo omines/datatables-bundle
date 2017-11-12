@@ -34,6 +34,7 @@ class DataTable
         'name' => 'dt',
         'class_name' => 'table table-bordered',
         'column_filter' => null,
+        'method' => Request::METHOD_GET,
         'language_from_cdn' => true,
         'request_state' => null,
         'translation_domain' => 'messages',
@@ -220,6 +221,14 @@ class DataTable
     /**
      * @return string
      */
+    public function getMethod(): string
+    {
+        return $this->settings['method'];
+    }
+
+    /**
+     * @return string
+     */
     public function getName(): string
     {
         return $this->settings['name'];
@@ -277,68 +286,19 @@ class DataTable
      */
     public function handleRequest(Request $request)
     {
-        $this->state->setDraw($request->query->getInt('draw'));
-        $this->state->setFromInitialRequest(0 === $request->query->getInt('draw') && $this->getSetting('requestState') && 1 === $request->get($this->getRequestParam('state', true)));
-
-        if ($this->state->isFromInitialRequest() || $this->state->getDraw() > 0) {
-            $this->handleInitialRequest($request);
+        switch ($this->getMethod()) {
+            case Request::METHOD_GET:
+                $parameters = $request->query;
+                break;
+            case Request::METHOD_POST:
+                $parameters = $request->request;
+                break;
+            default:
+                throw new \LogicException(sprintf("Unknown request method '%s'", $this->getMethod()));
         }
+        $this->state->fromParameters($parameters);
 
         return $this;
-    }
-
-    /**
-     * @param string $name
-     * @param bool $prefix
-     * @return string
-     */
-    private function getRequestParam(string $name, bool $prefix = false)
-    {
-        return $prefix ? "{$this->getSetting('name')}_$name" : $name;
-    }
-
-    /**
-     * @param Request $request
-     */
-    private function handleInitialRequest(Request $request)
-    {
-        $state = $this->getState();
-        $isInitial = $state->isFromInitialRequest();
-        $search = $request->get($this->getRequestParam('search', $isInitial), []);
-
-        $state->setStart((int) $request->get($this->getRequestParam('start', $isInitial), 0));
-        $state->setLength((int) $request->get($this->getRequestParam('length', $isInitial), -1));
-        $state->setGlobalSearch($search['value'] ?? '');
-
-        $this->handleOrderBy($request);
-        $this->handleSearch($request);
-    }
-
-    private function handleOrderBy(Request $request)
-    {
-        $state = $this->getState()->setOrderBy([]);
-        $isInitial = $state->isFromInitialRequest();
-        foreach ($request->get($this->getRequestParam('order', $isInitial), []) as $order) {
-            $column = $this->getColumn((int) $order['column']);
-
-            if ($column->isOrderable()) {
-                $state->addOrderBy($column, $order['dir']);
-            }
-        }
-    }
-
-    private function handleSearch(Request $request)
-    {
-        $state = $this->getState();
-        $isInitial = $state->isFromInitialRequest();
-        foreach ($request->get($this->getRequestParam('columns', $isInitial), []) as $key => $search) {
-            $column = $this->getColumn((int) $key);
-            $value = $this->getState()->isFromInitialRequest() ? $search : $search['search']['value'];
-
-            if ($column->isSearchable() && !empty($value) && null !== $column->getFilter() && $column->getFilter()->isValidValue($value)) {
-                $state->setColumnSearch($column, $value);
-            }
-        }
     }
 
     /**
@@ -469,10 +429,12 @@ class DataTable
     {
         $resolver->setDefaults(self::DEFAULT_SETTINGS)
             ->setAllowedTypes('name', 'string')
+            ->setAllowedTypes('method', 'string')
             ->setAllowedTypes('class_name', 'string')
             ->setAllowedTypes('column_filter', ['null', 'string'])
             ->setAllowedTypes('language_from_cdn', 'bool')
             ->setAllowedTypes('translation_domain', 'string')
+            ->setAllowedValues('method', [Request::METHOD_GET, Request::METHOD_POST])
         ;
 
         return $this;

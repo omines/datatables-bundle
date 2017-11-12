@@ -52,6 +52,7 @@ class ArrayAdapter implements AdapterInterface
         }
 
         $data = iterator_to_array($this->processData($state, $page, $map));
+
         return new ArrayResultSet($data, count($this->data), count($data));
     }
 
@@ -73,7 +74,7 @@ class ArrayAdapter implements AdapterInterface
                 $value = (!empty($propertyPath = $map[$column->getName()]) && $accessor->isReadable($result, $propertyPath)) ? $accessor->getValue($result, $propertyPath) : null;
                 $value = $column->transform($value, $result);
                 if (!$match) {
-                    $match = (stripos($value, $search) !== false);
+                    $match = (false !== mb_stripos($value, $search));
                 }
                 $row[$column->getName()] = $column->transform($value, $result);
             }

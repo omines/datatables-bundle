@@ -27,6 +27,7 @@ use Omines\DataTablesBundle\DataTablesBundle;
 use Omines\DataTablesBundle\Event\Callback;
 use Omines\DataTablesBundle\Event\Event;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpFoundation\Request;
 use Tests\Fixtures\AppBundle\DataTable\Type\RegularPersonTableType;
 use Tests\Unit\Helper\InvalidEvent;
 
@@ -80,6 +81,7 @@ class DataTableTest extends TestCase
     public function testDataTableState()
     {
         $datatable = new DataTable();
+        $datatable->add('foo', TextColumn::class);
         $state = $datatable->getState();
         $datatable->setContext(684);
 
@@ -93,10 +95,14 @@ class DataTableTest extends TestCase
         $state->setStart(5);
         $state->setLength(10);
         $state->setGlobalSearch('foo');
+        $state->setOrderBy([[0, 'asc'], [1, 'desc']]);
+        $state->setColumnSearch($datatable->getColumn(0), 'bar');
 
         $this->assertSame(5, $state->getStart());
         $this->assertSame(10, $state->getLength());
         $this->assertSame('foo', $state->getGlobalSearch());
+        $this->assertCount(2, $state->getOrderBy());
+        $this->assertSame('bar', $state->getSearchColumns()['foo'][1]);
     }
 
     public function testEventsAndCallbacks()
@@ -221,5 +227,23 @@ class DataTableTest extends TestCase
             'type' => 'test',
             'template' => 'foo.html.twig',
         ]);
+    }
+
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Unknown request method 'OPTIONS'
+     */
+    public function testStateWillNotProcessInvalidMethod()
+    {
+        $datatable = new DataTable();
+        $reflection = new \ReflectionClass(DataTable::class);
+        $property = $reflection->getProperty('settings');
+        $property->setAccessible(true);
+
+        $options = $property->getValue($datatable);
+        $options['method'] = Request::METHOD_OPTIONS;
+        $property->setValue($datatable, $options);
+
+        $datatable->handleRequest(Request::create('/foo'));
     }
 }

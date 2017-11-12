@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Omines\DataTablesBundle;
 
 use Omines\DataTablesBundle\Column\AbstractColumn;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 /**
  * DataTableState.
@@ -59,6 +60,67 @@ class DataTableState
     }
 
     /**
+     * Loads datatables state from a HTTP parameter bag.
+     *
+     * @param ParameterBag $parameters
+     */
+    public function fromParameters(ParameterBag $parameters)
+    {
+        $prefix = $this->dataTable->getSetting('name') . '_';
+        $this->draw = $parameters->getInt('draw');
+        $this->fromInitialRequest = (0 === $parameters->getInt('draw') && $this->dataTable->getSetting('requestState') && 1 === $parameters->get("{$prefix}state"));
+
+        if ($this->fromInitialRequest || $this->draw > 0) {
+            $this->processInitialRequest($parameters, $this->fromInitialRequest ? $prefix : '');
+        }
+    }
+
+    /**
+     * @param ParameterBag $parameters
+     */
+    private function processInitialRequest(ParameterBag $parameters, string $prefix)
+    {
+        $search = $parameters->get("{$prefix}search", []);
+
+        $this->setStart((int) $parameters->get("{$prefix}start", 0));
+        $this->setLength((int) $parameters->get("{$prefix}length", -1));
+        $this->setGlobalSearch($search['value'] ?? '');
+
+        $this->handleOrderBy($parameters, $prefix);
+        $this->handleSearch($parameters, $prefix);
+    }
+
+    /**
+     * @param ParameterBag $parameters
+     */
+    private function handleOrderBy(ParameterBag $parameters, string $prefix)
+    {
+        $this->orderBy = [];
+        foreach ($parameters->get("{$prefix}order", []) as $order) {
+            $column = $this->getDataTable()->getColumn((int) $order['column']);
+
+            if ($column->isOrderable()) {
+                $this->addOrderBy($column, $order['dir']);
+            }
+        }
+    }
+
+    /**
+     * @param ParameterBag $parameters
+     */
+    private function handleSearch(ParameterBag $parameters, string $prefix)
+    {
+        foreach ($parameters->get("{$prefix}columns", []) as $key => $search) {
+            $column = $this->dataTable->getColumn((int) $key);
+            $value = $this->fromInitialRequest ? $search : $search['search']['value'];
+
+            if ($column->isSearchable() && !empty($value) && null !== $column->getFilter() && $column->getFilter()->isValidValue($value)) {
+                $this->setColumnSearch($column, $value);
+            }
+        }
+    }
+
+    /**
      * @return DataTable
      */
     public function getDataTable(): DataTable
@@ -91,17 +153,6 @@ class DataTableState
     public function getDraw(): int
     {
         return $this->draw;
-    }
-
-    /**
-     * @param int $draw
-     * @return $this
-     */
-    public function setDraw(int $draw)
-    {
-        $this->draw = $draw;
-
-        return $this;
     }
 
     /**
@@ -157,25 +208,6 @@ class DataTableState
     public function setGlobalSearch(string $globalSearch)
     {
         $this->globalSearch = $globalSearch;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isFromInitialRequest(): bool
-    {
-        return $this->fromInitialRequest;
-    }
-
-    /**
-     * @param bool $fromInitialRequest
-     * @return $this
-     */
-    public function setFromInitialRequest(bool $fromInitialRequest)
-    {
-        $this->fromInitialRequest = $fromInitialRequest;
 
         return $this;
     }

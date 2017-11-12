@@ -14,6 +14,7 @@ namespace Omines\DataTablesBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class Configuration implements ConfigurationInterface
 {
@@ -37,6 +38,11 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->scalarNode('class_name')
                     ->info('Default class attribute to apply to the root table elements')
+                ->end()
+                ->enumNode('method')
+                    ->info('Default HTTP method to be used for callbacks')
+                    ->values([Request::METHOD_GET, Request::METHOD_POST])
+                    ->defaultValue(Request::METHOD_GET)
                 ->end()
                 ->scalarNode('translation_domain')
                     ->info('Default translation domain to be used')
