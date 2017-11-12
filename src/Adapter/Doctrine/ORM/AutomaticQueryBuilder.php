@@ -80,9 +80,9 @@ class AutomaticQueryBuilder implements QueryBuilderProcessorInterface
         $metadata = $this->metadata;
         $field = $column->getField();
 
-        // TODO: Is this a good idea? Probably not in this form....
+        // Default to the column name if that corresponds to a field mapping
         if (!isset($field) && isset($this->metadata->fieldMappings[$column->getName()])) {
-            $field = $this->entityShortName . '.' . $column->getName();
+            $field = $column->getName();
         }
         if (null !== $field) {
             $parts = explode('.', $field);
