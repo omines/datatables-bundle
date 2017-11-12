@@ -36,8 +36,8 @@ class SearchCriteriaProvider implements CriteriaProviderInterface
             $column = $searchInfo['column'];
             $search = $searchInfo['search'];
 
-            if ($column->isSearchable() && !empty($search) && null !== $column->getFilter()) {
-                $criteria->andWhere(new Comparison($column->getField(), $column->getFilter()->getOperator(), $search));
+            if (!empty($search) && null !== ($filter = $column->getFilter())) {
+                $criteria->andWhere(new Comparison($column->getField(), $filter->getOperator(), $search));
             }
         }
 
