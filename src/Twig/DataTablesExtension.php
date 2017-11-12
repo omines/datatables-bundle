@@ -18,13 +18,22 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class DataTablesExtension extends \Twig_Extension
 {
+    /** @var TranslatorInterface */
     protected $translator;
 
+    /**
+     * DataTablesExtension constructor.
+     *
+     * @param TranslatorInterface $translator
+     */
     public function __construct(TranslatorInterface $translator)
     {
         $this->translator = $translator;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getFunctions()
     {
         return [
@@ -37,35 +46,27 @@ class DataTablesExtension extends \Twig_Extension
         ];
     }
 
-    /**
-     * @param \Twig_Environment $twig
-     * @param DataTable $datatable
-     * @param array $options
-     * @return string
-     *
-     * @todo Call parameters are inconsistent now amongst these 3 functions
-     */
-    public function datatable(\Twig_Environment $twig, DataTable $datatable, $options = [])
+    public function datatable(\Twig_Environment $twig, DataTable $datatable, $options = [], $parameters = [])
     {
-        return $twig->render('@DataTables/datatable.html.twig', [
-            'datatable' => $datatable,
-            'options' => $this->getOptions($datatable, $options),
-        ]);
+        return $this->render($twig, '@DataTables/datatable.html.twig', $datatable, $options, $parameters);
     }
 
-    public function datatableHtml(\Twig_Environment $twig, DataTable $datatable, $parameters = [])
+    public function datatableHtml(\Twig_Environment $twig, DataTable $datatable, $options = [], $parameters = [])
     {
-        return $twig->render('@DataTables/datatable_html.html.twig', array_merge([
+        return $this->render($twig, '@DataTables/datatable_html.html.twig', $datatable, $options, $parameters);
+    }
+
+    public function datatableJs(\Twig_Environment $twig, DataTable $datatable, $options = [], $parameters = [])
+    {
+        return $this->render($twig, '@DataTables/datatable_js.html.twig', $datatable, $options, $parameters);
+    }
+
+    private function render(\Twig_Environment $twig, string $template, DataTable $datatable, $options = [], $parameters = [])
+    {
+        return $twig->render($template, array_merge([
             'datatable' => $datatable,
+            'options' => $this->getOptions($datatable, $options),
         ], $parameters));
-    }
-
-    public function datatableJs(\Twig_Environment $twig, DataTable $datatable, $options = [])
-    {
-        return $twig->render('@DataTables/datatable_js.html.twig', [
-            'datatable' => $datatable,
-            'options' => $this->getOptions($datatable, $options),
-        ]);
     }
 
     private function getOptions(DataTable $datatable, $options)

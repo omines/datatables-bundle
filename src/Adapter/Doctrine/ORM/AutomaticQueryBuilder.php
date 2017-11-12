@@ -12,9 +12,8 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle\Adapter\Doctrine\ORM;
 
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\MappingException;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder;
 use Omines\DataTablesBundle\Column\AbstractColumn;
 use Omines\DataTablesBundle\DataTableState;
@@ -140,24 +139,12 @@ class AutomaticQueryBuilder implements QueryBuilderProcessorInterface
         return array_shift($identifiers);
     }
 
-    /**
-     * @param string $entityName
-     * @return ClassMetadata
-     * @throws \Exception
-     */
-    private function getMetadata(string $entityName): ClassMetadata
-    {
-        try {
-            return $this->em->getMetadataFactory()->getMetadataFor($entityName);
-        } catch (MappingException $e) {
-            throw new \Exception('DataTableQueryBuilder::getMetadata(): Given object ' . $entityName . ' is not a Doctrine Entity.');
-        }
-    }
-
     private function setIdentifierFromAssociation(string $association, string $key, ClassMetadata $metadata)
     {
         $targetEntityClass = $metadata->getAssociationTargetClass($key);
-        $targetMetadata = $this->getMetadata($targetEntityClass);
+
+        /** @var ClassMetadata $targetMetadata */
+        $targetMetadata = $this->em->getMetadataFactory()->getMetadataFor($targetEntityClass);
         $this->addSelectColumn($association, $this->getIdentifier($targetMetadata));
 
         return $targetMetadata;
