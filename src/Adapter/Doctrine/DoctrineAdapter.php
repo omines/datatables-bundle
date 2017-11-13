@@ -14,7 +14,7 @@ namespace Omines\DataTablesBundle\Adapter\Doctrine;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Collections\Criteria;
-use Omines\DataTablesBundle\Adapter\AdapterInterface;
+use Omines\DataTablesBundle\Adapter\AbstractAdapter;
 use Omines\DataTablesBundle\DataTableState;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -24,7 +24,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  *
  * @author Niels Keurentjes <niels.keurentjes@omines.com>
  */
-abstract class DoctrineAdapter implements AdapterInterface
+abstract class DoctrineAdapter extends AbstractAdapter
 {
     /** @var Registry */
     protected $registry;
@@ -39,6 +39,7 @@ abstract class DoctrineAdapter implements AdapterInterface
      */
     public function __construct(Registry $registry)
     {
+        parent::__construct();
         $this->registry = $registry;
     }
 

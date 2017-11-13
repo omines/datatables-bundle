@@ -15,15 +15,13 @@ namespace Omines\DataTablesBundle\Adapter\Doctrine;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
-use Omines\DataTablesBundle\Adapter\ArrayResultSet;
+use Omines\DataTablesBundle\Adapter\AdapterQuery;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORM\AutomaticQueryBuilder;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORM\QueryBuilderProcessorInterface;
-use Omines\DataTablesBundle\Adapter\ResultSetInterface;
 use Omines\DataTablesBundle\Column\AbstractColumn;
 use Omines\DataTablesBundle\DataTableState;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
  * ORMAdapter.
@@ -46,13 +44,7 @@ class ORMAdapter extends DoctrineAdapter
     private $queryBuilderProcessors;
 
     /** @var array */
-    private $aliases;
-
-    /** @var array */
     private $fieldMap = [];
-
-    /** @var array */
-    private $propertyPathMap = [];
 
     /**
      * {@inheritdoc}
@@ -76,24 +68,27 @@ class ORMAdapter extends DoctrineAdapter
     }
 
     /**
-     * {@inheritdoc}
+     * @param AdapterQuery $query
      */
-    public function getData(DataTableState $state): ResultSetInterface
+    protected function prepareQuery(AdapterQuery $query)
     {
-        $builder = $this->createQueryBuilder($state);
+        $state = $query->getState();
+        $query->set('qb', $builder = $this->createQueryBuilder($state));
+        $query->set('rootAlias', $builder->getDQLPart('from')[0]->getAlias());
 
         /** @var Query\Expr\From $fromClause */
         $fromClause = $builder->getDQLPart('from')[0];
         $identifier = "{$fromClause->getAlias()}.{$this->metadata->getSingleIdentifierFieldName()}";
-        $totalRecords = $this->getCount($builder, $identifier);
+        $query->setTotalRows($this->getCount($builder, $identifier));
 
         // Get record count after filtering
         $this->buildCriteria($builder, $state);
-        $displayRecords = $this->getCount($builder, $identifier);
+        $query->setFilteredRows($this->getCount($builder, $identifier));
 
         /** @var Query\Expr\From $from */
+        $aliases = [];
         foreach ($builder->getDQLPart('from') as $from) {
-            $this->aliases[$from->getAlias()] = [null, $this->manager->getMetadataFactory()->getMetadataFor($from->getFrom())];
+            $aliases[$from->getAlias()] = [null, $this->manager->getMetadataFactory()->getMetadataFor($from->getFrom())];
         }
 
         // Alias all joins
@@ -102,23 +97,39 @@ class ORMAdapter extends DoctrineAdapter
             foreach ($joins as $join) {
                 list($origin, $target) = explode('.', $join->getJoin());
 
-                $mapping = $this->aliases[$origin][1]->getAssociationMapping($target);
-                $this->aliases[$join->getAlias()] = [$join->getJoin(), $this->manager->getMetadataFactory()->getMetadataFor($mapping['targetEntity'])];
+                $mapping = $aliases[$origin][1]->getAssociationMapping($target);
+                $aliases[$join->getAlias()] = [$join->getJoin(), $this->manager->getMetadataFactory()->getMetadataFor($mapping['targetEntity'])];
             }
         }
 
         // Perform mapping of all referred fields and implied fields
-        $identifierPropertyPath = $this->mapPropertyPath($identifier);
-        foreach ($state->getDataTable()->getColumns() as $column) {
-            $this->fieldMap[$column->getName()] = $field = $column->getField() ?: "{$fromClause->getAlias()}.{$column->getName()}";
-            $this->propertyPathMap[$column->getName()] = $column->getPropertyPath() ?: $this->mapPropertyPath($field);
-        }
+        $query->set('aliases', $aliases);
+        $query->setIdentifierPropertyPath($this->mapFieldToPropertyPath($identifier, $aliases));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function mapPropertyPath(AdapterQuery $query, AbstractColumn $column)
+    {
+        return $this->mapFieldToPropertyPath($column->getField() ?? "{$query->get('rootAlias')}.{$column->getName()}", $query->get('aliases'));
+    }
+
+    /**
+     * @param AdapterQuery $query
+     * @return \Traversable
+     */
+    protected function getResults(AdapterQuery $query): \Traversable
+    {
+        /** @var QueryBuilder $builder */
+        $builder = $query->get('qb');
+        $state = $query->getState();
 
         // Apply definitive view state for current 'page' of the table
         foreach ($state->getOrderBy() as list($column, $direction)) {
             /** @var AbstractColumn $column */
-            $orderField = $column->getOrderField() ?: $this->fieldMap[$column->getName()] ?? null;
-            if ($column->isOrderable() && !empty($orderField)) {
+            if ($column->isOrderable()) {
+                $orderField = $column->getOrderField() ?: $column->getField() ?: "{$query->get('rootAlias')}.{$column->getName()}";
                 $builder->addOrderBy($orderField, $direction);
             }
         }
@@ -129,44 +140,10 @@ class ORMAdapter extends DoctrineAdapter
             ;
         }
 
-        return new ArrayResultSet($this->getQueryData($builder->getQuery(), $state, $identifierPropertyPath), $totalRecords, $displayRecords);
-    }
-
-    /**
-     * Performs an incrementally processing fetch on the provided query.
-     *
-     * @param Query $query
-     * @param DataTableState $state
-     * @param string|null $identifierPropertyPath supply this parameter to inject the identifier in the result rows
-     * @return array
-     */
-    protected function getQueryData(Query $query, DataTableState $state, string $identifierPropertyPath = null): array
-    {
-        $data = [];
-        $accessor = PropertyAccess::createPropertyAccessor();
-        $transformer = $state->getDataTable()->getTransformer();
-        foreach ($query->iterate([], $this->hydrationMode) as $result) {
-            $entity = $result[0];
-            $row = [];
-            if (null !== $identifierPropertyPath) {
-                $row['DT_RowId'] = $accessor->getValue($entity, $identifierPropertyPath);
-            }
-
-            foreach ($state->getDataTable()->getColumns() as $column) {
-                $propertyPath = $this->propertyPathMap[$column->getName()];
-                $value = ($propertyPath && $accessor->isReadable($entity, $propertyPath)) ? $accessor->getValue($entity, $propertyPath) : null;
-                $row[$column->getName()] = $column->transform($value, $entity);
-            }
-            if ($transformer) {
-                $row = call_user_func($transformer, $row, $entity);
-            }
-            $data[] = $row;
-
-            // Release memory by detaching from Doctrine
+        foreach ($builder->getQuery()->iterate([], $this->hydrationMode) as $result) {
+            yield $entity = $result[0];
             $this->manager->detach($entity);
         }
-
-        return $data;
     }
 
     /**
@@ -222,9 +199,10 @@ class ORMAdapter extends DoctrineAdapter
 
     /**
      * @param string $field
+     * @param array $aliases
      * @return string
      */
-    private function mapPropertyPath($field)
+    private function mapFieldToPropertyPath($field, array $aliases = [])
     {
         $parts = explode('.', $field);
         if (count($parts) < 2) {
@@ -233,12 +211,12 @@ class ORMAdapter extends DoctrineAdapter
         list($origin, $target) = $parts;
 
         $path = [$target];
-        $current = $this->aliases[$origin][0];
+        $current = $aliases[$origin][0];
 
         while (null !== $current) {
             list($origin, $target) = explode('.', $current);
             $path[] = $target;
-            $current = $this->aliases[$origin][0];
+            $current = $aliases[$origin][0];
         }
 
         if (Query::HYDRATE_ARRAY === $this->hydrationMode) {
