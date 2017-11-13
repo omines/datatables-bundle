@@ -43,9 +43,6 @@ class ORMAdapter extends DoctrineAdapter
     /** @var QueryBuilderProcessorInterface[] */
     private $queryBuilderProcessors;
 
-    /** @var array */
-    private $fieldMap = [];
-
     /**
      * {@inheritdoc}
      */
