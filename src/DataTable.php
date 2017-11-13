@@ -135,7 +135,7 @@ class DataTable
         }
 
         /* @var AbstractColumn $column */
-        $this->columns[] = $column = new $type(array_merge(['name' => $name, 'index' => count($this->columns)], $options));
+        $this->columns[] = $column = new $type($name, count($this->columns), $options);
         $this->columnsByName[$column->getName()] = $column;
         $column->setDataTable($this);
 

@@ -71,7 +71,14 @@ class ORMAdapter extends DoctrineAdapter
     {
         $state = $query->getState();
         $query->set('qb', $builder = $this->createQueryBuilder($state));
-        $query->set('rootAlias', $builder->getDQLPart('from')[0]->getAlias());
+        $query->set('rootAlias', $rootAlias = $builder->getDQLPart('from')[0]->getAlias());
+
+        // Provide default field mappings if needed
+        foreach ($state->getDataTable()->getColumns() as $column) {
+            if (null === $column->getField() && isset($this->metadata->fieldMappings[$name = $column->getName()])) {
+                $column->setOption('field', "{$rootAlias}.{$name}");
+            }
+        }
 
         /** @var Query\Expr\From $fromClause */
         $fromClause = $builder->getDQLPart('from')[0];
@@ -109,7 +116,7 @@ class ORMAdapter extends DoctrineAdapter
      */
     protected function mapPropertyPath(AdapterQuery $query, AbstractColumn $column)
     {
-        return $this->mapFieldToPropertyPath($column->getField() ?? "{$query->get('rootAlias')}.{$column->getName()}", $query->get('aliases'));
+        return $this->mapFieldToPropertyPath($column->getField(), $query->get('aliases'));
     }
 
     /**
@@ -126,7 +133,7 @@ class ORMAdapter extends DoctrineAdapter
         foreach ($state->getOrderBy() as list($column, $direction)) {
             /** @var AbstractColumn $column */
             if ($column->isOrderable()) {
-                $orderField = $column->getOrderField() ?: $column->getField() ?: "{$query->get('rootAlias')}.{$column->getName()}";
+                $orderField = $column->getOrderField() ?: $column->getField();
                 $builder->addOrderBy($orderField, $direction);
             }
         }

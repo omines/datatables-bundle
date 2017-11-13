@@ -47,11 +47,11 @@ class ServicePersonTableType implements DataTableTypeInterface
     public function configure(DataTable $dataTable)
     {
         $dataTable
-            ->add('id', TextColumn::class)
-            ->add('firstName', TextColumn::class, ['name' => 'name', 'field' => 'person.firstName'])
-            ->add('lastName', TextColumn::class, ['field' => 'person.lastName'])
-            ->add('fullName', TextColumn::class, ['name' => 'fullName'])
-            ->add('company', TextColumn::class, ['label' => 'employer', 'name' => 'company', 'field' => 'company.name'])
+            ->add('id', TextColumn::class, ['globalSearchable' => false])
+            ->add('firstName', TextColumn::class, ['label' => 'name'])
+            ->add('lastName', TextColumn::class)
+            ->add('fullName', TextColumn::class, ['label' => 'fullName'])
+            ->add('company', TextColumn::class, ['label' => 'employer', 'field' => 'company.name'])
             ->add('link', TextColumn::class, [
                 'data' => function (Person $person) {
                     return sprintf('<a href="%s">%s, %s</a>', $this->router->generate('home'), $person->getLastName(), $person->getFirstName());

@@ -27,6 +27,12 @@ abstract class AbstractColumn
     /** @var array<string, OptionsResolver> */
     private static $resolversByClass = [];
 
+    /** @var string */
+    private $name;
+
+    /** @var int */
+    private $index;
+
     /** @var DataTable */
     private $dataTable;
 
@@ -35,9 +41,16 @@ abstract class AbstractColumn
 
     /**
      * AbstractColumn constructor.
+     *
+     * @param string $name
+     * @param int $index
+     * @param array $options
      */
-    public function __construct(array $options = [])
+    public function __construct(string $name, int $index, array $options = [])
     {
+        $this->name = $name;
+        $this->index = $index;
+
         $class = get_class($this);
         if (!isset(self::$resolversByClass[$class])) {
             self::$resolversByClass[$class] = new OptionsResolver();
@@ -113,12 +126,6 @@ abstract class AbstractColumn
                 'className' => null,
                 'render' => null,
             ])
-            ->setRequired([
-                'index',
-                'name',
-            ])
-            ->setAllowedTypes('index', 'integer')
-            ->setAllowedTypes('name', 'string')
             ->setAllowedTypes('label', ['null', 'string'])
             ->setAllowedTypes('data', ['null', 'string', 'callable'])
             ->setAllowedTypes('field', ['null', 'string'])
@@ -142,7 +149,7 @@ abstract class AbstractColumn
      */
     public function getIndex(): int
     {
-        return $this->options['index'];
+        return $this->index;
     }
 
     /**
@@ -150,7 +157,7 @@ abstract class AbstractColumn
      */
     public function getName(): string
     {
-        return $this->options['name'];
+        return $this->name;
     }
 
     /**
@@ -162,7 +169,7 @@ abstract class AbstractColumn
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getField()
     {
@@ -170,7 +177,7 @@ abstract class AbstractColumn
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getPropertyPath()
     {
@@ -264,6 +271,18 @@ abstract class AbstractColumn
     public function setDataTable(DataTable $dataTable): self
     {
         $this->dataTable = $dataTable;
+
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @param mixed $value
+     * @return self
+     */
+    public function setOption(string $name, $value): self
+    {
+        $this->options[$name] = $value;
 
         return $this;
     }

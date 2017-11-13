@@ -25,9 +25,7 @@ class ColumnTest extends TestCase
 {
     public function testTextColumn()
     {
-        $column = new TextColumn([
-            'name' => 'test',
-            'index' => 1,
+        $column = new TextColumn('test', 1, [
             'data' => 'bar',
             'render' => 'foo%s',
         ]);
@@ -41,9 +39,7 @@ class ColumnTest extends TestCase
 
     public function testColumnWithClosureRenderer()
     {
-        $column = new TextColumn([
-            'name' => 'test',
-            'index' => 1,
+        $column = new TextColumn('test', 1, [
             'data' => 'bar',
             'render' => function ($value) {
                 return mb_strtoupper($value);
