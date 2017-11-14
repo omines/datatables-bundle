@@ -44,8 +44,8 @@ class SearchCriteriaProvider implements CriteriaProviderInterface
         if (!empty($globalSearch = $state->getGlobalSearch())) {
             $comparisons = [];
             foreach ($state->getDataTable()->getColumns() as $column) {
-                if ($column->isGlobalSearchable() && null !== $state->getGlobalSearch() && $column->getField()) {
-                    $comparisons[] = new Comparison($column->getField(), Comparison::CONTAINS, $globalSearch);
+                if ($column->isGlobalSearchable() && !empty($field = $column->getField())) {
+                    $comparisons[] = new Comparison($field, Comparison::CONTAINS, $globalSearch);
                 }
             }
             $criteria->andWhere(new CompositeExpression(CompositeExpression::TYPE_OR, $comparisons));

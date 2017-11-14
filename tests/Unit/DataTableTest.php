@@ -117,6 +117,14 @@ class DataTableTest extends TestCase
         $this->assertCount(1, $datatable->getEvents());
     }
 
+    public function testPostMethod()
+    {
+        $datatable = new DataTable(['method' => Request::METHOD_POST]);
+        $datatable->handleRequest(Request::create('/foo', Request::METHOD_POST, ['draw' => 684]));
+
+        $this->assertSame(684, $datatable->getState()->getDraw());
+    }
+
     /**
      * @expectedException \LogicException
      * @expectedExceptionMessage Could not resolve type
