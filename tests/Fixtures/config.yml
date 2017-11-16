@@ -8,6 +8,7 @@ framework:
         strict_requirements: ~
     default_locale: 'en'
     fragments: ~
+    translator: { fallbacks: [en] }
     http_method_override: true
     test: ~
     profiler:

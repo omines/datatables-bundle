@@ -9,7 +9,7 @@
 [![SensioLabs Insight](https://img.shields.io/sensiolabs/i/05d79ba2-cba4-4201-a17a-2868c51f9c6c.svg)](https://insight.sensiolabs.com/projects/05d79ba2-cba4-4201-a17a-2868c51f9c6c)
 
 This bundle provides convenient integration of the popular [DataTables](https://datatables.net/) jQuery library
-for realtime AJAX tables in your Symfony 3.3+ application. Older versions of Symfony [will not be supported](https://github.com/omines/datatables-bundle/issues/1).
+for realtime AJAX tables in your Symfony 3.3+ or 4.0+ application. Older versions of Symfony [will not be supported](https://github.com/omines/datatables-bundle/issues/1).
 
 Unlike other bundles providing similar functionality we decoupled the implementation of the DataTables logic
 completely from the source of the data. Therefore it is possible to implement your own custom adapters for

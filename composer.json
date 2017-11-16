@@ -21,11 +21,11 @@
     },
     "require": {
         "php": "^7.0.8",
-        "symfony/framework-bundle": "^3.3",
-        "symfony/property-access": "^3.0",
-        "symfony/translation": "^3.2",
-        "symfony/yaml": "^3.3",
-        "twig/twig": "~1.32|^2"
+        "symfony/framework-bundle": "^3.3|^4.0",
+        "symfony/property-access": "^3.0|^4.0",
+        "symfony/translation": "^3.2|^4.0",
+        "symfony/yaml": "^3.3|^4.0",
+        "twig/twig": "^1.32|^2.0"
     },
     "require-dev": {
         "ext-pdo_sqlite": "*",
@@ -34,12 +34,12 @@
         "doctrine/orm": "^2.5",
         "friendsofphp/php-cs-fixer": "^2.7",
         "phpunit/phpunit": "^6.1",
-        "symfony/browser-kit": "~3.0|~4.0",
-        "symfony/css-selector": "~3.0|~4.0",
-        "symfony/dom-crawler": "~3.0|~4.0",
-        "symfony/phpunit-bridge": "^3.3",
-        "symfony/templating": "^3.0",
-        "symfony/twig-bundle": "^3.3"
+        "symfony/browser-kit": "^3.0|^4.0",
+        "symfony/css-selector": "^3.0|^4.0",
+        "symfony/dom-crawler": "^3.0|^4.0",
+        "symfony/phpunit-bridge": "^3.3|^4.0",
+        "symfony/templating": "^3.0|^4.0",
+        "symfony/twig-bundle": "^3.3|^4.0"
     },
     "suggest": {
         "doctrine/doctrine-bundle": "For integrated access to Doctrine object managers",
@@ -51,7 +51,6 @@
     "autoload-dev": {
         "psr-4": { "Tests\\": "tests/"}
     },
-    "prefer-stable": true,
     "config": {
         "preferred-install": "dist",
         "sort-packages": true

@@ -3,9 +3,6 @@ services:
         autowire: true
         autoconfigure: true
 
-    Omines\DataTablesBundle\:
-        resource: '../../{Twig}/*'
-
     # Register default adapters via autoconfig/autowire
     Omines\DataTablesBundle\Adapter\ArrayAdapter: ~
     Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter: ~
@@ -14,3 +11,4 @@ services:
         arguments: ['%datatables.settings%', '%datatables.options%']
         public: true
 
+    Omines\DataTablesBundle\Twig\DataTablesExtension: ~
