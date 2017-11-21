@@ -155,7 +155,7 @@ class ORMAdapter extends DoctrineAdapter
      */
     protected function buildCriteria(QueryBuilder $queryBuilder, DataTableState $state)
     {
-        foreach ($this->criteriaProcessors as $processor) {
+        foreach ($this->criteriaProviders as $processor) {
             if ($criteria = $processor->process($state)) {
                 $queryBuilder->addCriteria($criteria);
             }

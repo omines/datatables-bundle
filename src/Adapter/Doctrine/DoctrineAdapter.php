@@ -30,7 +30,7 @@ abstract class DoctrineAdapter extends AbstractAdapter
     protected $registry;
 
     /** @var CriteriaProviderInterface[] */
-    protected $criteriaProcessors;
+    protected $criteriaProviders;
 
     /**
      * DoctrineAdapter constructor.
@@ -55,9 +55,20 @@ abstract class DoctrineAdapter extends AbstractAdapter
         $this->handleOptions($options);
     }
 
+    /**
+     * @param mixed $provider
+     */
+    public function addCriteriaProvider($provider)
+    {
+        $this->criteriaProviders[] = $this->normalizeProvider($provider);
+    }
+
+    /**
+     * @param array $options
+     */
     protected function handleOptions(array $options)
     {
-        $this->criteriaProcessors = $options['criteria'];
+        $this->criteriaProviders = $options['criteria'];
     }
 
     /**
@@ -75,25 +86,34 @@ abstract class DoctrineAdapter extends AbstractAdapter
                     return [new SearchCriteriaProvider()];
                 }
 
-                return array_map(function ($value) {
-                    if (is_callable($value)) {
-                        return new class($value) implements CriteriaProviderInterface {
-                            private $callable;
-
-                            public function __construct(callable $value)
-                            {
-                                $this->callable = $value;
-                            }
-
-                            public function process(DataTableState $state)
-                            {
-                                return call_user_func($this->callable, $state);
-                            }
-                        };
-                    }
-
-                    return $value;
-                }, (array) $value);
+                return array_map([$this, 'normalizeProvider'], (array) $value);
             });
+    }
+
+    /**
+     * @param callable|CriteriaProviderInterface $provider
+     * @return CriteriaProviderInterface
+     */
+    private function normalizeProvider($provider)
+    {
+        if (is_callable($provider)) {
+            return new class($provider) implements CriteriaProviderInterface {
+                private $callable;
+
+                public function __construct(callable $value)
+                {
+                    $this->callable = $value;
+                }
+
+                public function process(DataTableState $state)
+                {
+                    return call_user_func($this->callable, $state);
+                }
+            };
+        } elseif ($provider instanceof CriteriaProviderInterface) {
+            return $provider;
+        }
+
+        throw new \LogicException('CriteriaProvider must be a callable or implement CriteriaProviderInterface');
     }
 }
