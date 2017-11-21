@@ -87,6 +87,7 @@ class ORMAdapter extends DoctrineAdapter
 
         // Get record count after filtering
         $this->buildCriteria($builder, $state);
+        die($builder->getDQL());
         $query->setFilteredRows($this->getCount($builder, $identifier));
 
         /** @var Query\Expr\From $from */
@@ -155,8 +156,8 @@ class ORMAdapter extends DoctrineAdapter
      */
     protected function buildCriteria(QueryBuilder $queryBuilder, DataTableState $state)
     {
-        foreach ($this->criteriaProviders as $processor) {
-            if ($criteria = $processor->process($state)) {
+        foreach ($this->criteriaProviders as $provider) {
+            if ($criteria = $provider->process($state)) {
                 $queryBuilder->addCriteria($criteria);
             }
         }

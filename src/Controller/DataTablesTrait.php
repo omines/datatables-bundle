@@ -48,6 +48,6 @@ trait DataTablesTrait
      */
     protected function createDataTableFromType($type, array $typeOptions = [], array $settings = [], array $options = [])
     {
-        return $this->container->get(DataTableFactory::class)->createFromType($type, $settings, $options);
+        return $this->container->get(DataTableFactory::class)->createFromType($type, $typeOptions, $settings, $options);
     }
 }
