@@ -33,10 +33,6 @@ class AdapterRegistrationPass implements CompilerPassInterface
         // Inject tagged types into the factory
         $types = [];
         foreach ($container->findTaggedServiceIds('datatables.adapter') as $serviceId => $tag) {
-            $serviceDefinition = $container->getDefinition($serviceId);
-            if ($serviceDefinition->isPublic()) {
-                $serviceDefinition->setPublic(false);
-            }
             $types[$serviceId] = new Reference($serviceId);
         }
 

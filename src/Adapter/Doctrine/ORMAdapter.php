@@ -120,8 +120,23 @@ class ORMAdapter extends AbstractAdapter
         $this->buildCriteria($builder, $state);
         $query->setFilteredRows($this->getCount($builder, $identifier));
 
-        /** @var Query\Expr\From $from */
+        // Perform mapping of all referred fields and implied fields
+        $aliases = $this->getAliases($query);
+        $query->set('aliases', $aliases);
+        $query->setIdentifierPropertyPath($this->mapFieldToPropertyPath($identifier, $aliases));
+    }
+
+    /**
+     * @param AdapterQuery $query
+     * @return array
+     */
+    protected function getAliases(AdapterQuery $query)
+    {
+        /** @var QueryBuilder $builder */
+        $builder = $query->get('qb');
         $aliases = [];
+
+        /** @var Query\Expr\From $from */
         foreach ($builder->getDQLPart('from') as $from) {
             $aliases[$from->getAlias()] = [null, $this->manager->getMetadataFactory()->getMetadataFor($from->getFrom())];
         }
@@ -137,9 +152,7 @@ class ORMAdapter extends AbstractAdapter
             }
         }
 
-        // Perform mapping of all referred fields and implied fields
-        $query->set('aliases', $aliases);
-        $query->setIdentifierPropertyPath($this->mapFieldToPropertyPath($identifier, $aliases));
+        return $aliases;
     }
 
     /**
