@@ -385,17 +385,6 @@ class DataTable
     }
 
     /**
-     * @param mixed $context
-     * @return self
-     */
-    public function setContext($context): self
-    {
-        $this->state->setContext($context);
-
-        return $this;
-    }
-
-    /**
      * @param string $name
      * @return self
      */

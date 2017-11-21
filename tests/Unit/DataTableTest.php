@@ -83,14 +83,12 @@ class DataTableTest extends TestCase
         $datatable = new DataTable();
         $datatable->add('foo', TextColumn::class);
         $state = $datatable->getState();
-        $datatable->setContext(684);
 
         // Test sane defaults
         $this->assertSame(0, $state->getStart());
         $this->assertSame(-1, $state->getLength());
         $this->assertSame(0, $state->getDraw());
         $this->assertSame('', $state->getGlobalSearch());
-        $this->assertSame(684, $state->getContext());
 
         $state->setStart(5);
         $state->setLength(10);

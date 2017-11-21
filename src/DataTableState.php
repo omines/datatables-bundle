@@ -46,9 +46,6 @@ class DataTableState
     /** @var bool */
     private $fromInitialRequest = false;
 
-    /** @var mixed */
-    protected $context;
-
     /**
      * DataTableState constructor.
      *
@@ -126,25 +123,6 @@ class DataTableState
     public function getDataTable(): DataTable
     {
         return $this->dataTable;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getContext()
-    {
-        return $this->context;
-    }
-
-    /**
-     * @param mixed $context
-     * @return self
-     */
-    public function setContext($context): self
-    {
-        $this->context = $context;
-
-        return $this;
     }
 
     /**
