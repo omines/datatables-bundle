@@ -44,7 +44,7 @@ class ServicePersonTableType implements DataTableTypeInterface
     /**
      * {@inheritdoc}
      */
-    public function configure(DataTable $dataTable)
+    public function configure(DataTable $dataTable, array $options)
     {
         $dataTable
             ->add('id', TextColumn::class, ['globalSearchable' => false])

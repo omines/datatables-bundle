@@ -28,7 +28,7 @@ class RegularPersonTableType implements DataTableTypeInterface
     /**
      * {@inheritdoc}
      */
-    public function configure(DataTable $dataTable)
+    public function configure(DataTable $dataTable, array $optionss)
     {
         $dataTable
             ->add('firstName', TextColumn::class)
