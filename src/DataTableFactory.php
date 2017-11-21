@@ -72,12 +72,13 @@ class DataTableFactory
 
     /**
      * @param string|DataTableTypeInterface $type
+     * @param array $typeOptions
      * @param array $settings
      * @param array $options
      * @param DataTableState|null $state
      * @return DataTable
      */
-    public function createFromType($type, array $settings = [], array $options = [], DataTableState $state = null)
+    public function createFromType($type, array $typeOptions = [], array $settings = [], array $options = [], DataTableState $state = null)
     {
         $dataTable = $this->create($settings, $options, $state);
 
@@ -90,7 +91,7 @@ class DataTableFactory
             }
         }
 
-        $type->configure($dataTable);
+        $type->configure($dataTable, $typeOptions);
 
         return $dataTable;
     }

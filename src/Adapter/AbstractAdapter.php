@@ -45,8 +45,7 @@ abstract class AbstractAdapter implements AdapterInterface
 
         $this->prepareQuery($query);
         foreach ($state->getDataTable()->getColumns() as $column) {
-            $field = $column->getField();
-            $propertyMap[] = [$column, empty($field) ? null : $this->mapPropertyPath($query, $column)];
+            $propertyMap[] = [$column, $column->getPropertyPath() ?? (empty($column->getField()) ? null : $this->mapPropertyPath($query, $column))];
         }
         $rows = [];
         $transformer = $state->getDataTable()->getTransformer();

@@ -41,11 +41,12 @@ trait DataTablesTrait
      * Creates and returns a DataTable based upon a registered DataTableType or an FQCN.
      *
      * @param string $type FQCN or service name
+     * @param array $typeOptions Type-specific options to be considered
      * @param array $settings Settings to be applied
      * @param array $options Options to be passed
      * @return DataTable
      */
-    protected function createDataTableFromType($type, array $settings = [], array $options = [])
+    protected function createDataTableFromType($type, array $typeOptions = [], array $settings = [], array $options = [])
     {
         return $this->container->get(DataTableFactory::class)->createFromType($type, $settings, $options);
     }
