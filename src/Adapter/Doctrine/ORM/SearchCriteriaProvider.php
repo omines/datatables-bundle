@@ -10,47 +10,44 @@
 
 declare(strict_types=1);
 
-namespace Omines\DataTablesBundle\Adapter\Doctrine;
+namespace Omines\DataTablesBundle\Adapter\Doctrine\ORM;
 
-use Doctrine\Common\Collections\Criteria;
-use Doctrine\Common\Collections\Expr\Comparison;
-use Doctrine\Common\Collections\Expr\CompositeExpression;
+use Doctrine\ORM\Query\Expr\Comparison;
+use Doctrine\ORM\QueryBuilder;
 use Omines\DataTablesBundle\Column\AbstractColumn;
 use Omines\DataTablesBundle\DataTableState;
 
 /**
- * SearchCriteriaProcessor.
+ * SearchCriteriaProvider.
  *
  * @author Niels Keurentjes <niels.keurentjes@omines.com>
  */
-class SearchCriteriaProvider implements CriteriaProviderInterface
+class SearchCriteriaProvider implements QueryBuilderProcessorInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function process(DataTableState $state)
+    public function process(QueryBuilder $queryBuilder, DataTableState $state)
     {
-        $criteria = Criteria::create();
+        $expr = $queryBuilder->expr();
         foreach ($state->getSearchColumns() as $searchInfo) {
             /** @var AbstractColumn $column */
             $column = $searchInfo['column'];
             $search = $searchInfo['search'];
 
             if (!empty($search) && null !== ($filter = $column->getFilter())) {
-                $criteria->andWhere(new Comparison($column->getField(), $filter->getOperator(), $search));
+                $queryBuilder->andWhere(new Comparison($column->getField(), $filter->getOperator(), $search));
             }
         }
 
         if (!empty($globalSearch = $state->getGlobalSearch())) {
-            $comparisons = [];
+            $comparisons = $expr->orX();
             foreach ($state->getDataTable()->getColumns() as $column) {
                 if ($column->isGlobalSearchable() && !empty($field = $column->getField())) {
-                    $comparisons[] = new Comparison($field, Comparison::CONTAINS, $globalSearch);
+                    $comparisons->add($expr->like($field, "'%{$globalSearch}%'"));
                 }
             }
-            $criteria->andWhere(new CompositeExpression(CompositeExpression::TYPE_OR, $comparisons));
+            $queryBuilder->andWhere($comparisons);
         }
-
-        return $criteria;
     }
 }

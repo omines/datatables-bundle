@@ -15,11 +15,14 @@ namespace Omines\DataTablesBundle\Adapter\Doctrine;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use Omines\DataTablesBundle\Adapter\AbstractAdapter;
 use Omines\DataTablesBundle\Adapter\AdapterQuery;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORM\AutomaticQueryBuilder;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORM\QueryBuilderProcessorInterface;
+use Omines\DataTablesBundle\Adapter\Doctrine\ORM\SearchCriteriaProvider;
 use Omines\DataTablesBundle\Column\AbstractColumn;
 use Omines\DataTablesBundle\DataTableState;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -29,8 +32,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * @author Niels Keurentjes <niels.keurentjes@omines.com>
  * @author Robbert Beesems <robbert.beesems@omines.com>
  */
-class ORMAdapter extends DoctrineAdapter
+class ORMAdapter extends AbstractAdapter
 {
+    /** @var RegistryInterface */
+    private $registry;
+
     /** @var EntityManager */
     private $manager;
 
@@ -43,12 +49,28 @@ class ORMAdapter extends DoctrineAdapter
     /** @var QueryBuilderProcessorInterface[] */
     private $queryBuilderProcessors;
 
+    /** @var QueryBuilderProcessorInterface[] */
+    protected $criteriaProcessors;
+
+    /**
+     * DoctrineAdapter constructor.
+     *
+     * @param RegistryInterface $registry
+     */
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct();
+        $this->registry = $registry;
+    }
+
     /**
      * {@inheritdoc}
      */
-    protected function handleOptions(array $options)
+    public function configure(array $options)
     {
-        parent::handleOptions($options);
+        $resolver = new OptionsResolver();
+        $this->configureOptions($resolver);
+        $options = $resolver->resolve($options);
 
         // Enable automated mode or just get the general default entity manager
         if (null === ($this->manager = $this->registry->getManagerForClass($options['entity']))) {
@@ -62,6 +84,15 @@ class ORMAdapter extends DoctrineAdapter
         // Set options
         $this->hydrationMode = $options['hydrate'];
         $this->queryBuilderProcessors = $options['query'];
+        $this->criteriaProcessors = $options['criteria'];
+    }
+
+    /**
+     * @param mixed $processor
+     */
+    public function addCriteriaProcessor($processor)
+    {
+        $this->criteriaProcessors[] = $this->normalizeProcessor($processor);
     }
 
     /**
@@ -87,7 +118,6 @@ class ORMAdapter extends DoctrineAdapter
 
         // Get record count after filtering
         $this->buildCriteria($builder, $state);
-        die($builder->getDQL());
         $query->setFilteredRows($this->getCount($builder, $identifier));
 
         /** @var Query\Expr\From $from */
@@ -156,10 +186,8 @@ class ORMAdapter extends DoctrineAdapter
      */
     protected function buildCriteria(QueryBuilder $queryBuilder, DataTableState $state)
     {
-        foreach ($this->criteriaProviders as $provider) {
-            if ($criteria = $provider->process($state)) {
-                $queryBuilder->addCriteria($criteria);
-            }
+        foreach ($this->criteriaProcessors as $provider) {
+            $provider->process($queryBuilder, $state);
         }
     }
 
@@ -236,38 +264,52 @@ class ORMAdapter extends DoctrineAdapter
      */
     protected function configureOptions(OptionsResolver $resolver)
     {
-        parent::configureOptions($resolver);
+        $providerNormalizer = function (Options $options, $value) {
+            return array_map([$this, 'normalizeProcessor'], (array) $value);
+        };
 
         $resolver
             ->setDefaults([
                 'hydrate' => Query::HYDRATE_OBJECT,
                 'query' => [],
+                'criteria' => function (Options $options) {
+                    return [new SearchCriteriaProvider()];
+                },
             ])
             ->setRequired('entity')
             ->setAllowedTypes('entity', ['string'])
             ->setAllowedTypes('hydrate', 'int')
             ->setAllowedTypes('query', [QueryBuilderProcessorInterface::class, 'array', 'callable'])
-            ->setNormalizer('query', function (Options $options, $value) {
-                if (is_callable($value)) {
-                    return [new class($value) implements QueryBuilderProcessorInterface {
-                        private $callable;
+            ->setAllowedTypes('criteria', [QueryBuilderProcessorInterface::class, 'array', 'callable', 'null'])
+            ->setNormalizer('query', $providerNormalizer)
+            ->setNormalizer('criteria', $providerNormalizer)
+        ;
+    }
 
-                        public function __construct(callable $value)
-                        {
-                            $this->callable = $value;
-                        }
+    /**
+     * @param callable|QueryBuilderProcessorInterface $provider
+     * @return QueryBuilderProcessorInterface
+     */
+    private function normalizeProcessor($provider)
+    {
+        if (is_callable($provider)) {
+            return new class($provider) implements QueryBuilderProcessorInterface {
+                private $callable;
 
-                        public function process(QueryBuilder $queryBuilder, DataTableState $state)
-                        {
-                            return call_user_func($this->callable, $queryBuilder, $state);
-                        }
-                    }];
-                } elseif (is_array($value)) {
-                    return $value;
+                public function __construct(callable $value)
+                {
+                    $this->callable = $value;
                 }
 
-                return [$value];
-            })
-        ;
+                public function process(QueryBuilder $queryBuilder, DataTableState $state)
+                {
+                    return call_user_func($this->callable, $queryBuilder, $state);
+                }
+            };
+        } elseif ($provider instanceof QueryBuilderProcessorInterface) {
+            return $provider;
+        }
+
+        throw new \LogicException('Provider must be a callable or implement QueryBuilderProcessorInterface');
     }
 }

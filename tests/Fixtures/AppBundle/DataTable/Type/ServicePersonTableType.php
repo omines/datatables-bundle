@@ -12,13 +12,12 @@ declare(strict_types=1);
 
 namespace Tests\Fixtures\AppBundle\DataTable\Type;
 
+use Omines\DataTablesBundle\Adapter\Doctrine\ORM\SearchCriteriaProvider;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
-use Omines\DataTablesBundle\Adapter\Doctrine\SearchCriteriaProvider;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableTypeInterface;
 use Symfony\Component\Routing\RouterInterface;
-use Tests\Fixtures\AppBundle\Entity\Company;
 use Tests\Fixtures\AppBundle\Entity\Person;
 
 /**

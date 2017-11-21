@@ -28,7 +28,7 @@ class ServiceController extends Controller
 
     public function tableAction(Request $request)
     {
-        $datatable = $this->createDataTableFromType(ServicePersonTableType::class, ['name' => 'persons'], ['order' => [[1, 'asc']]]);
+        $datatable = $this->createDataTableFromType(ServicePersonTableType::class, [], ['name' => 'persons'], ['order' => [[1, 'asc']]]);
 
         return $datatable->handleRequest($request)->getResponse();
     }

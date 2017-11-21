@@ -12,7 +12,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Adapter;
 
-use Omines\DataTablesBundle\Adapter\Doctrine\SearchCriteriaProvider;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
+use Omines\DataTablesBundle\Adapter\Doctrine\ORM\SearchCriteriaProvider;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 use PHPUnit\Framework\TestCase;
@@ -38,7 +40,13 @@ class DoctrineTest extends TestCase
             ->setColumnSearch($table->getColumn(0), 'bar')
         ;
 
-        $criteria = (new SearchCriteriaProvider())->process($state);
+        $qb = $this->createMock(QueryBuilder::class);
+        $qb
+            ->method('expr')
+            ->will($this->returnCallback(function () { return new Query\Expr(); }));
+
+        /* @var QueryBuilder $qb */
+        (new SearchCriteriaProvider())->process($qb, $state);
 
         // As this is buggy right now ignore the result
         $this->assertTrue(true);
