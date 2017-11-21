@@ -41,12 +41,10 @@ abstract class AbstractAdapter implements AdapterInterface
     final public function getData(DataTableState $state): ResultSetInterface
     {
         $query = new AdapterQuery($state);
-        $propertyMap = [];
 
         $this->prepareQuery($query);
-        foreach ($state->getDataTable()->getColumns() as $column) {
-            $propertyMap[] = [$column, $column->getPropertyPath() ?? (empty($column->getField()) ? null : $this->mapPropertyPath($query, $column))];
-        }
+        $propertyMap = $this->getPropertyMap($query);
+
         $rows = [];
         $transformer = $state->getDataTable()->getTransformer();
         $identifier = $query->getIdentifierPropertyPath();
@@ -68,6 +66,20 @@ abstract class AbstractAdapter implements AdapterInterface
         }
 
         return new ArrayResultSet($rows, $query->getTotalRows(), $query->getFilteredRows());
+    }
+
+    /**
+     * @param AdapterQuery $query
+     * @return array
+     */
+    protected function getPropertyMap(AdapterQuery $query): array
+    {
+        $propertyMap = [];
+        foreach ($query->getState()->getDataTable()->getColumns() as $column) {
+            $propertyMap[] = [$column, $column->getPropertyPath() ?? (empty($column->getField()) ? null : $this->mapPropertyPath($query, $column))];
+        }
+
+        return $propertyMap;
     }
 
     /**
