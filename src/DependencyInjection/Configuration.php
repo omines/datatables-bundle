@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle\DependencyInjection;
 
+use Omines\DataTablesBundle\Twig\TwigRenderer;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -57,6 +58,14 @@ class Configuration implements ConfigurationInterface
                     ->info('Default options to load into DataTables')
                     ->useAttributeAsKey('name')
                     ->prototype('variable')->end()
+                ->end()
+                ->scalarNode('template')
+                    ->info('Default template to be used for DataTables HTML')
+                ->end()
+                ->scalarNode('renderer')
+                    ->info('Default service used to render templates')
+                    ->defaultValue(TwigRenderer::class)
+                    ->cannotBeEmpty()
                 ->end()
             ->end()
         ;

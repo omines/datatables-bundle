@@ -19,6 +19,9 @@ class DataTableFactory
     /** @var ServiceLocator */
     protected $adapterLocator;
 
+    /** @var DataTableRendererInterface */
+    protected $renderer;
+
     /** @var ServiceLocator */
     protected $typeLocator;
 
@@ -36,11 +39,13 @@ class DataTableFactory
      *
      * @param array $settings
      * @param array $options
+     * @param DataTableRendererInterface $renderer
      */
-    public function __construct(array $settings, array $options)
+    public function __construct(array $settings, array $options, DataTableRendererInterface $renderer)
     {
         $this->settings = $settings;
         $this->options = $options;
+        $this->renderer = $renderer;
     }
 
     /**
@@ -67,7 +72,12 @@ class DataTableFactory
      */
     public function create(array $settings = [], array $options = [], DataTableState $state = null)
     {
-        return new DataTable(array_merge($this->settings, $settings), array_merge($this->options, $options), $state, $this->adapterLocator);
+        $dataTable = new DataTable(array_merge($this->settings, $settings), array_merge($this->options, $options), $state);
+
+        return $dataTable
+            ->setAdapterLocator($this->adapterLocator)
+            ->setRenderer($this->renderer)
+        ;
     }
 
     /**

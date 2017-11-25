@@ -37,6 +37,7 @@ class DataTable
         'method' => Request::METHOD_GET,
         'language_from_cdn' => true,
         'request_state' => null,
+        'template' => '@DataTables/datatable_html.html.twig',
         'translation_domain' => 'messages',
     ];
 
@@ -91,6 +92,9 @@ class DataTable
 
     /** @var AdapterInterface */
     protected $adapter;
+
+    /** @var DataTableRendererInterface */
+    private $renderer;
 
     /** @var DataTableState */
     private $state;
@@ -274,16 +278,24 @@ class DataTable
     /**
      * @return DataTableState
      */
-    public function getState()
+    public function getState(): DataTableState
     {
         return $this->state;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCallback(): bool
+    {
+        return $this->state->isCallback();
     }
 
     /**
      * @param Request $request
      * @return $this
      */
-    public function handleRequest(Request $request)
+    public function handleRequest(Request $request): self
     {
         switch ($this->getMethod()) {
             case Request::METHOD_GET:
@@ -295,7 +307,9 @@ class DataTable
             default:
                 throw new \LogicException(sprintf("Unknown request method '%s'", $this->getMethod()));
         }
-        $this->state->fromParameters($parameters);
+        if ($this->getName() === $parameters->get('_dt')) {
+            $this->state->fromParameters($parameters);
+        }
 
         return $this;
     }
@@ -303,16 +317,31 @@ class DataTable
     /**
      * @return JsonResponse
      */
-    public function getResponse()
+    public function getResponse(): JsonResponse
     {
         $resultSet = $this->getResultSet();
-
-        return new JsonResponse([
-            'draw' => $this->getState()->getDraw(),
+        $response = [
+            'draw' => $this->state->getDraw(),
             'recordsTotal' => $resultSet->getTotalRecords(),
             'recordsFiltered' => $resultSet->getTotalDisplayRecords(),
             'data' => $resultSet->getData(),
-        ]);
+        ];
+        if ($this->state->isInitial()) {
+            $response['template'] = $this->renderer->renderDataTable($this, $this->settings['template']);
+            $response['columns'] = array_map(
+                function (AbstractColumn $column) {
+                    return [
+                        'data' => $column->getName(),
+                        'orderable' => $column->isOrderable(),
+                        'searchable' => $column->isSearchable(),
+                        'visible' => $column->isVisible(),
+                        'className' => $column->getClassName(),
+                    ];
+                }, $this->getColumns()
+            );
+        }
+
+        return JsonResponse::create($response);
     }
 
     /**
@@ -330,7 +359,7 @@ class DataTable
     /**
      * @return array
      */
-    public function getSettings()
+    public function getSettings(): array
     {
         return $this->settings;
     }
@@ -355,7 +384,7 @@ class DataTable
     /**
      * @return array
      */
-    public function getOptions()
+    public function getOptions(): array
     {
         return $this->options;
     }
@@ -380,6 +409,28 @@ class DataTable
             $column = is_int($column) ? $this->getColumn($column) : $this->getColumnByName((string) $column);
         }
         $this->options['order'][] = [$column->getIndex(), $direction];
+
+        return $this;
+    }
+
+    /**
+     * @param ServiceLocator $adapterLocator
+     * @return self
+     */
+    public function setAdapterLocator(ServiceLocator $adapterLocator): self
+    {
+        $this->adapterLocator = $adapterLocator;
+
+        return $this;
+    }
+
+    /**
+     * @param DataTableRendererInterface $renderer
+     * @return self
+     */
+    public function setRenderer(DataTableRendererInterface $renderer): self
+    {
+        $this->renderer = $renderer;
 
         return $this;
     }

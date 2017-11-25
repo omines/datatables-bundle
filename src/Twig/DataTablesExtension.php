@@ -43,6 +43,12 @@ class DataTablesExtension extends \Twig_Extension
                 ['is_safe' => ['html'], 'needs_environment' => true]),
             new \Twig_SimpleFunction('datatable_js', [$this, 'datatableJs'],
                 ['is_safe' => ['html'], 'needs_environment' => true]),
+            new \Twig_SimpleFunction('datatable_settings', function (DataTable $dataTable) {
+                return json_encode([
+                    'name' => $dataTable->getName(),
+                    'method' => $dataTable->getMethod(),
+                ]);
+            }, ['is_safe' => ['html']]),
         ];
     }
 

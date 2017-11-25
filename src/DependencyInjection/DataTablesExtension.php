@@ -33,6 +33,9 @@ class DataTablesExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yaml');
 
+        $container->setAlias('datatables.renderer', $settings['renderer']);
+        unset($settings['renderer']);
+
         $container->setParameter('datatables.options', $options);
         $container->setParameter('datatables.settings', $settings);
 

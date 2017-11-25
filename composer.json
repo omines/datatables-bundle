@@ -44,7 +44,8 @@
     },
     "suggest": {
         "doctrine/doctrine-bundle": "For integrated access to Doctrine object managers",
-        "doctrine/orm": "For full automated integration with Doctrine entities"
+        "doctrine/orm": "For full automated integration with Doctrine entities",
+        "symfony/twig-bundle": "To use default Twig based rendering",
     },
     "autoload": {
         "psr-4": { "Omines\\DataTablesBundle\\": "src/"}

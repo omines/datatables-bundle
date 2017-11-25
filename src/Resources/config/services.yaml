@@ -8,7 +8,10 @@ services:
     Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter: ~
 
     Omines\DataTablesBundle\DataTableFactory:
-        arguments: ['%datatables.settings%', '%datatables.options%']
+        arguments: ['%datatables.settings%', '%datatables.options%', '@datatables.renderer']
         public: true
 
     Omines\DataTablesBundle\Twig\DataTablesExtension: ~
+
+    Omines\DataTablesBundle\Twig\TwigRenderer:
+        arguments: ['@?templating.engine.twig']

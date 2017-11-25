@@ -44,7 +44,10 @@ class DataTableState
     private $orderBy = [];
 
     /** @var bool */
-    private $fromInitialRequest = false;
+    private $isInitial = false;
+
+    /** @var bool */
+    private $isCallback = false;
 
     /**
      * DataTableState constructor.
@@ -57,43 +60,33 @@ class DataTableState
     }
 
     /**
-     * Loads datatables state from a HTTP parameter bag.
+     * Loads datatables state from a parameter bag.
      *
      * @param ParameterBag $parameters
      */
     public function fromParameters(ParameterBag $parameters)
     {
-        $prefix = $this->dataTable->getSetting('name') . '_';
         $this->draw = $parameters->getInt('draw');
-        $this->fromInitialRequest = (0 === $parameters->getInt('draw') && $this->dataTable->getSetting('requestState') && 1 === $parameters->get("{$prefix}state"));
+        $this->isCallback = true;
+        $this->isInitial = $parameters->getBoolean('_init', false);
 
-        if ($this->fromInitialRequest || $this->draw > 0) {
-            $this->processInitialRequest($parameters, $this->fromInitialRequest ? $prefix : '');
-        }
-    }
+        $this->setStart((int) $parameters->get('start', 0));
+        $this->setLength((int) $parameters->get('length', -1));
 
-    /**
-     * @param ParameterBag $parameters
-     */
-    private function processInitialRequest(ParameterBag $parameters, string $prefix)
-    {
-        $search = $parameters->get("{$prefix}search", []);
-
-        $this->setStart((int) $parameters->get("{$prefix}start", 0));
-        $this->setLength((int) $parameters->get("{$prefix}length", -1));
+        $search = $parameters->get('search', []);
         $this->setGlobalSearch($search['value'] ?? '');
 
-        $this->handleOrderBy($parameters, $prefix);
-        $this->handleSearch($parameters, $prefix);
+        $this->handleOrderBy($parameters);
+        $this->handleSearch($parameters);
     }
 
     /**
      * @param ParameterBag $parameters
      */
-    private function handleOrderBy(ParameterBag $parameters, string $prefix)
+    private function handleOrderBy(ParameterBag $parameters)
     {
         $this->orderBy = [];
-        foreach ($parameters->get("{$prefix}order", []) as $order) {
+        foreach ($parameters->get('order', []) as $order) {
             $column = $this->getDataTable()->getColumn((int) $order['column']);
 
             if ($column->isOrderable()) {
@@ -105,9 +98,9 @@ class DataTableState
     /**
      * @param ParameterBag $parameters
      */
-    private function handleSearch(ParameterBag $parameters, string $prefix)
+    private function handleSearch(ParameterBag $parameters)
     {
-        foreach ($parameters->get("{$prefix}columns", []) as $key => $search) {
+        foreach ($parameters->get('columns', []) as $key => $search) {
             $column = $this->dataTable->getColumn((int) $key);
             $value = $this->fromInitialRequest ? $search : $search['search']['value'];
 
@@ -115,6 +108,22 @@ class DataTableState
                 $this->setColumnSearch($column, $value);
             }
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isInitial(): bool
+    {
+        return $this->isInitial;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCallback(): bool
+    {
+        return $this->isCallback;
     }
 
     /**
