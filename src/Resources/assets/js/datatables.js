@@ -12,13 +12,13 @@
     /**
      * Initializes the datatable dynamically.
      */
-    $.fn.initDataTables = function(options) {
+    $.fn.initDataTables = function(config, options) {
         var root = this,
-            opts = $.extend({}, $.fn.initDataTables.defaults, options ),
+            config = $.extend({}, $.fn.initDataTables.defaults, config),
             state = '';
 
         // Load page state if needed
-        switch (opts.state) {
+        switch (config.state) {
             case 'fragment':
                 state = window.location.hash;
                 break;
@@ -29,15 +29,36 @@
         state = (state.length > 1 ? deparam(state.substr(1)) : {});
 
         // Perform initial load
-        $.ajax(opts.url, {
-            method: opts.method,
+        $.ajax(config.url, {
+            method: config.method,
             data: {
-                _dt: opts.name,
+                _dt: config.name,
                 _init: true
             }
         }).done(function(data) {
+            var rebuild = true;
+
             root.html(data.template);
-            $('table', root).dataTable({columns: data.columns, data: data.data});
+            var dt = $('table', root).dataTable($.extend(options, {
+                columns: data.columns,
+                data: data.data,
+                processing: true,
+                serverSide: true,
+                ajax: function (request, drawCallback, settings) {
+                    if (rebuild) {
+                        drawCallback(data);
+                        rebuild = false;
+                    } else {
+                        request._dt = config.name;
+                        $.ajax(config.url, {
+                            method: config.method,
+                            data: request
+                        }).done(function(data) {
+                            drawCallback(data);
+                        })
+                    }
+                }
+            }));
         }).fail(function(err) {
             console.error(err);
         });
