@@ -28,7 +28,7 @@ class CustomQueryController extends Controller
 
     public function tableAction(Request $request)
     {
-        $datatable = $this->createDataTableFromType(CustomQueryTableType::class);
+        $datatable = $this->createDataTableFromType(CustomQueryTableType::class, [], ['method' => Request::METHOD_GET]);
 
         return $datatable->handleRequest($request)->getResponse();
     }

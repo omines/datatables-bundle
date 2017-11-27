@@ -14,4 +14,4 @@ services:
     Omines\DataTablesBundle\Twig\DataTablesExtension: ~
 
     Omines\DataTablesBundle\Twig\TwigRenderer:
-        arguments: ['@?templating.engine.twig']
+        arguments: ['@?twig']

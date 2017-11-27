@@ -18,6 +18,7 @@ use Omines\DataTablesBundle\Adapter\Doctrine\ORM\SearchCriteriaProvider;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * DoctrineTest.
@@ -34,6 +35,7 @@ class DoctrineTest extends TestCase
             ->add('lastName', TextColumn::class)
         ;
 
+        $table->handleRequest(Request::create('/', Request::METHOD_POST, ['_dt' => 'dt']));
         $state = $table->getState();
         $state
             ->setGlobalSearch('foo')

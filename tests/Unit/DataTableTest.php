@@ -26,7 +26,9 @@ use Omines\DataTablesBundle\DataTableFactory;
 use Omines\DataTablesBundle\DataTablesBundle;
 use Omines\DataTablesBundle\Event\Callback;
 use Omines\DataTablesBundle\Event\Event;
+use Omines\DataTablesBundle\Twig\TwigRenderer;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\HttpFoundation\Request;
 use Tests\Fixtures\AppBundle\DataTable\Type\RegularPersonTableType;
 use Tests\Unit\Helper\InvalidEvent;
@@ -46,7 +48,8 @@ class DataTableTest extends TestCase
 
     public function testFactory()
     {
-        $factory = new DataTableFactory(['class_name' => 'foo'], ['dom' => 'bar']);
+        $factory = new DataTableFactory(['class_name' => 'foo'], ['dom' => 'bar'], $this->createMock(TwigRenderer::class));
+        $factory->setAdapterLocator(new ServiceLocator([]));
 
         $table = $factory->create(['name' => 'bar'], ['pageLength' => 684]);
         $this->assertSame('bar', $table->getSetting('name'));
@@ -67,7 +70,9 @@ class DataTableTest extends TestCase
 
     public function testFactoryRemembersInstances()
     {
-        $factory = new DataTableFactory([], []);
+        $factory = new DataTableFactory([], [], $this->createMock(TwigRenderer::class));
+        $factory->setAdapterLocator(new ServiceLocator([]));
+
         $reflection = new \ReflectionClass(DataTableFactory::class);
         $property = $reflection->getProperty('resolvedTypes');
         $property->setAccessible(true);
@@ -80,13 +85,14 @@ class DataTableTest extends TestCase
 
     public function testDataTableState()
     {
-        $datatable = new DataTable();
+        $datatable = new DataTable(['method' => Request::METHOD_GET]);
         $datatable->add('foo', TextColumn::class);
+        $datatable->handleRequest(Request::create('/?_dt=' . $datatable->getName()));
         $state = $datatable->getState();
 
         // Test sane defaults
         $this->assertSame(0, $state->getStart());
-        $this->assertSame(-1, $state->getLength());
+        $this->assertSame(10, $state->getLength());
         $this->assertSame(0, $state->getDraw());
         $this->assertSame('', $state->getGlobalSearch());
 
@@ -118,7 +124,7 @@ class DataTableTest extends TestCase
     public function testPostMethod()
     {
         $datatable = new DataTable(['method' => Request::METHOD_POST]);
-        $datatable->handleRequest(Request::create('/foo', Request::METHOD_POST, ['draw' => 684]));
+        $datatable->handleRequest(Request::create('/foo', Request::METHOD_POST, ['_dt' => $datatable->getName(), 'draw' => 684]));
 
         $this->assertSame(684, $datatable->getState()->getDraw());
     }
@@ -129,7 +135,9 @@ class DataTableTest extends TestCase
      */
     public function testFactoryFailsOnInvalidType()
     {
-        (new DataTableFactory([], []))->createFromType('foobar');
+        $factory = new DataTableFactory([], [], $this->createMock(TwigRenderer::class));
+        $factory->setAdapterLocator(new ServiceLocator([]));
+        $factory->createFromType('foobar');
     }
 
     /**
@@ -202,7 +210,9 @@ class DataTableTest extends TestCase
      */
     public function testMissingAdapterThrows()
     {
-        (new DataTable())->getResponse();
+        $datatable = new DataTable(['method' => Request::METHOD_GET]);
+        $datatable->handleRequest(Request::create('/?_dt=' . $datatable->getName()));
+        $datatable->getResponse();
     }
 
     /**

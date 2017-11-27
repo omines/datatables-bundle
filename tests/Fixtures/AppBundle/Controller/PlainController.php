@@ -32,7 +32,7 @@ class PlainController extends Controller
 
     public function tableAction(Request $request)
     {
-        $datatable = $this->createDataTable()
+        $datatable = $this->createDataTable(['method' => 'GET'])
             ->setName('persons')
             ->add('id', TextColumn::class, ['field' => 'person.id'])
             ->add('firstName', TextColumn::class)

@@ -14,7 +14,7 @@ namespace Omines\DataTablesBundle\Twig;
 
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableRendererInterface;
-use Symfony\Bundle\TwigBundle\TwigEngine;
+use Twig_Environment;
 
 /**
  * TwigRenderer.
@@ -23,15 +23,15 @@ use Symfony\Bundle\TwigBundle\TwigEngine;
  */
 class TwigRenderer implements DataTableRendererInterface
 {
-    /** @var TwigEngine */
+    /** @var Twig_Environment */
     private $twig;
 
     /**
      * DataTableRenderer constructor.
      *
-     * @param TwigEngine @twig
+     * @param Twig_Environment @twig
      */
-    public function __construct(TwigEngine $twig = null)
+    public function __construct(Twig_Environment $twig = null)
     {
         if (null === ($this->twig = $twig)) {
             throw new \LogicException('You must have TwigBundle installed to use the default Twig based DataTables rendering');

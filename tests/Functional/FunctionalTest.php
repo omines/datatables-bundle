@@ -47,7 +47,7 @@ class FunctionalTest extends WebTestCase
 
     public function testPlainDataTable()
     {
-        $json = $this->callDataTableUrl('/plain?draw=1&start=25&length=50&order[0][column]=0&order[0][dir]=desc');
+        $json = $this->callDataTableUrl('/plain?_dt=persons&draw=1&start=25&length=50&order[0][column]=0&order[0][dir]=desc');
 
         $this->assertSame(1, $json->draw);
         $this->assertSame(125, $json->recordsTotal);
@@ -66,7 +66,7 @@ class FunctionalTest extends WebTestCase
 
     public function testTypeDataTable()
     {
-        $json = $this->callDataTableUrl('/type');
+        $json = $this->callDataTableUrl('/type?_dt=persons');
 
         $this->assertSame(0, $json->draw);
         $this->assertSame(6, $json->recordsTotal);
@@ -74,20 +74,20 @@ class FunctionalTest extends WebTestCase
         $this->assertSame('TRUMP', $json->data[0]->lastName);
         $this->assertSame('01-01-2017', $json->data[0]->lastActivity);
 
-        $json = $this->callDataTableUrl('/type?draw=1&search[value]=Bush');
+        $json = $this->callDataTableUrl('/type?_dt=persons&draw=1&search[value]=Bush');
 
         $this->assertSame(2, $json->recordsFiltered);
     }
 
     public function testServiceDataTable()
     {
-        $json = $this->callDataTableUrl('/service?draw=2');
+        $json = $this->callDataTableUrl('/service?_dt=persons&draw=2');
 
         $this->assertSame(2, $json->draw);
         $this->assertStringStartsWith('Company ', $json->data[0]->company);
         $this->assertSame('LastName0 (Company 0)', $json->data[0]->fullName);
 
-        $json = $this->callDataTableUrl('/service?draw=2&order[0][column]=2&order[0][dir]=desc&search[value]=24&columns[1][search][value]=24');
+        $json = $this->callDataTableUrl('/service?_dt=persons&draw=2&order[0][column]=2&order[0][dir]=desc&search[value]=24&columns[1][search][value]=24');
 
         $this->assertCount(2, $json->data);
         $this->assertStringStartsWith('Company ', $json->data[0]->company);
@@ -96,7 +96,7 @@ class FunctionalTest extends WebTestCase
 
     public function testCustomDataTable()
     {
-        $json = $this->callDataTableUrl('/custom?draw=2');
+        $json = $this->callDataTableUrl('/custom?_dt=dt&draw=2');
 
         $this->assertSame(2, $json->draw);
         $this->assertStringStartsWith('Company ', $json->data[0]->company);

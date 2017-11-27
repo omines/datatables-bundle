@@ -277,12 +277,12 @@ class DataTable
     }
 
     /**
-     * @return DataTableState
+     * @return DataTableState|null
      */
-//    public function getState(): DataTableState
-//    {
-//        return $this->state;
-//    }
+    public function getState()
+    {
+        return $this->state;
+    }
 
     /**
      * @return bool
@@ -323,6 +323,10 @@ class DataTable
      */
     public function getResponse(): JsonResponse
     {
+        if (null === $this->state) {
+            throw new \LogicException('The DataTable does not know its state yet, did you call handleRequest?');
+        }
+
         $resultSet = $this->getResultSet();
         $response = [
             'draw' => $this->state->getDraw(),
