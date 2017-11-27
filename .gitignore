@@ -1,6 +1,4 @@
 /.php_cs.cache
 /composer.lock
-/docs/Gemfile.lock
-/docs/_site
 /tmp
 /vendor
