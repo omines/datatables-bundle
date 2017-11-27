@@ -16,9 +16,6 @@ completely from the source of the data. Therefore it is possible to implement yo
 every possible data source. Doctrine ORM comes bundled already, we intend to provide popular choices like
 Elastica, Doctrine DBAL and MongoDB out of the box as well. 
 
-This library is near initial release, [only a few issues](https://github.com/omines/datatables-bundle/milestone/1)
-need to be resolved before a stable package will be tagged. 
-
 ## Installation
 
 To install, use composer:
