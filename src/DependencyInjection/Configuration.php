@@ -43,7 +43,7 @@ class Configuration implements ConfigurationInterface
                 ->enumNode('method')
                     ->info('Default HTTP method to be used for callbacks')
                     ->values([Request::METHOD_GET, Request::METHOD_POST])
-                    ->defaultValue(Request::METHOD_GET)
+                    ->defaultValue(Request::METHOD_POST)
                 ->end()
                 ->scalarNode('translation_domain')
                     ->info('Default translation domain to be used')

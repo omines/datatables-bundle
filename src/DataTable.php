@@ -34,7 +34,7 @@ class DataTable
         'name' => 'dt',
         'class_name' => 'table table-bordered',
         'column_filter' => null,
-        'method' => Request::METHOD_GET,
+        'method' => Request::METHOD_POST,
         'language_from_cdn' => true,
         'request_state' => null,
         'template' => '@DataTables/datatable_html.html.twig',
