@@ -24,14 +24,11 @@ use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableFactory;
 use Omines\DataTablesBundle\DataTablesBundle;
-use Omines\DataTablesBundle\Event\Callback;
-use Omines\DataTablesBundle\Event\Event;
 use Omines\DataTablesBundle\Twig\TwigRenderer;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\HttpFoundation\Request;
 use Tests\Fixtures\AppBundle\DataTable\Type\RegularPersonTableType;
-use Tests\Unit\Helper\InvalidEvent;
 
 /**
  * DataTableTest.
@@ -107,18 +104,6 @@ class DataTableTest extends TestCase
         $this->assertSame('foo', $state->getGlobalSearch());
         $this->assertCount(2, $state->getOrderBy());
         $this->assertSame('bar', $state->getSearchColumns()['foo']['search']);
-    }
-
-    public function testEventsAndCallbacks()
-    {
-        $datatable = new DataTable();
-        $options = ['type' => 'test', 'template' => 'foo.html.twig'];
-
-        $datatable->on(Event::class, $options);
-        $datatable->on(Callback::class, $options);
-
-        $this->assertCount(1, $datatable->getCallbacks());
-        $this->assertCount(1, $datatable->getEvents());
     }
 
     public function testPostMethod()
@@ -222,27 +207,6 @@ class DataTableTest extends TestCase
     public function testEmptyNameThrows()
     {
         (new DataTable())->setName('');
-    }
-
-    /**
-     * @expectedException \Error
-     * @expectedExceptionMessage Class 'foo' not found
-     */
-    public function testInvalidEventThrows()
-    {
-        (new DataTable())->on('foo');
-    }
-
-    /**
-     * @expectedException \LogicException
-     * @expectedExceptionMessage neither an event or a callback
-     */
-    public function testInvalidEventClassThrows()
-    {
-        (new DataTable())->on(InvalidEvent::class, [
-            'type' => 'test',
-            'template' => 'foo.html.twig',
-        ]);
     }
 
     /**

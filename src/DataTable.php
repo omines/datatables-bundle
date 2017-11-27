@@ -15,9 +15,7 @@ namespace Omines\DataTablesBundle;
 use Omines\DataTablesBundle\Adapter\AdapterInterface;
 use Omines\DataTablesBundle\Adapter\ResultSetInterface;
 use Omines\DataTablesBundle\Column\AbstractColumn;
-use Omines\DataTablesBundle\Event\AbstractEvent;
 use Omines\DataTablesBundle\Event\Callback;
-use Omines\DataTablesBundle\Event\Event;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -74,12 +72,6 @@ class DataTable
 
     /** @var array<string, AbstractColumn> */
     protected $columnsByName = [];
-
-    /** @var Callback[] */
-    protected $callbacks = [];
-
-    /** @var Event[] */
-    protected $events = [];
 
     /** @var array */
     protected $options;
@@ -148,39 +140,6 @@ class DataTable
     }
 
     /**
-     * @param string $class
-     * @param array $options
-     * @return $this
-     */
-    public function on($class, $options = [])
-    {
-        /** @var AbstractEvent $event */
-        $event = new $class();
-        $event->set($options);
-
-        switch ($class) {
-            case Event::class:
-                $this->events[] = $event;
-                break;
-            case Callback::class:
-                $this->callbacks[] = $event;
-                break;
-            default:
-                throw new \LogicException("Class $class is neither an event or a callback");
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Callback[]
-     */
-    public function getCallbacks()
-    {
-        return $this->callbacks;
-    }
-
-    /**
      * @param int $index
      * @return AbstractColumn
      */
@@ -212,14 +171,6 @@ class DataTable
     public function getColumns(): array
     {
         return $this->columns;
-    }
-
-    /**
-     * @return Event[]
-     */
-    public function getEvents(): array
-    {
-        return $this->events;
     }
 
     /**

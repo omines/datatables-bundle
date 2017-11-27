@@ -40,8 +40,7 @@ class FunctionalTest extends WebTestCase
         $crawler = $this->client->request('GET', '/');
         $this->assertSuccessful($response = $this->client->getResponse());
 
-        // Verify HTML and JS were correctly inserted
-        $this->assertSame(2, $crawler->filter('script:contains("var callbacks")')->count(), 'the Javascript is correctly inserted');
+        // Verify HTML was correctly inserted
         $this->assertSame(4, $crawler->filter('table thead th')->count(), 'the HTML is correctly generated');
     }
 

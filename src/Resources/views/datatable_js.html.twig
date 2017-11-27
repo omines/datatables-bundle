@@ -3,20 +3,10 @@
         var defaults = {};
         var options = {{ options|json_encode(64)|raw }};
 
-        var callbacks = {
-            {% for callback in datatable.callbacks %}
-            "{{ callback.type }}": {% include callback.template with callback.vars %},
-            {% endfor %}
-        };
-
         $.extend(defaults, options);
         $.extend(defaults, callbacks);
 
-        var oTable = $('#{{ datatable.setting('name') }}')
-                {% for event in datatable.events %}
-                .on('{{ event.type }}', {% include event.template with event.vars %})
-                {% endfor %}
-        ;
+        var oTable = $('#{{ datatable.setting('name') }}');
 
         {% if datatable.setting('requestState') %}
         oTable
