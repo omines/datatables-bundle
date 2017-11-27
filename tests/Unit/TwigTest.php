@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use Omines\DataTablesBundle\Twig\DataTablesExtension;
+use Omines\DataTablesBundle\Twig\TwigRenderer;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Translation\Translator;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -31,5 +32,14 @@ class TwigTest extends TestCase
 
         $twig = new DataTablesExtension($translator);
         $this->assertSame('DataTablesBundle', $twig->getName());
+    }
+
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage You must have TwigBundle installed
+     */
+    public function testMissingTwigBundleThrows()
+    {
+        new TwigRenderer();
     }
 }
