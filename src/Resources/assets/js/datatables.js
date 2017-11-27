@@ -36,16 +36,12 @@
                 _init: true
             }
         }).done(function(data) {
-            var rebuild = true;
+            var rebuild = true, cached;
 
-            root.html(data.template);
-            var dt = $('table', root).dataTable($.extend(options, {
-                columns: data.columns,
-                data: data.data,
-                processing: true,
-                serverSide: true,
+            var dtOpts = $.extend({}, data.options, options, {
                 ajax: function (request, drawCallback, settings) {
                     if (rebuild) {
+                        data.draw = request.draw;
                         drawCallback(data);
                         rebuild = false;
                     } else {
@@ -58,7 +54,10 @@
                         })
                     }
                 }
-            }));
+            });
+
+            root.html(data.template);
+            var dt = $('table', root).DataTable(dtOpts);
         }).fail(function(err) {
             console.error(err);
         });

@@ -109,7 +109,7 @@ class DataTable
      */
     public function __construct(array $settings = [], array $options = [], DataTableState $state = null, ServiceLocator $adapterLocator = null)
     {
-        $this->state = $state ?? new DataTableState($this);
+        $this->state = $state;
         $this->adapterLocator = $adapterLocator;
 
         $resolver = new OptionsResolver();
@@ -120,6 +120,7 @@ class DataTable
         $this->configureSettings($resolver);
         $this->settings = $resolver->resolve($settings);
 
+        // Temporarily disable column filters until their functionality has been restored
         if (null !== $this->settings['column_filter']) {
             throw new \LogicException("The 'column_filter' setting is currently not supported and must be null");
         }
@@ -278,17 +279,17 @@ class DataTable
     /**
      * @return DataTableState
      */
-    public function getState(): DataTableState
-    {
-        return $this->state;
-    }
+//    public function getState(): DataTableState
+//    {
+//        return $this->state;
+//    }
 
     /**
      * @return bool
      */
     public function isCallback(): bool
     {
-        return $this->state->isCallback();
+        return (null === $this->state) ? false : $this->state->isCallback();
     }
 
     /**
@@ -308,7 +309,10 @@ class DataTable
                 throw new \LogicException(sprintf("Unknown request method '%s'", $this->getMethod()));
         }
         if ($this->getName() === $parameters->get('_dt')) {
-            $this->state->fromParameters($parameters);
+            if (null === $this->state) {
+                $this->state = DataTableState::fromDefaults($this);
+            }
+            $this->state->applyParameters($parameters);
         }
 
         return $this;
@@ -327,8 +331,17 @@ class DataTable
             'data' => $resultSet->getData(),
         ];
         if ($this->state->isInitial()) {
+            $response['options'] = $this->getInitialResponse();
             $response['template'] = $this->renderer->renderDataTable($this, $this->settings['template']);
-            $response['columns'] = array_map(
+        }
+
+        return JsonResponse::create($response);
+    }
+
+    protected function getInitialResponse(): array
+    {
+        return array_merge($this->getOptions(), [
+            'columns' => array_map(
                 function (AbstractColumn $column) {
                     return [
                         'data' => $column->getName(),
@@ -338,10 +351,8 @@ class DataTable
                         'className' => $column->getClassName(),
                     ];
                 }, $this->getColumns()
-            );
-        }
-
-        return JsonResponse::create($response);
+            ),
+        ]);
     }
 
     /**

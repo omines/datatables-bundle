@@ -60,21 +60,40 @@ class DataTableState
     }
 
     /**
-     * Loads datatables state from a parameter bag.
+     * Constructs a state based on the default options.
+     *
+     * @param DataTable $dataTable
+     * @return DataTableState
+     */
+    public static function fromDefaults(DataTable $dataTable)
+    {
+        $state = new self($dataTable);
+        $state->start = (int) $dataTable->getOption('start');
+        $state->length = (int) $dataTable->getOption('pageLength');
+
+        foreach ($dataTable->getOption('order') as $order) {
+            $state->addOrderBy($dataTable->getColumn($order[0]), $order[1]);
+        }
+
+        return $state;
+    }
+
+    /**
+     * Loads datatables state from a parameter bag on top of any existing settings.
      *
      * @param ParameterBag $parameters
      */
-    public function fromParameters(ParameterBag $parameters)
+    public function applyParameters(ParameterBag $parameters)
     {
         $this->draw = $parameters->getInt('draw');
         $this->isCallback = true;
         $this->isInitial = $parameters->getBoolean('_init', false);
 
-        $this->setStart((int) $parameters->get('start', 0));
-        $this->setLength((int) $parameters->get('length', -1));
+        $this->start = (int) $parameters->get('start', $this->start);
+        $this->length = (int) $parameters->get('length', $this->length);
 
         $search = $parameters->get('search', []);
-        $this->setGlobalSearch($search['value'] ?? '');
+        $this->setGlobalSearch($search['value'] ?? $this->globalSearch);
 
         $this->handleOrderBy($parameters);
         $this->handleSearch($parameters);
@@ -85,12 +104,14 @@ class DataTableState
      */
     private function handleOrderBy(ParameterBag $parameters)
     {
-        $this->orderBy = [];
-        foreach ($parameters->get('order', []) as $order) {
-            $column = $this->getDataTable()->getColumn((int) $order['column']);
+        if ($parameters->has('order')) {
+            $this->orderBy = [];
+            foreach ($parameters->get('order', []) as $order) {
+                $column = $this->getDataTable()->getColumn((int) $order['column']);
 
-            if ($column->isOrderable()) {
-                $this->addOrderBy($column, $order['dir']);
+                if ($column->isOrderable()) {
+                    $this->addOrderBy($column, $order['dir']);
+                }
             }
         }
     }
