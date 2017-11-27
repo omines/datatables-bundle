@@ -7,9 +7,6 @@ toc_footers:
   - <a href='https://github.com/omines/datatables-bundle/issues'>Report an issue</a>
   - <a href='https://www.omines.nl/' title='Internetbureau Eindhoven'>Omines Full Service Internetbureau</a>
 
-includes:
-  - errors
-
 search: true
 ---
 
