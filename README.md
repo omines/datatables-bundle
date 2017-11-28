@@ -9,66 +9,18 @@
 [![SensioLabs Insight](https://img.shields.io/sensiolabs/i/05d79ba2-cba4-4201-a17a-2868c51f9c6c.svg)](https://insight.sensiolabs.com/projects/05d79ba2-cba4-4201-a17a-2868c51f9c6c)
 
 This bundle provides convenient integration of the popular [DataTables](https://datatables.net/) jQuery library
-for realtime AJAX tables in your Symfony 3.3+ or 4.0+ application. Older versions of Symfony [will not be supported](https://github.com/omines/datatables-bundle/issues/1).
+for realtime Ajax tables in your Symfony 3.3+ or 4.0+ application.
 
 Unlike other bundles providing similar functionality we decoupled the implementation of the DataTables logic
 completely from the source of the data. Therefore it is possible to implement your own custom adapters for
 every possible data source. Doctrine ORM comes bundled already, we intend to provide popular choices like
 Elastica, Doctrine DBAL and MongoDB out of the box as well. 
 
-## Installation
+## Documentation
 
-To install, use composer:
+[Visit the documentation with extensive code samples](https://omines.github.io/datatables-bundle/).
 
-```bash
-$ composer require omines/datatables-bundle
-```
-Then add the bundle to your kernel's bundle registration:
-```php
-public function registerBundles()
-{
-    ...
-    new \Omines\DataTablesBundle\DataTablesBundle(),
-    ...
-}
-```
-
-## Usage
-
-To render the most basic table with predefined data, implement a controller like this:
-```php
-use Omines\DataTablesBundle\DataTablesTrait;
-use Omines\DataTablesBundle\Adapter\ArrayAdapter;
-use Omines\DataTablesBundle\Column\TextColumn;
-
-class MyController
-{
-    use DataTablesTrait;
-    
-    public function showAction(Request $request)
-    {
-        $table = $this->createDataTable()
-            ->add('firstName', TextColumn::class)
-            ->add('lastName', TextColumn::class)
-            ->createAdapter(ArrayAdapter::class, [
-                ['firstName' => 'Donald', 'lastName' => 'Trump'],
-                ['firstName' => 'Barack', 'lastName' => 'Obama'],
-            ])
-            ->handleRequest($request);
-        
-        if ($request->isXmlHttpRequest()) {
-            return $table->getResponse();
-        }
-        
-        $this->render('list.html.twig', ['datatable' => $table]);
-    }
-}
-
-```
-Now in your Twig template render the required HTML and JS with:
-```twig
-{{ datatable(datatable)) }}
-```
+The documentation below is pending move to the external site.
 
 #### Making a separate datatable type
 

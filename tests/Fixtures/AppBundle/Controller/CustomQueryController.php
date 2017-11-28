@@ -15,6 +15,7 @@ namespace Tests\Fixtures\AppBundle\Controller;
 use Omines\DataTablesBundle\Controller\DataTablesTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tests\Fixtures\AppBundle\DataTable\Type\CustomQueryTableType;
 
 /**
@@ -29,7 +30,10 @@ class CustomQueryController extends Controller
     public function tableAction(Request $request)
     {
         $datatable = $this->createDataTableFromType(CustomQueryTableType::class, [], ['method' => Request::METHOD_GET]);
+        if ($datatable->handleRequest($request)->isCallback()) {
+            return $datatable->getResponse();
+        }
 
-        return $datatable->handleRequest($request)->getResponse();
+        throw new NotFoundHttpException('This exception must never be triggered');
     }
 }
