@@ -47,7 +47,9 @@ class DataTablesExtension extends \Twig_Extension
                 return json_encode([
                     'name' => $dataTable->getName(),
                     'method' => $dataTable->getMethod(),
-                    'language' => $this->getLanguageSettings($dataTable),
+                    'options' => [
+                        'language' => $this->getLanguageSettings($dataTable),
+                    ],
                 ]);
             }, ['is_safe' => ['html']]),
         ];
@@ -78,7 +80,6 @@ class DataTablesExtension extends \Twig_Extension
 
     private function getOptions(DataTable $datatable, $options)
     {
-        $locale = $this->translator->getLocale();
         $result = array_merge($datatable->getOptions(), $options);
 
         $result['columns'] = array_map(
