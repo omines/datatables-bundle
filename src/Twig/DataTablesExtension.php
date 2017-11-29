@@ -47,6 +47,7 @@ class DataTablesExtension extends \Twig_Extension
                 return json_encode([
                     'name' => $dataTable->getName(),
                     'method' => $dataTable->getMethod(),
+                    'language' => $this->getLanguageSettings($dataTable),
                 ]);
             }, ['is_safe' => ['html']]),
         ];
@@ -91,10 +92,22 @@ class DataTablesExtension extends \Twig_Extension
                 ];
             }, $datatable->getColumns());
 
-        if ($datatable->getSetting('language_from_cdn') && array_key_exists($locale, $this->languageCDNFile)) {
-            $result['language'] = ['url' => "//cdn.datatables.net/plug-ins/1.10.15/i18n/{$this->languageCDNFile[$locale]}"];
+        $result['language'] = $this->getLanguageSettings($datatable);
+
+        return $result;
+    }
+
+    /**
+     * @param DataTable $dataTable
+     * @return array
+     */
+    private function getLanguageSettings(DataTable $dataTable)
+    {
+        $locale = $this->translator->getLocale();
+        if ($dataTable->getSetting('language_from_cdn') && array_key_exists($locale, $this->languageCDNFile)) {
+            return ['url' => "//cdn.datatables.net/plug-ins/1.10.15/i18n/{$this->languageCDNFile[$locale]}"];
         } else {
-            $result['language'] = [
+            return [
                 'processing' => $this->translator->trans('datatable.datatable.processing'),
                 'search' => $this->translator->trans('datatable.datatable.search'),
                 'lengthMenu' => $this->translator->trans('datatable.datatable.lengthMenu'),
@@ -115,10 +128,9 @@ class DataTablesExtension extends \Twig_Extension
                 'aria' => [
                     'sortAscending' => $this->translator->trans('datatable.datatable.aria.sortAscending'),
                     'sortDescending' => $this->translator->trans('datatable.datatable.aria.sortDescending'),
-                ], ];
+                ],
+            ];
         }
-
-        return $result;
     }
 
     /**
