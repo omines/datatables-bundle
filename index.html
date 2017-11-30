@@ -231,25 +231,23 @@
           </li>
           <li>
             <a href="#configuration" class="toc-h1 toc-link" data-title="Configuration">Configuration</a>
-              <ul class="toc-list-h2">
-                  <li>
-                    <a href="#settings" class="toc-h2 toc-link" data-title="Settings">Settings</a>
-                  </li>
-                  <li>
-                    <a href="#options" class="toc-h2 toc-link" data-title="Options">Options</a>
-                  </li>
-              </ul>
           </li>
           <li>
             <a href="#core-concepts" class="toc-h1 toc-link" data-title="Core concepts">Core concepts</a>
               <ul class="toc-list-h2">
+                  <li>
+                    <a href="#adapters" class="toc-h2 toc-link" data-title="Adapters">Adapters</a>
+                  </li>
+                  <li>
+                    <a href="#columns" class="toc-h2 toc-link" data-title="Columns">Columns</a>
+                  </li>
                   <li>
                     <a href="#datatable-types" class="toc-h2 toc-link" data-title="DataTable types">DataTable types</a>
                   </li>
               </ul>
           </li>
           <li>
-            <a href="#adapters" class="toc-h1 toc-link" data-title="Adapters">Adapters</a>
+            <a href="#adapters-2" class="toc-h1 toc-link" data-title="Adapters">Adapters</a>
               <ul class="toc-list-h2">
                   <li>
                     <a href="#doctrine-orm" class="toc-h2 toc-link" data-title="Doctrine ORM">Doctrine ORM</a>
@@ -391,12 +389,12 @@ string with the configured settings required for initialization.</p>
     <span class="c1"># Default translation domain to be used</span>
     <span class="na">translation_domain</span><span class="pi">:</span>   <span class="s">messages</span>
 </code></pre>
-<p>Global configuration of the bundle is done in your config file. The default configuration is shown here,
+<p>Global configuration of the bundle is done in your Symfony config file. The default configuration is shown here,
 and should be fine in most cases. Most settings can be overridden per table, but for most applications
 you will want to make changes at the global level so they are applied everywhere, providing a uniform
 look and feel.</p>
 
-<p>The following settings only exist at the configuration level:</p>
+<p>The following settings exist at the configuration level:</p>
 
 <table><thead>
 <tr>
@@ -406,83 +404,78 @@ look and feel.</p>
 </tr>
 </thead><tbody>
 <tr>
-<td>template</td>
+<td>language_from_cdn</td>
+<td>bool</td>
+<td>Load i18n files from DataTables CDN or from Symfony Translations.</td>
+</tr>
+<tr>
+<td>options</td>
+<td>object</td>
+<td>Default options that will be passed to DataTables clientside initialization.</td>
+</tr>
+<tr>
+<td>method</td>
 <td>string</td>
-<td>Default template to be used for rendering the basic HTML table in your templates.</td>
+<td>Either <code>GET</code> or <code>POST</code> to indicate which HTTP method to use for callbacks.</td>
 </tr>
 <tr>
 <td>renderer</td>
 <td>string</td>
 <td>Service used to render the table HTML, which must implement the <code>DataTableRendererInterface</code>.</td>
 </tr>
+<tr>
+<td>template</td>
+<td>string</td>
+<td>Default template to be used for rendering the basic HTML table in your templates.</td>
+</tr>
+<tr>
+<td>template_parameters</td>
+<td>object</td>
+<td>Default parameters to be passed to the template during rendering.</td>
+</tr>
+<tr>
+<td>translation_domains</td>
+<td>string</td>
+<td>Default Symfony Translation Domain used where translations are used.</td>
+</tr>
 </tbody></table>
 
-<p>The other settings correspond to table level settings, and the <code>options</code> are passed (almost) verbatim
-to the DataTables clientside constructor. Refer to the sections below for details on individual settings
-and options.</p>
-<h2 id='settings'>Settings</h2>
-<p>These settings can all be defined both at the global config level and overridden per table.</p>
+<p>All settings can be overridden on individual tables by calling the corresponding setter function,
+ie. <code>setLanguageFromCDN(bool)</code>.</p>
 
-<table><thead>
-<tr>
-<th>Setting</th>
-<th>Type</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>name</td>
-<td>string</td>
-<td>dt</td>
-<td>The name of the DataTable. Used mainly to separate callbacks in case multiple tables are used on the same page.</td>
-</tr>
-<tr>
-<td>method</td>
-<td>string</td>
-<td>POST</td>
-<td>Use <code>GET</code> or <code>POST</code> to define the HTTP method used by callbacks.</td>
-</tr>
-<tr>
-<td>class_name</td>
-<td>string</td>
-<td></td>
-<td>Class to apply to the <code>&lt;table&gt;</code> element in generated tables. Separate multiple classes with a space.</td>
-</tr>
-<tr>
-<td>column_filter</td>
-<td>string</td>
-<td><em>null</em></td>
-<td>When using column level filters set this to <code>thead</code>, <code>tfoot</code> or <code>both</code> to specify where to render them.</td>
-</tr>
-<tr>
-<td>language_from_cdn</td>
-<td>bool</td>
-<td>true</td>
-<td>Either loads DataTables&#39; own translations from CDN (default) or have them provided by your own Symfony translation files.</td>
-</tr>
-<tr>
-<td>translation_domain</td>
-<td>string</td>
-<td>messages</td>
-<td>Default translation domain used in the table structure.</td>
-</tr>
-</tbody></table>
-<h2 id='options'>Options</h2><h1 id='core-concepts'>Core concepts</h1><h2 id='datatable-types'>DataTable types</h2>
-<p>Having the table configuration in your controller is convenient, but not practical for reusable or
-extensible tables, or highly customized tables.</p>
+<p>The <code>options</code> are passed (almost) verbatim to the DataTables clientside constructor. Refer to the
+<a href="https://datatables.net/reference/option/">external documentation</a> below for details on individual
+options. Only options which are meaningful to be defined serverside can be set at this level, so
+setting callbacks and events is not possible. These are however easily set on the Javascript end.</p>
+<h1 id='core-concepts'>Core concepts</h1>
+<p>This chapter details various base building blocks used in the bundle.</p>
+<h2 id='adapters'>Adapters</h2>
+<p>Adapters are the core elements bridging DataTables functionality to their underlying data source.
+Popular implementations for common data sources are provided, and more are welcomed.</p>
 
-<p>In the example above we could also create a class <code>DataTable\Type\PresidentsTableType</code> in our app bundle,
-and make it implement <code>Omines\DataTablesBundle\DataTableTypeInterface</code>. We can then use:</p>
-<pre class="highlight php"><code>    <span class="nv">$table</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">createDataTableFromType</span><span class="p">(</span><span class="nx">PresidentsTableType</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+<p>An adapter is called by the bundle when a request for data has been formulated, including search
+and sorting criteria, and returns a result set with metadata on record counts.</p>
+<h2 id='columns'>Columns</h2>
+<p>Column classes derive from <code>AbstractColumn</code>, and implement the transformations required to convert
+raw data into output ready for rendering in a DataTable.</p>
+<h2 id='datatable-types'>DataTable types</h2><pre class="highlight php"><code>    <span class="nv">$table</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">createDataTableFromType</span><span class="p">(</span><span class="nx">PresidentsTableType</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
         <span class="o">-&gt;</span><span class="na">handleRequest</span><span class="p">(</span><span class="nv">$request</span><span class="p">);</span>
 </code></pre>
-<p>This ensures your controllers stay lean and short, and only delegate tasks. Of course you can modify
-the base type to fit the controller&#39;s specific needs before calling <code>handleRequest</code>.</p>
+<p>Having the table configuration in your controller is convenient, but not practical for reusable or
+extensible tables, or highly customized tables. In the example above we could also create a class
+<code>DataTable\Type\PresidentsTableType</code> in our app bundle, and make it implement 
+<code>Omines\DataTablesBundle\DataTableTypeInterface</code>. We can then use the code illustrated here to
+instantiate the reusable class in the controller.</p>
 
-<p>If you need dependencies injected just register <code>PresidentsTableType</code> as a service in the container, and
-tag it with <code>datatables.type</code>. Or just use <code>autoconfigure:true</code> as is recommended Symfony practice.</p>
-<h1 id='adapters'>Adapters</h1>
+<p>This ensures your controllers stay lean and short, and only delegate tasks. The first parameter
+takes either a Fully Qualified Class Name (FQCN) to instantiate the class dynamically, or a
+registered service with a <code>datatables.type</code> tag. Use a service if you need to inject dependencies
+dynamically. When using Symfony&#39;s autoconfiguration the tag will be applied automatically.</p>
+
+<p>Of course you can modify the base type to fit the controller&#39;s specific needs before calling 
+<code>handleRequest</code>. Secondly, the <code>createDataTableFromType</code> function accepts an array as a second
+argument which is passed to the type class for parametrized instantiation.</p>
+<h1 id='adapters-2'>Adapters</h1>
 <p>Ready-made adapters are supplied for easy integration with various data sources.</p>
 <h2 id='doctrine-orm'>Doctrine ORM</h2><pre class="highlight php"><code><span class="k">use</span> <span class="nx">Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter</span><span class="p">;</span>
 
