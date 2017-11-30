@@ -28,13 +28,12 @@ trait DataTablesTrait
     /**
      * Creates and returns a basic DataTable instance.
      *
-     * @param array $settings Settings to be applied
      * @param array $options Options to be passed
      * @return DataTable
      */
-    protected function createDataTable(array $settings = [], array $options = [])
+    protected function createDataTable(array $options = [])
     {
-        return $this->container->get(DataTableFactory::class)->create($settings, $options);
+        return $this->container->get(DataTableFactory::class)->create($options);
     }
 
     /**
@@ -42,12 +41,11 @@ trait DataTablesTrait
      *
      * @param string $type FQCN or service name
      * @param array $typeOptions Type-specific options to be considered
-     * @param array $settings Settings to be applied
      * @param array $options Options to be passed
      * @return DataTable
      */
-    protected function createDataTableFromType($type, array $typeOptions = [], array $settings = [], array $options = [])
+    protected function createDataTableFromType($type, array $typeOptions = [], array $options = [])
     {
-        return $this->container->get(DataTableFactory::class)->createFromType($type, $typeOptions, $settings, $options);
+        return $this->container->get(DataTableFactory::class)->createFromType($type, $typeOptions, $options);
     }
 }

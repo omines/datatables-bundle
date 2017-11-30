@@ -15,7 +15,7 @@ namespace Omines\DataTablesBundle;
 use Omines\DataTablesBundle\Adapter\AdapterInterface;
 use Omines\DataTablesBundle\Adapter\ResultSetInterface;
 use Omines\DataTablesBundle\Column\AbstractColumn;
-use Symfony\Component\DependencyInjection\ServiceLocator;
+use Omines\DataTablesBundle\DependencyInjection\Instantiator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -27,17 +27,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class DataTable
 {
-    const DEFAULT_SETTINGS = [
-        'name' => 'dt',
-        'class_name' => 'table table-bordered',
-        'column_filter' => null,
-        'method' => Request::METHOD_POST,
-        'language_from_cdn' => true,
-        'request_state' => null,
-        'template' => '@DataTables/datatable_html.html.twig',
-        'translation_domain' => 'messages',
-    ];
-
     const DEFAULT_OPTIONS = [
         'jQueryUI' => false,
         'pagingType' => 'full_numbers',
@@ -53,18 +42,18 @@ class DataTable
         'search' => null,
         'autoWidth' => false,
         'order' => [],
-        'ajax' => true, //can contain the callback url
         'searchDelay' => 400,
         'dom' => 'lftrip',
         'orderCellsTop' => true,
         'stateSave' => false,
     ];
 
+    const DEFAULT_TEMPLATE = '@DataTables/datatable_html.html.twig';
     const SORT_ASCENDING = 'asc';
     const SORT_DESCENDING = 'desc';
 
-    /** @var ServiceLocator */
-    private $adapterLocator;
+    /** @var AdapterInterface */
+    protected $adapter;
 
     /** @var AbstractColumn[] */
     protected $columns = [];
@@ -72,17 +61,29 @@ class DataTable
     /** @var array<string, AbstractColumn> */
     protected $columnsByName = [];
 
+    /** @var string */
+    protected $method = Request::METHOD_POST;
+
     /** @var array */
     protected $options;
 
+    /** @var bool */
+    protected $languageFromCDN = true;
+
+    /** @var string */
+    protected $name = 'dt';
+
+    /** @var string */
+    protected $template = self::DEFAULT_TEMPLATE;
+
     /** @var array */
-    protected $settings;
+    protected $templateParams = [];
 
     /** @var callable */
     protected $transformer;
 
-    /** @var AdapterInterface */
-    protected $adapter;
+    /** @var string */
+    protected $translationDomain = 'messages';
 
     /** @var DataTableRendererInterface */
     private $renderer;
@@ -90,31 +91,22 @@ class DataTable
     /** @var DataTableState */
     private $state;
 
+    /** @var null|Instantiator */
+    private $instantiator;
+
     /**
      * DataTable constructor.
      *
-     * @param array $settings
      * @param array $options
-     * @param DataTableState $state
-     * @param ServiceLocator $adapterLocator
+     * @param Instantiator|null $instantiator
      */
-    public function __construct(array $settings = [], array $options = [], DataTableState $state = null, ServiceLocator $adapterLocator = null)
+    public function __construct(array $options = [], Instantiator $instantiator = null)
     {
-        $this->state = $state;
-        $this->adapterLocator = $adapterLocator;
+        $this->instantiator = $instantiator;
 
         $resolver = new OptionsResolver();
         $this->configureOptions($resolver);
         $this->options = $resolver->resolve($options);
-
-        $resolver = new OptionsResolver();
-        $this->configureSettings($resolver);
-        $this->settings = $resolver->resolve($settings);
-
-        // Temporarily disable column filters until their functionality has been restored
-        if (null !== $this->settings['column_filter']) {
-            throw new \LogicException("The 'column_filter' setting is currently not supported and must be null");
-        }
     }
 
     /**
@@ -136,6 +128,44 @@ class DataTable
         $column->setDataTable($this);
 
         return $this;
+    }
+
+    /**
+     * @param int|string|AbstractColumn $column
+     * @param string $direction
+     * @return self
+     */
+    public function addOrderBy($column, string $direction = self::SORT_ASCENDING)
+    {
+        if (!$column instanceof AbstractColumn) {
+            $column = is_int($column) ? $this->getColumn($column) : $this->getColumnByName((string) $column);
+        }
+        $this->options['order'][] = [$column->getIndex(), $direction];
+
+        return $this;
+    }
+
+    /**
+     * @param string $adapter
+     * @return DataTable
+     */
+    public function createAdapter(string $adapter, array $options = []): self
+    {
+        if (null !== $this->instantiator && $instance = $this->instantiator->getAdapter($adapter)) {
+            return $this->setAdapter($instance, $options);
+        } elseif (class_exists($adapter) && in_array(AdapterInterface::class, class_implements($adapter), true)) {
+            return $this->setAdapter(new $adapter(), $options);
+        } else {
+            throw new \InvalidArgumentException(sprintf('Could not resolve adapter type "%s" to a service or class implementing AdapterInterface', $adapter));
+        }
+    }
+
+    /**
+     * @return AdapterInterface
+     */
+    public function getAdapter(): AdapterInterface
+    {
+        return $this->adapter;
     }
 
     /**
@@ -173,11 +203,19 @@ class DataTable
     }
 
     /**
+     * @return bool
+     */
+    public function isLanguageFromCDN(): bool
+    {
+        return $this->languageFromCDN;
+    }
+
+    /**
      * @return string
      */
     public function getMethod(): string
     {
-        return $this->settings['method'];
+        return $this->method;
     }
 
     /**
@@ -185,45 +223,15 @@ class DataTable
      */
     public function getName(): string
     {
-        return $this->settings['name'];
+        return $this->name;
     }
 
     /**
-     * @return AdapterInterface
+     * @return string
      */
-    public function getAdapter(): AdapterInterface
+    public function getTranslationDomain(): string
     {
-        return $this->adapter;
-    }
-
-    /**
-     * @param string $adapter
-     * @return DataTable
-     */
-    public function createAdapter(string $adapter, array $options = []): self
-    {
-        if (null !== $this->adapterLocator && $this->adapterLocator->has($adapter)) {
-            return $this->setAdapter($this->adapterLocator->get($adapter), $options);
-        } elseif (class_exists($adapter) && in_array(AdapterInterface::class, class_implements($adapter), true)) {
-            return $this->setAdapter(new $adapter(), $options);
-        } else {
-            throw new \InvalidArgumentException(sprintf('Could not resolve adapter type "%s" to a service or class implementing AdapterInterface', $adapter));
-        }
-    }
-
-    /**
-     * @param AdapterInterface $adapter
-     * @param array|null $options
-     * @return DataTable
-     */
-    public function setAdapter(AdapterInterface $adapter, array $options = null): self
-    {
-        if (null !== $options) {
-            $adapter->configure($options);
-        }
-        $this->adapter = $adapter;
-
-        return $this;
+        return $this->translationDomain;
     }
 
     /**
@@ -322,23 +330,6 @@ class DataTable
     }
 
     /**
-     * @return array
-     */
-    public function getSettings(): array
-    {
-        return $this->settings;
-    }
-
-    /**
-     * @param $name
-     * @return mixed|null
-     */
-    public function getSetting($name)
-    {
-        return $this->settings[$name] ?? null;
-    }
-
-    /**
      * @return callable|null
      */
     public function getTransformer()
@@ -364,27 +355,38 @@ class DataTable
     }
 
     /**
-     * @param int|string|AbstractColumn $column
-     * @param string $direction
-     * @return self
+     * @param AdapterInterface $adapter
+     * @param array|null $options
+     * @return DataTable
      */
-    public function addOrderBy($column, string $direction = self::SORT_ASCENDING)
+    public function setAdapter(AdapterInterface $adapter, array $options = null): self
     {
-        if (!$column instanceof AbstractColumn) {
-            $column = is_int($column) ? $this->getColumn($column) : $this->getColumnByName((string) $column);
+        if (null !== $options) {
+            $adapter->configure($options);
         }
-        $this->options['order'][] = [$column->getIndex(), $direction];
+        $this->adapter = $adapter;
 
         return $this;
     }
 
     /**
-     * @param ServiceLocator $adapterLocator
+     * @param bool $languageFromCDN
      * @return self
      */
-    public function setAdapterLocator(ServiceLocator $adapterLocator): self
+    public function setLanguageFromCDN(bool $languageFromCDN): self
     {
-        $this->adapterLocator = $adapterLocator;
+        $this->languageFromCDN = $languageFromCDN;
+
+        return $this;
+    }
+
+    /**
+     * @param string $method
+     * @return self
+     */
+    public function setMethod(string $method): self
+    {
+        $this->method = $method;
 
         return $this;
     }
@@ -409,7 +411,30 @@ class DataTable
         if (empty($name)) {
             throw new \InvalidArgumentException('DataTable name cannot be empty');
         }
-        $this->settings['name'] = $name;
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @param string $template
+     * @return self
+     */
+    public function setTemplate(string $template, array $parameters = []): self
+    {
+        $this->template = $template;
+        $this->templateParams = $parameters;
+
+        return $this;
+    }
+
+    /**
+     * @param string $translationDomain
+     * @return self
+     */
+    public function setTranslationDomain(string $translationDomain): self
+    {
+        $this->translationDomain = $translationDomain;
 
         return $this;
     }
@@ -421,25 +446,6 @@ class DataTable
     public function setTransformer(callable $formatter)
     {
         $this->transformer = $formatter;
-
-        return $this;
-    }
-
-    /**
-     * @param OptionsResolver $resolver
-     * @return $this
-     */
-    protected function configureSettings(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults(self::DEFAULT_SETTINGS)
-            ->setAllowedTypes('name', 'string')
-            ->setAllowedTypes('method', 'string')
-            ->setAllowedTypes('class_name', 'string')
-            ->setAllowedTypes('column_filter', ['null', 'string'])
-            ->setAllowedTypes('language_from_cdn', 'bool')
-            ->setAllowedTypes('translation_domain', 'string')
-            ->setAllowedValues('method', [Request::METHOD_GET, Request::METHOD_POST])
-        ;
 
         return $this;
     }

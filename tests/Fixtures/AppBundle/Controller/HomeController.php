@@ -33,9 +33,7 @@ class HomeController extends Controller
             ->add('col2', TextColumn::class, ['label' => 'bar', 'field' => 'foo'])
         ;
 
-        $datatable2 = $this->createDataTable([
-            'language_from_cdn' => false,
-        ]);
+        $datatable2 = $this->createDataTable();
         $datatable2
             ->add('col3', TextColumn::class, ['label' => 'foo', 'field' => 'bar'])
             ->add('col4', TextColumn::class, ['label' => 'bar', 'field' => 'foo'])

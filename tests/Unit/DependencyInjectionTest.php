@@ -42,12 +42,9 @@ class DependencyInjectionTest extends TestCase
         $container = new ContainerBuilder();
         $extension->load([], $container);
 
-        // Default should have no options
-        $this->assertEmpty($options = $container->getParameter('datatables.options'));
-
-        // Default settings are meaningful
-        $this->assertNotEmpty($settings = $container->getParameter('datatables.settings'));
-        $this->assertSame(true, $settings['language_from_cdn']);
-        $this->assertEmpty($settings['column_filter']);
+        // Verify default config, options should be empty
+        $config = $container->getParameter('datatables.config');
+        $this->assertTrue($config['language_from_cdn']);
+        $this->assertEmpty($config['options']);
     }
 }

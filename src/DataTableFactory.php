@@ -12,48 +12,41 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle;
 
+use Omines\DataTablesBundle\DependencyInjection\Instantiator;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 
 class DataTableFactory
 {
-    /** @var ServiceLocator */
-    protected $adapterLocator;
+    /** @var Instantiator */
+    protected $instantiator;
 
     /** @var DataTableRendererInterface */
     protected $renderer;
-
-    /** @var ServiceLocator */
-    protected $typeLocator;
 
     /** @var array<string, DataTableTypeInterface> */
     protected $resolvedTypes = [];
 
     /** @var array */
-    protected $settings;
-
-    /** @var array */
-    protected $options;
+    protected $config;
 
     /**
      * DataTableFactory constructor.
      *
-     * @param array $settings
-     * @param array $options
+     * @param array $config
      * @param DataTableRendererInterface $renderer
      */
-    public function __construct(array $settings, array $options, DataTableRendererInterface $renderer)
+    public function __construct(array $config, DataTableRendererInterface $renderer)
     {
-        $this->settings = $settings;
-        $this->options = $options;
+        $this->config = $config;
         $this->renderer = $renderer;
     }
 
     /**
-     * @param ServiceLocator $adapterLocator
+     * @param Instantiator $instantiator
      */
-    public function setAdapterLocator(ServiceLocator $adapterLocator)
+    public function setInstantiator(Instantiator $instantiator)
     {
-        $this->adapterLocator = $adapterLocator;
+        $this->instantiator = $instantiator;
     }
 
     /**
@@ -65,32 +58,33 @@ class DataTableFactory
     }
 
     /**
-     * @param array $settings
      * @param array $options
      * @param DataTableState $state
      * @return DataTable
      */
-    public function create(array $settings = [], array $options = [], DataTableState $state = null)
+    public function create(array $options = [], DataTableState $state = null)
     {
-        $dataTable = new DataTable(array_merge($this->settings, $settings), array_merge($this->options, $options), $state);
+        $config = $this->config;
 
-        return $dataTable
-            ->setAdapterLocator($this->adapterLocator)
+        return (new DataTable(array_merge($config['options'] ?? [], $options), $this->instantiator))
             ->setRenderer($this->renderer)
+            ->setMethod($config['method'])
+            ->setTranslationDomain($config['translation_domain'])
+            ->setLanguageFromCDN($config['language_from_cdn'])
+            ->setTemplate($config['template'], $config['template_parameters'])
         ;
     }
 
     /**
      * @param string|DataTableTypeInterface $type
      * @param array $typeOptions
-     * @param array $settings
      * @param array $options
      * @param DataTableState|null $state
      * @return DataTable
      */
-    public function createFromType($type, array $typeOptions = [], array $settings = [], array $options = [], DataTableState $state = null)
+    public function createFromType($type, array $typeOptions = [], array $options = [], DataTableState $state = null)
     {
-        $dataTable = $this->create($settings, $options, $state);
+        $dataTable = $this->create($options, $state);
 
         if (is_string($type)) {
             $name = $type;
@@ -114,8 +108,8 @@ class DataTableFactory
      */
     private function resolveType(string $type): DataTableTypeInterface
     {
-        if (null !== $this->typeLocator && $this->typeLocator->has($type)) {
-            return $this->typeLocator->get($type);
+        if (null !== $this->instantiator && $type = $this->instantiator->getType($type)) {
+            return $type;
         } elseif (class_exists($type) && in_array(DataTableTypeInterface::class, class_implements($type), true)) {
             return new $type();
         }

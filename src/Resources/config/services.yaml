@@ -2,16 +2,17 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
+        public: false
 
     # Register default adapters via autoconfig/autowire
     Omines\DataTablesBundle\Adapter\ArrayAdapter: ~
     Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter: ~
 
     Omines\DataTablesBundle\DataTableFactory:
-        arguments: ['%datatables.settings%', '%datatables.options%', '@datatables.renderer']
+        arguments: ['%datatables.config%', '@datatables.renderer']
         public: true
 
+    Omines\DataTablesBundle\DependencyInjection\Instantiator: ~
     Omines\DataTablesBundle\Twig\DataTablesExtension: ~
-
     Omines\DataTablesBundle\Twig\TwigRenderer:
         arguments: ['@?twig']

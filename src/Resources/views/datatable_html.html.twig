@@ -1,6 +1,6 @@
-{% trans_default_domain datatable.setting('translation_domain') %}
+{% trans_default_domain datatable.translationDomain %}
 
-<table id="{{ datatable.setting('name') }}" class="{{ datatable.setting('class_name') }}{% if className is defined %} {{ className }}{% endif %}">
+<table id="{{ datatable.name }}" class="{% if className is defined and className is not empty %}{{ className }}{% endif %}">
     <thead>
     <tr>
         {% for column in datatable.columns %}

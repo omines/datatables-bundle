@@ -33,7 +33,7 @@ class ColumnTest extends TestCase
         $this->assertFalse($column->isRaw());
         $this->assertSame('foobar', $column->transform(null));
 
-        $column->setDataTable(new DataTable(['name' => 'foo']));
+        $column->setDataTable((new DataTable())->setName('foo'));
         $this->assertSame('foo', $column->getDataTable()->getName());
     }
 

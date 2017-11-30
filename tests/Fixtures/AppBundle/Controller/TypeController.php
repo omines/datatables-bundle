@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Tests\Fixtures\AppBundle\Controller;
 
 use Omines\DataTablesBundle\Controller\DataTablesTrait;
+use Omines\DataTablesBundle\DataTable;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Tests\Fixtures\AppBundle\DataTable\Type\RegularPersonTableType;
@@ -28,10 +29,11 @@ class TypeController extends Controller
 
     public function tableAction(Request $request)
     {
-        $datatable = $this->createDataTableFromType(RegularPersonTableType::class, [], [
-            'name' => 'persons',
-            'method' => Request::METHOD_GET,
-        ], ['order' => [[1, 'asc']]]);
+        $datatable = $this->createDataTableFromType(RegularPersonTableType::class)
+            ->setName('persons')
+            ->setMethod(Request::METHOD_GET)
+            ->addOrderBy(1, DataTable::SORT_ASCENDING)
+        ;
 
         return $datatable->handleRequest($request)->getResponse();
     }

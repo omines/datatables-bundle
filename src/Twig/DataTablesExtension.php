@@ -104,7 +104,7 @@ class DataTablesExtension extends \Twig_Extension
     private function getLanguageSettings(DataTable $dataTable)
     {
         $locale = $this->translator->getLocale();
-        if ($dataTable->getSetting('language_from_cdn') && array_key_exists($locale, $this->languageCDNFile)) {
+        if ($dataTable->isLanguageFromCDN() && array_key_exists($locale, $this->languageCDNFile)) {
             return ['url' => "//cdn.datatables.net/plug-ins/1.10.15/i18n/{$this->languageCDNFile[$locale]}"];
         } else {
             return [
