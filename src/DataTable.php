@@ -294,7 +294,7 @@ class DataTable
         ];
         if ($this->state->isInitial()) {
             $response['options'] = $this->getInitialResponse();
-            $response['template'] = $this->renderer->renderDataTable($this, $this->settings['template']);
+            $response['template'] = $this->renderer->renderDataTable($this, $this->template, $this->templateParams);
         }
 
         return JsonResponse::create($response);

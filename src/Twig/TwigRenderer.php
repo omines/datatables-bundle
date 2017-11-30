@@ -41,10 +41,9 @@ class TwigRenderer implements DataTableRendererInterface
     /**
      * {@inheritdoc}
      */
-    public function renderDataTable(DataTable $dataTable, string $template): string
+    public function renderDataTable(DataTable $dataTable, string $template, array $parameters): string
     {
-        return $this->twig->render($template, [
-            'datatable' => $dataTable,
-        ]);
+        $parameters['datatable'] = $dataTable;
+        return $this->twig->render($template, $parameters);
     }
 }
