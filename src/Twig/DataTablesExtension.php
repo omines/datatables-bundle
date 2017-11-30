@@ -108,27 +108,28 @@ class DataTablesExtension extends \Twig_Extension
         if ($dataTable->isLanguageFromCDN() && array_key_exists($locale, $this->languageCDNFile)) {
             return ['url' => "//cdn.datatables.net/plug-ins/1.10.15/i18n/{$this->languageCDNFile[$locale]}"];
         } else {
+            $domain = $dataTable->getTranslationDomain();
             return [
-                'processing' => $this->translator->trans('datatable.datatable.processing'),
-                'search' => $this->translator->trans('datatable.datatable.search'),
-                'lengthMenu' => $this->translator->trans('datatable.datatable.lengthMenu'),
-                'info' => $this->translator->trans('datatable.datatable.info'),
-                'infoEmpty' => $this->translator->trans('datatable.datatable.infoEmpty'),
-                'infoFiltered' => $this->translator->trans('datatable.datatable.infoFiltered'),
-                'infoPostFix' => $this->translator->trans('datatable.datatable.infoPostFix'),
-                'loadingRecords' => $this->translator->trans('datatable.datatable.loadingRecords'),
-                'zeroRecords' => $this->translator->trans('datatable.datatable.zeroRecords'),
-                'emptyTable' => $this->translator->trans('datatable.datatable.emptyTable'),
-                'searchPlaceholder' => $this->translator->trans('datatable.datatable.searchPlaceholder'),
+                'processing' => $this->translator->trans('datatable.datatable.processing', $domain),
+                'search' => $this->translator->trans('datatable.datatable.search', $domain),
+                'lengthMenu' => $this->translator->trans('datatable.datatable.lengthMenu', $domain),
+                'info' => $this->translator->trans('datatable.datatable.info', $domain),
+                'infoEmpty' => $this->translator->trans('datatable.datatable.infoEmpty', $domain),
+                'infoFiltered' => $this->translator->trans('datatable.datatable.infoFiltered', $domain),
+                'infoPostFix' => $this->translator->trans('datatable.datatable.infoPostFix', $domain),
+                'loadingRecords' => $this->translator->trans('datatable.datatable.loadingRecords', $domain),
+                'zeroRecords' => $this->translator->trans('datatable.datatable.zeroRecords', $domain),
+                'emptyTable' => $this->translator->trans('datatable.datatable.emptyTable', $domain),
+                'searchPlaceholder' => $this->translator->trans('datatable.datatable.searchPlaceholder', $domain),
                 'paginate' => [
-                    'first' => $this->translator->trans('datatable.datatable.paginate.first'),
-                    'previous' => $this->translator->trans('datatable.datatable.paginate.previous'),
-                    'next' => $this->translator->trans('datatable.datatable.paginate.next'),
-                    'last' => $this->translator->trans('datatable.datatable.paginate.last'),
+                    'first' => $this->translator->trans('datatable.datatable.paginate.first', $domain),
+                    'previous' => $this->translator->trans('datatable.datatable.paginate.previous', $domain),
+                    'next' => $this->translator->trans('datatable.datatable.paginate.next', $domain),
+                    'last' => $this->translator->trans('datatable.datatable.paginate.last', $domain),
                 ],
                 'aria' => [
-                    'sortAscending' => $this->translator->trans('datatable.datatable.aria.sortAscending'),
-                    'sortDescending' => $this->translator->trans('datatable.datatable.aria.sortDescending'),
+                    'sortAscending' => $this->translator->trans('datatable.datatable.aria.sortAscending', $domain),
+                    'sortDescending' => $this->translator->trans('datatable.datatable.aria.sortDescending', $domain),
                 ],
             ];
         }

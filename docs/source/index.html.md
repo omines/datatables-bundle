@@ -119,30 +119,33 @@ datatables:
     # Load i18n data from DataTables CDN or locally
     language_from_cdn:    true
 
-    # Persist request state automatically
-    request_state:        true
-
-    # Default class attribute to apply to the root table elements
-    class_name:           ~
-
     # Default HTTP method to be used for callbacks
     method:               POST # One of "GET"; "POST"
 
-    # Default translation domain to be used
-    translation_domain:   messages
-
-    # If and where to enable the DataTables Filter module
-    column_filter:        null # One of "thead"; "tfoot"; "both"; null
-
     # Default options to load into DataTables
     options:
-        # Default table options
+        option:           value           
+
+    # Where to persist the current table state automatically
+    persist_state:        fragment # One of "query"; "fragment"; "local"; "session"
+
+    # Default service used to render templates, built-in TwigRenderer uses global Twig environment
+    renderer:             Omines\DataTablesBundle\Twig\TwigRenderer
 
     # Default template to be used for DataTables HTML
-    template:             ~
+    template:             '@DataTables/datatable_html.html.twig'
 
-    # Default service used to render templates
-    renderer:             Omines\DataTablesBundle\Twig\TwigRenderer
+    # Default parameters to be passed to the template
+    template_parameters:
+
+        # Default class attribute to apply to the root table elements
+        className:            'table table-bordered'
+
+        # If and where to enable the DataTables Filter module
+        columnFilter:         null # One of "thead"; "tfoot"; "both"; null
+
+    # Default translation domain to be used
+    translation_domain:   messages
 ```
 
 Global configuration of the bundle is done in your config file. The default configuration is shown here,
@@ -175,3 +178,59 @@ language_from_cdn | bool | true | Either loads DataTables' own translations from
 translation_domain | string | messages | Default translation domain used in the table structure.
 
 ## Options
+
+# Core concepts
+
+## DataTable types
+
+Having the table configuration in your controller is convenient, but not practical for reusable or
+extensible tables, or highly customized tables.
+
+In the example above we could also create a class `DataTable\Type\PresidentsTableType` in our app bundle,
+and make it implement `Omines\DataTablesBundle\DataTableTypeInterface`. We can then use:
+
+```php?start_inline=1
+    $table = $this->createDataTableFromType(PresidentsTableType::class)
+        ->handleRequest($request);
+```
+This ensures your controllers stay lean and short, and only delegate tasks. Of course you can modify
+the base type to fit the controller's specific needs before calling `handleRequest`.
+
+If you need dependencies injected just register `PresidentsTableType` as a service in the container, and
+tag it with `datatables.type`. Or just use `autoconfigure:true` as is recommended Symfony practice.
+
+# Adapters
+
+Ready-made adapters are supplied for easy integration with various data sources.
+
+## Doctrine ORM
+
+```php?start_inline=1
+use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
+
+$table = $this->createDataTable()
+    ->add('firstName', TextColumn::class)
+    ->add('lastName', TextColumn::class)
+    ->add('company', TextColumn::class, ['field' => 'company.name'])
+    ->createAdapter(ORMAdapter::class, [
+        'entity' => Employee::class,
+    ]);
+```
+If you have installed `doctrine/orm` and `doctrine/doctrine-bundle` you can use the provided `ORMAdapter`.
+Assume a simple `Employee` table with some basic fields and a ManyToOne relationship to `Company` for
+these examples.
+ 
+Underneath a lot of "magic" is happening in this most simple of examples. The first 2 columns automatically
+have their `field` option defaulted to the "root entity" of the adapter, with the field identical to their
+name. The adapter itself did not get a query, and as such injected the `AutomaticQueryBuilder` supplied by
+this bundle, which scans the metadata and automatically joins and selects the right data based on the fields.
+Secondly, since no criteria processors were supplied a default `SearchCriteriaProvider` was injected to
+apply global search to all mapped fields.
+
+Of course, all of this is just convenient default. For more complex scenarios you can supply your own query
+builders and criteria providers, and even chain them together to easily implement multiple slightly different
+tables in your site.
+
+## Arrays
+
+## Implementing your own

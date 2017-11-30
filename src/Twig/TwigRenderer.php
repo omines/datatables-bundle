@@ -44,6 +44,7 @@ class TwigRenderer implements DataTableRendererInterface
     public function renderDataTable(DataTable $dataTable, string $template, array $parameters): string
     {
         $parameters['datatable'] = $dataTable;
+
         return $this->twig->render($template, $parameters);
     }
 }
