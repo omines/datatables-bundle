@@ -40,18 +40,24 @@ class FunctionalTest extends WebTestCase
         $crawler = $this->client->request('GET', '/');
         $this->assertSuccessful($response = $this->client->getResponse());
 
-        // Verify HTML was correctly inserted
-        $this->assertSame(4, $crawler->filter('table thead th')->count(), 'the HTML is correctly generated');
+        $content = $response->getContent();
+        $this->assertContains('"name":"dt"', $content);
+        $this->assertContains('(filtered from _MAX_ total entries)', $content);
+        $json = $this->callDataTableUrl('/?_dt=noCDN&_init=true');
+        $this->assertEmpty($json->data);
     }
 
     public function testPlainDataTable()
     {
-        $json = $this->callDataTableUrl('/plain?_dt=persons&draw=1&start=25&length=50&order[0][column]=0&order[0][dir]=desc');
+        $json = $this->callDataTableUrl('/plain?_dt=persons&_init=true&draw=1&start=25&length=50&order[0][column]=0&order[0][dir]=desc');
 
         $this->assertSame(1, $json->draw);
         $this->assertSame(125, $json->recordsTotal);
         $this->assertSame(125, $json->recordsFiltered);
         $this->assertCount(50, $json->data);
+
+        $this->assertContains('<table id="persons"', $json->template);
+        $this->assertNotEmpty($json->options);
 
         $sample = $json->data[5];
         $this->assertSame('FirstName94', $sample->firstName);

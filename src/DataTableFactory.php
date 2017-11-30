@@ -50,14 +50,6 @@ class DataTableFactory
     }
 
     /**
-     * @param ServiceLocator $typeLocator
-     */
-    public function setTypeLocator(ServiceLocator $typeLocator)
-    {
-        $this->typeLocator = $typeLocator;
-    }
-
-    /**
      * @param array $options
      * @param DataTableState $state
      * @return DataTable
