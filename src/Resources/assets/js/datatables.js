@@ -38,7 +38,7 @@
         }).done(function(data) {
             var rebuild = true, cached;
 
-            var dtOpts = $.extend({}, data.options, options, {
+            var dtOpts = $.extend({}, data.options, config.options, options, {
                 ajax: function (request, drawCallback, settings) {
                     if (rebuild) {
                         data.draw = request.draw;
