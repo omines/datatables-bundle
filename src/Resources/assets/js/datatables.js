@@ -15,7 +15,8 @@
     $.fn.initDataTables = function(config, options) {
         var root = this,
             config = $.extend({}, $.fn.initDataTables.defaults, config),
-            state = '';
+            state = ''
+        ;
 
         // Load page state if needed
         switch (config.state) {
@@ -28,41 +29,42 @@
         }
         state = (state.length > 1 ? deparam(state.substr(1)) : {});
 
-        // Perform initial load
-        $.ajax(config.url, {
-            method: config.method,
-            data: {
-                _dt: config.name,
-                _init: true
-            }
-        }).done(function(data) {
-            var rebuild = true, cached;
-
-            var dtOpts = $.extend({}, data.options, config.options, options, {
-                ajax: function (request, drawCallback, settings) {
-                    if (rebuild) {
-                        data.draw = request.draw;
-                        drawCallback(data);
-                        rebuild = false;
-                    } else {
-                        request._dt = config.name;
-                        $.ajax(config.url, {
-                            method: config.method,
-                            data: request
-                        }).done(function(data) {
-                            drawCallback(data);
-                        })
-                    }
+        return new Promise((fulfill, reject) => {
+            // Perform initial load
+            $.ajax(config.url, {
+                method: config.method,
+                data: {
+                    _dt: config.name,
+                    _init: true
                 }
+            }).done(function(data) {
+                var rebuild = true, cached;
+
+                var dtOpts = $.extend({}, data.options, config.options, options, {
+                    ajax: function (request, drawCallback, settings) {
+                        if (rebuild) {
+                            data.draw = request.draw;
+                            drawCallback(data);
+                            rebuild = false;
+                        } else {
+                            request._dt = config.name;
+                            $.ajax(config.url, {
+                                method: config.method,
+                                data: request
+                            }).done(function(data) {
+                                drawCallback(data);
+                            })
+                        }
+                    }
+                });
+
+                root.html(data.template);
+                fulfill(dt = $('table', root).DataTable(dtOpts));
+            }).fail(function(err) {
+                console.error(err);
+                reject(err);
             });
-
-            root.html(data.template);
-            var dt = $('table', root).DataTable(dtOpts);
-        }).fail(function(err) {
-            console.error(err);
         });
-
-        return this;
     };
 
     /**
