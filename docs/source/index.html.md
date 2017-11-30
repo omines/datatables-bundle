@@ -148,56 +148,69 @@ datatables:
     translation_domain:   messages
 ```
 
-Global configuration of the bundle is done in your config file. The default configuration is shown here,
+Global configuration of the bundle is done in your Symfony config file. The default configuration is shown here,
 and should be fine in most cases. Most settings can be overridden per table, but for most applications
 you will want to make changes at the global level so they are applied everywhere, providing a uniform
 look and feel.
 
-The following settings only exist at the configuration level:
+The following settings exist at the configuration level:
 
 Option | Type | Description
 ------ | ---- | ------- | -----------
+language_from_cdn | bool | Load i18n files from DataTables CDN or from Symfony Translations.
+options | object | Default options that will be passed to DataTables clientside initialization.
+method | string | Either `GET` or `POST` to indicate which HTTP method to use for callbacks.
+renderer | string | Service used to render the table HTML, which must implement the <code>DataTableRendererInterface</code>.
 template | string | Default template to be used for rendering the basic HTML table in your templates.
-renderer | string | Service used to render the table HTML, which must implement the <code>DataTableRendererInterface</code>.  
+template_parameters | object | Default parameters to be passed to the template during rendering.
+translation_domains | string | Default Symfony Translation Domain used where translations are used.
 
-The other settings correspond to table level settings, and the `options` are passed (almost) verbatim
-to the DataTables clientside constructor. Refer to the sections below for details on individual settings
-and options.
+All settings can be overridden on individual tables by calling the corresponding setter function,
+ie. `setLanguageFromCDN(bool)`.
 
-## Settings
-
-These settings can all be defined both at the global config level and overridden per table.
-
-Setting | Type | Default | Description
-------- | ---- | ------- | -----------
-name   | string | dt | The name of the DataTable. Used mainly to separate callbacks in case multiple tables are used on the same page.
-method | string | POST | Use `GET` or `POST` to define the HTTP method used by callbacks.
-class_name | string | | Class to apply to the `<table>` element in generated tables. Separate multiple classes with a space.
-column_filter | string | *null* | When using column level filters set this to `thead`, `tfoot` or `both` to specify where to render them.
-language_from_cdn | bool | true | Either loads DataTables' own translations from CDN (default) or have them provided by your own Symfony translation files.
-translation_domain | string | messages | Default translation domain used in the table structure.
-
-## Options
+The `options` are passed (almost) verbatim to the DataTables clientside constructor. Refer to the
+[external documentation](https://datatables.net/reference/option/) below for details on individual
+options. Only options which are meaningful to be defined serverside can be set at this level, so
+setting callbacks and events is not possible. These are however easily set on the Javascript end.
 
 # Core concepts
 
+This chapter details various base building blocks used in the bundle.
+
+## Adapters
+
+Adapters are the core elements bridging DataTables functionality to their underlying data source.
+Popular implementations for common data sources are provided, and more are welcomed.
+
+An adapter is called by the bundle when a request for data has been formulated, including search
+and sorting criteria, and returns a result set with metadata on record counts.
+
+## Columns
+
+Column classes derive from `AbstractColumn`, and implement the transformations required to convert
+raw data into output ready for rendering in a DataTable.
+ 
 ## DataTable types
-
-Having the table configuration in your controller is convenient, but not practical for reusable or
-extensible tables, or highly customized tables.
-
-In the example above we could also create a class `DataTable\Type\PresidentsTableType` in our app bundle,
-and make it implement `Omines\DataTablesBundle\DataTableTypeInterface`. We can then use:
 
 ```php?start_inline=1
     $table = $this->createDataTableFromType(PresidentsTableType::class)
         ->handleRequest($request);
 ```
-This ensures your controllers stay lean and short, and only delegate tasks. Of course you can modify
-the base type to fit the controller's specific needs before calling `handleRequest`.
 
-If you need dependencies injected just register `PresidentsTableType` as a service in the container, and
-tag it with `datatables.type`. Or just use `autoconfigure:true` as is recommended Symfony practice.
+Having the table configuration in your controller is convenient, but not practical for reusable or
+extensible tables, or highly customized tables. In the example above we could also create a class
+`DataTable\Type\PresidentsTableType` in our app bundle, and make it implement 
+`Omines\DataTablesBundle\DataTableTypeInterface`. We can then use the code illustrated here to
+instantiate the reusable class in the controller.
+
+This ensures your controllers stay lean and short, and only delegate tasks. The first parameter
+takes either a Fully Qualified Class Name (FQCN) to instantiate the class dynamically, or a
+registered service with a `datatables.type` tag. Use a service if you need to inject dependencies
+dynamically. When using Symfony's autoconfiguration the tag will be applied automatically.
+
+Of course you can modify the base type to fit the controller's specific needs before calling 
+`handleRequest`. Secondly, the `createDataTableFromType` function accepts an array as a second
+argument which is passed to the type class for parametrized instantiation.
 
 # Adapters
 
