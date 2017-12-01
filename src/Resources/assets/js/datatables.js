@@ -60,9 +60,9 @@
 
                 root.html(data.template);
                 fulfill(dt = $('table', root).DataTable(dtOpts));
-            }).fail(function(err) {
-                console.error(err);
-                reject(err);
+            }).fail(function(xhr, cause, msg) {
+                console.error('DataTables request failed: ' + msg);
+                reject(cause);
             });
         });
     };

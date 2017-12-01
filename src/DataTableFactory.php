@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Omines\DataTablesBundle;
 
 use Omines\DataTablesBundle\DependencyInjection\Instantiator;
-use Symfony\Component\DependencyInjection\ServiceLocator;
 
 class DataTableFactory
 {

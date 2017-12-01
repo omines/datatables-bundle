@@ -14,7 +14,6 @@ namespace Omines\DataTablesBundle\Column;
 
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\Filter\AbstractFilter;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -117,12 +116,11 @@ abstract class AbstractColumn
                 'field' => null,
                 'propertyPath' => null,
                 'visible' => true,
-                'orderable' => true,
-                'orderField' => function (Options $options) { return $options['field']; },
-                'searchable' => true,
-                'globalSearchable' => true,
+                'orderable' => null,
+                'orderField' => null,
+                'searchable' => null,
+                'globalSearchable' => null,
                 'filter' => null,
-                'joinType' => 'join',
                 'className' => null,
                 'render' => null,
             ])
@@ -131,12 +129,11 @@ abstract class AbstractColumn
             ->setAllowedTypes('field', ['null', 'string'])
             ->setAllowedTypes('propertyPath', ['null', 'string'])
             ->setAllowedTypes('visible', 'boolean')
-            ->setAllowedTypes('orderable', 'boolean')
+            ->setAllowedTypes('orderable', ['null', 'boolean'])
             ->setAllowedTypes('orderField', ['null', 'string'])
-            ->setAllowedTypes('searchable', 'boolean')
-            ->setAllowedTypes('globalSearchable', 'boolean')
+            ->setAllowedTypes('searchable', ['null', 'boolean'])
+            ->setAllowedTypes('globalSearchable', ['null', 'boolean'])
             ->setAllowedTypes('filter', ['null', 'array'])
-            ->setAllowedTypes('joinType', ['null', 'string'])
             ->setAllowedTypes('className', ['null', 'string'])
             ->setAllowedTypes('render', ['null', 'string', 'callable'])
         ;
@@ -205,7 +202,7 @@ abstract class AbstractColumn
      */
     public function isSearchable(): bool
     {
-        return $this->options['searchable'];
+        return $this->options['searchable'] ?? !empty($this->getField());
     }
 
     /**
@@ -213,7 +210,7 @@ abstract class AbstractColumn
      */
     public function isOrderable(): bool
     {
-        return $this->options['orderable'];
+        return $this->options['orderable'] ?? !empty($this->getOrderField());
     }
 
     /**
@@ -229,15 +226,7 @@ abstract class AbstractColumn
      */
     public function getOrderField()
     {
-        return $this->options['orderField'];
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getJoinType()
-    {
-        return $this->options['joinType'];
+        return $this->options['orderField'] ?? $this->getField();
     }
 
     /**
@@ -245,7 +234,7 @@ abstract class AbstractColumn
      */
     public function isGlobalSearchable(): bool
     {
-        return $this->options['globalSearchable'];
+        return $this->options['globalSearchable'] ?? $this->isSearchable();
     }
 
     /**

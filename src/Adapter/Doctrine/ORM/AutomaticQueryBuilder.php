@@ -103,7 +103,7 @@ class AutomaticQueryBuilder implements QueryBuilderProcessorInterface
             $currentPart = array_shift($parts);
             $currentAlias = ($previousPart === $this->entityShortName ? '' : $previousPart . '_') . $currentPart;
 
-            $this->joins[$previousAlias . '.' . $currentPart] = ['alias' => $currentAlias, 'type' => $column->getJoinType()];
+            $this->joins[$previousAlias . '.' . $currentPart] = ['alias' => $currentAlias, 'type' => 'join'];
 
             $metadata = $this->setIdentifierFromAssociation($currentAlias, $currentPart, $metadata);
         }

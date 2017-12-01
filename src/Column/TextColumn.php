@@ -39,11 +39,7 @@ class TextColumn extends AbstractColumn
         parent::configureOptions($resolver);
 
         $resolver
-            ->setDefaults([
-                'orderable' => true,
-                'raw' => false,
-                'searchable' => true,
-            ])
+            ->setDefault('raw', false)
             ->setAllowedTypes('raw', 'bool')
         ;
 
