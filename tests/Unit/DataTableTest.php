@@ -48,22 +48,12 @@ class DataTableTest extends TestCase
 
     public function testFactory()
     {
-        $this->markTestSkipped('Incomplete after refactor');
+        $factory = new DataTableFactory(['language_from_cdn' => false], $this->createMock(TwigRenderer::class));
 
-        $factory = new DataTableFactory(['class_name' => 'foo'], ['dom' => 'bar'], $this->createMock(TwigRenderer::class));
-        $factory->setAdapterLocator(new ServiceLocator([]));
-
-        $table = $factory->create(['name' => 'bar'], ['pageLength' => 684]);
-        $this->assertSame('bar', $table->getSetting('name'));
-        $this->assertSame('foo', $table->getSetting('class_name'));
-        $this->assertSame('bar', $table->getOption('dom'));
+        $table = $factory->create(['pageLength' => 684, 'dom' => 'bar']);
         $this->assertSame(684, $table->getOption('pageLength'));
-        $this->assertArrayHasKey('name', $table->getSettings());
-
-        $table = $factory->create(['class_name' => 'bar'], ['dom' => 'foo']);
-        $this->assertSame('bar', $table->getSetting('class_name'));
-        $this->assertSame('foo', $table->getOption('dom'));
-        $this->assertNull($table->getSetting('none'));
+        $this->assertSame('bar', $table->getOption('dom'));
+        $this->assertFalse($table->isLanguageFromCDN());
         $this->assertNull($table->getOption('invalid'));
 
         $table->setAdapter(new ArrayAdapter());
@@ -72,10 +62,7 @@ class DataTableTest extends TestCase
 
     public function testFactoryRemembersInstances()
     {
-        $this->markTestSkipped('Incomplete after refactor');
-
-        $factory = new DataTableFactory([], [], $this->createMock(TwigRenderer::class));
-        $factory->setAdapterLocator(new ServiceLocator([]));
+        $factory = new DataTableFactory([], $this->createMock(TwigRenderer::class));
 
         $reflection = new \ReflectionClass(DataTableFactory::class);
         $property = $reflection->getProperty('resolvedTypes');

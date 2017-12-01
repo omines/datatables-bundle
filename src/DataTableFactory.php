@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Omines\DataTablesBundle;
 
 use Omines\DataTablesBundle\DependencyInjection\Instantiator;
+use Symfony\Component\HttpFoundation\Request;
 
 class DataTableFactory
 {
@@ -58,10 +59,10 @@ class DataTableFactory
 
         return (new DataTable(array_merge($config['options'] ?? [], $options), $this->instantiator))
             ->setRenderer($this->renderer)
-            ->setMethod($config['method'])
-            ->setTranslationDomain($config['translation_domain'])
-            ->setLanguageFromCDN($config['language_from_cdn'])
-            ->setTemplate($config['template'], $config['template_parameters'])
+            ->setMethod($config['method'] ?? Request::METHOD_POST)
+            ->setTranslationDomain($config['translation_domain'] ?? 'messages')
+            ->setLanguageFromCDN($config['language_from_cdn'] ?? true)
+            ->setTemplate($config['template'] ?? DataTable::DEFAULT_TEMPLATE, $config['template_parameters'] ?? [])
         ;
     }
 
@@ -102,6 +103,7 @@ class DataTableFactory
         } elseif (class_exists($type) && in_array(DataTableTypeInterface::class, class_implements($type), true)) {
             return new $type();
         }
+
         throw new \InvalidArgumentException(sprintf('Could not resolve type "%s" to a service or class', $type));
     }
 }
