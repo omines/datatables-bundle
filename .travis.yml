@@ -13,10 +13,12 @@ matrix:
      - php: 7.0
        env: SYMFONY_VERSION=^3.3
      - php: 7.0
-       env: SYMFONY_VERSION=^3.4
-     - php: 7.0
        env: COMPOSER_FLAGS="--prefer-lowest"
      - php: 7.1
+       env: SYMFONY_VERSION=^3.4
+     - php: 7.2
+       env: SYMFONY_VERSION=^3.3
+     - php: 7.2
        env: SYMFONY_VERSION=^3.4
      - php: 7.2
        env: DEPENDENCIES=dev

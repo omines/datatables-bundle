@@ -55,10 +55,14 @@ class ORMAdapter extends AbstractAdapter
     /**
      * DoctrineAdapter constructor.
      *
-     * @param RegistryInterface $registry
+     * @param RegistryInterface|null $registry
      */
-    public function __construct(RegistryInterface $registry)
+    public function __construct(RegistryInterface $registry = null)
     {
+        if (null === $registry) {
+            throw new \LogicException('Install doctrine/doctrine-bundle to use the ORMAdapter');
+        }
+
         parent::__construct();
         $this->registry = $registry;
     }

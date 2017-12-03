@@ -15,6 +15,7 @@ namespace Tests\Unit\Adapter;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORM\SearchCriteriaProvider;
+use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 use PHPUnit\Framework\TestCase;
@@ -52,5 +53,14 @@ class DoctrineTest extends TestCase
 
         // As this is buggy right now ignore the result
         $this->assertTrue(true);
+    }
+
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage doctrine/doctrine-bundle
+     */
+    public function testORMAdapterRequiresDependency()
+    {
+        (new ORMAdapter());
     }
 }

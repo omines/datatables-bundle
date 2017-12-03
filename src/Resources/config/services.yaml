@@ -6,7 +6,8 @@ services:
 
     # Register default adapters via autoconfig/autowire
     Omines\DataTablesBundle\Adapter\ArrayAdapter: ~
-    Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter: ~
+    Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter:
+        arguments: ['@?doctrine']
 
     Omines\DataTablesBundle\DataTableFactory:
         arguments: ['%datatables.config%', '@datatables.renderer']
