@@ -173,46 +173,13 @@ The `options` are passed (almost) verbatim to the DataTables clientside construc
 options. Only options which are meaningful to be defined serverside can be set at this level, so
 setting callbacks and events is not possible. These are however easily set on the Javascript end.
 
-# Core concepts
-
-This chapter details various base building blocks used in the bundle.
-
-## Adapters
+# Adapters
 
 Adapters are the core elements bridging DataTables functionality to their underlying data source.
 Popular implementations for common data sources are provided, and more are welcomed.
 
 An adapter is called by the bundle when a request for data has been formulated, including search
 and sorting criteria, and returns a result set with metadata on record counts.
-
-## Columns
-
-Column classes derive from `AbstractColumn`, and implement the transformations required to convert
-raw data into output ready for rendering in a DataTable.
- 
-## DataTable types
-
-```php?start_inline=1
-    $table = $this->createDataTableFromType(PresidentsTableType::class)
-        ->handleRequest($request);
-```
-
-Having the table configuration in your controller is convenient, but not practical for reusable or
-extensible tables, or highly customized tables. In the example above we could also create a class
-`DataTable\Type\PresidentsTableType` in our app bundle, and make it implement 
-`Omines\DataTablesBundle\DataTableTypeInterface`. We can then use the code illustrated here to
-instantiate the reusable class in the controller.
-
-This ensures your controllers stay lean and short, and only delegate tasks. The first parameter
-takes either a Fully Qualified Class Name (FQCN) to instantiate the class dynamically, or a
-registered service with a `datatables.type` tag. Use a service if you need to inject dependencies
-dynamically. When using Symfony's autoconfiguration the tag will be applied automatically.
-
-Of course you can modify the base type to fit the controller's specific needs before calling 
-`handleRequest`. Secondly, the `createDataTableFromType` function accepts an array as a second
-argument which is passed to the type class for parametrized instantiation.
-
-# Adapters
 
 Ready-made adapters are supplied for easy integration with various data sources.
 
@@ -246,4 +213,43 @@ tables in your site.
 
 ## Arrays
 
+TBD.
+
 ## Implementing your own
+
+TBD.
+
+# Columns
+
+Column classes derive from `AbstractColumn`, and implement the transformations required to convert
+raw data into output ready for rendering in a DataTable.
+
+## TextColumn
+
+TBD.
+
+## DateTimeColumn
+
+TBD.
+
+# DataTable Types
+
+```php?start_inline=1
+    $table = $this->createDataTableFromType(PresidentsTableType::class)
+        ->handleRequest($request);
+```
+
+Having the table configuration in your controller is convenient, but not practical for reusable or
+extensible tables, or highly customized tables. In the example above we could also create a class
+`DataTable\Type\PresidentsTableType` in our app bundle, and make it implement 
+`Omines\DataTablesBundle\DataTableTypeInterface`. We can then use the code illustrated here to
+instantiate the reusable class in the controller.
+
+This ensures your controllers stay lean and short, and only delegate tasks. The first parameter
+takes either a Fully Qualified Class Name (FQCN) to instantiate the class dynamically, or a
+registered service with a `datatables.type` tag. Use a service if you need to inject dependencies
+dynamically. When using Symfony's autoconfiguration the tag will be applied automatically.
+
+Of course you can modify the base type to fit the controller's specific needs before calling 
+`handleRequest`. Secondly, the `createDataTableFromType` function accepts an array as a second
+argument which is passed to the type class for parametrized instantiation.
