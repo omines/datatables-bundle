@@ -233,21 +233,7 @@
             <a href="#configuration" class="toc-h1 toc-link" data-title="Configuration">Configuration</a>
           </li>
           <li>
-            <a href="#core-concepts" class="toc-h1 toc-link" data-title="Core concepts">Core concepts</a>
-              <ul class="toc-list-h2">
-                  <li>
-                    <a href="#adapters" class="toc-h2 toc-link" data-title="Adapters">Adapters</a>
-                  </li>
-                  <li>
-                    <a href="#columns" class="toc-h2 toc-link" data-title="Columns">Columns</a>
-                  </li>
-                  <li>
-                    <a href="#datatable-types" class="toc-h2 toc-link" data-title="DataTable types">DataTable types</a>
-                  </li>
-              </ul>
-          </li>
-          <li>
-            <a href="#adapters-2" class="toc-h1 toc-link" data-title="Adapters">Adapters</a>
+            <a href="#adapters" class="toc-h1 toc-link" data-title="Adapters">Adapters</a>
               <ul class="toc-list-h2">
                   <li>
                     <a href="#doctrine-orm" class="toc-h2 toc-link" data-title="Doctrine ORM">Doctrine ORM</a>
@@ -259,6 +245,12 @@
                     <a href="#implementing-your-own" class="toc-h2 toc-link" data-title="Implementing your own">Implementing your own</a>
                   </li>
               </ul>
+          </li>
+          <li>
+            <a href="#columns" class="toc-h1 toc-link" data-title="Columns">Columns</a>
+          </li>
+          <li>
+            <a href="#datatable-types" class="toc-h1 toc-link" data-title="DataTable Types">DataTable Types</a>
           </li>
       </div>
         <ul class="toc-footer">
@@ -447,35 +439,13 @@ ie. <code>setLanguageFromCDN(bool)</code>.</p>
 <a href="https://datatables.net/reference/option/">external documentation</a> below for details on individual
 options. Only options which are meaningful to be defined serverside can be set at this level, so
 setting callbacks and events is not possible. These are however easily set on the Javascript end.</p>
-<h1 id='core-concepts'>Core concepts</h1>
-<p>This chapter details various base building blocks used in the bundle.</p>
-<h2 id='adapters'>Adapters</h2>
+<h1 id='adapters'>Adapters</h1>
 <p>Adapters are the core elements bridging DataTables functionality to their underlying data source.
 Popular implementations for common data sources are provided, and more are welcomed.</p>
 
 <p>An adapter is called by the bundle when a request for data has been formulated, including search
 and sorting criteria, and returns a result set with metadata on record counts.</p>
-<h2 id='columns'>Columns</h2>
-<p>Column classes derive from <code>AbstractColumn</code>, and implement the transformations required to convert
-raw data into output ready for rendering in a DataTable.</p>
-<h2 id='datatable-types'>DataTable types</h2><pre class="highlight php"><code>    <span class="nv">$table</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">createDataTableFromType</span><span class="p">(</span><span class="nx">PresidentsTableType</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
-        <span class="o">-&gt;</span><span class="na">handleRequest</span><span class="p">(</span><span class="nv">$request</span><span class="p">);</span>
-</code></pre>
-<p>Having the table configuration in your controller is convenient, but not practical for reusable or
-extensible tables, or highly customized tables. In the example above we could also create a class
-<code>DataTable\Type\PresidentsTableType</code> in our app bundle, and make it implement 
-<code>Omines\DataTablesBundle\DataTableTypeInterface</code>. We can then use the code illustrated here to
-instantiate the reusable class in the controller.</p>
 
-<p>This ensures your controllers stay lean and short, and only delegate tasks. The first parameter
-takes either a Fully Qualified Class Name (FQCN) to instantiate the class dynamically, or a
-registered service with a <code>datatables.type</code> tag. Use a service if you need to inject dependencies
-dynamically. When using Symfony&#39;s autoconfiguration the tag will be applied automatically.</p>
-
-<p>Of course you can modify the base type to fit the controller&#39;s specific needs before calling 
-<code>handleRequest</code>. Secondly, the <code>createDataTableFromType</code> function accepts an array as a second
-argument which is passed to the type class for parametrized instantiation.</p>
-<h1 id='adapters-2'>Adapters</h1>
 <p>Ready-made adapters are supplied for easy integration with various data sources.</p>
 <h2 id='doctrine-orm'>Doctrine ORM</h2><pre class="highlight php"><code><span class="k">use</span> <span class="nx">Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter</span><span class="p">;</span>
 
@@ -501,7 +471,27 @@ apply global search to all mapped fields.</p>
 <p>Of course, all of this is just convenient default. For more complex scenarios you can supply your own query
 builders and criteria providers, and even chain them together to easily implement multiple slightly different
 tables in your site.</p>
-<h2 id='arrays'>Arrays</h2><h2 id='implementing-your-own'>Implementing your own</h2>
+<h2 id='arrays'>Arrays</h2><h2 id='implementing-your-own'>Implementing your own</h2><h1 id='columns'>Columns</h1>
+<p>Column classes derive from <code>AbstractColumn</code>, and implement the transformations required to convert
+raw data into output ready for rendering in a DataTable.</p>
+<h1 id='datatable-types'>DataTable Types</h1><pre class="highlight php"><code>    <span class="nv">$table</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">createDataTableFromType</span><span class="p">(</span><span class="nx">PresidentsTableType</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+        <span class="o">-&gt;</span><span class="na">handleRequest</span><span class="p">(</span><span class="nv">$request</span><span class="p">);</span>
+</code></pre>
+<p>Having the table configuration in your controller is convenient, but not practical for reusable or
+extensible tables, or highly customized tables. In the example above we could also create a class
+<code>DataTable\Type\PresidentsTableType</code> in our app bundle, and make it implement 
+<code>Omines\DataTablesBundle\DataTableTypeInterface</code>. We can then use the code illustrated here to
+instantiate the reusable class in the controller.</p>
+
+<p>This ensures your controllers stay lean and short, and only delegate tasks. The first parameter
+takes either a Fully Qualified Class Name (FQCN) to instantiate the class dynamically, or a
+registered service with a <code>datatables.type</code> tag. Use a service if you need to inject dependencies
+dynamically. When using Symfony&#39;s autoconfiguration the tag will be applied automatically.</p>
+
+<p>Of course you can modify the base type to fit the controller&#39;s specific needs before calling 
+<code>handleRequest</code>. Secondly, the <code>createDataTableFromType</code> function accepts an array as a second
+argument which is passed to the type class for parametrized instantiation.</p>
+
       </div>
       <div class="dark-box">
       </div>
