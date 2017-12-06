@@ -248,6 +248,14 @@
           </li>
           <li>
             <a href="#columns" class="toc-h1 toc-link" data-title="Columns">Columns</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#textcolumn" class="toc-h2 toc-link" data-title="TextColumn">TextColumn</a>
+                  </li>
+                  <li>
+                    <a href="#datetimecolumn" class="toc-h2 toc-link" data-title="DateTimeColumn">DateTimeColumn</a>
+                  </li>
+              </ul>
           </li>
           <li>
             <a href="#datatable-types" class="toc-h1 toc-link" data-title="DataTable Types">DataTable Types</a>
@@ -471,9 +479,17 @@ apply global search to all mapped fields.</p>
 <p>Of course, all of this is just convenient default. For more complex scenarios you can supply your own query
 builders and criteria providers, and even chain them together to easily implement multiple slightly different
 tables in your site.</p>
-<h2 id='arrays'>Arrays</h2><h2 id='implementing-your-own'>Implementing your own</h2><h1 id='columns'>Columns</h1>
+<h2 id='arrays'>Arrays</h2>
+<p>TBD.</p>
+<h2 id='implementing-your-own'>Implementing your own</h2>
+<p>TBD.</p>
+<h1 id='columns'>Columns</h1>
 <p>Column classes derive from <code>AbstractColumn</code>, and implement the transformations required to convert
 raw data into output ready for rendering in a DataTable.</p>
+<h2 id='textcolumn'>TextColumn</h2>
+<p>TBD.</p>
+<h2 id='datetimecolumn'>DateTimeColumn</h2>
+<p>TBD.</p>
 <h1 id='datatable-types'>DataTable Types</h1><pre class="highlight php"><code>    <span class="nv">$table</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">createDataTableFromType</span><span class="p">(</span><span class="nx">PresidentsTableType</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
         <span class="o">-&gt;</span><span class="na">handleRequest</span><span class="p">(</span><span class="nv">$request</span><span class="p">);</span>
 </code></pre>
