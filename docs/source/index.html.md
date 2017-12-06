@@ -25,7 +25,8 @@ Recommended way of installing this library is through [Composer](https://getcomp
 
 <code>composer require omines/datatables-bundle</code>
 
-Please ensure you are using Symfony 3.3 or later. Symfony Flex bindings are on their way.
+Please ensure you are using Symfony 3.3 or later. If you are using Symfony Flex a recipe is included in the contrib
+repository, providing automatic installation and configuration.
 
 ```php?start_inline=true
 public function registerBundles()
@@ -215,7 +216,7 @@ tables in your site.
 
 TBD.
 
-## Implementing your own
+## Implementing custom adapters
 
 TBD.
 
@@ -224,19 +225,74 @@ TBD.
 Column classes derive from `AbstractColumn`, and implement the transformations required to convert
 raw data into output ready for rendering in a DataTable.
 
+A number of standard columns are provided for common use cases, but you can easily add your own column
+types for application specific purposes.
+
+### Common options
+
+```php?start_inline=1
+# Some example columns
+$table
+    ->add('firstName', TextColumn::class, ['label' => 'customer.name', 'className' => 'bold'])
+    ->add('lastName', TextColumn::class, ['render' => '<strong>%s</strong>', 'raw' => true])
+    ->add('email', TextColumn::class, ['render' => function($value, $context) {
+        return sprintf('<a href="%s">%s</a>', $value, $value);
+    })
+;
+```
+
+All column types have the following options:
+
+Option | Type | Description
+------ | ---- | -----------
+label | string | Basic translation label shown in the header of the table. Defaults to the name of the column.
+data | string/callable/`null` | The default value if a `null` value is encountered, or a callable function to transform data. 
+field | string/`null` | A field mapping to be used by adapters to fill data.
+propertyPath | string/`null` | A property path to be applied to the raw adapter row data.
+visible | bool | Whether the column will be visible. Default true.
+orderable | bool/`null` | Whether the column can be sorted upon. Defaults to the presence of the `orderField`. 
+orderField | string/`null` | The field to order by when the column is sorted. Defaults to the value of `field`.
+searchable | bool/`null` | Whether the column can be searched upon. Defaults to the presence of `field`.
+globalSearchable | bool/`null` | Whether the column participates in global searches. Defaults to the presence of `field`.
+className | string/`null` | A CSS class to be applied to all cells in this column.
+render | string/callable/`null` | Either a [`sprintf` compatible format string](http://php.net/manual/en/function.sprintf.php), or a callable function providing rendering conversion, or default `null`.
+
 ## TextColumn
 
-TBD.
+```php?start_inline=1
+$table->add('customerName', TextColumn::class, ['field' => 'customer.name']);
+```
+
+Text columns are the most frequently used column type, as they can be used to display any kind of data
+that is eventually rendered as plain text.
+
+The `TextColumn` type exposes a single option on top of its ancestor `AbstractColumn`:
+
+Option | Type | Description
+------ | ---- | -----------
+raw | bool | Do not escape cell content to be safe for use in HTML. Default `false`.
 
 ## DateTimeColumn
 
-TBD.
+```php?start_inline=1
+$table->add('registrationDate', DateTimeColumn::class, ['format' => 'd-m-Y']);
+```
+
+DateTime columns render a `\DateTimeInterface` implementing class, such as `\DateTime`, to a string
+result. If data of other types is encountered automatic conversion is attempted following [common PHP formats](http://php.net/manual/en/datetime.formats.php).
+
+Option | Type | Description
+------ | ---- | -----------
+format | string | A date format string as accepted by the [`date()`](http://php.net/manual/en/function.date.php) function. Default `'c'`.
+
+## Implementing custom columns
+
 
 # DataTable Types
 
 ```php?start_inline=1
-    $table = $this->createDataTableFromType(PresidentsTableType::class)
-        ->handleRequest($request);
+$table = $this->createDataTableFromType(PresidentsTableType::class)
+    ->handleRequest($request);
 ```
 
 Having the table configuration in your controller is convenient, but not practical for reusable or
@@ -253,3 +309,13 @@ dynamically. When using Symfony's autoconfiguration the tag will be applied auto
 Of course you can modify the base type to fit the controller's specific needs before calling 
 `handleRequest`. Secondly, the `createDataTableFromType` function accepts an array as a second
 argument which is passed to the type class for parametrized instantiation.
+
+# Javascript
+
+TBD.
+
+# Legal
+
+This software was developed for internal use at [Omines Full Service Internetbureau](https://www.omines.nl/)
+in Eindhoven, the Netherlands. It is shared with the general public under the permissive MIT license, without
+any guarantee of fitness for any particular purpose. Refer to the included `LICENSE` file for more details.

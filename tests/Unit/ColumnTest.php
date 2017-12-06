@@ -37,10 +37,12 @@ class ColumnTest extends TestCase
         $this->assertSame('foo', $column->getDataTable()->getName());
     }
 
-    public function testColumnWithClosureRenderer()
+    public function testColumnWithClosures()
     {
         $column = new TextColumn('test', 1, [
-            'data' => 'bar',
+            'data' => function ($context, $value) {
+                return 'bar';
+            },
             'render' => function ($value) {
                 return mb_strtoupper($value);
             },
