@@ -3,7 +3,8 @@ All notable changes to `omines\datatables-bundle` will be documented in this fil
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
-Nothing yet.
+### Fixed
+ - Fixed exception during template rendering when enabling searching serverside
 
 ## [0.1.1] - 2017-12-03
 ### Fixed
