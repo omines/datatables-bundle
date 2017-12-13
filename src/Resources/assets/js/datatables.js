@@ -31,8 +31,9 @@
         var persistOptions = config.state === 'none' ? {} : {
             stateSave: true,
             stateLoadCallback: function(settings) {
-                state.time = Date.now();
-                return state;
+                var copy = JSON.parse(JSON.stringify(state));
+                copy.time = Date.now();
+                return copy;
             }
         };
 
@@ -45,7 +46,7 @@
                     _init: true
                 }
             }).done(function(data) {
-                var rebuild = true, cached;
+                var rebuild = (Object.keys(state).length === 0), cached, baseState;
 
                 var dtOpts = $.extend({}, data.options, config.options, options, persistOptions, {
                     ajax: function (request, drawCallback, settings) {
@@ -66,7 +67,25 @@
                 });
 
                 root.html(data.template);
-                fulfill(dt = $('table', root).DataTable(dtOpts));
+                dt = $('table', root).DataTable(dtOpts);
+                if (config.state !== 'none') {
+                    dt.on('stateSaveParams.dt', (e, settings, data) => {
+                        //$.extend(data, $('form[name={{ filterForm.vars.name }}]').serializeObject());
+                        data = $.param(data).split('&');
+                        baseState = baseState || data;
+                        var diff = data.filter(el => { return baseState.indexOf(el) === -1 && el.indexOf('time=') !== 0; });
+                        switch (config.state) {
+                            case 'fragment':
+                                history.replaceState(null, null, '#' + decodeURIComponent(diff.join('&')));
+                                break;
+                            case 'query':
+                                history.replaceState(null, null, '#' + decodeURIComponent(diff.join('&')));
+                                break;
+                        }
+                    });
+                }
+
+                fulfill(dt);
             }).fail(function(xhr, cause, msg) {
                 console.error('DataTables request failed: ' + msg);
                 reject(cause);
