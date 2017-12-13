@@ -30,10 +30,9 @@
         state = (state.length > 1 ? deparam(state.substr(1)) : {});
         var persistOptions = config.state === 'none' ? {} : {
             stateSave: true,
-            stateLoadCallback: function(settings) {
-                var copy = JSON.parse(JSON.stringify(state));
-                copy.time = Date.now();
-                return copy;
+            stateLoadCallback: function(s, cb) {
+                // Only need stateSave to expose state() function as loading lazily is not possible otherwise
+                return null;
             }
         };
 
@@ -46,14 +45,24 @@
                     _init: true
                 }
             }).done(function(data) {
-                var rebuild = (Object.keys(state).length === 0), cached, baseState;
+                var baseState;
 
+                // Merge all options from different sources together and add the Ajax loader
                 var dtOpts = $.extend({}, data.options, config.options, options, persistOptions, {
                     ajax: function (request, drawCallback, settings) {
-                        if (rebuild) {
+                        if (data) {
                             data.draw = request.draw;
                             drawCallback(data);
-                            rebuild = false;
+                            data = null;
+                            if (Object.keys(state).length) {
+                                var merged = $.extend(true, {}, dt.state(), state);
+                                dt
+                                    .order(merged.order)
+                                    .search(merged.search.search)
+                                    .page.len(merged.length)
+                                    .page(merged.start / merged.length)
+                                    .draw(false);
+                            }
                         } else {
                             request._dt = config.name;
                             $.ajax(config.url, {
@@ -69,20 +78,24 @@
                 root.html(data.template);
                 dt = $('table', root).DataTable(dtOpts);
                 if (config.state !== 'none') {
-                    dt.on('stateSaveParams.dt', (e, settings, data) => {
-                        //$.extend(data, $('form[name={{ filterForm.vars.name }}]').serializeObject());
-                        data = $.param(data).split('&');
-                        baseState = baseState || data;
-                        var diff = data.filter(el => { return baseState.indexOf(el) === -1 && el.indexOf('time=') !== 0; });
-                        switch (config.state) {
-                            case 'fragment':
-                                history.replaceState(null, null, '#' + decodeURIComponent(diff.join('&')));
-                                break;
-                            case 'query':
-                                history.replaceState(null, null, '#' + decodeURIComponent(diff.join('&')));
-                                break;
+                    dt.on('draw.dt', function(e) {
+                        var data = $.param(dt.state()).split('&');
+
+                        // First draw establishes state, subsequent draws run diff on the first
+                        if (!baseState) {
+                            baseState = data;
+                        } else {
+                            var diff = data.filter(el => { return baseState.indexOf(el) === -1 && el.indexOf('time=') !== 0; });
+                            switch (config.state) {
+                                case 'fragment':
+                                    history.replaceState(null, null, '#' + decodeURIComponent(diff.join('&')));
+                                    break;
+                                case 'query':
+                                    history.replaceState(null, null, '?' + decodeURIComponent(diff.join('&')));
+                                    break;
+                            }
                         }
-                    });
+                    })
                 }
 
                 fulfill(dt);
