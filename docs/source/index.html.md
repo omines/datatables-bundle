@@ -128,7 +128,7 @@ datatables:
         option:           value           
 
     # Where to persist the current table state automatically
-    persist_state:        fragment # One of "query"; "fragment"; "local"; "session"
+    persist_state:        fragment # One of "none"; "query"; "fragment"; "local"; "session"
 
     # Default service used to render templates, built-in TwigRenderer uses global Twig environment
     renderer:             Omines\DataTablesBundle\Twig\TwigRenderer

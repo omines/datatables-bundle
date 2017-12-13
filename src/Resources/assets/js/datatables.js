@@ -28,6 +28,13 @@
                 break;
         }
         state = (state.length > 1 ? deparam(state.substr(1)) : {});
+        var persistOptions = config.state === 'none' ? {} : {
+            stateSave: true,
+            stateLoadCallback: function(settings) {
+                state.time = Date.now();
+                return state;
+            }
+        };
 
         return new Promise((fulfill, reject) => {
             // Perform initial load
@@ -40,7 +47,7 @@
             }).done(function(data) {
                 var rebuild = true, cached;
 
-                var dtOpts = $.extend({}, data.options, config.options, options, {
+                var dtOpts = $.extend({}, data.options, config.options, options, persistOptions, {
                     ajax: function (request, drawCallback, settings) {
                         if (rebuild) {
                             data.draw = request.draw;

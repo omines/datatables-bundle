@@ -36,7 +36,7 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->enumNode('persist_state')
                     ->info('Where to persist the current table state automatically')
-                    ->values(['query', 'fragment', 'local', 'session'])
+                    ->values(['none', 'query', 'fragment', 'local', 'session'])
                     ->defaultValue('fragment')
                 ->end()
                 ->enumNode('method')

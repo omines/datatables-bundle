@@ -40,6 +40,7 @@ class DataTablesExtension extends \Twig_Extension
                 return json_encode([
                     'name' => $dataTable->getName(),
                     'method' => $dataTable->getMethod(),
+                    'state' => $dataTable->getPersistState(),
                     'options' => [
                         'language' => $this->getLanguageSettings($dataTable),
                     ],

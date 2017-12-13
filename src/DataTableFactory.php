@@ -60,6 +60,7 @@ class DataTableFactory
         return (new DataTable(array_merge($config['options'] ?? [], $options), $this->instantiator))
             ->setRenderer($this->renderer)
             ->setMethod($config['method'] ?? Request::METHOD_POST)
+            ->setPersistState($config['persist_state'] ?? 'fragment')
             ->setTranslationDomain($config['translation_domain'] ?? 'messages')
             ->setLanguageFromCDN($config['language_from_cdn'] ?? true)
             ->setTemplate($config['template'] ?? DataTable::DEFAULT_TEMPLATE, $config['template_parameters'] ?? [])

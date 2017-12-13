@@ -74,6 +74,9 @@ class DataTable
     protected $name = 'dt';
 
     /** @var string */
+    protected $persistState = 'fragment';
+
+    /** @var string */
     protected $template = self::DEFAULT_TEMPLATE;
 
     /** @var array */
@@ -229,9 +232,9 @@ class DataTable
     /**
      * @return string
      */
-    public function getTranslationDomain(): string
+    public function getPersistState(): string
     {
-        return $this->translationDomain;
+        return $this->persistState;
     }
 
     /**
@@ -240,6 +243,14 @@ class DataTable
     public function getState()
     {
         return $this->state;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTranslationDomain(): string
+    {
+        return $this->translationDomain;
     }
 
     /**
@@ -388,6 +399,16 @@ class DataTable
     {
         $this->method = $method;
 
+        return $this;
+    }
+
+    /**
+     * @param string $persistState
+     * @return self
+     */
+    public function setPersistState(string $persistState): DataTable
+    {
+        $this->persistState = $persistState;
         return $this;
     }
 
