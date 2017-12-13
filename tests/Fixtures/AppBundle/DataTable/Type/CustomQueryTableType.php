@@ -56,6 +56,6 @@ class CustomQueryTableType implements DataTableTypeInterface
 
         /** @var ORMAdapter $adapter */
         $adapter = $dataTable->getAdapter();
-        $adapter->addCriteriaProcessor(function() { return Criteria::create()->where(new Comparison('firstName', Comparison::CONTAINS, '3')); });
+        $adapter->addCriteriaProcessor(function () { return Criteria::create()->where(new Comparison('firstName', Comparison::CONTAINS, '3')); });
     }
 }

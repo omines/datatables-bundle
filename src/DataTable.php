@@ -406,9 +406,10 @@ class DataTable
      * @param string $persistState
      * @return self
      */
-    public function setPersistState(string $persistState): DataTable
+    public function setPersistState(string $persistState): self
     {
         $this->persistState = $persistState;
+
         return $this;
     }
 
