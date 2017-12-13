@@ -3,9 +3,6 @@ All notable changes to `omines\datatables-bundle` will be documented in this fil
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
-Nothing yet.
-
-## [0.1.2] - 2017-12-14
 ### Added
  - Implement persist_state parameter to automate table state persistence
 
@@ -22,6 +19,5 @@ Nothing yet.
 ### Added
  - Basic functionality
 
-[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.1.2...master
-[0.1.2]: https://github.com/omines/datatables-bundle/compare/0.1.1...0.1.2
+[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.1.1...master
 [0.1.1]: https://github.com/omines/datatables-bundle/compare/0.1.0...0.1.1
