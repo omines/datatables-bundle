@@ -108,10 +108,7 @@ class DataTableState
             $this->orderBy = [];
             foreach ($parameters->get('order', []) as $order) {
                 $column = $this->getDataTable()->getColumn((int) $order['column']);
-
-                if ($column->isOrderable()) {
-                    $this->addOrderBy($column, $order['dir']);
-                }
+                $this->addOrderBy($column, $order['dir']);
             }
         }
     }

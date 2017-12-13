@@ -3,8 +3,12 @@ All notable changes to `omines\datatables-bundle` will be documented in this fil
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+ - Implement persist_state parameter to automate table state persistence
+
 ### Fixed
  - Fixed exception during template rendering when enabling searching serverside
+ - Fixed sort behavior when defaulting field detection
 
 ## [0.1.1] - 2017-12-03
 ### Fixed
