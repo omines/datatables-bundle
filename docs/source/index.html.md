@@ -45,6 +45,22 @@ Run the `assets:install` command to deploy the included Javascript files to your
 <code>bin/console assets:install</code>
 
 <aside class="notice">That last step is actually optional, as you can also load it through Assetic or WebPack, but a good starting point.</aside>
+ 
+## Clientside dependencies
+
+```html
+<!-- in the <head> section -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jq-3.2.1/dt-1.10.16/datatables.min.css"/>
+
+<!-- before the closing <body> tag -->
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/jq-3.2.1/dt-1.10.16/datatables.min.js"></script>
+```
+All serverside dependencies are managed by Composer. Clientside dependencies are left up the implementer to decide
+how to include which DataTables dependencies. As long are you are using a fairly up to date version of DataTables you
+should be fine, as the bundle does not use exotic features or depend on plugins.
+
+The code snippets here should get you started quickly, including jQuery 3. For more extensive download options visit
+[https://datatables.net/download/](https://datatables.net/download/).
 
 # Quickstart
 
