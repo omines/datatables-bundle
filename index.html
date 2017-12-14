@@ -220,6 +220,11 @@
           </li>
           <li>
             <a href="#installation" class="toc-h1 toc-link" data-title="Installation">Installation</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#clientside-dependencies" class="toc-h2 toc-link" data-title="Clientside dependencies">Clientside dependencies</a>
+                  </li>
+              </ul>
           </li>
           <li>
             <a href="#quickstart" class="toc-h1 toc-link" data-title="Quickstart">Quickstart</a>
@@ -312,6 +317,19 @@ own bundles but after the required external bundles, such as <code>FrameworkBund
 <p><code>bin/console assets:install</code></p>
 
 <aside class="notice">That last step is actually optional, as you can also load it through Assetic or WebPack, but a good starting point.</aside>
+ 
+<h2 id='clientside-dependencies'>Clientside dependencies</h2><pre class="highlight html tab-html"><code><span class="c">&lt;!-- in the &lt;head&gt; section --&gt;</span>
+<span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">type=</span><span class="s">"text/css"</span> <span class="na">href=</span><span class="s">"https://cdn.datatables.net/v/dt/jq-3.2.1/dt-1.10.16/datatables.min.css"</span><span class="nt">/&gt;</span>
+
+<span class="c">&lt;!-- before the closing &lt;body&gt; tag --&gt;</span>
+<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"https://cdn.datatables.net/v/dt/jq-3.2.1/dt-1.10.16/datatables.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+</code></pre>
+<p>All serverside dependencies are managed by Composer. Clientside dependencies are left up the implementer to decide
+how to include which DataTables dependencies. As long are you are using a fairly up to date version of DataTables you
+should be fine, as the bundle does not use exotic features or depend on plugins.</p>
+
+<p>The code snippets here should get you started quickly, including jQuery 3. For more extensive download options visit
+<a href="https://datatables.net/download/">https://datatables.net/download/</a>.</p>
 <h1 id='quickstart'>Quickstart</h1><pre class="highlight php"><code><span class="k">use</span> <span class="nx">Omines\DataTablesBundle\DataTablesTrait</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Omines\DataTablesBundle\Adapter\ArrayAdapter</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Omines\DataTablesBundle\Column\TextColumn</span><span class="p">;</span>
