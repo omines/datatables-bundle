@@ -3,7 +3,11 @@ All notable changes to `omines\datatables-bundle` will be documented in this fil
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
-Nothing yet.
+### Added
+ - Add BoolColumn for handling strict boolean columns
+
+### Changed
+ - Column values default to 'data' only on NULL instead of any 'emptiness'
 
 ## [0.1.2] - 2017-12-14
 ### Added

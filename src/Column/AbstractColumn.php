@@ -70,7 +70,7 @@ abstract class AbstractColumn
         $data = $this->options['data'];
         if (is_callable($data)) {
             $value = call_user_func($data, $context, $value);
-        } elseif (empty($value)) {
+        } elseif (null === $value) {
             $value = $data;
         }
 

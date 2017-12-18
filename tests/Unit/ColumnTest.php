@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use Omines\DataTablesBundle\Column\BoolColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 use PHPUnit\Framework\TestCase;
@@ -35,6 +36,19 @@ class ColumnTest extends TestCase
 
         $column->setDataTable((new DataTable())->setName('foo'));
         $this->assertSame('foo', $column->getDataTable()->getName());
+    }
+
+    public function testBoolColumn()
+    {
+        $column = new BoolColumn('test', 1, [
+             'trueValue' => 'yes',
+             'nullValue' => '<em>null</em>',
+        ]);
+
+        $this->assertSame('yes', $column->transform(5));
+        $this->assertSame('yes', $column->transform(true));
+        $this->assertSame('false', $column->transform(false));
+        $this->assertStringStartsWith('<em>', $column->transform());
     }
 
     public function testColumnWithClosures()
