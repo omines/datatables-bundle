@@ -110,7 +110,7 @@ otherwise we render a template with the table provided as a parameter.
 <div id="presidents">Loading...</div>
 
 <!-- Insert this at the end of your body element, but before the closing tag -->
-<script src="bundles/datatables/js/datatables.js"></script>
+<script src="{{ asset('bundles/datatables/js/datatables.js') }}"></script>
 <script>
 $(function() {
     $('#presidents').initDataTables({{ datatable_settings(datatable) }});

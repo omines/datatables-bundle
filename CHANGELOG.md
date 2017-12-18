@@ -9,6 +9,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
  - Column values default to 'data' only on NULL instead of any 'emptiness'
 
+### Fixed
+ - Moved public assets back into bundle's public folder
+
 ## [0.1.2] - 2017-12-14
 ### Added
  - Implement persist_state parameter to automate table state persistence
