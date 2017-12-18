@@ -371,7 +371,7 @@ otherwise we render a template with the table provided as a parameter.</p>
 <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"presidents"</span><span class="nt">&gt;</span>Loading...<span class="nt">&lt;/div&gt;</span>
 
 <span class="c">&lt;!-- Insert this at the end of your body element, but before the closing tag --&gt;</span>
-<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"bundles/datatables/js/datatables.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"{{ asset('bundles/datatables/js/datatables.js') }}"</span><span class="nt">&gt;&lt;/script&gt;</span>
 <span class="nt">&lt;script&gt;</span>
 <span class="nx">$</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="nx">$</span><span class="p">(</span><span class="s1">'#presidents'</span><span class="p">).</span><span class="nx">initDataTables</span><span class="p">({{</span> <span class="nx">datatable_settings</span><span class="p">(</span><span class="nx">datatable</span><span class="p">)</span> <span class="p">}});</span>
