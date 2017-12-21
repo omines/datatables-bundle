@@ -87,6 +87,6 @@ class Instantiator
         } elseif (class_exists($type) && is_subclass_of($type, $baseType)) {
             return new $type();
         }
-        throw new \InvalidArgumentException(sprintf('Could not resolve type "%s" to a service or class', $type));
+        throw new \InvalidArgumentException(sprintf('Could not resolve type "%s" to a service or class, is it implemented and does it correctly derive from "%s"?', $type, $baseType));
     }
 }
