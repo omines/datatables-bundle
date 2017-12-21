@@ -125,10 +125,11 @@ class DataTable
             throw new \RuntimeException(sprintf("There already is a column with name '%s'", $name));
         }
 
-        /* @var AbstractColumn $column */
-        $this->columns[] = $column = new $type($name, count($this->columns), $options);
-        $this->columnsByName[$column->getName()] = $column;
-        $column->setDataTable($this);
+        $column = $this->createColumn($type);
+        $column->initialize($name, count($this->columns), $options, $this);
+
+        $this->columns[] = $column;
+        $this->columnsByName[$name] = $column;
 
         return $this;
     }
@@ -160,6 +161,21 @@ class DataTable
             return $this->setAdapter(new $adapter(), $options);
         } else {
             throw new \InvalidArgumentException(sprintf('Could not resolve adapter type "%s" to a service or class implementing AdapterInterface', $adapter));
+        }
+    }
+
+    /**
+     * @param string $column
+     * @return AbstractColumn
+     */
+    protected function createColumn(string $column): AbstractColumn
+    {
+        if (null !== $this->instantiator && $instance = $this->instantiator->getColumn($column)) {
+            return $instance;
+        } elseif (class_exists($column) && is_subclass_of($column, AbstractColumn::class)) {
+            return new $column();
+        } else {
+            throw new \InvalidArgumentException(sprintf('Could not resolve column type "%s" to a service or class extending AbstractColumn', $column));
         }
     }
 

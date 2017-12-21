@@ -9,6 +9,9 @@ services:
     Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter:
         arguments: ['@?doctrine']
 
+    Omines\DataTablesBundle\Column\TwigColumn:
+        arguments: ['@?twig']
+
     Omines\DataTablesBundle\DataTableFactory:
         arguments: ['%datatables.config%', '@datatables.renderer']
         public: true

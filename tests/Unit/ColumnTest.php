@@ -26,24 +26,24 @@ class ColumnTest extends TestCase
 {
     public function testTextColumn()
     {
-        $column = new TextColumn('test', 1, [
+        $column = new TextColumn();
+        $column->initialize('test', 1, [
             'data' => 'bar',
             'render' => 'foo%s',
-        ]);
+        ], (new DataTable())->setName('foo'));
 
         $this->assertFalse($column->isRaw());
         $this->assertSame('foobar', $column->transform(null));
-
-        $column->setDataTable((new DataTable())->setName('foo'));
         $this->assertSame('foo', $column->getDataTable()->getName());
     }
 
     public function testBoolColumn()
     {
-        $column = new BoolColumn('test', 1, [
+        $column = new BoolColumn();
+        $column->initialize('test', 1, [
              'trueValue' => 'yes',
              'nullValue' => '<em>null</em>',
-        ]);
+        ], new DataTable());
 
         $this->assertSame('yes', $column->transform(5));
         $this->assertSame('yes', $column->transform(true));
@@ -53,14 +53,15 @@ class ColumnTest extends TestCase
 
     public function testColumnWithClosures()
     {
-        $column = new TextColumn('test', 1, [
+        $column = new TextColumn();
+        $column->initialize('test', 1, [
             'data' => function ($context, $value) {
                 return 'bar';
             },
             'render' => function ($value) {
                 return mb_strtoupper($value);
             },
-        ]);
+        ], new DataTable());
 
         $this->assertFalse($column->isRaw());
         $this->assertSame('BAR', $column->transform(null));

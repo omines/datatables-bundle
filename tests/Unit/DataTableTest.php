@@ -119,7 +119,7 @@ class DataTableTest extends TestCase
         (new DataTablesExtension())->load([], $container);
 
         $factory = new DataTableFactory($container->getParameter('datatables.config'), $this->createMock(TwigRenderer::class));
-        $factory->setInstantiator(new Instantiator($dummy, $dummy));
+        $factory->setInstantiator(new Instantiator($dummy, $dummy, $dummy));
         $factory->createFromType('foobar');
     }
 

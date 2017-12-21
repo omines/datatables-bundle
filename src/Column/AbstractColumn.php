@@ -39,16 +39,16 @@ abstract class AbstractColumn
     protected $options;
 
     /**
-     * AbstractColumn constructor.
-     *
      * @param string $name
      * @param int $index
      * @param array $options
+     * @param DataTable $dataTable
      */
-    public function __construct(string $name, int $index, array $options = [])
+    public function initialize(string $name, int $index, array $options = [], DataTable $dataTable)
     {
         $this->name = $name;
         $this->index = $index;
+        $this->dataTable = $dataTable;
 
         $class = get_class($this);
         if (!isset(self::$resolversByClass[$class])) {
@@ -251,17 +251,6 @@ abstract class AbstractColumn
     public function getDataTable(): DataTable
     {
         return $this->dataTable;
-    }
-
-    /**
-     * @param DataTable $dataTable
-     * @return self
-     */
-    public function setDataTable(DataTable $dataTable): self
-    {
-        $this->dataTable = $dataTable;
-
-        return $this;
     }
 
     /**

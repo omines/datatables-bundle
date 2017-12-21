@@ -36,6 +36,7 @@ class LocatorRegistrationPass implements CompilerPassInterface
 
         $instantiator->setArguments([
             $this->registerLocator($container, 'adapter'),
+            $this->registerLocator($container, 'column'),
             $this->registerLocator($container, 'type'),
         ]);
 
