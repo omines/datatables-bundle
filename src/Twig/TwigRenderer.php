@@ -14,6 +14,7 @@ namespace Omines\DataTablesBundle\Twig;
 
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableRendererInterface;
+use Omines\DataTablesBundle\Exception\MissingDependencyException;
 use Twig_Environment;
 
 /**
@@ -34,7 +35,7 @@ class TwigRenderer implements DataTableRendererInterface
     public function __construct(Twig_Environment $twig = null)
     {
         if (null === ($this->twig = $twig)) {
-            throw new \LogicException('You must have TwigBundle installed to use the default Twig based DataTables rendering');
+            throw new MissingDependencyException('You must have TwigBundle installed to use the default Twig based DataTables rendering');
         }
     }
 

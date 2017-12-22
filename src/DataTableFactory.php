@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Omines\DataTablesBundle;
 
 use Omines\DataTablesBundle\DependencyInjection\Instantiator;
+use Omines\DataTablesBundle\Exception\InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request;
 
 class DataTableFactory
@@ -105,6 +106,6 @@ class DataTableFactory
             return new $type();
         }
 
-        throw new \InvalidArgumentException(sprintf('Could not resolve type "%s" to a service or class', $type));
+        throw new InvalidArgumentException(sprintf('Could not resolve type "%s" to a service or class', $type));
     }
 }

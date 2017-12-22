@@ -24,8 +24,8 @@ use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 class AdapterTest extends TestCase
 {
     /**
-     * @expectedException \LogicException
-     * @expectedExceptionMessage There is no manager for entity
+     * @expectedException \Omines\DataTablesBundle\Exception\InvalidConfigurationException
+     * @expectedExceptionMessage Doctrine has no manager for entity "foobar"
      */
     public function testInvalidEntity()
     {

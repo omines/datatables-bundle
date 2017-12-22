@@ -15,6 +15,7 @@ namespace Omines\DataTablesBundle\DependencyInjection;
 use Omines\DataTablesBundle\Adapter\AdapterInterface;
 use Omines\DataTablesBundle\Column\AbstractColumn;
 use Omines\DataTablesBundle\DataTableTypeInterface;
+use Omines\DataTablesBundle\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 
 /**
@@ -87,6 +88,7 @@ class Instantiator
         } elseif (class_exists($type) && is_subclass_of($type, $baseType)) {
             return new $type();
         }
-        throw new \InvalidArgumentException(sprintf('Could not resolve type "%s" to a service or class, is it implemented and does it correctly derive from "%s"?', $type, $baseType));
+        throw new InvalidArgumentException(sprintf('Could not resolve type "%s" to a service or class, are you missing ' .
+            'a use statement? Or is it implemented but does it not correctly derive from "%s"?', $type, $baseType));
     }
 }

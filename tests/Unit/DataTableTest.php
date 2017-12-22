@@ -26,6 +26,9 @@ use Omines\DataTablesBundle\DataTableFactory;
 use Omines\DataTablesBundle\DataTablesBundle;
 use Omines\DataTablesBundle\DependencyInjection\DataTablesExtension;
 use Omines\DataTablesBundle\DependencyInjection\Instantiator;
+use Omines\DataTablesBundle\Exception\InvalidArgumentException;
+use Omines\DataTablesBundle\Exception\InvalidConfigurationException;
+use Omines\DataTablesBundle\Exception\InvalidStateException;
 use Omines\DataTablesBundle\Twig\TwigRenderer;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -148,7 +151,7 @@ class DataTableTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage There already is a column with name
      */
     public function testDuplicateColumnNameThrows()
@@ -171,8 +174,8 @@ class DataTableTest extends TestCase
     }
 
     /**
-     * @expectedException \LogicException
-     * @expectedExceptionMessage No adapter was configured to retrieve data
+     * @expectedException \Omines\DataTablesBundle\Exception\InvalidStateException
+     * @expectedExceptionMessage No adapter was configured yet to retrieve data with
      */
     public function testMissingAdapterThrows()
     {
@@ -185,7 +188,7 @@ class DataTableTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException \Omines\DataTablesBundle\Exception\InvalidArgumentException
      * @expectedExceptionMessage DataTable name cannot be empty
      */
     public function testEmptyNameThrows()
@@ -194,7 +197,7 @@ class DataTableTest extends TestCase
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException \Omines\DataTablesBundle\Exception\InvalidConfigurationException
      * @expectedExceptionMessage Unknown request method 'OPTIONS'
      */
     public function testStateWillNotProcessInvalidMethod()

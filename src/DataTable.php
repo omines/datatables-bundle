@@ -16,6 +16,9 @@ use Omines\DataTablesBundle\Adapter\AdapterInterface;
 use Omines\DataTablesBundle\Adapter\ResultSetInterface;
 use Omines\DataTablesBundle\Column\AbstractColumn;
 use Omines\DataTablesBundle\DependencyInjection\Instantiator;
+use Omines\DataTablesBundle\Exception\InvalidArgumentException;
+use Omines\DataTablesBundle\Exception\InvalidConfigurationException;
+use Omines\DataTablesBundle\Exception\InvalidStateException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -122,7 +125,7 @@ class DataTable
     {
         // Ensure name is unique
         if (isset($this->columnsByName[$name])) {
-            throw new \RuntimeException(sprintf("There already is a column with name '%s'", $name));
+            throw new InvalidArgumentException(sprintf("There already is a column with name '%s'", $name));
         }
 
         $column = $this->createColumn($type);
@@ -160,7 +163,7 @@ class DataTable
         } elseif (class_exists($adapter) && in_array(AdapterInterface::class, class_implements($adapter), true)) {
             return $this->setAdapter(new $adapter(), $options);
         } else {
-            throw new \InvalidArgumentException(sprintf('Could not resolve adapter type "%s" to a service or class implementing AdapterInterface', $adapter));
+            throw new InvalidArgumentException(sprintf('Could not resolve adapter type "%s" to a service or class implementing AdapterInterface', $adapter));
         }
     }
 
@@ -175,7 +178,7 @@ class DataTable
         } elseif (class_exists($column) && is_subclass_of($column, AbstractColumn::class)) {
             return new $column();
         } else {
-            throw new \InvalidArgumentException(sprintf('Could not resolve column type "%s" to a service or class extending AbstractColumn', $column));
+            throw new InvalidArgumentException(sprintf('Could not resolve column type "%s" to a service or class extending AbstractColumn', $column));
         }
     }
 
@@ -194,7 +197,7 @@ class DataTable
     public function getColumn(int $index): AbstractColumn
     {
         if ($index < 0 || $index >= count($this->columns)) {
-            throw new \InvalidArgumentException(sprintf('There is no column with index %d', $index));
+            throw new InvalidArgumentException(sprintf('There is no column with index %d', $index));
         }
 
         return $this->columns[$index];
@@ -207,7 +210,7 @@ class DataTable
     public function getColumnByName(string $name): AbstractColumn
     {
         if (!isset($this->columnsByName[$name])) {
-            throw new \InvalidArgumentException(sprintf("There is no column named '%s'", $name));
+            throw new InvalidArgumentException(sprintf("There is no column named '%s'", $name));
         }
 
         return $this->columnsByName[$name];
@@ -291,7 +294,7 @@ class DataTable
                 $parameters = $request->request;
                 break;
             default:
-                throw new \LogicException(sprintf("Unknown request method '%s'", $this->getMethod()));
+                throw new InvalidConfigurationException(sprintf("Unknown request method '%s'", $this->getMethod()));
         }
         if ($this->getName() === $parameters->get('_dt')) {
             if (null === $this->state) {
@@ -309,7 +312,7 @@ class DataTable
     public function getResponse(): JsonResponse
     {
         if (null === $this->state) {
-            throw new \LogicException('The DataTable does not know its state yet, did you call handleRequest?');
+            throw new InvalidStateException('The DataTable does not know its state yet, did you call handleRequest?');
         }
 
         $resultSet = $this->getResultSet();
@@ -350,7 +353,7 @@ class DataTable
     protected function getResultSet(): ResultSetInterface
     {
         if (null === $this->adapter) {
-            throw new \LogicException('No adapter was configured to retrieve data');
+            throw new InvalidStateException('No adapter was configured yet to retrieve data with. Call "createAdapter" or "setAdapter" before attempting to return data');
         }
 
         return $this->adapter->getData($this->state);
@@ -447,7 +450,7 @@ class DataTable
     public function setName(string $name): self
     {
         if (empty($name)) {
-            throw new \InvalidArgumentException('DataTable name cannot be empty');
+            throw new InvalidArgumentException('DataTable name cannot be empty');
         }
         $this->name = $name;
 

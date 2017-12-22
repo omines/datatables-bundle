@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle\Column;
 
+use Omines\DataTablesBundle\Exception\MissingDependencyException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Twig_Environment;
 
@@ -33,7 +34,7 @@ class TwigColumn extends AbstractColumn
     public function __construct(Twig_Environment $twig = null)
     {
         if (null === ($this->twig = $twig)) {
-            throw new \LogicException('You must have TwigBundle installed to use ' . self::class);
+            throw new MissingDependencyException('You must have TwigBundle installed to use ' . self::class);
         }
     }
 

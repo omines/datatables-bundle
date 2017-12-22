@@ -22,6 +22,8 @@ use Omines\DataTablesBundle\Adapter\Doctrine\ORM\QueryBuilderProcessorInterface;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORM\SearchCriteriaProvider;
 use Omines\DataTablesBundle\Column\AbstractColumn;
 use Omines\DataTablesBundle\DataTableState;
+use Omines\DataTablesBundle\Exception\InvalidConfigurationException;
+use Omines\DataTablesBundle\Exception\MissingDependencyException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -60,7 +62,7 @@ class ORMAdapter extends AbstractAdapter
     public function __construct(RegistryInterface $registry = null)
     {
         if (null === $registry) {
-            throw new \LogicException('Install doctrine/doctrine-bundle to use the ORMAdapter');
+            throw new MissingDependencyException('Install doctrine/doctrine-bundle to use the ORMAdapter');
         }
 
         parent::__construct();
@@ -78,7 +80,7 @@ class ORMAdapter extends AbstractAdapter
 
         // Enable automated mode or just get the general default entity manager
         if (null === ($this->manager = $this->registry->getManagerForClass($options['entity']))) {
-            throw new \LogicException(sprintf('There is no manager for entity "%s"', $options['entity']));
+            throw new InvalidConfigurationException(sprintf('Doctrine has no manager for entity "%s", is it correctly imported and referenced?', $options['entity']));
         }
         $this->metadata = $this->manager->getClassMetadata($options['entity']);
         if (empty($options['query'])) {
@@ -256,7 +258,7 @@ class ORMAdapter extends AbstractAdapter
     {
         $parts = explode('.', $field);
         if (count($parts) < 2) {
-            throw new \RuntimeException(sprintf("Field name '%s' must consist at least of an alias and a field separated with a period", $field));
+            throw new InvalidConfigurationException(sprintf("Field name '%s' must consist at least of an alias and a field separated with a period", $field));
         }
         list($origin, $target) = $parts;
 
@@ -327,6 +329,6 @@ class ORMAdapter extends AbstractAdapter
             return $provider;
         }
 
-        throw new \LogicException('Provider must be a callable or implement QueryBuilderProcessorInterface');
+        throw new InvalidConfigurationException('Provider must be a callable or implement QueryBuilderProcessorInterface');
     }
 }
