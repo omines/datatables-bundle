@@ -288,6 +288,25 @@ Option | Type | Description
 ------ | ---- | -----------
 raw | bool | Do not escape cell content to be safe for use in HTML. Default `false`.
 
+## BoolColumn
+
+```php?start_inline=1
+$table->add('wantsNewsletter', BoolColumn::class, [
+    'trueValue' => 'yes',
+    'falseValue' => 'no',
+    'nullValue' => 'unknown',
+]);
+```
+
+Bool columns render a boolean value, which is allowed to be indeterminate (`null`). Three properties define
+how values are rendered:
+
+Option | Type | Description
+------ | ---- | -----------
+trueValue | string | Raw string to use for true-ish values. Default `true`.
+falseValue | string | Raw string to use for false-ish values. Default `false`.
+nullValue | string | Raw string to use for null values. Default `null`.
+
 ## DateTimeColumn
 
 ```php?start_inline=1
@@ -301,8 +320,13 @@ Option | Type | Description
 ------ | ---- | -----------
 format | string | A date format string as accepted by the [`date()`](http://php.net/manual/en/function.date.php) function. Default `'c'`.
 
+## TwigColumn
+
+TBD.
+
 ## Implementing custom columns
 
+TBD.
 
 # DataTable Types
 
