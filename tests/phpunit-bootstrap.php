@@ -14,7 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Tests\Fixtures\AppBundle\Entity\Company;
-use Tests\Fixtures\AppBundle\Entity\Person;
+use Tests\Fixtures\AppBundle\Entity\Employee;
 use Tests\Fixtures\AppKernel;
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -38,6 +38,6 @@ for ($i = 0; 5 !== $i; ++$i) {
 $date = new \DateTime('2017-05-03 12:34:56');
 for ($i = 0; 125 !== $i; ++$i) {
     $date->sub(new \DateInterval('P3DT5H27M'));
-    $em->persist(new Person('FirstName' . $i, 'LastName' . $i, $i % 2 ? clone $date : null, $companies[$i % count($companies)]));
+    $em->persist(new Employee('FirstName' . $i, 'LastName' . $i, $i % 2 ? clone $date : null, $companies[$i % count($companies)]));
 }
 $em->flush();

@@ -19,6 +19,7 @@ use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableTypeInterface;
+use Tests\Fixtures\AppBundle\Entity\Employee;
 use Tests\Fixtures\AppBundle\Entity\Person;
 
 /**
@@ -42,10 +43,10 @@ class CustomQueryTableType implements DataTableTypeInterface
                 'entity' => Person::class,
                 'query' => function (QueryBuilder $builder) {
                     $builder
-                        ->select('p')
+                        ->select('e')
                         ->addSelect('c')
-                        ->from(Person::class, 'p')
-                        ->leftJoin('p.company', 'c')
+                        ->from(Employee::class, 'e')
+                        ->leftJoin('e.company', 'c')
                     ;
                 },
                 'criteria' => function () {

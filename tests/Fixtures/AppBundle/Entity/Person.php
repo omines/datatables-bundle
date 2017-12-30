@@ -20,6 +20,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @author Niels Keurentjes <niels.keurentjes@omines.com>
  *
  * @ORM\Entity
+ * @ORM\InheritanceType("JOINED")
  */
 class Person
 {
@@ -47,33 +48,15 @@ class Person
     private $lastName;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $employedSince;
-
-    /**
-     * @var Company
-     *
-     * @ORM\ManyToOne(targetEntity="Company", inversedBy="employees")
-     */
-    private $company;
-
-    /**
      * Person constructor.
      *
      * @param string $firstName
      * @param string $lastName
-     * @param \DateTime|null $employedSince
-     * @param Company $company
      */
-    public function __construct(string $firstName, string $lastName, \DateTime $employedSince = null, Company $company)
+    public function __construct(string $firstName, string $lastName)
     {
         $this->firstName = $firstName;
         $this->lastName = $lastName;
-        $this->company = $company;
-        $this->employedSince = $employedSince;
     }
 
     /**
@@ -98,21 +81,5 @@ class Person
     public function getLastName(): string
     {
         return $this->lastName;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getEmployedSince()
-    {
-        return $this->employedSince;
-    }
-
-    /**
-     * @return Company
-     */
-    public function getCompany(): Company
-    {
-        return $this->company;
     }
 }

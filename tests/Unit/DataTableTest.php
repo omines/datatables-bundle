@@ -26,9 +26,6 @@ use Omines\DataTablesBundle\DataTableFactory;
 use Omines\DataTablesBundle\DataTablesBundle;
 use Omines\DataTablesBundle\DependencyInjection\DataTablesExtension;
 use Omines\DataTablesBundle\DependencyInjection\Instantiator;
-use Omines\DataTablesBundle\Exception\InvalidArgumentException;
-use Omines\DataTablesBundle\Exception\InvalidConfigurationException;
-use Omines\DataTablesBundle\Exception\InvalidStateException;
 use Omines\DataTablesBundle\Twig\TwigRenderer;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -151,7 +148,7 @@ class DataTableTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage There already is a column with name
      */
     public function testDuplicateColumnNameThrows()

@@ -19,6 +19,7 @@ use Omines\DataTablesBundle\Controller\DataTablesTrait;
 use Omines\DataTablesBundle\DataTable;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Tests\Fixtures\AppBundle\Entity\Employee;
 use Tests\Fixtures\AppBundle\Entity\Person;
 
 /**
@@ -35,9 +36,9 @@ class PlainController extends Controller
         $datatable = $this->createDataTable()
             ->setName('persons')
             ->setMethod(Request::METHOD_GET)
-            ->add('id', TextColumn::class, ['field' => 'person.id'])
+            ->add('id', TextColumn::class, ['field' => 'employee.id'])
             ->add('firstName', TextColumn::class)
-            ->add('lastName', TextColumn::class, ['field' => 'person.lastName'])
+            ->add('lastName', TextColumn::class, ['field' => 'employee.lastName'])
             ->add('employedSince', DateTimeColumn::class, ['format' => 'd-m-Y'])
             ->add('fullName', TextColumn::class, [
                 'data' => function (Person $person) {
@@ -52,7 +53,7 @@ class PlainController extends Controller
             ->addOrderBy('lastName', DataTable::SORT_ASCENDING)
             ->addOrderBy('firstName', DataTable::SORT_DESCENDING)
             ->createAdapter(ORMAdapter::class, [
-                'entity' => Person::class,
+                'entity' => Employee::class,
             ])
         ;
 

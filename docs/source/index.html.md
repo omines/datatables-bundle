@@ -322,7 +322,23 @@ format | string | A date format string as accepted by the [`date()`](http://php.
 
 ## TwigColumn
 
-TBD.
+```php?start_inline=1
+$table->add('buttons', TwigColumn::class, [
+    'className' => 'buttons',
+    'template' => 'tables/buttonbar.html.twig',
+])
+```
+
+This column type allows you to specify a Twig template used to render the column's cells. The
+template is rendered using the main application context by injecting the main Twig service.
+Additionally the `value` and `row` parameters are being filled by the cell value and the row
+level context respectively.
+
+Option | Type | Description
+------ | ---- | -----------
+template | string | Template path resolvable by the Symfony templating component. Required without default.
+
+<aside class="warning">Keep in mind that for most simple use cases a decorated TextColumn will perform better than a full Twig template per row.</aside>
 
 ## Implementing custom columns
 

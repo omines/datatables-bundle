@@ -18,6 +18,7 @@ use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableTypeInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Tests\Fixtures\AppBundle\Entity\Employee;
 use Tests\Fixtures\AppBundle\Entity\Person;
 
 /**
@@ -56,13 +57,13 @@ class ServicePersonTableType implements DataTableTypeInterface
                     return sprintf('<a href="%s">%s, %s</a>', $this->router->generate('home'), $person->getLastName(), $person->getFirstName());
                 },
             ])
-            ->setTransformer(function ($row, Person $person) {
-                $row['fullName'] = sprintf('%s (%s)', $person->getLastName(), $person->getCompany()->getName());
+            ->setTransformer(function ($row, Employee $employee) {
+                $row['fullName'] = sprintf('%s (%s)', $employee->getLastName(), $employee->getCompany()->getName());
 
                 return $row;
             })
             ->createAdapter(ORMAdapter::class, [
-                'entity' => Person::class,
+                'entity' => Employee::class,
                 'criteria' => [
                     new SearchCriteriaProvider(),
                 ],
