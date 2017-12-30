@@ -17,3 +17,7 @@ service:
 custom:
     path:       /custom
     defaults:   { _controller: "AppBundle:CustomQuery:table" }
+
+employee.edit:
+    path:       /employee/{id}
+

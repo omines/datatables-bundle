@@ -64,7 +64,7 @@ class FunctionalTest extends WebTestCase
         $this->assertSame('LastName94', $sample->lastName);
         $this->assertNull($sample->employedSince);
         $this->assertSame('FirstName94 &lt;img src=&quot;https://symfony.com/images/v5/logos/sf-positive.svg&quot;&gt; LastName94', $sample->fullName);
-        $this->assertContains('<button', $sample->buttons);
+        $this->assertRegExp('#href="/employee/[0-9]+"#', $sample->buttons);
 
         $this->assertSame('04-07-2016', $json->data[6]->employedSince);
     }

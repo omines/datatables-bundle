@@ -15,6 +15,7 @@ namespace Tests\Fixtures\AppBundle\Controller;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\DateTimeColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
+use Omines\DataTablesBundle\Column\TwigColumn;
 use Omines\DataTablesBundle\Controller\DataTablesTrait;
 use Omines\DataTablesBundle\DataTable;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -46,8 +47,8 @@ class PlainController extends Controller
                 },
             ])
             ->add('employer', TextColumn::class, ['field' => 'company.name'])
-            ->add('buttons', TextColumn::class, [
-                'raw' => true,
+            ->add('buttons', TwigColumn::class, [
+                'template' => '@App/buttons.html.twig',
                 'data' => '<button>Click me</button>',
             ])
             ->addOrderBy('lastName', DataTable::SORT_ASCENDING)

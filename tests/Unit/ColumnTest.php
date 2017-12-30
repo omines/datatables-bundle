@@ -14,6 +14,7 @@ namespace Tests\Unit;
 
 use Omines\DataTablesBundle\Column\BoolColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
+use Omines\DataTablesBundle\Column\TwigColumn;
 use Omines\DataTablesBundle\DataTable;
 use PHPUnit\Framework\TestCase;
 
@@ -65,5 +66,14 @@ class ColumnTest extends TestCase
 
         $this->assertFalse($column->isRaw());
         $this->assertSame('BAR', $column->transform(null));
+    }
+
+    /**
+     * @expectedException \Omines\DataTablesBundle\Exception\MissingDependencyException
+     * @expectedExceptionMessage You must have TwigBundle installed to use
+     */
+    public function testTwigDependencyDetection()
+    {
+        new TwigColumn();
     }
 }
