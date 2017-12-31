@@ -322,8 +322,7 @@ own bundles but after the required external bundles, such as <code>FrameworkBund
 
 <p><code>bin/console assets:install</code></p>
 
-<aside class="notice">That last step is actually optional, as you can also load it through Assetic or WebPack, but a good starting point.</aside>
- 
+<p>That last step is actually optional, as you can also load it through Assetic or WebPack, but a good starting point.</p>
 <h2 id='clientside-dependencies'>Clientside dependencies</h2><pre class="highlight html tab-html"><code><span class="c">&lt;!-- in the &lt;head&gt; section --&gt;</span>
 <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">type=</span><span class="s">"text/css"</span> <span class="na">href=</span><span class="s">"https://cdn.datatables.net/v/dt/jq-3.2.1/dt-1.10.16/datatables.min.css"</span><span class="nt">/&gt;</span>
 
@@ -373,6 +372,8 @@ source of the data.</p>
 <p>The <code>handleRequest</code> function will take care of handling any callbacks, similar to how Symfony&#39;s Form component
 works. If it turns out the request originated from a callback we let the table provide the controller response,
 otherwise we render a template with the table provided as a parameter.</p>
+
+<aside class="notice">To keep your controller thin you should <a href="#datatable-types">make reusable DataTable types under the DataTable namespace of your app/bundle</a>.</aside>
 <h2 id='frontend-code'>Frontend code</h2><pre class="highlight html tab-html"><code><span class="c">&lt;!-- Insert this where you want the table to appear --&gt;</span>
 <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"presidents"</span><span class="nt">&gt;</span>Loading...<span class="nt">&lt;/div&gt;</span>
 
@@ -506,6 +507,9 @@ and sorting criteria, and returns a result set with metadata on record counts.</
 Assume a simple <code>Employee</code> table with some basic fields and a ManyToOne relationship to <code>Company</code> for
 these examples.</p>
 
+<p>The <code>ORMAdapter</code> has a single mandatory property <code>entity</code>, which should be set to the full FQCN of the main
+entity the table is showing.</p>
+
 <p>Underneath a lot of &quot;magic&quot; is happening in this most simple of examples. The first 2 columns automatically
 have their <code>field</code> option defaulted to the &quot;root entity&quot; of the adapter, with the field identical to their
 name. The adapter itself did not get a query, and as such injected the <code>AutomaticQueryBuilder</code> supplied by
@@ -516,6 +520,47 @@ apply global search to all mapped fields.</p>
 <p>Of course, all of this is just convenient default. For more complex scenarios you can supply your own query
 builders and criteria providers, and even chain them together to easily implement multiple slightly different
 tables in your site.</p>
+<h3 id='customizing-queries'>Customizing queries</h3><pre class="highlight php"><code><span class="nv">$table</span><span class="o">-&gt;</span><span class="na">createAdapter</span><span class="p">(</span><span class="nx">ORMAdapter</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">'entity'</span> <span class="o">=&gt;</span> <span class="nx">Employee</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+    <span class="s1">'query'</span> <span class="o">=&gt;</span> <span class="k">function</span> <span class="p">(</span><span class="nx">QueryBuilder</span> <span class="nv">$builder</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nv">$builder</span>
+            <span class="o">-&gt;</span><span class="na">select</span><span class="p">(</span><span class="s1">'e'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">addSelect</span><span class="p">(</span><span class="s1">'c'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">from</span><span class="p">(</span><span class="nx">Employee</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="s1">'e'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">leftJoin</span><span class="p">(</span><span class="s1">'e.company'</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">)</span>
+        <span class="p">;</span>
+    <span class="p">},</span>
+<span class="p">]);</span>       
+</code></pre>
+<p>If you do not specify the <code>query</code> option the stock <code>AutomaticQueryBuilder</code> is used, which automatically
+joins the main entity to its relationships recursively to select <em>only</em> the fields defined by the columns.
+This works fine in many cases, in others you may need to customize the query.</p>
+
+<p>The <code>query</code> property can be set to a single instance or an array of processors, which can either be
+callables taking a single <code>QueryBuilder</code> as a parameter, or a (anonymous) class implementing the
+<code>QueryBuilderProcessorInterface</code>. In case of an array the processors are called in the defined order.</p>
+
+<p>In general it is recommended to implement your own query processor completely when you need custom
+behavior. Chaining on the default <code>AutomaticQueryBuilder</code> is possible, but may cause unexpected
+interaction based on internal changes in this bundle and/or Doctrine ORM. </p>
+<h3 id='customizing-criteria'>Customizing criteria</h3><pre class="highlight php"><code><span class="nv">$table</span><span class="o">-&gt;</span><span class="na">createAdapter</span><span class="p">(</span><span class="nx">ORMAdapter</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">'entity'</span> <span class="o">=&gt;</span> <span class="nx">Employee</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+    <span class="s1">'criteria'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="k">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">Criteria</span><span class="o">::</span><span class="na">create</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">andWhere</span><span class="p">(</span><span class="k">new</span> <span class="nx">Comparison</span><span class="p">(</span><span class="s1">'c.name'</span><span class="p">,</span> <span class="nx">Comparison</span><span class="o">::</span><span class="na">CONTAINS</span><span class="p">,</span> <span class="s1">'ny 2'</span><span class="p">));</span>
+        <span class="p">},</span>
+        <span class="k">new</span> <span class="nx">SearchCriteriaProvider</span><span class="p">(),</span>
+    <span class="p">},</span>
+<span class="p">]);</span>
+</code></pre>
+<p>Analogous to queries you can separately define the criteria processors applied to table queries. The
+<code>criteria</code> property also takes a single instance or an array, with the separate processors either
+implementing <code>QueryBuilderProcessorInterface</code>, or being a callback returning a <code>Criteria</code> object as
+in this example.</p>
+
+<p>Note that implementing your own criteria overrides the default, meaning searching and sorting will no
+longer work automatically. Add the <code>SearchCriteriaProvider</code> manually to combine the default behavior
+with your own implementation.</p>
 <h2 id='arrays'>Arrays</h2>
 <p>TBD.</p>
 <h2 id='implementing-custom-adapters'>Implementing custom adapters</h2>
