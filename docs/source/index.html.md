@@ -44,7 +44,7 @@ Run the `assets:install` command to deploy the included Javascript files to your
 
 <code>bin/console assets:install</code>
 
-<aside class="notice">That last step is actually optional, as you can also load it through Assetic or WebPack, but a good starting point.</aside>
+That last step is actually optional, as you can also load it through Assetic or WebPack, but a good starting point.
  
 ## Clientside dependencies
 
@@ -102,6 +102,8 @@ source of the data.
 The `handleRequest` function will take care of handling any callbacks, similar to how Symfony's Form component
 works. If it turns out the request originated from a callback we let the table provide the controller response,
 otherwise we render a template with the table provided as a parameter.
+
+<aside class="notice">To keep your controller thin you should <a href="#datatable-types">make reusable DataTable types under the DataTable namespace of your app/bundle</a>.</aside>
 
 ## Frontend code
 
@@ -216,7 +218,10 @@ $table = $this->createDataTable()
 If you have installed `doctrine/orm` and `doctrine/doctrine-bundle` you can use the provided `ORMAdapter`.
 Assume a simple `Employee` table with some basic fields and a ManyToOne relationship to `Company` for
 these examples.
- 
+
+The `ORMAdapter` has a single mandatory property `entity`, which should be set to the full FQCN of the main
+entity the table is showing.
+
 Underneath a lot of "magic" is happening in this most simple of examples. The first 2 columns automatically
 have their `field` option defaulted to the "root entity" of the adapter, with the field identical to their
 name. The adapter itself did not get a query, and as such injected the `AutomaticQueryBuilder` supplied by
@@ -227,6 +232,55 @@ apply global search to all mapped fields.
 Of course, all of this is just convenient default. For more complex scenarios you can supply your own query
 builders and criteria providers, and even chain them together to easily implement multiple slightly different
 tables in your site.
+
+### Customizing queries
+
+```php?start_inline=1
+$table->createAdapter(ORMAdapter::class, [
+    'entity' => Employee::class,
+    'query' => function (QueryBuilder $builder) {
+        $builder
+            ->select('e')
+            ->addSelect('c')
+            ->from(Employee::class, 'e')
+            ->leftJoin('e.company', 'c')
+        ;
+    },
+]);       
+```
+If you do not specify the `query` option the stock `AutomaticQueryBuilder` is used, which automatically
+joins the main entity to its relationships recursively to select *only* the fields defined by the columns.
+This works fine in many cases, in others you may need to customize the query.
+
+The `query` property can be set to a single instance or an array of processors, which can either be
+callables taking a single `QueryBuilder` as a parameter, or a (anonymous) class implementing the
+`QueryBuilderProcessorInterface`. In case of an array the processors are called in the defined order.
+
+In general it is recommended to implement your own query processor completely when you need custom
+behavior. Chaining on the default `AutomaticQueryBuilder` is possible, but may cause unexpected
+interaction based on internal changes in this bundle and/or Doctrine ORM. 
+
+### Customizing criteria
+
+```php?start_inline=1
+$table->createAdapter(ORMAdapter::class, [
+    'entity' => Employee::class,
+    'criteria' => [
+        function () {
+            return Criteria::create()->andWhere(new Comparison('c.name', Comparison::CONTAINS, 'ny 2'));
+        },
+        new SearchCriteriaProvider(),
+    },
+]);
+```             
+Analogous to queries you can separately define the criteria processors applied to table queries. The
+`criteria` property also takes a single instance or an array, with the separate processors either
+implementing `QueryBuilderProcessorInterface`, or being a callback returning a `Criteria` object as
+in this example.
+
+Note that implementing your own criteria overrides the default, meaning searching and sorting will no
+longer work automatically. Add the `SearchCriteriaProvider` manually to combine the default behavior
+with your own implementation.
 
 ## Arrays
 
