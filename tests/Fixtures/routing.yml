@@ -18,6 +18,10 @@ custom:
     path:       /custom
     defaults:   { _controller: "AppBundle:CustomQuery:table" }
 
+grouped:
+    path:       /grouped
+    defaults:   { _controller: "AppBundle:Grouped:table" }
+
 employee.edit:
     path:       /employee/{id}
 

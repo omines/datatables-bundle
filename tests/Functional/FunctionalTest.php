@@ -107,6 +107,15 @@ class FunctionalTest extends WebTestCase
         $this->assertStringStartsWith('Company ', $json->data[0]->company);
     }
 
+    public function testGroupedDataTable()
+    {
+        $this->markTestSkipped('Group by functionality is currently not working correctly');
+
+        $json = $this->callDataTableUrl('/grouped?_dt=companies');
+
+        $this->assertStringStartsWith('Company ', $json->data[0]->company);
+    }
+
     private function callDataTableUrl(string $url)
     {
         $this->client->enableProfiler();
