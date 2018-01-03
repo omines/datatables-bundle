@@ -23,6 +23,7 @@ use Omines\DataTablesBundle\Adapter\ArrayAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableFactory;
+use Omines\DataTablesBundle\DataTableRendererInterface;
 use Omines\DataTablesBundle\DataTablesBundle;
 use Omines\DataTablesBundle\DependencyInjection\DataTablesExtension;
 use Omines\DataTablesBundle\DependencyInjection\Instantiator;
@@ -171,6 +172,16 @@ class DataTableTest extends TestCase
     }
 
     /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Could not resolve column type "bar"
+     */
+    public function testInvalidColumnThrows()
+    {
+        (new DataTable())
+            ->add('foo', 'bar');
+    }
+
+    /**
      * @expectedException \Omines\DataTablesBundle\Exception\InvalidStateException
      * @expectedExceptionMessage No adapter was configured yet to retrieve data with
      */
@@ -202,5 +213,25 @@ class DataTableTest extends TestCase
         $datatable = new DataTable();
         $datatable->setMethod(Request::METHOD_OPTIONS);
         $datatable->handleRequest(Request::create('/foo'));
+    }
+
+    /**
+     * @expectedException \Omines\DataTablesBundle\Exception\InvalidStateException
+     * @expectedExceptionMessage The DataTable does not know its state yet
+     */
+    public function testMissingStateThrows()
+    {
+        (new DataTable())
+            ->getResponse();
+    }
+
+    /**
+     * @expectedException \Omines\DataTablesBundle\Exception\InvalidArgumentException
+     * @expectedExceptionMessage Could not resolve type "foo" to a service or class
+     */
+    public function testInvalidDataTableTypeThrows()
+    {
+        (new DataTableFactory([], $this->createMock(DataTableRendererInterface::class)))
+            ->createFromType('foo');
     }
 }

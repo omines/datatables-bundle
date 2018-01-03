@@ -14,11 +14,13 @@ namespace Tests\Unit\Adapter;
 
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use Omines\DataTablesBundle\Adapter\AdapterQuery;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORM\SearchCriteriaProvider;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 use PHPUnit\Framework\TestCase;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -62,5 +64,38 @@ class DoctrineTest extends TestCase
     public function testORMAdapterRequiresDependency()
     {
         (new ORMAdapter());
+    }
+
+    /**
+     * @expectedException \Omines\DataTablesBundle\Exception\InvalidConfigurationException
+     * @expectedExceptionMessage Provider must be a callable or implement QueryBuilderProcessorInterface
+     */
+    public function testInvalidQueryProcessorThrows()
+    {
+        (new ORMAdapter($this->createMock(RegistryInterface::class)))
+            ->configure([
+                'entity' => 'bar',
+                'query' => ['foo'],
+            ]);
+    }
+
+    /**
+     * @expectedException \Omines\DataTablesBundle\Exception\InvalidConfigurationException
+     * @expectedExceptionMessage Field name 'invalid' must consist at least of an alias and a field
+     */
+    public function testInvalidFieldThrows()
+    {
+        $query = $this->createMock(AdapterQuery::class);
+        $query->method('get')->willReturn([]);
+        $column = new TextColumn();
+        $column->initialize('foo', 0, ['field' => 'invalid'], $this->createMock(DataTable::class));
+
+        $mock = new class($this->createMock(RegistryInterface::class)) extends ORMAdapter {
+            public function foo($query, $column)
+            {
+                return $this->mapPropertyPath($query, $column);
+            }
+        };
+        $mock->foo($query, $column);
     }
 }
