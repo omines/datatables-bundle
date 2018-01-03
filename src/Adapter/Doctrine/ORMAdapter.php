@@ -311,7 +311,9 @@ class ORMAdapter extends AbstractAdapter
      */
     private function normalizeProcessor($provider)
     {
-        if (is_callable($provider)) {
+        if ($provider instanceof QueryBuilderProcessorInterface) {
+            return $provider;
+        } elseif (is_callable($provider)) {
             return new class($provider) implements QueryBuilderProcessorInterface {
                 private $callable;
 
@@ -325,8 +327,6 @@ class ORMAdapter extends AbstractAdapter
                     return call_user_func($this->callable, $queryBuilder, $state);
                 }
             };
-        } elseif ($provider instanceof QueryBuilderProcessorInterface) {
-            return $provider;
         }
 
         throw new InvalidConfigurationException('Provider must be a callable or implement QueryBuilderProcessorInterface');

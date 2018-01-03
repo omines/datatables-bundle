@@ -50,7 +50,7 @@ abstract class AbstractAdapter implements AdapterInterface
         $identifier = $query->getIdentifierPropertyPath();
         foreach ($this->getResults($query) as $result) {
             $row = [];
-            if ($identifier) {
+            if (!empty($identifier)) {
                 $row['DT_RowId'] = $this->accessor->getValue($result, $identifier);
             }
 
