@@ -183,8 +183,7 @@ class ORMAdapter extends AbstractAdapter
         foreach ($state->getOrderBy() as list($column, $direction)) {
             /** @var AbstractColumn $column */
             if ($column->isOrderable()) {
-                $orderField = $column->getOrderField() ?: $column->getField();
-                $builder->addOrderBy($orderField, $direction);
+                $builder->addOrderBy($column->getOrderField(), $direction);
             }
         }
         if ($state->getLength() > 0) {

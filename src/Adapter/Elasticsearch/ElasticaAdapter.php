@@ -78,10 +78,26 @@ class ElasticaAdapter extends AbstractAdapter
         $search = new \Elastica\Search($query->get('client'));
         $search->addIndices($this->indices);
 
-        $q = (new \Elastica\Query())
-            ->setFrom($state->getStart())
-            ->setSize($state->getLength())
-        ;
+        $q = new \Elastica\Query();
+        if (!empty($globalSearch = $state->getGlobalSearch())) {
+            $fields = [];
+            foreach ($state->getDataTable()->getColumns() as $column) {
+                if ($column->isGlobalSearchable()) {
+                    $fields[] = $column->getField();
+                }
+            }
+            $q->setQuery((new \Elastica\Query\MultiMatch())->setQuery($globalSearch)->setFields($fields));
+        }
+        if ($state->getLength() > 0) {
+            $q->setFrom($state->getStart())->setSize($state->getLength());
+        }
+
+        foreach ($state->getOrderBy() as list($column, $direction)) {
+            /** @var AbstractColumn $column */
+            if ($column->isOrderable() && $orderField = $column->getOrderField()) {
+                $q->addSort([$orderField => ['order' => $direction]]);
+            }
+        }
 
         $resultSet = $search->search($q);
         $query->setTotalRows($resultSet->getTotalHits());
