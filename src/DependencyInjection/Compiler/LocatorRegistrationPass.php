@@ -57,7 +57,7 @@ class LocatorRegistrationPass implements CompilerPassInterface
         return $container
             ->register("datatables.{$baseTag}_locator", ServiceLocator::class)
             ->addTag('container.service_locator')
-            ->setPrivate(true)
+            ->setPublic(false)
             ->setArguments([$types])
         ;
     }
