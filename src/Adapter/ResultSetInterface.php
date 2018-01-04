@@ -35,7 +35,8 @@ interface ResultSetInterface
 
     /**
      * Returns the raw data in the result set.
-     * @return array
+     *
+     * @return \Iterator
      */
-    public function getData(): array;
+    public function getData(): \Iterator;
 }

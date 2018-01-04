@@ -61,8 +61,8 @@ class ArrayResultSet implements ResultSetInterface
     /**
      * {@inheritdoc}
      */
-    public function getData(): array
+    public function getData(): \Iterator
     {
-        return $this->data;
+        return new \ArrayIterator($this->data);
     }
 }

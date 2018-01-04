@@ -2,7 +2,7 @@
     "name": "omines/datatables-bundle",
     "type": "symfony-bundle",
     "description": "Symfony DataTables Bundle",
-    "keywords": ["symfony","jquery","datatable", "datatables", "bundle"],
+    "keywords": ["symfony","jquery","datatable", "datatables", "bundle", "doctrine", "orm"],
     "license": "MIT",
     "authors": [
         {

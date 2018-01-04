@@ -14,6 +14,7 @@ namespace Omines\DataTablesBundle\Adapter;
 
 use Omines\DataTablesBundle\DataTableState;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
  * ArrayAdapter.
@@ -25,12 +26,16 @@ class ArrayAdapter implements AdapterInterface
     /** @var array */
     private $data = [];
 
+    /** @var PropertyAccessor */
+    private $accessor;
+
     /**
      * {@inheritdoc}
      */
     public function configure(array $options)
     {
         $this->data = $options;
+        $this->accessor = PropertyAccess::createPropertyAccessor();
     }
 
     /**
@@ -65,26 +70,37 @@ class ArrayAdapter implements AdapterInterface
     protected function processData(DataTableState $state, array $data, array $map)
     {
         $transformer = $state->getDataTable()->getTransformer();
-        $search = $state->getGlobalSearch() ?: null;
-        $accessor = PropertyAccess::createPropertyAccessor();
+        $search = $state->getGlobalSearch() ?: '';
         foreach ($data as $result) {
-            $row = [];
-            $match = (null === $search);
-            foreach ($state->getDataTable()->getColumns() as $column) {
-                $value = (!empty($propertyPath = $map[$column->getName()]) && $accessor->isReadable($result, $propertyPath)) ? $accessor->getValue($result, $propertyPath) : null;
-                $value = $column->transform($value, $result);
-                if (!$match) {
-                    $match = (false !== mb_stripos($value, $search));
+            if ($row = $this->processRow($state, $result, $map, $search)) {
+                if ($transformer) {
+                    $row = call_user_func($transformer, $row, $result);
                 }
-                $row[$column->getName()] = $column->transform($value, $result);
+                yield $row;
             }
-            if (!$match) {
-                continue;
-            }
-            if ($transformer) {
-                $row = call_user_func($transformer, $row, $result);
-            }
-            yield $row;
         }
+    }
+
+    /**
+     * @param DataTableState $state
+     * @param array $result
+     * @param array $map
+     * @param string $search
+     * @return array|null
+     */
+    protected function processRow(DataTableState $state, array $result, array $map, string $search)
+    {
+        $row = [];
+        $match = empty($search);
+        foreach ($state->getDataTable()->getColumns() as $column) {
+            $value = (!empty($propertyPath = $map[$column->getName()]) && $this->accessor->isReadable($result, $propertyPath)) ? $this->accessor->getValue($result, $propertyPath) : null;
+            $value = $column->transform($value, $result);
+            if (!$match) {
+                $match = (false !== mb_stripos($value, $search));
+            }
+            $row[$column->getName()] = $column->transform($value, $result);
+        }
+
+        return $match ? $row : null;
     }
 }

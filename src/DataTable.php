@@ -97,7 +97,7 @@ class DataTable
     /** @var DataTableState */
     private $state;
 
-    /** @var null|Instantiator */
+    /** @var Instantiator */
     private $instantiator;
 
     /**
@@ -299,7 +299,7 @@ class DataTable
             'draw' => $this->state->getDraw(),
             'recordsTotal' => $resultSet->getTotalRecords(),
             'recordsFiltered' => $resultSet->getTotalDisplayRecords(),
-            'data' => $resultSet->getData(),
+            'data' => iterator_to_array($resultSet->getData()),
         ];
         if ($this->state->isInitial()) {
             $response['options'] = $this->getInitialResponse();
