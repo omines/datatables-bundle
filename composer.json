@@ -45,6 +45,7 @@
     "suggest": {
         "doctrine/doctrine-bundle": "For integrated access to Doctrine object managers",
         "doctrine/orm": "For full automated integration with Doctrine entities",
+        "ruflin/elastica": "For integration with Elasticsearch indexes",
         "symfony/twig-bundle": "To use default Twig based rendering"
     },
     "autoload": {
