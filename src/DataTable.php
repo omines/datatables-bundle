@@ -108,7 +108,7 @@ class DataTable
      */
     public function __construct(array $options = [], Instantiator $instantiator = null)
     {
-        $this->instantiator = $instantiator;
+        $this->instantiator = $instantiator ?? new Instantiator();
 
         $resolver = new OptionsResolver();
         $this->configureOptions($resolver);
@@ -128,7 +128,7 @@ class DataTable
             throw new InvalidArgumentException(sprintf("There already is a column with name '%s'", $name));
         }
 
-        $column = $this->createColumn($type);
+        $column = $this->instantiator->getColumn($type);
         $column->initialize($name, count($this->columns), $options, $this);
 
         $this->columns[] = $column;
@@ -158,28 +158,7 @@ class DataTable
      */
     public function createAdapter(string $adapter, array $options = []): self
     {
-        if (null !== $this->instantiator && $instance = $this->instantiator->getAdapter($adapter)) {
-            return $this->setAdapter($instance, $options);
-        } elseif (class_exists($adapter) && in_array(AdapterInterface::class, class_implements($adapter), true)) {
-            return $this->setAdapter(new $adapter(), $options);
-        } else {
-            throw new InvalidArgumentException(sprintf('Could not resolve adapter type "%s" to a service or class implementing AdapterInterface', $adapter));
-        }
-    }
-
-    /**
-     * @param string $column
-     * @return AbstractColumn
-     */
-    protected function createColumn(string $column): AbstractColumn
-    {
-        if (null !== $this->instantiator && $instance = $this->instantiator->getColumn($column)) {
-            return $instance;
-        } elseif (class_exists($column) && is_subclass_of($column, AbstractColumn::class)) {
-            return new $column();
-        } else {
-            throw new InvalidArgumentException(sprintf('Could not resolve column type "%s" to a service or class extending AbstractColumn', $column));
-        }
+        return $this->setAdapter($this->instantiator->getAdapter($adapter), $options);
     }
 
     /**

@@ -49,7 +49,7 @@ class DataTableTest extends TestCase
 
     public function testFactory()
     {
-        $factory = new DataTableFactory(['language_from_cdn' => false], $this->createMock(TwigRenderer::class));
+        $factory = new DataTableFactory(['language_from_cdn' => false], $this->createMock(TwigRenderer::class), new Instantiator());
 
         $table = $factory->create(['pageLength' => 684, 'dom' => 'bar']);
         $this->assertSame(684, $table->getOption('pageLength'));
@@ -63,7 +63,7 @@ class DataTableTest extends TestCase
 
     public function testFactoryRemembersInstances()
     {
-        $factory = new DataTableFactory([], $this->createMock(TwigRenderer::class));
+        $factory = new DataTableFactory([], $this->createMock(TwigRenderer::class), new Instantiator());
 
         $reflection = new \ReflectionClass(DataTableFactory::class);
         $property = $reflection->getProperty('resolvedTypes');
@@ -119,8 +119,7 @@ class DataTableTest extends TestCase
         $container = new ContainerBuilder();
         (new DataTablesExtension())->load([], $container);
 
-        $factory = new DataTableFactory($container->getParameter('datatables.config'), $this->createMock(TwigRenderer::class));
-        $factory->setInstantiator(new Instantiator($dummy, $dummy, $dummy));
+        $factory = new DataTableFactory($container->getParameter('datatables.config'), $this->createMock(TwigRenderer::class), new Instantiator());
         $factory->createFromType('foobar');
     }
 
@@ -162,7 +161,7 @@ class DataTableTest extends TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Could not resolve adapter type
+     * @expectedExceptionMessage Could not resolve type "foo\bar" to a service or class, are you missing a use statement? Or is it implemented but does it not correctly derive from "Omines\DataTablesBundle\Adapter\AdapterInterface"?
      */
     public function testInvalidAdapterThrows()
     {
@@ -173,7 +172,7 @@ class DataTableTest extends TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Could not resolve column type "bar"
+     * @expectedExceptionMessage Could not resolve type "bar" to a service or class, are you missing a use statement? Or is it implemented but does it not correctly derive from "Omines\DataTablesBundle\Column\AbstractColumn"?
      */
     public function testInvalidColumnThrows()
     {
@@ -231,7 +230,7 @@ class DataTableTest extends TestCase
      */
     public function testInvalidDataTableTypeThrows()
     {
-        (new DataTableFactory([], $this->createMock(DataTableRendererInterface::class)))
+        (new DataTableFactory([], $this->createMock(DataTableRendererInterface::class), new Instantiator()))
             ->createFromType('foo');
     }
 }

@@ -13,7 +13,7 @@ services:
         arguments: ['@?twig']
 
     Omines\DataTablesBundle\DataTableFactory:
-        arguments: ['%datatables.config%', '@datatables.renderer']
+        arguments: ['%datatables.config%', '@datatables.renderer', '@Omines\DataTablesBundle\DependencyInjection\Instantiator']
         public: true
 
     Omines\DataTablesBundle\DependencyInjection\Instantiator: ~

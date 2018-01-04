@@ -12,7 +12,9 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle\DependencyInjection\Compiler;
 
-use Omines\DataTablesBundle\DataTableFactory;
+use Omines\DataTablesBundle\Adapter\AdapterInterface;
+use Omines\DataTablesBundle\Column\AbstractColumn;
+use Omines\DataTablesBundle\DataTableTypeInterface;
 use Omines\DataTablesBundle\DependencyInjection\Instantiator;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -32,17 +34,12 @@ class LocatorRegistrationPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        $instantiator = $container->getDefinition(Instantiator::class);
-
-        $instantiator->setArguments([
-            $this->registerLocator($container, 'adapter'),
-            $this->registerLocator($container, 'column'),
-            $this->registerLocator($container, 'type'),
-        ]);
-
-        $container->getDefinition(DataTableFactory::class)
-            ->addMethodCall('setInstantiator', [$instantiator])
-        ;
+        $container->getDefinition(Instantiator::class)
+            ->setArguments([[
+                AdapterInterface::class => $this->registerLocator($container, 'adapter'),
+                AbstractColumn::class => $this->registerLocator($container, 'column'),
+                DataTableTypeInterface::class => $this->registerLocator($container, 'type'),
+            ]]);
     }
 
     /**
@@ -60,6 +57,7 @@ class LocatorRegistrationPass implements CompilerPassInterface
         return $container
             ->register("datatables.{$baseTag}_locator", ServiceLocator::class)
             ->addTag('container.service_locator')
+            ->setPrivate(true)
             ->setArguments([$types])
         ;
     }

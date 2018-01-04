@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Omines\DataTablesBundle;
 
 use Omines\DataTablesBundle\DependencyInjection\Instantiator;
-use Omines\DataTablesBundle\Exception\InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request;
 
 class DataTableFactory
@@ -36,17 +35,10 @@ class DataTableFactory
      * @param array $config
      * @param DataTableRendererInterface $renderer
      */
-    public function __construct(array $config, DataTableRendererInterface $renderer)
+    public function __construct(array $config, DataTableRendererInterface $renderer, Instantiator $instantiator)
     {
         $this->config = $config;
         $this->renderer = $renderer;
-    }
-
-    /**
-     * @param Instantiator $instantiator
-     */
-    public function setInstantiator(Instantiator $instantiator)
-    {
         $this->instantiator = $instantiator;
     }
 
@@ -83,29 +75,12 @@ class DataTableFactory
             if (isset($this->resolvedTypes[$name])) {
                 $type = $this->resolvedTypes[$name];
             } else {
-                $this->resolvedTypes[$name] = $type = $this->resolveType($name);
+                $this->resolvedTypes[$name] = $type = $this->instantiator->getType($name);
             }
         }
 
         $type->configure($dataTable, $typeOptions);
 
         return $dataTable;
-    }
-
-    /**
-     * Resolves a dynamic type to an instance via services or instantiation.
-     *
-     * @param string $type
-     * @return DataTableTypeInterface
-     */
-    private function resolveType(string $type): DataTableTypeInterface
-    {
-        if (null !== $this->instantiator && $type = $this->instantiator->getType($type)) {
-            return $type;
-        } elseif (class_exists($type) && in_array(DataTableTypeInterface::class, class_implements($type), true)) {
-            return new $type();
-        }
-
-        throw new InvalidArgumentException(sprintf('Could not resolve type "%s" to a service or class', $type));
     }
 }

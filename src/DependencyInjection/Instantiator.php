@@ -25,27 +25,17 @@ use Symfony\Component\DependencyInjection\ServiceLocator;
  */
 class Instantiator
 {
-    /** @var ServiceLocator */
-    private $adapterLocator;
-
-    /** @var ServiceLocator */
-    private $columnLocator;
-
-    /** @var ServiceLocator */
-    private $typeLocator;
+    /** @var ServiceLocator[] */
+    private $locators;
 
     /**
      * Instantiator constructor.
      *
-     * @param ServiceLocator $adapterLocator
-     * @param ServiceLocator $columnLocator
-     * @param ServiceLocator $typeLocator
+     * @param ServiceLocator[] $locators
      */
-    public function __construct(ServiceLocator $adapterLocator, ServiceLocator $columnLocator, ServiceLocator $typeLocator)
+    public function __construct(array $locators = [])
     {
-        $this->adapterLocator = $adapterLocator;
-        $this->columnLocator = $columnLocator;
-        $this->typeLocator = $typeLocator;
+        $this->locators = $locators;
     }
 
     /**
@@ -54,7 +44,7 @@ class Instantiator
      */
     public function getAdapter(string $type): AdapterInterface
     {
-        return $this->getInstance($this->adapterLocator, $type, AdapterInterface::class);
+        return $this->getInstance($type, AdapterInterface::class);
     }
 
     /**
@@ -63,7 +53,7 @@ class Instantiator
      */
     public function getColumn(string $type): AbstractColumn
     {
-        return $this->getInstance($this->columnLocator, $type, AbstractColumn::class);
+        return $this->getInstance($type, AbstractColumn::class);
     }
 
     /**
@@ -72,19 +62,18 @@ class Instantiator
      */
     public function getType(string $type): DataTableTypeInterface
     {
-        return $this->getInstance($this->typeLocator, $type, DataTableTypeInterface::class);
+        return $this->getInstance($type, DataTableTypeInterface::class);
     }
 
     /**
-     * @param ServiceLocator $locator
      * @param string $type
      * @param string $baseType
      * @return mixed
      */
-    private function getInstance(ServiceLocator $locator, string $type, string $baseType)
+    private function getInstance(string $type, string $baseType)
     {
-        if ($locator->has($type)) {
-            return $locator->get($type);
+        if (isset($this->locators[$baseType]) && $this->locators[$baseType]->has($type)) {
+            return $this->locators[$baseType]->get($type);
         } elseif (class_exists($type) && is_subclass_of($type, $baseType)) {
             return new $type();
         }
