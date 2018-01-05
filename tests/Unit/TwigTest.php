@@ -36,7 +36,7 @@ class TwigTest extends TestCase
 
     /**
      * @expectedException \LogicException
-     * @expectedExceptionMessage You must have TwigBundle installed
+     * @expectedExceptionMessage You must have symfony/twig-bundle installed
      */
     public function testMissingTwigBundleThrows()
     {

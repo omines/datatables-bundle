@@ -12,6 +12,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
  - Moved AbstractColumn initialization from constructor to dedicated function
    to facilitate being instantiated as services.
  - Moved internal DI config to XML so Yaml dependency can be dropped
+ - Dropped direct requirement of twig/twig package
 
 ## [0.1.3] - 2017-12-18
 ### Added

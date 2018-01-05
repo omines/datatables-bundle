@@ -23,8 +23,7 @@
         "php": "^7.0.8",
         "symfony/framework-bundle": "^3.3|^4.0",
         "symfony/property-access": "^3.0|^4.0",
-        "symfony/translation": "^3.2|^4.0",
-        "twig/twig": "^1.32|^2.0"
+        "symfony/translation": "^3.2|^4.0"
     },
     "require-dev": {
         "ext-pdo_sqlite": "*",
@@ -47,7 +46,7 @@
         "doctrine/doctrine-bundle": "For integrated access to Doctrine object managers",
         "doctrine/orm": "For full automated integration with Doctrine entities",
         "ruflin/elastica": "For integration with Elasticsearch indexes",
-        "symfony/twig-bundle": "To use default Twig based rendering"
+        "symfony/twig-bundle": "To use default Twig based rendering and TwigColumn"
     },
     "autoload": {
         "psr-4": { "Omines\\DataTablesBundle\\": "src/"}
