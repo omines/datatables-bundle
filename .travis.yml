@@ -2,6 +2,10 @@ language: php
 
 sudo: false
 
+cache:
+  directories:
+    - $HOME/.composer/cache
+
 php:
   - 7.0
   - 7.1
@@ -29,7 +33,6 @@ matrix:
      - env: DEPENDENCIES=dev
 
 before_install:
-  - composer self-update
   - if [ "$DEPENDENCIES" != "" ]; then composer config minimum-stability ${DEPENDENCIES}; fi;
   - if [ "$SYMFONY_VERSION" != "" ]; then composer require "symfony/symfony:${SYMFONY_VERSION}" --no-update; fi;
 
