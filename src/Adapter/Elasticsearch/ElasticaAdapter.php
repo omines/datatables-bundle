@@ -26,10 +26,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ElasticaAdapter extends AbstractAdapter
 {
     /** @var array */
-    private $clientSettings;
+    private $clientSettings = [];
 
     /** @var array */
-    private $indices;
+    private $indices = [];
 
     /**
      * {@inheritdoc}
