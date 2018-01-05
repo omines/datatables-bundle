@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Tests\Fixtures\AppBundle\Controller;
 
+use Doctrine\ORM\Query;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\DateTimeColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
@@ -21,7 +22,6 @@ use Omines\DataTablesBundle\DataTable;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Tests\Fixtures\AppBundle\Entity\Employee;
-use Tests\Fixtures\AppBundle\Entity\Person;
 
 /**
  * PlainController.
@@ -42,8 +42,8 @@ class PlainController extends Controller
             ->add('lastName', TextColumn::class, ['field' => 'employee.lastName'])
             ->add('employedSince', DateTimeColumn::class, ['format' => 'd-m-Y'])
             ->add('fullName', TextColumn::class, [
-                'data' => function (Person $person) {
-                    return $person->getFirstName() . ' <img src="https://symfony.com/images/v5/logos/sf-positive.svg"> ' . $person->getLastName();
+                'data' => function (array $person) {
+                    return "{$person['firstName']} <img src=\"https://symfony.com/images/v5/logos/sf-positive.svg\"> {$person['lastName']}";
                 },
             ])
             ->add('employer', TextColumn::class, ['field' => 'company.name'])
@@ -55,6 +55,7 @@ class PlainController extends Controller
             ->addOrderBy('firstName', DataTable::SORT_DESCENDING)
             ->createAdapter(ORMAdapter::class, [
                 'entity' => Employee::class,
+                'hydrate' => Query::HYDRATE_ARRAY,
             ])
         ;
 

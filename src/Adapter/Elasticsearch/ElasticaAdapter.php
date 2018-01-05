@@ -15,6 +15,7 @@ namespace Omines\DataTablesBundle\Adapter\Elasticsearch;
 use Omines\DataTablesBundle\Adapter\AbstractAdapter;
 use Omines\DataTablesBundle\Adapter\AdapterQuery;
 use Omines\DataTablesBundle\Column\AbstractColumn;
+use Omines\DataTablesBundle\DataTableState;
 use Omines\DataTablesBundle\Exception\MissingDependencyException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -78,6 +79,27 @@ class ElasticaAdapter extends AbstractAdapter
         $search = new \Elastica\Search($query->get('client'));
         $search->addIndices($this->indices);
 
+        $q = $this->buildQuery($state);
+        if ($state->getLength() > 0) {
+            $q->setFrom($state->getStart())->setSize($state->getLength());
+        }
+        $this->applyOrdering($q, $state);
+
+        $resultSet = $search->search($q);
+        $query->setTotalRows($resultSet->getTotalHits());
+        $query->setFilteredRows($search->count());
+
+        foreach ($resultSet->getResults() as $result) {
+            yield $result->getData();
+        }
+    }
+
+    /**
+     * @param DataTableState $state
+     * @return \Elastica\Query
+     */
+    protected function buildQuery(DataTableState $state): \Elastica\Query
+    {
         $q = new \Elastica\Query();
         if (!empty($globalSearch = $state->getGlobalSearch())) {
             $fields = [];
@@ -86,25 +108,27 @@ class ElasticaAdapter extends AbstractAdapter
                     $fields[] = $column->getField();
                 }
             }
-            $q->setQuery((new \Elastica\Query\MultiMatch())->setQuery($globalSearch)->setFields($fields));
-        }
-        if ($state->getLength() > 0) {
-            $q->setFrom($state->getStart())->setSize($state->getLength());
+            $multimatch = (new \Elastica\Query\MultiMatch())
+                ->setQuery($globalSearch)
+                ->setFields($fields)
+            ;
+            $q->setQuery($multimatch);
         }
 
+        return $q;
+    }
+
+    /**
+     * @param \Elastica\Query $query
+     * @param DataTableState $state
+     */
+    protected function applyOrdering(\Elastica\Query $query, DataTableState $state)
+    {
         foreach ($state->getOrderBy() as list($column, $direction)) {
             /** @var AbstractColumn $column */
             if ($column->isOrderable() && $orderField = $column->getOrderField()) {
-                $q->addSort([$orderField => ['order' => $direction]]);
+                $query->addSort([$orderField => ['order' => $direction]]);
             }
-        }
-
-        $resultSet = $search->search($q);
-        $query->setTotalRows($resultSet->getTotalHits());
-        $query->setFilteredRows($search->count());
-
-        foreach ($resultSet->getResults() as $result) {
-            yield $result->getData();
         }
     }
 

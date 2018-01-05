@@ -9,12 +9,12 @@
 [![SensioLabs Insight](https://img.shields.io/sensiolabs/i/05d79ba2-cba4-4201-a17a-2868c51f9c6c.svg)](https://insight.sensiolabs.com/projects/05d79ba2-cba4-4201-a17a-2868c51f9c6c)
 
 This bundle provides convenient integration of the popular [DataTables](https://datatables.net/) jQuery library
-for realtime Ajax tables in your Symfony 3.3+ or 4.0+ application.
+for realtime Ajax tables in your [Symfony](https://symfony.com/) 3.3+ or 4.0+ application.
 
 Unlike other bundles providing similar functionality we decoupled the implementation of the DataTables logic
 completely from the source of the data. Therefore it is possible to implement your own custom adapters for
-every possible data source. Doctrine ORM comes bundled already, we intend to provide popular choices like
-Elastica, Doctrine DBAL and MongoDB out of the box as well. 
+every possible data source. [Doctrine ORM](https://github.com/doctrine/DoctrineBundle) and [Elastica](https://github.com/ruflin/Elastica) come bundled already, we intend to provide popular
+choices like FOSElasticaBundle, Doctrine DBAL and MongoDB out of the box as well. 
 
 ## Documentation
 
