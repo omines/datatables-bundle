@@ -1,8 +1,8 @@
 {
     "name": "omines/datatables-bundle",
     "type": "symfony-bundle",
-    "description": "Symfony DataTables Bundle",
-    "keywords": ["symfony","jquery","datatable", "datatables", "bundle", "doctrine", "orm"],
+    "description": "Symfony DataTables Bundle with native Elastica and Doctrine ORM support",
+    "keywords": ["symfony","jquery","datatable", "datatables", "bundle", "doctrine", "orm", "elastica"],
     "license": "MIT",
     "authors": [
         {
@@ -24,7 +24,6 @@
         "symfony/framework-bundle": "^3.3|^4.0",
         "symfony/property-access": "^3.0|^4.0",
         "symfony/translation": "^3.2|^4.0",
-        "symfony/yaml": "^3.3|^4.0",
         "twig/twig": "^1.32|^2.0"
     },
     "require-dev": {
@@ -41,7 +40,8 @@
         "symfony/phpunit-bridge": "^3.3|^4.0",
         "symfony/templating": "^3.0|^4.0",
         "symfony/twig-bundle": "^3.3|^4.0",
-        "symfony/var-dumper": "^3.0|^4.0"
+        "symfony/var-dumper": "^3.0|^4.0",
+        "symfony/yaml": "^3.3|^4.0"
     },
     "suggest": {
         "doctrine/doctrine-bundle": "For integrated access to Doctrine object managers",

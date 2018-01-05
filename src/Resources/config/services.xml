@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <defaults autowire="true" autoconfigure="true" public="false" />
+
+        <!-- Adapters -->
+        <service id="Omines\DataTablesBundle\Adapter\ArrayAdapter" />
+        <service id="Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter">
+            <argument type="service" id="doctrine" on-invalid="null" />
+        </service>
+
+        <!-- Columns -->
+        <service id="Omines\DataTablesBundle\Column\TwigColumn">
+            <argument type="service" id="twig" on-invalid="null" />
+        </service>
+
+        <!-- Factory -->
+        <service id="Omines\DataTablesBundle\DataTableFactory" public="true">
+            <argument>%datatables.config%</argument>
+            <argument type="service" id="datatables.renderer" />
+            <argument type="service" id="Omines\DataTablesBundle\DependencyInjection\Instantiator" />
+        </service>
+
+        <!-- Support services -->
+        <service id="Omines\DataTablesBundle\DependencyInjection\Instantiator" />
+        <service id="Omines\DataTablesBundle\Twig\DataTablesExtension" />
+        <service id="Omines\DataTablesBundle\Twig\TwigRenderer">
+            <argument type="service" id="twig" on-invalid="null" />
+        </service>
+    </services>
+</container>

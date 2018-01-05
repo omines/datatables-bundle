@@ -4,12 +4,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
+ - Add ElasticaAdapter for use with ruflin/elastica
  - Add TwigColumn for easily rendering Twig templates into your table cells
  - Column types can now be declared as services and have dependencies injected
  
 ### Changed
  - Moved AbstractColumn initialization from constructor to dedicated function
    to facilitate being instantiated as services.
+ - Moved internal DI config to XML so Yaml dependency can be dropped
 
 ## [0.1.3] - 2017-12-18
 ### Added
