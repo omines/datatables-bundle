@@ -374,6 +374,30 @@ Option | Type | Description
 ------ | ---- | -----------
 format | string | A date format string as accepted by the [`date()`](http://php.net/manual/en/function.date.php) function. Default `'c'`.
 
+## MapColumn
+
+```php?start_inline=1
+$table->add('gender', MapColumn::class, [
+    'default' => 'not provided',
+    'map' => [
+        'f' => 'Female',
+        'm' => 'Male',
+    ],
+]);
+```
+
+Map columns used to transform a discrete collection of values into proper display counterparts. This
+can be useful to convert enumerated fields such as log severity levels, or genders as in the example.
+Fields which are not present in the column's map return the default value, if this is `null` the 
+source value itself is shown unmodified.
+
+The `MapColumn` type extends `TextColumn`, as such inheriting the `raw` property, while adding its own:
+
+Option | Type | Description
+------ | ---- | -----------
+default | string/`null` | Value to be shown for source data not found in the map. Default `null`.
+map | array | Associative array containing available mappings. Mandatory without default.
+
 ## TwigColumn
 
 ```php?start_inline=1

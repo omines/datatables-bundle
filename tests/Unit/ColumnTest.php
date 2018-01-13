@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use Omines\DataTablesBundle\Column\BoolColumn;
+use Omines\DataTablesBundle\Column\MapColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\Column\TwigColumn;
 use Omines\DataTablesBundle\DataTable;
@@ -50,6 +51,23 @@ class ColumnTest extends TestCase
         $this->assertSame('yes', $column->transform(true));
         $this->assertSame('false', $column->transform(false));
         $this->assertStringStartsWith('<em>', $column->transform());
+    }
+
+    public function testMapColumn()
+    {
+        $column = new MapColumn();
+        $column->initialize('test', 1, [
+            'default' => 'foo',
+            'map' => [
+                1 => 'bar',
+                2 => 'baz',
+            ],
+        ], new DataTable());
+
+        $this->assertSame('foo', $column->transform(0));
+        $this->assertSame('bar', $column->transform(1));
+        $this->assertSame('baz', $column->transform(2));
+        $this->assertSame('foo', $column->transform(3));
     }
 
     public function testColumnWithClosures()
