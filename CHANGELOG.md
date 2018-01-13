@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Added
  - Add ElasticaAdapter for use with ruflin/elastica
+ - Add MapColumn for rendering enumerated types from a predefined list of options
  - Add TwigColumn for easily rendering Twig templates into your table cells
  - Column types can now be declared as services and have dependencies injected
  
