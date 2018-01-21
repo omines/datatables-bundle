@@ -6,14 +6,19 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - Add ElasticaAdapter for use with ruflin/elastica
  - Add MapColumn for rendering enumerated types from a predefined list of options
+
+### Changed
+ - Moved internal DI config to XML so Yaml dependency can be dropped
+ - Dropped direct requirement of twig/twig package
+
+## [0.1.4] - 2018-01-21
+### Added
  - Add TwigColumn for easily rendering Twig templates into your table cells
  - Column types can now be declared as services and have dependencies injected
  
 ### Changed
  - Moved AbstractColumn initialization from constructor to dedicated function
    to facilitate being instantiated as services.
- - Moved internal DI config to XML so Yaml dependency can be dropped
- - Dropped direct requirement of twig/twig package
 
 ## [0.1.3] - 2017-12-18
 ### Added
@@ -42,7 +47,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - Basic functionality
 
-[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.1.3...master
+[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.1.4...master
+[0.1.4]: https://github.com/omines/datatables-bundle/compare/0.1.3...0.1.4
 [0.1.3]: https://github.com/omines/datatables-bundle/compare/0.1.2...0.1.3
 [0.1.2]: https://github.com/omines/datatables-bundle/compare/0.1.1...0.1.2
 [0.1.1]: https://github.com/omines/datatables-bundle/compare/0.1.0...0.1.1
