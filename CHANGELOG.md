@@ -3,6 +3,9 @@ All notable changes to `omines\datatables-bundle` will be documented in this fil
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+Nothing yet.
+
+## [0.1.4] - 2018-01-21
 ### Added
  - Add TwigColumn for easily rendering Twig templates into your table cells
  - Column types can now be declared as services and have dependencies injected
@@ -38,7 +41,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - Basic functionality
 
-[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.1.3...master
+[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.1.4...master
+[0.1.4]: https://github.com/omines/datatables-bundle/compare/0.1.3...0.1.4
 [0.1.3]: https://github.com/omines/datatables-bundle/compare/0.1.2...0.1.3
 [0.1.2]: https://github.com/omines/datatables-bundle/compare/0.1.1...0.1.2
 [0.1.1]: https://github.com/omines/datatables-bundle/compare/0.1.0...0.1.1
