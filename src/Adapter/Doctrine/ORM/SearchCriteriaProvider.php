@@ -29,7 +29,16 @@ class SearchCriteriaProvider implements QueryBuilderProcessorInterface
      */
     public function process(QueryBuilder $queryBuilder, DataTableState $state)
     {
-        $expr = $queryBuilder->expr();
+        $this->processSearchColumns($queryBuilder, $state);
+        $this->processGlobalSearch($queryBuilder, $state);
+    }
+
+    /**
+     * @param QueryBuilder $queryBuilder
+     * @param DataTableState $state
+     */
+    private function processSearchColumns(QueryBuilder $queryBuilder, DataTableState $state)
+    {
         foreach ($state->getSearchColumns() as $searchInfo) {
             /** @var AbstractColumn $column */
             $column = $searchInfo['column'];
@@ -39,8 +48,16 @@ class SearchCriteriaProvider implements QueryBuilderProcessorInterface
                 $queryBuilder->andWhere(new Comparison($column->getField(), $filter->getOperator(), $search));
             }
         }
+    }
 
+    /**
+     * @param QueryBuilder $queryBuilder
+     * @param DataTableState $state
+     */
+    private function processGlobalSearch(QueryBuilder $queryBuilder, DataTableState $state)
+    {
         if (!empty($globalSearch = $state->getGlobalSearch())) {
+            $expr = $queryBuilder->expr();
             $comparisons = $expr->orX();
             foreach ($state->getDataTable()->getColumns() as $column) {
                 if ($column->isGlobalSearchable() && !empty($field = $column->getField())) {

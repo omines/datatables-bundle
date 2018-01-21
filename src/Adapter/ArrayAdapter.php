@@ -73,7 +73,7 @@ class ArrayAdapter implements AdapterInterface
         $search = $state->getGlobalSearch() ?: '';
         foreach ($data as $result) {
             if ($row = $this->processRow($state, $result, $map, $search)) {
-                if ($transformer) {
+                if (null !== $transformer) {
                     $row = call_user_func($transformer, $row, $result);
                 }
                 yield $row;
