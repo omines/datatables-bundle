@@ -2,7 +2,11 @@
 All notable changes to `omines\datatables-bundle` will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [0.1.5] - 2018-01-25
+### Fixed
+ - Fixed inconsistency in DateTimeColumn with default/null values
+
+## [0.1.4] - 2018-01-21
 ### Added
  - Add ElasticaAdapter for use with ruflin/elastica
  - Add MapColumn for rendering enumerated types from a predefined list of options

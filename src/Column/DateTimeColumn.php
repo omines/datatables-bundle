@@ -27,7 +27,7 @@ class DateTimeColumn extends AbstractColumn
     public function normalize($value)
     {
         if (null === $value) {
-            return $this->getData();
+            return $this->options['nullValue'];
         } elseif (!$value instanceof \DateTimeInterface) {
             $value = new \DateTime($value);
         }
@@ -45,8 +45,10 @@ class DateTimeColumn extends AbstractColumn
         $resolver
             ->setDefaults([
                 'format' => 'c',
+                'nullValue' => '',
             ])
             ->setAllowedTypes('format', 'string')
+            ->setAllowedTypes('nullValue', 'string')
         ;
 
         return $this;
