@@ -2,11 +2,7 @@
 All notable changes to `omines\datatables-bundle` will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [0.1.5] - 2018-01-25
-### Fixed
- - Fixed inconsistency in DateTimeColumn with default/null values
-
-## [0.1.4] - 2018-01-21
+## [Unreleased]
 ### Added
  - Add ElasticaAdapter for use with ruflin/elastica
  - Add MapColumn for rendering enumerated types from a predefined list of options
@@ -14,6 +10,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
  - Moved internal DI config to XML so Yaml dependency can be dropped
  - Dropped direct requirement of twig/twig package
+
+## [0.1.5] - 2018-01-25
+### Fixed
+ - Fixed inconsistency in DateTimeColumn with default/null values
 
 ## [0.1.4] - 2018-01-21
 ### Added
@@ -51,7 +51,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - Basic functionality
 
-[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.1.4...master
+[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.1.5...master
+[0.1.5]: https://github.com/omines/datatables-bundle/compare/0.1.4...0.1.5
 [0.1.4]: https://github.com/omines/datatables-bundle/compare/0.1.3...0.1.4
 [0.1.3]: https://github.com/omines/datatables-bundle/compare/0.1.2...0.1.3
 [0.1.2]: https://github.com/omines/datatables-bundle/compare/0.1.1...0.1.2
