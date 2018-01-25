@@ -373,6 +373,7 @@ result. If data of other types is encountered automatic conversion is attempted 
 Option | Type | Description
 ------ | ---- | -----------
 format | string | A date format string as accepted by the [`date()`](http://php.net/manual/en/function.date.php) function. Default `'c'`.
+nullValue | string | Raw string to display for null values. Defaults to the empty string.
 
 ## TwigColumn
 

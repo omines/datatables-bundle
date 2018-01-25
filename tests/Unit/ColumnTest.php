@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use Omines\DataTablesBundle\Column\BoolColumn;
+use Omines\DataTablesBundle\Column\DateTimeColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\Column\TwigColumn;
 use Omines\DataTablesBundle\DataTable;
@@ -25,6 +26,18 @@ use PHPUnit\Framework\TestCase;
  */
 class ColumnTest extends TestCase
 {
+    public function testDateTimeColumn()
+    {
+        $column = new DateTimeColumn();
+        $column->initialize('test', 1, [
+            'nullValue' => 'foo',
+            'format' => 'd-m-Y',
+        ], (new DataTable())->setName('foo'));
+
+        $this->assertSame('03-04-2015', $column->transform('2015-04-03'));
+        $this->assertSame('foo', $column->transform(null));
+    }
+
     public function testTextColumn()
     {
         $column = new TextColumn();
