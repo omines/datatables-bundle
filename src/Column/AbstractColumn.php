@@ -67,7 +67,7 @@ abstract class AbstractColumn
      */
     public function transform($value = null, $context = null)
     {
-        $data = $this->options['data'];
+        $data = $this->getData();
         if (is_callable($data)) {
             $value = call_user_func($data, $context, $value);
         } elseif (null === $value) {
