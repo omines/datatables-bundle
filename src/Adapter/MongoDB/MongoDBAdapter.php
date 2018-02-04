@@ -27,6 +27,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class MongoDBAdapter extends AbstractAdapter
 {
+    const SORT_MAP = [
+        'asc' => 1,
+        'desc' => -1,
+    ];
+
     /** @var Collection */
     private $collection;
 
@@ -52,6 +57,8 @@ class MongoDBAdapter extends AbstractAdapter
                 $column->setOption('field', $column->getName());
             }
         }
+
+        $query->setTotalRows($this->collection->count());
     }
 
     /**
@@ -67,11 +74,24 @@ class MongoDBAdapter extends AbstractAdapter
      */
     protected function getResults(AdapterQuery $query): \Traversable
     {
-        $filter = [];
+        $state = $query->getState();
 
-        $query->setTotalRows($this->collection->count());
+        $filter = [];
+        $options = [
+            'limit' => $state->getLength(),
+            'skip' => $state->getStart(),
+            'sort' => [],
+        ];
+
+        foreach ($state->getOrderBy() as list($column, $direction)) {
+            /** @var AbstractColumn $column */
+            if ($column->isOrderable() && $orderField = $column->getOrderField()) {
+                $options['sort'][$orderField] = self::SORT_MAP[$direction];
+            }
+        }
+
         $query->setFilteredRows($this->collection->count($filter));
-        $cursor = $this->collection->find($filter);
+        $cursor = $this->collection->find($filter, $options);
         $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
 
         /** @var BSONDocument $result */
