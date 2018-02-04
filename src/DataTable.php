@@ -140,7 +140,7 @@ class DataTable
     /**
      * @param int|string|AbstractColumn $column
      * @param string $direction
-     * @return self
+     * @return $this
      */
     public function addOrderBy($column, string $direction = self::SORT_ASCENDING)
     {
@@ -154,7 +154,7 @@ class DataTable
 
     /**
      * @param string $adapter
-     * @return DataTable
+     * @return $this
      */
     public function createAdapter(string $adapter, array $options = []): self
     {
@@ -380,7 +380,7 @@ class DataTable
 
     /**
      * @param bool $languageFromCDN
-     * @return self
+     * @return $this
      */
     public function setLanguageFromCDN(bool $languageFromCDN): self
     {
@@ -391,7 +391,7 @@ class DataTable
 
     /**
      * @param string $method
-     * @return self
+     * @return $this
      */
     public function setMethod(string $method): self
     {
@@ -402,7 +402,7 @@ class DataTable
 
     /**
      * @param string $persistState
-     * @return self
+     * @return $this
      */
     public function setPersistState(string $persistState): self
     {
@@ -413,7 +413,7 @@ class DataTable
 
     /**
      * @param DataTableRendererInterface $renderer
-     * @return self
+     * @return $this
      */
     public function setRenderer(DataTableRendererInterface $renderer): self
     {
@@ -424,7 +424,7 @@ class DataTable
 
     /**
      * @param string $name
-     * @return self
+     * @return $this
      */
     public function setName(string $name): self
     {
@@ -438,7 +438,7 @@ class DataTable
 
     /**
      * @param string $template
-     * @return self
+     * @return $this
      */
     public function setTemplate(string $template, array $parameters = []): self
     {
@@ -450,7 +450,7 @@ class DataTable
 
     /**
      * @param string $translationDomain
-     * @return self
+     * @return $this
      */
     public function setTranslationDomain(string $translationDomain): self
     {

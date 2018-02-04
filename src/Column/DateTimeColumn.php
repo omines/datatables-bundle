@@ -29,7 +29,7 @@ class DateTimeColumn extends AbstractColumn
         if (null === $value) {
             return $this->options['nullValue'];
         } elseif (!$value instanceof \DateTimeInterface) {
-            $value = new \DateTime($value);
+            $value = new \DateTime((string) $value);
         }
 
         return $value->format($this->options['format']);

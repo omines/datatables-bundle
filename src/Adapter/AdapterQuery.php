@@ -65,7 +65,7 @@ class AdapterQuery
 
     /**
      * @param int|null $totalRows
-     * @return self
+     * @return $this
      */
     public function setTotalRows($totalRows): self
     {
@@ -84,7 +84,7 @@ class AdapterQuery
 
     /**
      * @param int|null $filteredRows
-     * @return self
+     * @return $this
      */
     public function setFilteredRows($filteredRows): self
     {
@@ -103,7 +103,7 @@ class AdapterQuery
 
     /**
      * @param null|string $identifierPropertyPath
-     * @return self
+     * @return $this
      */
     public function setIdentifierPropertyPath($identifierPropertyPath): self
     {

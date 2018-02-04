@@ -1,8 +1,8 @@
 {
     "name": "omines/datatables-bundle",
     "type": "symfony-bundle",
-    "description": "Symfony DataTables Bundle with native Elastica and Doctrine ORM support",
-    "keywords": ["symfony","jquery","datatable", "datatables", "bundle", "doctrine", "orm", "elastica"],
+    "description": "Symfony DataTables Bundle with native Doctrine ORM, Elastica and MongoDB support",
+    "keywords": ["symfony","jquery","datatable", "datatables", "bundle", "doctrine", "orm", "elastica", "mongodb"],
     "license": "MIT",
     "authors": [
         {
@@ -45,6 +45,7 @@
     "suggest": {
         "doctrine/doctrine-bundle": "For integrated access to Doctrine object managers",
         "doctrine/orm": "For full automated integration with Doctrine entities",
+        "mongodb/mongodb": "For integration with MongoDB collections",
         "ruflin/elastica": "For integration with Elasticsearch indexes",
         "symfony/twig-bundle": "To use default Twig based rendering and TwigColumn"
     },

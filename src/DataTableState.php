@@ -239,7 +239,7 @@ class DataTableState
 
     /**
      * @param array $orderBy
-     * @return self
+     * @return $this
      */
     public function setOrderBy(array $orderBy = []): self
     {
@@ -261,7 +261,7 @@ class DataTableState
      * @param AbstractColumn $column
      * @param string $search
      * @param bool $isRegex
-     * @return self
+     * @return $this
      */
     public function setColumnSearch(AbstractColumn $column, string $search, bool $isRegex = false): self
     {

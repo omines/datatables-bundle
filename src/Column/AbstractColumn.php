@@ -256,7 +256,7 @@ abstract class AbstractColumn
     /**
      * @param string $name
      * @param mixed $value
-     * @return self
+     * @return $this
      */
     public function setOption(string $name, $value): self
     {

@@ -84,7 +84,7 @@ class Company
 
     /**
      * @param string $name
-     * @return self
+     * @return $this
      */
     public function setName(string $name)
     {
