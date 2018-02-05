@@ -18,6 +18,8 @@ use MongoDB\Model\BSONDocument;
 use Omines\DataTablesBundle\Adapter\AbstractAdapter;
 use Omines\DataTablesBundle\Adapter\AdapterQuery;
 use Omines\DataTablesBundle\Column\AbstractColumn;
+use Omines\DataTablesBundle\DataTable;
+use Omines\DataTablesBundle\DataTableState;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -28,12 +30,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class MongoDBAdapter extends AbstractAdapter
 {
     const SORT_MAP = [
-        'asc' => 1,
-        'desc' => -1,
+        DataTable::SORT_ASCENDING => 1,
+        DataTable::SORT_DESCENDING => -1,
     ];
 
     /** @var Collection */
     private $collection;
+
     /** @var array */
     private $filters;
 
@@ -79,28 +82,8 @@ class MongoDBAdapter extends AbstractAdapter
     {
         $state = $query->getState();
 
-        $filter = $this->filters;
-        $options = [
-            'limit' => $state->getLength(),
-            'skip' => $state->getStart(),
-            'sort' => [],
-        ];
-
-        if (!empty($globalSearch = $state->getGlobalSearch())) {
-            foreach ($state->getDataTable()->getColumns() as $column) {
-                if ($column->isGlobalSearchable()) {
-                    $filter[] = [$column->getField() => new \MongoDB\BSON\Regex($globalSearch, 'i')];
-                }
-            }
-            $filter = ['$or' => $filter];
-        }
-
-        foreach ($state->getOrderBy() as list($column, $direction)) {
-            /** @var AbstractColumn $column */
-            if ($column->isOrderable() && $orderField = $column->getOrderField()) {
-                $options['sort'][$orderField] = self::SORT_MAP[$direction];
-            }
-        }
+        $filter = $this->buildFilter($state);
+        $options = $this->buildOptions($state);
 
         $query->setFilteredRows($this->collection->count($filter));
         $cursor = $this->collection->find($filter, $options);
@@ -116,6 +99,47 @@ class MongoDBAdapter extends AbstractAdapter
 
             yield $result;
         }
+    }
+
+    /**
+     * @param DataTableState $state
+     * @return array
+     */
+    private function buildFilter(DataTableState $state): array
+    {
+        $filter = $this->filters;
+        if (!empty($globalSearch = $state->getGlobalSearch())) {
+            foreach ($state->getDataTable()->getColumns() as $column) {
+                if ($column->isGlobalSearchable()) {
+                    $filter[] = [$column->getField() => new \MongoDB\BSON\Regex($globalSearch, 'i')];
+                }
+            }
+            $filter = ['$or' => $filter];
+        }
+
+        return $filter;
+    }
+
+    /**
+     * @param DataTableState $state
+     * @return array
+     */
+    private function buildOptions(DataTableState $state): array
+    {
+        $options = [
+            'limit' => $state->getLength(),
+            'skip' => $state->getStart(),
+            'sort' => [],
+        ];
+
+        foreach ($state->getOrderBy() as list($column, $direction)) {
+            /** @var AbstractColumn $column */
+            if ($column->isOrderable() && $orderField = $column->getOrderField()) {
+                $options['sort'][$orderField] = self::SORT_MAP[$direction];
+            }
+        }
+
+        return $options;
     }
 
     /**
