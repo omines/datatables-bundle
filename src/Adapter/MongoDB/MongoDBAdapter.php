@@ -83,6 +83,15 @@ class MongoDBAdapter extends AbstractAdapter
             'sort' => [],
         ];
 
+        if (!empty($globalSearch = $state->getGlobalSearch())) {
+            foreach ($state->getDataTable()->getColumns() as $column) {
+                if ($column->isGlobalSearchable()) {
+                    $filter[] = [$column->getField() => new \MongoDB\BSON\Regex($globalSearch, 'i')];
+                }
+            }
+            $filter = ['$or' => $filter];
+        }
+
         foreach ($state->getOrderBy() as list($column, $direction)) {
             /** @var AbstractColumn $column */
             if ($column->isOrderable() && $orderField = $column->getOrderField()) {
