@@ -34,6 +34,8 @@ class MongoDBAdapter extends AbstractAdapter
 
     /** @var Collection */
     private $collection;
+    /** @var array */
+    private $filters;
 
     /**
      * {@inheritdoc}
@@ -45,6 +47,7 @@ class MongoDBAdapter extends AbstractAdapter
         $options = $resolver->resolve($options);
 
         $this->collection = $options['collection'];
+        $this->filters = $options['filters'];
     }
 
     /**
@@ -76,7 +79,7 @@ class MongoDBAdapter extends AbstractAdapter
     {
         $state = $query->getState();
 
-        $filter = [];
+        $filter = $this->filters;
         $options = [
             'limit' => $state->getLength(),
             'skip' => $state->getStart(),
@@ -122,9 +125,11 @@ class MongoDBAdapter extends AbstractAdapter
     {
         $resolver
             ->setDefaults([
+                'filters' => [],
             ])
             ->setRequired(['collection'])
             ->setAllowedTypes('collection', \MongoDB\Collection::class)
+            ->setAllowedTypes('filters', 'array')
         ;
     }
 }
