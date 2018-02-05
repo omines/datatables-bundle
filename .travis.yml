@@ -11,6 +11,9 @@ php:
   - 7.1
   - 7.2
 
+services:
+  - mongodb
+
 matrix:
     fast_finish: true
     include:
@@ -37,7 +40,9 @@ before_install:
   - if [ "$SYMFONY_VERSION" != "" ]; then composer require "symfony/symfony:${SYMFONY_VERSION}" --no-update; fi;
 
 before_script:
-  - composer update --no-interaction --ignore-platform-reqs --no-progress $COMPOSER_FLAGS
+  - set -eo pipefail
+  - pecl install -f mongodb-stable
+  - composer update --no-interaction --no-progress $COMPOSER_FLAGS
 
 script:
   - ./vendor/bin/phpunit -v --coverage-text --coverage-clover=coverage.clover
