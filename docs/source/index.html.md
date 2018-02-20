@@ -65,9 +65,9 @@ The code snippets here should get you started quickly, including jQuery 3. For m
 # Quickstart
 
 ```php?start_inline=true
-use Omines\DataTablesBundle\DataTablesTrait;
 use Omines\DataTablesBundle\Adapter\ArrayAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
+use Omines\DataTablesBundle\Controller\DataTablesTrait;
 
 class MyController extends Controller
 {
