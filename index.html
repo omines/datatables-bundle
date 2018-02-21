@@ -244,6 +244,12 @@
                     <a href="#doctrine-orm" class="toc-h2 toc-link" data-title="Doctrine ORM">Doctrine ORM</a>
                   </li>
                   <li>
+                    <a href="#elastica" class="toc-h2 toc-link" data-title="Elastica">Elastica</a>
+                  </li>
+                  <li>
+                    <a href="#mongodb" class="toc-h2 toc-link" data-title="MongoDB">MongoDB</a>
+                  </li>
+                  <li>
                     <a href="#arrays" class="toc-h2 toc-link" data-title="Arrays">Arrays</a>
                   </li>
                   <li>
@@ -318,14 +324,14 @@ repository, providing automatic installation and configuration.</p>
     <span class="c1">// Before your application bundles
 </span><span class="p">}</span>
 </code></pre>
-<p>After installation you should register the bundle to your kernel, commonly <code>AppKernel.php</code>, before your
-own bundles but after the required external bundles, such as <code>FrameworkBundle</code> and <code>TwigBundle</code>.</p>
+<p>After installation, if not using Flex, you should register the bundle to your kernel, commonly <code>AppKernel.php</code>,
+before your own bundles but after the required external bundles, such as <code>FrameworkBundle</code> and <code>TwigBundle</code>.</p>
 
 <p>Run the <code>assets:install</code> command to deploy the included Javascript files to your application&#39;s public folder.</p>
 
 <p><code>bin/console assets:install</code></p>
 
-<p>That last step is actually optional, as you can also load it through Assetic or WebPack, but a good starting point.</p>
+<p>That last step is optional, as you can also load it through Assetic or WebPack, but a good starting point.</p>
 <h2 id='clientside-dependencies'>Clientside dependencies</h2><pre class="highlight html tab-html"><code><span class="c">&lt;!-- in the &lt;head&gt; section --&gt;</span>
 <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">type=</span><span class="s">"text/css"</span> <span class="na">href=</span><span class="s">"https://cdn.datatables.net/v/dt/jq-3.2.1/dt-1.10.16/datatables.min.css"</span><span class="nt">/&gt;</span>
 
@@ -422,10 +428,10 @@ string with the configured settings required for initialization.</p>
     <span class="na">template_parameters</span><span class="pi">:</span>
 
         <span class="c1"># Default class attribute to apply to the root table elements</span>
-        <span class="na">className</span><span class="pi">:</span>            <span class="s1">'</span><span class="s">table</span><span class="nv"> </span><span class="s">table-bordered'</span>
+        <span class="na">className</span><span class="pi">:</span>        <span class="s1">'</span><span class="s">table</span><span class="nv"> </span><span class="s">table-bordered'</span>
 
         <span class="c1"># If and where to enable the DataTables Filter module</span>
-        <span class="na">columnFilter</span><span class="pi">:</span>         <span class="s">null</span> <span class="c1"># One of "thead"; "tfoot"; "both"; null</span>
+        <span class="na">columnFilter</span><span class="pi">:</span>     <span class="s">null</span> <span class="c1"># One of "thead"; "tfoot"; "both"; null</span>
 
     <span class="c1"># Default translation domain to be used</span>
     <span class="na">translation_domain</span><span class="pi">:</span>   <span class="s">messages</span>
@@ -564,6 +570,34 @@ in this example.</p>
 <p>Note that implementing your own criteria overrides the default, meaning searching and sorting will no
 longer work automatically. Add the <code>SearchCriteriaProvider</code> manually to combine the default behavior
 with your own implementation.</p>
+<h2 id='elastica'>Elastica</h2><pre class="highlight php"><code><span class="k">use</span> <span class="nx">Omines\DataTablesBundle\Adapter\Elasticsearch\ElasticaAdapter</span><span class="p">;</span>
+
+<span class="nv">$table</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">createDataTable</span><span class="p">()</span>
+    <span class="o">-&gt;</span><span class="na">setName</span><span class="p">(</span><span class="s1">'log'</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">'timestamp'</span><span class="p">,</span> <span class="nx">DateTimeColumn</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span><span class="s1">'field'</span> <span class="o">=&gt;</span> <span class="s1">'@timestamp'</span><span class="p">,</span> <span class="s1">'format'</span> <span class="o">=&gt;</span> <span class="s1">'Y-m-d H:i:s'</span><span class="p">,</span> <span class="s1">'orderable'</span> <span class="o">=&gt;</span> <span class="kc">true</span><span class="p">])</span>
+    <span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">'level'</span><span class="p">,</span> <span class="nx">MapColumn</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span>
+        <span class="s1">'default'</span> <span class="o">=&gt;</span> <span class="s1">'&lt;span class="label label-default"&gt;Unknown&lt;/span&gt;'</span><span class="p">,</span>
+        <span class="s1">'map'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'Emergency'</span><span class="p">,</span> <span class="s1">'Alert'</span><span class="p">,</span> <span class="s1">'Critical'</span><span class="p">,</span> <span class="s1">'Error'</span><span class="p">,</span> <span class="s1">'Warning'</span><span class="p">,</span> <span class="s1">'Notice'</span><span class="p">,</span> <span class="s1">'Info'</span><span class="p">,</span> <span class="s1">'Debug'</span><span class="p">],</span>
+    <span class="p">])</span>
+    <span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">'message'</span><span class="p">,</span> <span class="nx">TextColumn</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span><span class="s1">'globalSearchable'</span> <span class="o">=&gt;</span> <span class="kc">true</span><span class="p">])</span>
+    <span class="o">-&gt;</span><span class="na">createAdapter</span><span class="p">(</span><span class="nx">ElasticaAdapter</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span>
+        <span class="s1">'client'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'host'</span> <span class="o">=&gt;</span> <span class="s1">'elasticsearch'</span><span class="p">],</span>
+        <span class="s1">'index'</span> <span class="o">=&gt;</span> <span class="s1">'logstash-*'</span><span class="p">,</span>
+    <span class="p">]);</span>
+</code></pre>
+<p>If you have installed <code>ruflin/elastica</code> you can use the provided <code>ElasticaAdapter</code> to use ElasticSearch
+indexes as the data source.</p>
+<h2 id='mongodb'>MongoDB</h2><pre class="highlight php"><code><span class="k">use</span> <span class="nx">Omines\DataTablesBundle\Adapter\MongoDB\MongoDBAdapter</span><span class="p">;</span>
+
+<span class="nv">$table</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">createDataTable</span><span class="p">()</span>
+    <span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">'name'</span><span class="p">,</span> <span class="nx">TextColumn</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">'company'</span><span class="p">,</span> <span class="nx">TextColumn</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">createAdapter</span><span class="p">(</span><span class="nx">MongoDBAdapter</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span>
+        <span class="s1">'collection'</span> <span class="o">=&gt;</span> <span class="s1">'myCollection'</span><span class="p">,</span>
+    <span class="p">]);</span>
+</code></pre>
+<p>If you have installed <code>mongodb/mongodb</code> you can use the provided <code>MongoDBAdapter</code> to use MongoDB
+collections as the data source.</p>
 <h2 id='arrays'>Arrays</h2>
 <p>TBD.</p>
 <h2 id='implementing-custom-adapters'>Implementing custom adapters</h2>
