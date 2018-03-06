@@ -483,7 +483,30 @@ argument which is passed to the type class for parametrized instantiation.
 
 # Javascript
 
-TBD.
+```javascript
+$('#table1').initDataTables({{ datatable_settings(datatable1) }}, {
+    searching: true,
+    dom:'<"html5buttons"B>lTfgitp',
+    buttons: [
+        'copy',
+        { extend: 'pdf', title: 'domains'},
+        { extend: 'print' }
+    ]
+}).then(function(dt) {
+    // dt contains the initialized instance of DataTables
+    dt.on('draw', function() {
+        alert('Redrawing table');
+    })
+});
+```
+During the quickstart we introduced the `initDataTables` Javascript function, taking the serverside
+settings as its argument. The function takes an optional second argument, which is merged into the
+serverside settings to override any template-specific changes, but as this is executed in the browser
+it also means this is where you can add Javascript events according to DataTables documentation.
+
+The function returns a [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
+which is fulfilled with the `DataTables` instance once initialization is completed. This allows you
+all the flexibility you could need to [invoke API functions](https://datatables.net/reference/api/).
 
 # Legal
 
