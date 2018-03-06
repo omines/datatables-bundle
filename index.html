@@ -834,8 +834,29 @@ dynamically. When using Symfony&#39;s autoconfiguration the tag will be applied 
 <p>Of course you can modify the base type to fit the controller&#39;s specific needs before calling 
 <code>handleRequest</code>. Secondly, the <code>createDataTableFromType</code> function accepts an array as a second
 argument which is passed to the type class for parametrized instantiation.</p>
-<h1 id='javascript'>Javascript</h1>
-<p>TBD.</p>
+<h1 id='javascript'>Javascript</h1><pre class="highlight javascript tab-javascript"><code><span class="nx">$</span><span class="p">(</span><span class="s1">'#table1'</span><span class="p">).</span><span class="nx">initDataTables</span><span class="p">({{</span> <span class="nx">datatable_settings</span><span class="p">(</span><span class="nx">datatable1</span><span class="p">)</span> <span class="p">}},</span> <span class="p">{</span>
+    <span class="na">searching</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="na">dom</span><span class="p">:</span><span class="s1">'&lt;"html5buttons"B&gt;lTfgitp'</span><span class="p">,</span>
+    <span class="na">buttons</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s1">'copy'</span><span class="p">,</span>
+        <span class="p">{</span> <span class="na">extend</span><span class="p">:</span> <span class="s1">'pdf'</span><span class="p">,</span> <span class="na">title</span><span class="p">:</span> <span class="s1">'domains'</span><span class="p">},</span>
+        <span class="p">{</span> <span class="na">extend</span><span class="p">:</span> <span class="s1">'print'</span> <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">dt</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// dt contains the initialized instance of DataTables</span>
+    <span class="nx">dt</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'draw'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">alert</span><span class="p">(</span><span class="s1">'Redrawing table'</span><span class="p">);</span>
+    <span class="p">})</span>
+<span class="p">});</span>
+</code></pre>
+<p>During the quickstart we introduced the <code>initDataTables</code> Javascript function, taking the serverside
+settings as its argument. The function takes an optional second argument, which is merged into the
+serverside settings to override any template-specific changes, but as this is executed in the browser
+it also means this is where you can add Javascript events according to DataTables documentation.</p>
+
+<p>The function returns a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise"><code>Promise</code></a>
+which is fulfilled with the <code>DataTables</code> instance once initialization is completed. This allows you
+all the flexibility you could need to <a href="https://datatables.net/reference/api/">invoke API functions</a>.cd</p>
 <h1 id='legal'>Legal</h1>
 <p>This software was developed for internal use at <a href="https://www.omines.nl/">Omines Full Service Internetbureau</a>
 in Eindhoven, the Netherlands. It is shared with the general public under the permissive MIT license, without
