@@ -47,7 +47,7 @@ abstract class AbstractFilter
         $resolver->setDefaults([
             'template_html' => null,
             'template_js' => null,
-            'operator' => 'CONTAINS',
+            'operator' => '=',
         ]);
 
         return $this;

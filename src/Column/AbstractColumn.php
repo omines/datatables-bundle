@@ -133,7 +133,7 @@ abstract class AbstractColumn
             ->setAllowedTypes('orderField', ['null', 'string'])
             ->setAllowedTypes('searchable', ['null', 'boolean'])
             ->setAllowedTypes('globalSearchable', ['null', 'boolean'])
-            ->setAllowedTypes('filter', ['null', 'array'])
+            ->setAllowedTypes('filter', ['null', AbstractFilter::class])
             ->setAllowedTypes('className', ['null', 'string'])
             ->setAllowedTypes('render', ['null', 'string', 'callable'])
         ;

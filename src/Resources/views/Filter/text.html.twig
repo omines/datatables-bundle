@@ -1,5 +1,5 @@
 <label>
-    <input id="{{ datatable.setting('name') }}-column-{{ column.index }}"
+    <input id="{{ datatable.name }}-column-{{ column.index }}"
            data-search-column-index="{{ column.index }}"
             {% if column.filter.placeholder != null %}
                 placeholder="{{ column.filter.placeholder|trans }}"
