@@ -499,6 +499,7 @@ $('#table1').initDataTables({{ datatable_settings(datatable1) }}, {
     })
 });
 ```
+
 During the quickstart we introduced the `initDataTables` Javascript function, taking the serverside
 settings as its argument. The function takes an optional second argument, which is merged into the
 serverside settings to override any template-specific changes, but as this is executed in the browser
@@ -507,6 +508,44 @@ it also means this is where you can add Javascript events according to DataTable
 The function returns a [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
 which is fulfilled with the `DataTables` instance once initialization is completed. This allows you
 all the flexibility you could need to [invoke API functions](https://datatables.net/reference/api/).
+
+# Client side table
+There is the possiblity to use the table by client, without involve the server with ajax calls, here an example to usage.
+
+```php?start_inline=true
+use Omines\DataTablesBundle\Adapter\ArrayAdapter;
+use Omines\DataTablesBundle\Column\TextColumn;
+use Omines\DataTablesBundle\Controller\DataTablesTrait;
+
+class MyController extends Controller
+{
+    use DataTablesTrait;
+
+    public function showAction(Request $request)
+    {
+        $table = $this->createDataTable()
+            ->add('firstName', TextColumn::class)
+            ->add('lastName', TextColumn::class)
+            ->createAdapter(ArrayAdapter::class, [
+                ['firstName' => 'Donald', 'lastName' => 'Trump'],
+                ['firstName' => 'Barack', 'lastName' => 'Obama'],
+            ])
+            ->isClientSideTable(true)
+        ;
+
+        $this->render('list.html.twig', ['datatable' => $table]);
+    }
+}
+```
+
+```html
+    <div id="my_table">
+        {{ datatable_template(datatable) }}
+    </div>
+   <script>
+       $('#my_table table').DataTable({{ datatable_config(datatable) }});
+   </script>
+```
 
 # Legal
 
