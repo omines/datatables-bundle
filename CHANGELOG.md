@@ -3,6 +3,9 @@ All notable changes to `omines\datatables-bundle` will be documented in this fil
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+Nothing yet.
+
+## [0.2.0] - 2018-05-23
 ### Added
  - Add ElasticaAdapter for use with ruflin/elastica
  - Add MapColumn for rendering enumerated types from a predefined list of options
@@ -52,6 +55,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
  - Basic functionality
 
 [Unreleased]: https://github.com/omines/datatables-bundle/compare/0.1.5...master
+[0.2.0]: https://github.com/omines/datatables-bundle/compare/0.1.5...0.2.0
 [0.1.5]: https://github.com/omines/datatables-bundle/compare/0.1.4...0.1.5
 [0.1.4]: https://github.com/omines/datatables-bundle/compare/0.1.3...0.1.4
 [0.1.3]: https://github.com/omines/datatables-bundle/compare/0.1.2...0.1.3
