@@ -49,6 +49,7 @@ class DataTable
         'dom' => 'lftrip',
         'orderCellsTop' => true,
         'stateSave' => false,
+        'fixedHeader' => false,
     ];
 
     const DEFAULT_TEMPLATE = '@DataTables/datatable_html.html.twig';
