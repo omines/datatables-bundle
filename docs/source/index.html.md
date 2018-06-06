@@ -88,7 +88,7 @@ class MyController extends Controller
             return $table->getResponse();
         }
         
-        $this->render('list.html.twig', ['datatable' => $table]);
+        return $this->render('list.html.twig', ['datatable' => $table]);
     }
 }
 ```
