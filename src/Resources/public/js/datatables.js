@@ -88,10 +88,10 @@
                             var diff = data.filter(el => { return baseState.indexOf(el) === -1 && el.indexOf('time=') !== 0; });
                             switch (config.state) {
                                 case 'fragment':
-                                    history.replaceState(null, null, '#' + decodeURIComponent(diff.join('&')));
+                                    history.replaceState(null, null, config.url + '#' + decodeURIComponent(diff.join('&')));
                                     break;
                                 case 'query':
-                                    history.replaceState(null, null, '?' + decodeURIComponent(diff.join('&')));
+                                    history.replaceState(null, null, config.url + '?' + decodeURIComponent(diff.join('&')));
                                     break;
                             }
                         }
