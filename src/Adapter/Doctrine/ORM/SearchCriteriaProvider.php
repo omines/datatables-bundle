@@ -12,10 +12,13 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle\Adapter\Doctrine\ORM;
 
-use Doctrine\ORM\Query\Expr\Comparison;
 use Doctrine\ORM\QueryBuilder;
-use Omines\DataTablesBundle\Column\AbstractColumn;
+use Doctrine\ORM\Query\Expr\Comparison;
 use Omines\DataTablesBundle\DataTableState;
+use Omines\DataTablesBundle\Column\BoolColumn;
+use Omines\DataTablesBundle\Column\TextColumn;
+use Omines\DataTablesBundle\Column\NumberColumn;
+use Omines\DataTablesBundle\Column\AbstractColumn;
 
 /**
  * SearchCriteriaProvider.
@@ -56,12 +59,29 @@ class SearchCriteriaProvider implements QueryBuilderProcessorInterface
      */
     private function processGlobalSearch(QueryBuilder $queryBuilder, DataTableState $state)
     {
-        if (!empty($globalSearch = $state->getGlobalSearch())) {
+        if (!empty($globalSearchOrig = $state->getGlobalSearch())) {
             $expr = $queryBuilder->expr();
             $comparisons = $expr->orX();
             foreach ($state->getDataTable()->getColumns() as $column) {
                 if ($column->isGlobalSearchable() && !empty($field = $column->getField())) {
-                    $comparisons->add($expr->like($field, $expr->literal("%{$globalSearch}%")));
+                    $globalSearch = strtolower($globalSearchOrig);
+                    // dont include in global search
+                    if (($column instanceof NumberColumn) && !is_numeric($globalSearch)) continue;
+                    if (($column instanceof BoolColumn)) {
+                        if ($globalSearch == $column->getTrueValue()) $globalSearch = true;
+                        else if ($globalSearch == $column->getFalseValue()) $globalSearch = false;
+                        else continue;
+                    }
+                    $filter = $column->getFilter();
+                    if ($filter) {
+                        $comparisons->add(new Comparison($field, $filter->getOperator(), $expr->literal($globalSearch)));
+                    } else {
+                        if ($column instanceof TextColumn) {
+                            $comparisons->add($expr->like('LOWER('.$field.')', $expr->literal("%{$globalSearch}%")));
+                        } else {
+                            $comparisons->add($expr->eq($field, $expr->literal($globalSearch)));
+                        }
+                    }
                 }
             }
             $queryBuilder->andWhere($comparisons);
