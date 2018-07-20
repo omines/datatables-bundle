@@ -123,6 +123,9 @@ abstract class AbstractColumn
                 'filter' => null,
                 'className' => null,
                 'render' => null,
+                'leftExpr' => null,
+                'operator' => '=',
+                'rightExpr' => null,
             ])
             ->setAllowedTypes('label', ['null', 'string'])
             ->setAllowedTypes('data', ['null', 'string', 'callable'])
@@ -132,10 +135,13 @@ abstract class AbstractColumn
             ->setAllowedTypes('orderable', ['null', 'boolean'])
             ->setAllowedTypes('orderField', ['null', 'string'])
             ->setAllowedTypes('searchable', ['null', 'boolean'])
-            ->setAllowedTypes('globalSearchable', ['null', 'boolean'])
+            ->setAllowedTypes('globalSearchable',  ['null', 'boolean'])
             ->setAllowedTypes('filter', ['null', 'array'])
             ->setAllowedTypes('className', ['null', 'string'])
             ->setAllowedTypes('render', ['null', 'string', 'callable'])
+            ->setAllowedTypes('operator', ['string'])
+            ->setAllowedTypes('leftExpr', ['null', 'string', 'callable'])
+            ->setAllowedTypes('rightExpr', ['null', 'string', 'callable'])
         ;
 
         return $this;
@@ -240,6 +246,40 @@ abstract class AbstractColumn
     /**
      * @return string
      */
+    public function getLeftExpr()
+    {
+        $leftExpr = $this->options['leftExpr'];
+        if ($leftExpr === null) return $this->getField();
+        if (is_callable($leftExpr)) {
+            return call_user_func($leftExpr, $this->getField());
+        }
+        return $leftExpr;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRightExpr($value)
+    {
+        $rightExpr = $this->options['rightExpr'];
+        if ($rightExpr === null) return $value;
+        if (is_callable($rightExpr)) {
+            return call_user_func($rightExpr, $value);
+        }
+        return $rightExpr;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOperator()
+    {
+        return $this->options['operator'];
+    }
+
+    /**
+     * @return string
+     */
     public function getClassName()
     {
         return $this->options['className'];
@@ -264,4 +304,14 @@ abstract class AbstractColumn
 
         return $this;
     }
+
+    /**
+     * @param string $value
+     * @return bool
+     */
+    public function isValidForSearch($value)
+    {
+        return true;
+    }
+
 }

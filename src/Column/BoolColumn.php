@@ -41,6 +41,14 @@ class BoolColumn extends AbstractColumn
         parent::configureOptions($resolver);
 
         $resolver
+            ->setDefault(
+                'rightExpr',
+                function ($value) {
+                    return trim(strtolower($value)) == $this->getTrueValue();
+                }
+        );
+
+        $resolver
             ->setDefault('trueValue', 'true')
             ->setDefault('falseValue', 'false')
             ->setDefault('nullValue', 'null')
@@ -74,5 +82,15 @@ class BoolColumn extends AbstractColumn
     public function getNullValue(): string
     {
         return $this->options['nullValue'];
+    }
+
+    /**
+     * @param string $value
+     * @return bool
+     */
+    public function isValidForSearch($value)
+    {
+        $value = trim(strtolower($value));
+        return ($value == $this->getTrueValue()) || ($value == $this->getFalseValue());
     }
 }
