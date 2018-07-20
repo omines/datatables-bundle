@@ -16,6 +16,7 @@ use Doctrine\ORM\Query\Expr\Comparison;
 use Doctrine\ORM\QueryBuilder;
 use Omines\DataTablesBundle\Column\AbstractColumn;
 use Omines\DataTablesBundle\DataTableState;
+use Omines\DataTablesBundle\Adapter\Doctrine\ORM\QueryBuilderProcessorInterface;
 
 /**
  * SearchCriteriaProvider.
@@ -60,8 +61,9 @@ class SearchCriteriaProvider implements QueryBuilderProcessorInterface
             $expr = $queryBuilder->expr();
             $comparisons = $expr->orX();
             foreach ($state->getDataTable()->getColumns() as $column) {
-                if ($column->isGlobalSearchable() && !empty($field = $column->getField())) {
-                    $comparisons->add($expr->like($field, $expr->literal("%{$globalSearch}%")));
+                if ($column->isGlobalSearchable() && !empty($field = $column->getField()) && $column->isValidForSearch($globalSearch)) {
+                    $comparisons->add(new Comparison($column->getLeftExpr(), $column->getOperator(),
+                        $expr->literal($column->getRightExpr($globalSearch))));
                 }
             }
             $queryBuilder->andWhere($comparisons);
