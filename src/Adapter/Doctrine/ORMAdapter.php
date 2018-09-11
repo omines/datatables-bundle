@@ -151,6 +151,10 @@ class ORMAdapter extends AbstractAdapter
         foreach ($builder->getDQLPart('join') as $joins) {
             /** @var Query\Expr\Join $join */
             foreach ($joins as $join) {
+                if(strstr($join->getJoin(), '.') === false){
+                    continue;
+                }       
+                
                 list($origin, $target) = explode('.', $join->getJoin());
 
                 $mapping = $aliases[$origin][1]->getAssociationMapping($target);
