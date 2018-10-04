@@ -45,8 +45,10 @@ class SearchCriteriaProvider implements QueryBuilderProcessorInterface
             $column = $searchInfo['column'];
             $search = $searchInfo['search'];
 
-            if (!empty($search) && null !== ($filter = $column->getFilter())) {
-                $queryBuilder->andWhere(new Comparison($column->getField(), $filter->getOperator(), $queryBuilder->expr()->literal($search)));
+            if (!empty($search) && $column->hasFilters()) {
+                foreach ($column->getFilters() as $filter) {
+                    $queryBuilder->andWhere(new Comparison($column->getField(), $filter->getOperator(), $queryBuilder->expr()->literal($search)));
+                }
             }
         }
     }

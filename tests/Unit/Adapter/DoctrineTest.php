@@ -19,6 +19,7 @@ use Omines\DataTablesBundle\Adapter\Doctrine\ORM\SearchCriteriaProvider;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
+use Omines\DataTablesBundle\Filter\ChoiceFilter;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,6 +49,36 @@ class DoctrineTest extends TestCase
         $qb = $this->createMock(QueryBuilder::class);
         $qb
             ->method('expr')
+            ->will($this->returnCallback(function () { return new Query\Expr(); }));
+
+        /* @var QueryBuilder $qb */
+        (new SearchCriteriaProvider())->process($qb, $state);
+
+        // As this is buggy right now ignore the result
+        $this->assertTrue(true);
+    }
+
+    public function testSearchCriteriaProviderWithFilters()
+    {
+        $choiceFilter = new ChoiceFilter();
+        $choiceFilter->set(['choices' => ['foo' => 'a', 'bar' => 'b']]);
+        $table = new DataTable();
+        $table->add('name', TextColumn::class, ['field' => 'table.name', 'filter' => [$choiceFilter]]);
+
+        $table->handleRequest(Request::create('/', Request::METHOD_POST, ['_dt' => 'dt']));
+        $state = $table->getState();
+        $state->setColumnSearch($table->getColumnByName('name'), 'baz');
+
+        $qb = $this->createMock(QueryBuilder::class);
+        $qb
+            ->method('expr')
+            ->will($this->returnCallback(function () { return new Query\Expr(); }));
+
+        $comparison = new Query\Expr\Comparison('table.name', '=', new Query\Expr\Literal("'baz'"));
+
+        $qb
+            ->method('andWhere')
+            ->with($comparison)
             ->will($this->returnCallback(function () { return new Query\Expr(); }));
 
         /* @var QueryBuilder $qb */

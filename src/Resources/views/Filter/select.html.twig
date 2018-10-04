@@ -3,9 +3,11 @@
             id="{{ datatable.name }}-column-{{ column.index }}"
             data-search-column-index="{{ column.index }}"
     >
+        {#@TODO: handle array of filter#}
         {% if column.filter.placeholder != null %}
             <option class="placeholder">{{ column.filter.placeholder|trans }}</option>
         {% endif %}
+        {#@TODO: handle array of filter#}
         {% for key, choice in column.filter.choices %}
             <option value="{{ key }}">{{ choice }}</option>
         {% endfor %}

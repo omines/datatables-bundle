@@ -10,7 +10,13 @@
     {% if datatable.option('searching') and columnFilter in ['both', 'thead'] %}
         <tr class="datatable-filters">
             {% for column in datatable.columns %}
-                <td>{% if column.filter != null %}{% include column.filter.templateHtml %}{% endif %}</td>
+                <td>
+                    {% if column.hasFilters %}
+                        {% for filter in column.getFilters %}
+                            {% include column.filter.templateHtml %}
+                        {% endfor %}
+                    {% endif %}
+                </td>
             {% endfor %}
         </tr>
     {% endif %}
@@ -19,7 +25,13 @@
         <tfoot>
         <tr class="datatable-filters">
             {% for column in datatable.columns %}
-                <td>{% if column.filter != null %}{% include column.filter.templateHtml %}{% endif %}</td>
+                <td>
+                    {% if column.hasFilters %}
+                        {% for filter in column.getFilters %}
+                            {% include column.filter.templateHtml %}
+                        {% endfor %}
+                    {% endif %}
+                </td>
             {% endfor %}
         </tr>
         </tfoot>

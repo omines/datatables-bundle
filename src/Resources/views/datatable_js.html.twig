@@ -49,7 +49,11 @@
 
         {% if datatable.option('stateSave') %}
         {% for column in datatable.state.columns %}
-        {% if column.filter != null %}{% include column.filter.templateJs %}{% endif %}
+        {% if column.hasFilters %}
+            {% for filter in column.getFilters %}
+                {% include column.filter.templateJs %}
+            {% endfor %}
+        {% endif %}
         {% endfor %}
         {% endif %}
 

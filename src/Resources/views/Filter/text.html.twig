@@ -1,6 +1,7 @@
 <label>
     <input id="{{ datatable.name }}-column-{{ column.index }}"
            data-search-column-index="{{ column.index }}"
+            {#@TODO: handle array of filter#}
             {% if column.filter.placeholder != null %}
                 placeholder="{{ column.filter.placeholder|trans }}"
             {% endif %}

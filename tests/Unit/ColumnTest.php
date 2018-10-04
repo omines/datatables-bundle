@@ -18,6 +18,7 @@ use Omines\DataTablesBundle\Column\MapColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\Column\TwigColumn;
 use Omines\DataTablesBundle\DataTable;
+use Omines\DataTablesBundle\Filter\ChoiceFilter;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -97,6 +98,33 @@ class ColumnTest extends TestCase
 
         $this->assertFalse($column->isRaw());
         $this->assertSame('BAR', $column->transform(null));
+    }
+
+    public function testColumnWithFilters()
+    {
+        $column = new TextColumn();
+        $choiceFilter = new ChoiceFilter();
+        $choiceFilter->set(['choices' => ['foo' => 'bar', 'baz' => 'baz']]);
+        $column->initialize('test', 1, [
+            'filter' => [$choiceFilter],
+        ], new DataTable());
+
+        $this->assertTrue($column->hasFilters());
+        $this->assertTrue($column->getFilters()[0]->isValidValue('foo'));
+    }
+
+    /**
+     * @expectedException \Symfony\Component\OptionsResolver\Exception\InvalidOptionsException
+     */
+    public function testColumnWithInvalidFiltersFails()
+    {
+        $column = new TextColumn();
+        $column->initialize('test', 1, [
+            'filter' => ['invalid'],
+        ], new DataTable());
+
+        $this->assertTrue($column->hasFilters());
+        $this->assertTrue($column->getFilters()[0]->isValidValue('foo'));
     }
 
     /**
