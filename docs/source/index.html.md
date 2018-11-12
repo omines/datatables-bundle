@@ -200,6 +200,16 @@ The `options` are passed (almost) verbatim to the DataTables clientside construc
 options. Only options which are meaningful to be defined serverside can be set at this level, so
 setting callbacks and events is not possible. These are however easily set on the Javascript end.
 
+## Table configuration
+
+Configuring a specific table is done mainly via the methods on `DataTable`. The most common call
+is `add` to add an extra column to the table as seen in all the examples. More utility methods
+exist and can be chained.
+
+`->addOrderBy($column, string $direction = DataTable::SORT_ASCENDING)`  
+Will set the default sort of the table to the specified column and direction. Repeatable to sort
+by multiple columns.
+
 # Adapters
 
 Adapters are the core elements bridging DataTables functionality to their underlying data source.
