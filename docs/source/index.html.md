@@ -105,6 +105,14 @@ otherwise we render a template with the table provided as a parameter.
 
 <aside class="notice">To keep your controller thin you should <a href="#datatable-types">make reusable DataTable types under the DataTable namespace of your app/bundle</a>.</aside>
 
+## Controller setup
+
+When using <code>DataTablesTrait</code> it is assumed that the <code>DataTableFactory</code> trait is available
+in the controller's <code>$container</code>. When using Symfony's legacy <code>Controller</code> base class this
+is true. If using <code>AbstractController</code> instead, which is currently recommended practice, ensure
+you subscribe to the <code>DataTableFactory</code> service yourself. Alternatively you can bypass the convenience
+trait and inject the service via regular constructor injection.
+
 ## Frontend code
 
 ```html
