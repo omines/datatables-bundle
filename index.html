@@ -230,12 +230,20 @@
             <a href="#quickstart" class="toc-h1 toc-link" data-title="Quickstart">Quickstart</a>
               <ul class="toc-list-h2">
                   <li>
+                    <a href="#controller-setup" class="toc-h2 toc-link" data-title="Controller setup">Controller setup</a>
+                  </li>
+                  <li>
                     <a href="#frontend-code" class="toc-h2 toc-link" data-title="Frontend code">Frontend code</a>
                   </li>
               </ul>
           </li>
           <li>
             <a href="#configuration" class="toc-h1 toc-link" data-title="Configuration">Configuration</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#table-configuration" class="toc-h2 toc-link" data-title="Table configuration">Table configuration</a>
+                  </li>
+              </ul>
           </li>
           <li>
             <a href="#adapters" class="toc-h1 toc-link" data-title="Adapters">Adapters</a>
@@ -367,7 +375,7 @@ should be fine, as the bundle does not use exotic features or depend on plugins.
             <span class="k">return</span> <span class="nv">$table</span><span class="o">-&gt;</span><span class="na">getResponse</span><span class="p">();</span>
         <span class="p">}</span>
 
-        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">render</span><span class="p">(</span><span class="s1">'list.html.twig'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'datatable'</span> <span class="o">=&gt;</span> <span class="nv">$table</span><span class="p">]);</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">render</span><span class="p">(</span><span class="s1">'list.html.twig'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'datatable'</span> <span class="o">=&gt;</span> <span class="nv">$table</span><span class="p">]);</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
@@ -383,6 +391,12 @@ works. If it turns out the request originated from a callback we let the table p
 otherwise we render a template with the table provided as a parameter.</p>
 
 <aside class="notice">To keep your controller thin you should <a href="#datatable-types">make reusable DataTable types under the DataTable namespace of your app/bundle</a>.</aside>
+<h2 id='controller-setup'>Controller setup</h2>
+<p>When using <code>DataTablesTrait</code> it is assumed that the <code>DataTableFactory</code> trait is available
+in the controller&#39;s <code>$container</code>. When using Symfony&#39;s legacy <code>Controller</code> base class this
+is true. If using <code>AbstractController</code> instead, which is currently recommended practice, ensure
+you subscribe to the <code>DataTableFactory</code> service yourself. Alternatively you can bypass the convenience
+trait and inject the service via regular constructor injection.</p>
 <h2 id='frontend-code'>Frontend code</h2><pre class="highlight html tab-html"><code><span class="c">&lt;!-- Insert this where you want the table to appear --&gt;</span>
 <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"presidents"</span><span class="nt">&gt;</span>Loading...<span class="nt">&lt;/div&gt;</span>
 
@@ -494,6 +508,14 @@ ie. <code>setLanguageFromCDN(bool)</code>.</p>
 <a href="https://datatables.net/reference/option/">external documentation</a> below for details on individual
 options. Only options which are meaningful to be defined serverside can be set at this level, so
 setting callbacks and events is not possible. These are however easily set on the Javascript end.</p>
+<h2 id='table-configuration'>Table configuration</h2>
+<p>Configuring a specific table is done mainly via the methods on <code>DataTable</code>. The most common call
+is <code>add</code> to add an extra column to the table as seen in all the examples. More utility methods
+exist and can be chained.</p>
+
+<p><code>-&gt;addOrderBy($column, string $direction = DataTable::SORT_ASCENDING)</code><br>
+Will set the default sort of the table to the specified column and direction. Repeatable to sort
+by multiple columns.</p>
 <h1 id='adapters'>Adapters</h1>
 <p>Adapters are the core elements bridging DataTables functionality to their underlying data source.
 Popular implementations for common data sources are provided, and more are welcomed.</p>
