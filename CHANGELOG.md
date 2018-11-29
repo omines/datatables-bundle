@@ -5,6 +5,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 Nothing yet.
 
+## [0.2.1] - 2018-11-29
+### Changed
+ - Update German translations
+ - Switch to PHPunit 6.x/7.x
+
+### Fixed
+ - Fix hydrationMode=Query::HYDRATE_ARRAY (#36)
+ - Fix global search for numbers and booleans
+ 
 ## [0.2.0] - 2018-05-23
 ### Added
  - Add ElasticaAdapter for use with ruflin/elastica
@@ -54,7 +63,8 @@ Nothing yet.
 ### Added
  - Basic functionality
 
-[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.1.5...master
+[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.2.1...master
+[0.2.1]: https://github.com/omines/datatables-bundle/compare/0.2.0...0.2.1
 [0.2.0]: https://github.com/omines/datatables-bundle/compare/0.1.5...0.2.0
 [0.1.5]: https://github.com/omines/datatables-bundle/compare/0.1.4...0.1.5
 [0.1.4]: https://github.com/omines/datatables-bundle/compare/0.1.3...0.1.4
