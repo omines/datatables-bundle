@@ -288,7 +288,7 @@ $table->createAdapter(ORMAdapter::class, [
             return Criteria::create()->andWhere(new Comparison('c.name', Comparison::CONTAINS, 'ny 2'));
         },
         new SearchCriteriaProvider(),
-    },
+    ],
 ]);
 ```             
 Analogous to queries you can separately define the criteria processors applied to table queries. The
