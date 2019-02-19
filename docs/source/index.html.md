@@ -284,11 +284,11 @@ interaction based on internal changes in this bundle and/or Doctrine ORM.
 $table->createAdapter(ORMAdapter::class, [
     'entity' => Employee::class,
     'criteria' => [
-        function () {
-            return Criteria::create()->andWhere(new Comparison('c.name', Comparison::CONTAINS, 'ny 2'));
+        function (QueryBuilder $builder) {
+            $builder->andWhere(new Comparison('c.name', Comparison::CONTAINS, 'ny 2'));
         },
         new SearchCriteriaProvider(),
-    },
+    ],
 ]);
 ```             
 Analogous to queries you can separately define the criteria processors applied to table queries. The

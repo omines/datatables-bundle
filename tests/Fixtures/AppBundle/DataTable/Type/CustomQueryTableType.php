@@ -49,8 +49,8 @@ class CustomQueryTableType implements DataTableTypeInterface
                         ->leftJoin('e.company', 'c')
                     ;
                 },
-                'criteria' => function () {
-                    return Criteria::create()->andWhere(new Comparison('c.name', Comparison::CONTAINS, 'ny 2'));
+                'criteria' => function (QueryBuilder $builder) {
+                    $builder->andWhere(new Comparison('c.name', Comparison::CONTAINS, 'ny 2'));
                 },
             ])
         ;
