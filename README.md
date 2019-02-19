@@ -20,6 +20,12 @@ choices like FOSElasticaBundle, Doctrine DBAL and MongoDB out of the box as well
 
 [Visit the documentation with extensive code samples](https://omines.github.io/datatables-bundle/).
 
+## Support
+
+Unless you are highly confident your issue stems from a shortcoming of this bundle and needs the original developers
+to look at it, please [ask all questions on Stack Overflow](https://stackoverflow.com/search?q=datatables+omines). We
+simply don't have a lot of time to spare, so your questions will be answered faster and better over there.
+
 ## Contributing
 
 Please see [CONTRIBUTING.md](https://github.com/omines/datatables-bundle/blob/master/CONTRIBUTING.md) for details.
