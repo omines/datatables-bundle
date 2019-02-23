@@ -242,7 +242,7 @@ class ORMAdapter extends AbstractAdapter
 
         $qb->resetDQLPart('orderBy');
         $gb = $qb->getDQLPart('groupBy');
-        if (empty($gb) || !in_array($identifier, $gb, true)) {
+        if (empty($gb) || !$this->hasGroupByPart($identifier, $gb)) {
             $qb->select($qb->expr()->count($identifier));
 
             return (int) $qb->getQuery()->getSingleScalarResult();
@@ -252,6 +252,22 @@ class ORMAdapter extends AbstractAdapter
 
             return (int) $qb->getQuery()->getSingleScalarResult();
         }
+    }
+
+    /**
+     * @param $identifier
+     * @param Query\Expr\GroupBy[] $gbList
+     * @return bool
+     */
+    protected function hasGroupByPart($identifier, array $gbList)
+    {
+        foreach ($gbList as $gb) {
+            if (in_array($identifier, $gb->getParts(), true)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

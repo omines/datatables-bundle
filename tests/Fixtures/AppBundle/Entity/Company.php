@@ -43,7 +43,7 @@ class Company
     /**
      * @var ArrayCollection|array
      *
-     * @ORM\OneToMany(targetEntity="Company", mappedBy="company")
+     * @ORM\OneToMany(targetEntity="Employee", mappedBy="company")
      */
     private $employees;
 
