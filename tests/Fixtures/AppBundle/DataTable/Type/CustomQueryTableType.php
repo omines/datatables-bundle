@@ -50,7 +50,8 @@ class CustomQueryTableType implements DataTableTypeInterface
                     ;
                 },
                 'criteria' => function (QueryBuilder $builder) {
-                    $builder->andWhere(new Comparison('c.name', Comparison::CONTAINS, 'ny 2'));
+                    $builder->andWhere($builder->expr()->like('c.name', ':test'))->setParameter('test', '%ny 2%');
+                    //$builder->addCriteria(Criteria::create()->andWhere(new Comparison('c.name', Comparison::CONTAINS, 'ny 2')));
                 },
             ])
         ;
