@@ -15,6 +15,7 @@ namespace Tests\Unit;
 use Omines\DataTablesBundle\Column\BoolColumn;
 use Omines\DataTablesBundle\Column\DateTimeColumn;
 use Omines\DataTablesBundle\Column\MapColumn;
+use Omines\DataTablesBundle\Column\NumberColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\Column\TwigColumn;
 use Omines\DataTablesBundle\DataTable;
@@ -64,6 +65,12 @@ class ColumnTest extends TestCase
         $this->assertSame('yes', $column->transform(true));
         $this->assertSame('false', $column->transform(false));
         $this->assertStringStartsWith('<em>', $column->transform());
+
+        $this->assertTrue($column->isValidForSearch('yes'));
+        $this->assertFalse($column->isValidForSearch('true'));
+
+        $this->assertTrue($column->getRightExpr('yes'));
+        $this->assertFalse($column->getRightExpr('true'));
     }
 
     public function testMapColumn()
@@ -81,6 +88,20 @@ class ColumnTest extends TestCase
         $this->assertSame('bar', $column->transform(1));
         $this->assertSame('baz', $column->transform(2));
         $this->assertSame('foo', $column->transform(3));
+    }
+
+    public function testNumberColumn()
+    {
+        $column = new NumberColumn();
+        $column->initialize('test', 1, [], new DataTable());
+
+        $this->assertSame('5', $column->transform(5));
+        $this->assertSame('1', $column->transform(true));
+        $this->assertSame('684', $column->transform('684'));
+
+        $this->assertFalse($column->isRaw());
+        $this->assertTrue($column->isValidForSearch(684));
+        $this->assertFalse($column->isValidForSearch('foo.bar'));
     }
 
     public function testColumnWithClosures()
