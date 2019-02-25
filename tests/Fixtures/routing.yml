@@ -1,26 +1,26 @@
 home:
     path:       /
-    defaults:	{ _controller: "AppBundle:Home:show" }
+    controller: Tests\Fixtures\AppBundle\Controller\HomeController::showAction
 
 plain:
     path:       /plain
-    defaults:   { _controller: "AppBundle:Plain:table" }
+    controller: Tests\Fixtures\AppBundle\Controller\PlainController::tableAction
 
 type:
     path:       /type
-    defaults:   { _controller: "AppBundle:Type:table" }
+    controller: Tests\Fixtures\AppBundle\Controller\TypeController::tableAction
 
 service:
     path:       /service
-    defaults:   { _controller: "AppBundle:Service:table" }
+    controller: Tests\Fixtures\AppBundle\Controller\ServiceController::tableAction
 
 custom:
     path:       /custom
-    defaults:   { _controller: "AppBundle:CustomQuery:table" }
+    controller: Tests\Fixtures\AppBundle\Controller\CustomQueryController::tableAction
 
 grouped:
     path:       /grouped
-    defaults:   { _controller: "AppBundle:Grouped:table" }
+    controller: Tests\Fixtures\AppBundle\Controller\GroupedController::tableAction
 
 employee.edit:
     path:       /employee/{id}

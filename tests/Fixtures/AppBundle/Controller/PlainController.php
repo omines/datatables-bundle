@@ -19,7 +19,7 @@ use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\Column\TwigColumn;
 use Omines\DataTablesBundle\Controller\DataTablesTrait;
 use Omines\DataTablesBundle\DataTable;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Tests\Fixtures\AppBundle\Entity\Employee;
 
@@ -28,7 +28,7 @@ use Tests\Fixtures\AppBundle\Entity\Employee;
  *
  * @author Niels Keurentjes <niels.keurentjes@omines.com>
  */
-class PlainController extends Controller
+class PlainController extends AbstractController
 {
     use DataTablesTrait;
 

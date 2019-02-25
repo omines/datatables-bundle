@@ -15,7 +15,7 @@ namespace Tests\Fixtures\AppBundle\Controller;
 use Omines\DataTablesBundle\Adapter\ArrayAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\Controller\DataTablesTrait;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @author Niels Keurentjes <niels.keurentjes@omines.com>
  */
-class HomeController extends Controller
+class HomeController extends AbstractController
 {
     use DataTablesTrait;
 

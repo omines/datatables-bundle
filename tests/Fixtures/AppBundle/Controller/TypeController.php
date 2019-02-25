@@ -14,7 +14,7 @@ namespace Tests\Fixtures\AppBundle\Controller;
 
 use Omines\DataTablesBundle\Controller\DataTablesTrait;
 use Omines\DataTablesBundle\DataTable;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Tests\Fixtures\AppBundle\DataTable\Type\RegularPersonTableType;
 
@@ -23,7 +23,7 @@ use Tests\Fixtures\AppBundle\DataTable\Type\RegularPersonTableType;
  *
  * @author Niels Keurentjes <niels.keurentjes@omines.com>
  */
-class TypeController extends Controller
+class TypeController extends AbstractController
 {
     use DataTablesTrait;
 

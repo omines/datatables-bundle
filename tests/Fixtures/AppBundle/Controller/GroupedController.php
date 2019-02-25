@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Tests\Fixtures\AppBundle\Controller;
 
 use Omines\DataTablesBundle\Controller\DataTablesTrait;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Tests\Fixtures\AppBundle\DataTable\Type\GroupedTableType;
 
@@ -22,7 +22,7 @@ use Tests\Fixtures\AppBundle\DataTable\Type\GroupedTableType;
  *
  * @author Niels Keurentjes <niels.keurentjes@omines.com>
  */
-class GroupedController extends Controller
+class GroupedController extends AbstractController
 {
     use DataTablesTrait;
 
