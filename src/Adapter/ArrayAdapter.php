@@ -98,7 +98,7 @@ class ArrayAdapter implements AdapterInterface
             if (!$match) {
                 $match = (false !== mb_stripos($value, $search));
             }
-            $row[$column->getName()] = $column->transform($value, $result);
+            $row[$column->getName()] = $value;
         }
 
         return $match ? $row : null;
