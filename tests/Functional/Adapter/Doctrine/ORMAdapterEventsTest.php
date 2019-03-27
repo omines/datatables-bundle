@@ -35,10 +35,10 @@ class ORMAdapterEventsTest extends WebTestCase
     public function testPreQueryEvent()
     {
         /** @var DoctrineProvider $doctrineProvider */
-        $doctrineProvider = self::$container->get('doctrine')->getManager()->getConfiguration()->getResultCacheImpl();
+        $doctrineProvider = self::$kernel->getContainer()->get('doctrine')->getManager()->getConfiguration()->getResultCacheImpl();
         $doctrineProvider->delete(ORMAdapterEventsController::PRE_QUERY_RESULT_CACHE_ID);
 
-        $this->client->xmlHttpRequest('POST', '/orm-adapter-events/pre-query', ['_dt' => 'dt', '_init' => true]);
+        $this->client->request('POST', '/orm-adapter-events/pre-query', ['_dt' => 'dt', '_init' => true]);
 
         static::assertTrue($doctrineProvider->contains(ORMAdapterEventsController::PRE_QUERY_RESULT_CACHE_ID));
     }
