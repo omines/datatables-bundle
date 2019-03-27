@@ -20,6 +20,7 @@ use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\Column\TwigColumn;
 use Omines\DataTablesBundle\DataTable;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  * ColumnTest.
@@ -34,7 +35,7 @@ class ColumnTest extends TestCase
         $column->initialize('test', 1, [
             'nullValue' => 'foo',
             'format' => 'd-m-Y',
-        ], (new DataTable())->setName('foo'));
+        ], (new DataTable($this->createMock(EventDispatcher::class)))->setName('foo'));
 
         $this->assertSame('03-04-2015', $column->transform('2015-04-03'));
         $this->assertSame('foo', $column->transform(null));
@@ -46,7 +47,7 @@ class ColumnTest extends TestCase
         $column->initialize('test', 1, [
             'data' => 'bar',
             'render' => 'foo%s',
-        ], (new DataTable())->setName('foo'));
+        ], (new DataTable($this->createMock(EventDispatcher::class)))->setName('foo'));
 
         $this->assertFalse($column->isRaw());
         $this->assertSame('foobar', $column->transform(null));
@@ -59,7 +60,7 @@ class ColumnTest extends TestCase
         $column->initialize('test', 1, [
              'trueValue' => 'yes',
              'nullValue' => '<em>null</em>',
-        ], new DataTable());
+        ], new DataTable($this->createMock(EventDispatcher::class)));
 
         $this->assertSame('yes', $column->transform(5));
         $this->assertSame('yes', $column->transform(true));
@@ -82,7 +83,7 @@ class ColumnTest extends TestCase
                 1 => 'bar',
                 2 => 'baz',
             ],
-        ], new DataTable());
+        ], new DataTable($this->createMock(EventDispatcher::class)));
 
         $this->assertSame('foo', $column->transform(0));
         $this->assertSame('bar', $column->transform(1));
@@ -93,7 +94,7 @@ class ColumnTest extends TestCase
     public function testNumberColumn()
     {
         $column = new NumberColumn();
-        $column->initialize('test', 1, [], new DataTable());
+        $column->initialize('test', 1, [], new DataTable($this->createMock(EventDispatcher::class)));
 
         $this->assertSame('5', $column->transform(5));
         $this->assertSame('1', $column->transform(true));
@@ -114,7 +115,7 @@ class ColumnTest extends TestCase
             'render' => function ($value) {
                 return mb_strtoupper($value);
             },
-        ], new DataTable());
+        ], new DataTable($this->createMock(EventDispatcher::class)));
 
         $this->assertFalse($column->isRaw());
         $this->assertSame('BAR', $column->transform(null));

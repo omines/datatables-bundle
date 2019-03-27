@@ -17,6 +17,7 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Omines\DataTablesBundle\Adapter\AbstractAdapter;
 use Omines\DataTablesBundle\Adapter\AdapterQuery;
+use Omines\DataTablesBundle\Adapter\Doctrine\Event\ORMAdapterQueryEvent;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORM\AutomaticQueryBuilder;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORM\QueryBuilderProcessorInterface;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORM\SearchCriteriaProvider;
@@ -25,6 +26,7 @@ use Omines\DataTablesBundle\DataTableState;
 use Omines\DataTablesBundle\Exception\InvalidConfigurationException;
 use Omines\DataTablesBundle\Exception\MissingDependencyException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -54,18 +56,24 @@ class ORMAdapter extends AbstractAdapter
     /** @var QueryBuilderProcessorInterface[] */
     protected $criteriaProcessors;
 
+    /** @var EventDispatcherInterface */
+    protected $eventDispatcher;
+
     /**
      * DoctrineAdapter constructor.
      *
+     * @param EventDispatcherInterface $eventDispatcher
      * @param RegistryInterface|null $registry
      */
-    public function __construct(RegistryInterface $registry = null)
+    public function __construct(EventDispatcherInterface $eventDispatcher, RegistryInterface $registry = null)
     {
         if (null === $registry) {
             throw new MissingDependencyException('Install doctrine/doctrine-bundle to use the ORMAdapter');
         }
 
         parent::__construct();
+
+        $this->eventDispatcher = $eventDispatcher;
         $this->registry = $registry;
     }
 
@@ -151,10 +159,10 @@ class ORMAdapter extends AbstractAdapter
         foreach ($builder->getDQLPart('join') as $joins) {
             /** @var Query\Expr\Join $join */
             foreach ($joins as $join) {
-                if(strstr($join->getJoin(), '.') === false){
+                if (false === mb_strstr($join->getJoin(), '.')) {
                     continue;
-                }       
-                
+                }
+
                 list($origin, $target) = explode('.', $join->getJoin());
 
                 $mapping = $aliases[$origin][1]->getAssociationMapping($target);
@@ -197,7 +205,11 @@ class ORMAdapter extends AbstractAdapter
             ;
         }
 
-        foreach ($builder->getQuery()->iterate([], $this->hydrationMode) as $result) {
+        $query = $builder->getQuery();
+        $event = new ORMAdapterQueryEvent($query);
+        $this->eventDispatcher->dispatch(ORMAdapterEvents::PRE_QUERY, $event);
+
+        foreach ($query->iterate([], $this->hydrationMode) as $result) {
             yield $entity = array_values($result)[0];
             if (Query::HYDRATE_OBJECT === $this->hydrationMode) {
                 $this->manager->detach($entity);

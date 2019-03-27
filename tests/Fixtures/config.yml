@@ -13,6 +13,12 @@ framework:
     test: ~
     profiler:
         collect: false
+    cache:
+        pools:
+            doctrine.result_cache_pool:
+                adapter: cache.app
+            doctrine.system_cache_pool:
+                adapter: cache.system
 
 doctrine:
     dbal:
@@ -23,6 +29,15 @@ doctrine:
         auto_generate_proxy_classes: '%kernel.debug%'
         naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
+        metadata_cache_driver:
+            type: service
+            id: doctrine.system_cache_provider
+        query_cache_driver:
+            type: service
+            id: doctrine.system_cache_provider
+        result_cache_driver:
+            type: service
+            id: doctrine.result_cache_provider
 
 twig:
     debug: '%kernel.debug%'

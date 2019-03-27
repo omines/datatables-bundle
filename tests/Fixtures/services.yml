@@ -2,3 +2,14 @@ services:
     Tests\Fixtures\AppBundle\DataTable\Type\ServicePersonTableType:
         autowire: true
         autoconfigure: true
+
+    doctrine.result_cache_provider:
+        class: Symfony\Component\Cache\DoctrineProvider
+        public: false
+        arguments:
+            - '@doctrine.result_cache_pool'
+    doctrine.system_cache_provider:
+        class: Symfony\Component\Cache\DoctrineProvider
+        public: false
+        arguments:
+            - '@doctrine.system_cache_pool'

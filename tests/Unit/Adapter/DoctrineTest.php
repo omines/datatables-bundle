@@ -21,6 +21,7 @@ use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -32,7 +33,7 @@ class DoctrineTest extends TestCase
 {
     public function testSearchCriteriaProvider()
     {
-        $table = new DataTable();
+        $table = new DataTable($this->createMock(EventDispatcher::class));
         $table
             ->add('firstName', TextColumn::class)
             ->add('lastName', TextColumn::class)
@@ -63,7 +64,7 @@ class DoctrineTest extends TestCase
      */
     public function testORMAdapterRequiresDependency()
     {
-        (new ORMAdapter());
+        (new ORMAdapter($this->createMock(EventDispatcher::class)));
     }
 
     /**
@@ -72,7 +73,9 @@ class DoctrineTest extends TestCase
      */
     public function testInvalidQueryProcessorThrows()
     {
-        (new ORMAdapter($this->createMock(RegistryInterface::class)))
+        $eventDispatcherMock = $this->createMock(EventDispatcher::class);
+        $registryMock = $this->createMock(RegistryInterface::class);
+        (new ORMAdapter($eventDispatcherMock, $registryMock))
             ->configure([
                 'entity' => 'bar',
                 'query' => ['foo'],
@@ -90,7 +93,7 @@ class DoctrineTest extends TestCase
         $column = new TextColumn();
         $column->initialize('foo', 0, ['field' => 'invalid'], $this->createMock(DataTable::class));
 
-        $mock = new class($this->createMock(RegistryInterface::class)) extends ORMAdapter {
+        $mock = new class($this->createMock(EventDispatcher::class), $this->createMock(RegistryInterface::class)) extends ORMAdapter {
             public function foo($query, $column)
             {
                 return $this->mapPropertyPath($query, $column);

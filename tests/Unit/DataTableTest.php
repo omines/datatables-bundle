@@ -31,6 +31,7 @@ use Omines\DataTablesBundle\Twig\TwigRenderer;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ServiceLocator;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Tests\Fixtures\AppBundle\DataTable\Type\RegularPersonTableType;
 
@@ -49,7 +50,7 @@ class DataTableTest extends TestCase
 
     public function testFactory()
     {
-        $factory = new DataTableFactory(['language_from_cdn' => false], $this->createMock(TwigRenderer::class), new Instantiator());
+        $factory = new DataTableFactory(['language_from_cdn' => false], $this->createMock(TwigRenderer::class), new Instantiator(), $this->createMock(EventDispatcher::class));
 
         $table = $factory->create(['pageLength' => 684, 'dom' => 'bar']);
         $this->assertSame(684, $table->getOption('pageLength'));
@@ -63,7 +64,7 @@ class DataTableTest extends TestCase
 
     public function testFactoryRemembersInstances()
     {
-        $factory = new DataTableFactory([], $this->createMock(TwigRenderer::class), new Instantiator());
+        $factory = new DataTableFactory([], $this->createMock(TwigRenderer::class), new Instantiator(), $this->createMock(EventDispatcher::class));
 
         $reflection = new \ReflectionClass(DataTableFactory::class);
         $property = $reflection->getProperty('resolvedTypes');
@@ -77,7 +78,7 @@ class DataTableTest extends TestCase
 
     public function testDataTableState()
     {
-        $datatable = new DataTable();
+        $datatable = new DataTable($this->createMock(EventDispatcher::class));
         $datatable->add('foo', TextColumn::class)->setMethod(Request::METHOD_GET);
         $datatable->handleRequest(Request::create('/?_dt=' . $datatable->getName()));
         $state = $datatable->getState();
@@ -103,7 +104,7 @@ class DataTableTest extends TestCase
 
     public function testPostMethod()
     {
-        $datatable = new DataTable();
+        $datatable = new DataTable($this->createMock(EventDispatcher::class));
         $datatable->handleRequest(Request::create('/foo', Request::METHOD_POST, ['_dt' => $datatable->getName(), 'draw' => 684]));
 
         $this->assertSame(684, $datatable->getState()->getDraw());
@@ -119,7 +120,7 @@ class DataTableTest extends TestCase
         $container = new ContainerBuilder();
         (new DataTablesExtension())->load([], $container);
 
-        $factory = new DataTableFactory($container->getParameter('datatables.config'), $this->createMock(TwigRenderer::class), new Instantiator());
+        $factory = new DataTableFactory($container->getParameter('datatables.config'), $this->createMock(TwigRenderer::class), new Instantiator(), $this->createMock(EventDispatcher::class));
         $factory->createFromType('foobar');
     }
 
@@ -128,7 +129,7 @@ class DataTableTest extends TestCase
      */
     public function testInvalidOption()
     {
-        new DataTable(['option' => 'bar']);
+        new DataTable($this->createMock(EventDispatcher::class), ['option' => 'bar']);
     }
 
     /**
@@ -136,7 +137,7 @@ class DataTableTest extends TestCase
      */
     public function testDataTableInvalidColumn()
     {
-        (new DataTable())->getColumn(5);
+        (new DataTable($this->createMock(EventDispatcher::class)))->getColumn(5);
     }
 
     /**
@@ -144,7 +145,7 @@ class DataTableTest extends TestCase
      */
     public function testDataTableInvalidColumnByName()
     {
-        (new DataTable())->getColumnByName('foo');
+        (new DataTable($this->createMock(EventDispatcher::class)))->getColumnByName('foo');
     }
 
     /**
@@ -153,7 +154,7 @@ class DataTableTest extends TestCase
      */
     public function testDuplicateColumnNameThrows()
     {
-        (new DataTable())
+        (new DataTable($this->createMock(EventDispatcher::class)))
             ->add('foo', TextColumn::class)
             ->add('foo', TextColumn::class)
         ;
@@ -165,7 +166,7 @@ class DataTableTest extends TestCase
      */
     public function testInvalidAdapterThrows()
     {
-        (new DataTable())
+        (new DataTable($this->createMock(EventDispatcher::class)))
             ->createAdapter('foo\bar')
         ;
     }
@@ -176,7 +177,7 @@ class DataTableTest extends TestCase
      */
     public function testInvalidColumnThrows()
     {
-        (new DataTable())
+        (new DataTable($this->createMock(EventDispatcher::class)))
             ->add('foo', 'bar');
     }
 
@@ -186,7 +187,7 @@ class DataTableTest extends TestCase
      */
     public function testMissingAdapterThrows()
     {
-        $datatable = new DataTable();
+        $datatable = new DataTable($this->createMock(EventDispatcher::class));
         $datatable
             ->setMethod(Request::METHOD_GET)
             ->handleRequest(Request::create('/?_dt=' . $datatable->getName()))
@@ -200,7 +201,7 @@ class DataTableTest extends TestCase
      */
     public function testEmptyNameThrows()
     {
-        (new DataTable())->setName('');
+        (new DataTable($this->createMock(EventDispatcher::class)))->setName('');
     }
 
     /**
@@ -209,7 +210,7 @@ class DataTableTest extends TestCase
      */
     public function testStateWillNotProcessInvalidMethod()
     {
-        $datatable = new DataTable();
+        $datatable = new DataTable($this->createMock(EventDispatcher::class));
         $datatable->setMethod(Request::METHOD_OPTIONS);
         $datatable->handleRequest(Request::create('/foo'));
     }
@@ -220,7 +221,7 @@ class DataTableTest extends TestCase
      */
     public function testMissingStateThrows()
     {
-        (new DataTable())
+        (new DataTable($this->createMock(EventDispatcher::class)))
             ->getResponse();
     }
 
@@ -230,7 +231,7 @@ class DataTableTest extends TestCase
      */
     public function testInvalidDataTableTypeThrows()
     {
-        (new DataTableFactory([], $this->createMock(DataTableRendererInterface::class), new Instantiator()))
+        (new DataTableFactory([], $this->createMock(DataTableRendererInterface::class), new Instantiator(), $this->createMock(EventDispatcher::class)))
             ->createFromType('foo');
     }
 }
