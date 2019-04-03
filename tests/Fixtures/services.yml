@@ -2,3 +2,6 @@ services:
     Tests\Fixtures\AppBundle\DataTable\Type\ServicePersonTableType:
         autowire: true
         autoconfigure: true
+    Tests\Fixtures\AppBundle\DataTable\Adapter\CustomORMAdapter:
+        autowire: true
+        autoconfigure: true

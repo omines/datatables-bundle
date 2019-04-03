@@ -197,6 +197,7 @@ class ORMAdapter extends AbstractAdapter
             ;
         }
 
+        //!$this->query->getHint(self::HINT_DISTINCT) || isset($this->selectedClasses[$joinedDqlAlias])
         foreach ($builder->getQuery()->iterate([], $this->hydrationMode) as $result) {
             yield $entity = array_values($result)[0];
             if (Query::HYDRATE_OBJECT === $this->hydrationMode) {
