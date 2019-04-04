@@ -116,6 +116,13 @@ class FunctionalTest extends WebTestCase
         $this->assertStringStartsWith('Company ', $json->data[0]->company);
     }
 
+    public function testGrouped2DataTable()
+    {
+        $json = $this->callDataTableUrl('/grouped2?_dt=companies2&draw=2');
+
+        $this->assertStringStartsWith('Company ', $json->data[0]->company);
+    }
+
     private function callDataTableUrl(string $url)
     {
         $this->client->enableProfiler();

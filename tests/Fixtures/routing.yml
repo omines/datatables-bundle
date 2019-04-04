@@ -22,6 +22,10 @@ grouped:
     path:       /grouped
     controller: Tests\Fixtures\AppBundle\Controller\GroupedController::tableAction
 
+grouped2:
+    path:       /grouped2
+    controller: Tests\Fixtures\AppBundle\Controller\GroupedController::table2Action
+
 employee.edit:
     path:       /employee/{id}
 
