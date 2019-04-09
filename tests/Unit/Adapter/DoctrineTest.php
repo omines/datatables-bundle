@@ -64,7 +64,7 @@ class DoctrineTest extends TestCase
      */
     public function testORMAdapterRequiresDependency()
     {
-        (new ORMAdapter($this->createMock(EventDispatcher::class)));
+        (new ORMAdapter());
     }
 
     /**
@@ -73,9 +73,7 @@ class DoctrineTest extends TestCase
      */
     public function testInvalidQueryProcessorThrows()
     {
-        $eventDispatcherMock = $this->createMock(EventDispatcher::class);
-        $registryMock = $this->createMock(RegistryInterface::class);
-        (new ORMAdapter($eventDispatcherMock, $registryMock))
+        (new ORMAdapter($this->createMock(RegistryInterface::class)))
             ->configure([
                 'entity' => 'bar',
                 'query' => ['foo'],
@@ -93,7 +91,7 @@ class DoctrineTest extends TestCase
         $column = new TextColumn();
         $column->initialize('foo', 0, ['field' => 'invalid'], $this->createMock(DataTable::class));
 
-        $mock = new class($this->createMock(EventDispatcher::class), $this->createMock(RegistryInterface::class)) extends ORMAdapter {
+        $mock = new class($this->createMock(RegistryInterface::class)) extends ORMAdapter {
             public function foo($query, $column)
             {
                 return $this->mapPropertyPath($query, $column);

@@ -8,6 +8,7 @@ services:
         public: false
         arguments:
             - '@doctrine.result_cache_pool'
+
     doctrine.system_cache_provider:
         class: Symfony\Component\Cache\DoctrineProvider
         public: false

@@ -27,9 +27,5 @@ final class ORMAdapterEvents
      *
      * @Event("Omines\DataTablesBundle\Adapter\Doctrine\Event\ORMAdapterQueryEvent")
      */
-    const PRE_QUERY = 'omines_datatables.pre_query';
-
-    private function __construct()
-    {
-    }
+    const PRE_QUERY = 'omines_datatables.ormadapter.pre_query';
 }

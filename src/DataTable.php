@@ -230,6 +230,14 @@ class DataTable
     }
 
     /**
+     * @return EventDispatcherInterface
+     */
+    public function getEventDispatcher(): EventDispatcherInterface
+    {
+        return $this->eventDispatcher;
+    }
+
+    /**
      * @return bool
      */
     public function isLanguageFromCDN(): bool

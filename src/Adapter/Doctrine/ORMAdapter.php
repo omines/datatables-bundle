@@ -26,7 +26,6 @@ use Omines\DataTablesBundle\DataTableState;
 use Omines\DataTablesBundle\Exception\InvalidConfigurationException;
 use Omines\DataTablesBundle\Exception\MissingDependencyException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -56,24 +55,18 @@ class ORMAdapter extends AbstractAdapter
     /** @var QueryBuilderProcessorInterface[] */
     protected $criteriaProcessors;
 
-    /** @var EventDispatcherInterface */
-    protected $eventDispatcher;
-
     /**
      * DoctrineAdapter constructor.
      *
-     * @param EventDispatcherInterface $eventDispatcher
      * @param RegistryInterface|null $registry
      */
-    public function __construct(EventDispatcherInterface $eventDispatcher, RegistryInterface $registry = null)
+    public function __construct(RegistryInterface $registry = null)
     {
         if (null === $registry) {
             throw new MissingDependencyException('Install doctrine/doctrine-bundle to use the ORMAdapter');
         }
 
         parent::__construct();
-
-        $this->eventDispatcher = $eventDispatcher;
         $this->registry = $registry;
     }
 
@@ -207,7 +200,7 @@ class ORMAdapter extends AbstractAdapter
 
         $query = $builder->getQuery();
         $event = new ORMAdapterQueryEvent($query);
-        $this->eventDispatcher->dispatch(ORMAdapterEvents::PRE_QUERY, $event);
+        $state->getDataTable()->getEventDispatcher()->dispatch(ORMAdapterEvents::PRE_QUERY, $event);
 
         foreach ($query->iterate([], $this->hydrationMode) as $result) {
             yield $entity = array_values($result)[0];

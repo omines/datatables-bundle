@@ -15,7 +15,6 @@ namespace Tests\Unit;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  * AdapterTest.
@@ -32,7 +31,7 @@ class AdapterTest extends TestCase
     {
         /** @var Registry $registryMock */
         $registryMock = $this->createMock(Registry::class);
-        $adapter = new ORMAdapter($this->createMock(EventDispatcher::class), $registryMock);
+        $adapter = new ORMAdapter($registryMock);
         $adapter->configure([
             'entity' => 'foobar',
         ]);

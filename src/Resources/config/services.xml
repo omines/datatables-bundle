@@ -10,7 +10,6 @@
         <!-- Adapters -->
         <service id="Omines\DataTablesBundle\Adapter\ArrayAdapter" />
         <service id="Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter">
-            <argument type="service" id="event_dispatcher" />
             <argument type="service" id="doctrine" on-invalid="null" />
         </service>
 
