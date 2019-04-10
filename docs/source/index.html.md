@@ -300,6 +300,28 @@ Note that implementing your own criteria overrides the default, meaning searchin
 longer work automatically. Add the `SearchCriteriaProvider` manually to combine the default behavior
 with your own implementation.
 
+### Events
+
+```php?start_inline=1
+$table->createAdapter(ORMAdapter::class, [
+    'entity' => Employee::class,
+    'query' => function (QueryBuilder $builder) {
+        $builder
+            ->select('e')
+            ->addSelect('c')
+            ->from(Employee::class, 'e')
+            ->leftJoin('e.company', 'c')
+        ;
+    },
+]);
+
+$table->addEventListener(ORMAdapterEvents::PRE_QUERY, function(ORMAdapterQueryEvent $event) {
+    $event->getQuery()->useResultCache(true)->useQueryCache(true);
+});
+```
+The `PRE_QUERY` event is dispatched after the QueryBuilder built the Query
+and before the iteration starts. It can be useful to configure the cache.
+
 ## Elastica
 
 ```php?start_inline=1

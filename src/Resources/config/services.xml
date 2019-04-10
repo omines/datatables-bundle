@@ -23,6 +23,7 @@
             <argument>%datatables.config%</argument>
             <argument type="service" id="datatables.renderer" />
             <argument type="service" id="Omines\DataTablesBundle\DependencyInjection\Instantiator" />
+            <argument type="service" id="event_dispatcher" />
         </service>
 
         <!-- Support services -->

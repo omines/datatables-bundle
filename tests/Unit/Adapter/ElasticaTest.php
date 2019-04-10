@@ -19,6 +19,7 @@ use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableState;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -61,7 +62,7 @@ class ElasticaTest extends TestCase
         ;
 
         // Set up a dummy table
-        $table = (new DataTable())
+        $table = (new DataTable($this->createMock(EventDispatcher::class)))
             ->setName('foo')
             ->setMethod(Request::METHOD_GET)
             ->add('foo', TextColumn::class, ['field' => 'foo', 'globalSearchable' => true])

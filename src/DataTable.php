@@ -19,6 +19,7 @@ use Omines\DataTablesBundle\DependencyInjection\Instantiator;
 use Omines\DataTablesBundle\Exception\InvalidArgumentException;
 use Omines\DataTablesBundle\Exception\InvalidConfigurationException;
 use Omines\DataTablesBundle\Exception\InvalidStateException;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -65,6 +66,9 @@ class DataTable
     /** @var array<string, AbstractColumn> */
     protected $columnsByName = [];
 
+    /** @var EventDispatcherInterface */
+    protected $eventDispatcher;
+
     /** @var string */
     protected $method = Request::METHOD_POST;
 
@@ -104,11 +108,14 @@ class DataTable
     /**
      * DataTable constructor.
      *
+     * @param EventDispatcherInterface $eventDispatcher
      * @param array $options
      * @param Instantiator|null $instantiator
      */
-    public function __construct(array $options = [], Instantiator $instantiator = null)
+    public function __construct(EventDispatcherInterface $eventDispatcher, array $options = [], Instantiator $instantiator = null)
     {
+        $this->eventDispatcher = $eventDispatcher;
+
         $this->instantiator = $instantiator ?? new Instantiator();
 
         $resolver = new OptionsResolver();
@@ -134,6 +141,24 @@ class DataTable
 
         $this->columns[] = $column;
         $this->columnsByName[$name] = $column;
+
+        return $this;
+    }
+
+    /**
+     * Adds an event listener to an event on this DataTable.
+     *
+     * @param string   $eventName The name of the event to listen to
+     * @param callable $listener  The listener to execute
+     * @param int      $priority  The priority of the listener. Listeners
+     *                            with a higher priority are called before
+     *                            listeners with a lower priority.
+     *
+     * @return $this
+     */
+    public function addEventListener(string $eventName, callable $listener, int $priority = 0): self
+    {
+        $this->eventDispatcher->addListener($eventName, $listener, $priority);
 
         return $this;
     }
@@ -202,6 +227,14 @@ class DataTable
     public function getColumns(): array
     {
         return $this->columns;
+    }
+
+    /**
+     * @return EventDispatcherInterface
+     */
+    public function getEventDispatcher(): EventDispatcherInterface
+    {
+        return $this->eventDispatcher;
     }
 
     /**

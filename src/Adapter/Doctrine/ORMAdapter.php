@@ -17,6 +17,7 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Omines\DataTablesBundle\Adapter\AbstractAdapter;
 use Omines\DataTablesBundle\Adapter\AdapterQuery;
+use Omines\DataTablesBundle\Adapter\Doctrine\Event\ORMAdapterQueryEvent;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORM\AutomaticQueryBuilder;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORM\QueryBuilderProcessorInterface;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORM\SearchCriteriaProvider;
@@ -151,10 +152,10 @@ class ORMAdapter extends AbstractAdapter
         foreach ($builder->getDQLPart('join') as $joins) {
             /** @var Query\Expr\Join $join */
             foreach ($joins as $join) {
-                if(strstr($join->getJoin(), '.') === false){
+                if (false === mb_strstr($join->getJoin(), '.')) {
                     continue;
-                }       
-                
+                }
+
                 list($origin, $target) = explode('.', $join->getJoin());
 
                 $mapping = $aliases[$origin][1]->getAssociationMapping($target);
@@ -197,8 +198,11 @@ class ORMAdapter extends AbstractAdapter
             ;
         }
 
-        //!$this->query->getHint(self::HINT_DISTINCT) || isset($this->selectedClasses[$joinedDqlAlias])
-        foreach ($builder->getQuery()->iterate([], $this->hydrationMode) as $result) {
+        $query = $builder->getQuery();
+        $event = new ORMAdapterQueryEvent($query);
+        $state->getDataTable()->getEventDispatcher()->dispatch(ORMAdapterEvents::PRE_QUERY, $event);
+
+        foreach ($query->iterate([], $this->hydrationMode) as $result) {
             yield $entity = array_values($result)[0];
             if (Query::HYDRATE_OBJECT === $this->hydrationMode) {
                 $this->manager->detach($entity);

@@ -29,3 +29,6 @@ grouped2:
 employee.edit:
     path:       /employee/{id}
 
+orm_adapter_events.pre_query:
+    path: /orm-adapter-events/pre-query
+    controller: Tests\Fixtures\AppBundle\Controller\ORMAdapterEventsController::preQueryAction
