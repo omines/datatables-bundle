@@ -19,9 +19,11 @@ use Omines\DataTablesBundle\DependencyInjection\Instantiator;
 use Omines\DataTablesBundle\Exception\InvalidArgumentException;
 use Omines\DataTablesBundle\Exception\InvalidConfigurationException;
 use Omines\DataTablesBundle\Exception\InvalidStateException;
+use Omines\DataTablesBundle\Exporter\DataTableExporterManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -69,6 +71,9 @@ class DataTable
     /** @var EventDispatcherInterface */
     protected $eventDispatcher;
 
+    /** @var DataTableExporterManager */
+    protected $exporterManager;
+
     /** @var string */
     protected $method = Request::METHOD_POST;
 
@@ -107,10 +112,16 @@ class DataTable
 
     /**
      * DataTable constructor.
+     *
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param DataTableExporterManager $exporterManager
+     * @param array $options
+     * @param Instantiator|null $instantiator
      */
-    public function __construct(EventDispatcherInterface $eventDispatcher, array $options = [], Instantiator $instantiator = null)
+    public function __construct(EventDispatcherInterface $eventDispatcher, DataTableExporterManager $exporterManager, array $options = [], Instantiator $instantiator = null)
     {
         $this->eventDispatcher = $eventDispatcher;
+        $this->exporterManager = $exporterManager;
 
         $this->instantiator = $instantiator ?? new Instantiator();
 
@@ -277,10 +288,18 @@ class DataTable
         return $this;
     }
 
-    public function getResponse(): JsonResponse
+    public function getResponse(): Response
     {
         if (null === $this->state) {
             throw new InvalidStateException('The DataTable does not know its state yet, did you call handleRequest?');
+        }
+
+        // Server side export
+        if (null !== $this->state->getExporterName()) {
+            return $this->exporterManager
+                ->setDataTable($this)
+                ->setExporterName($this->state->getExporterName())
+                ->getResponse();
         }
 
         $resultSet = $this->getResultSet();

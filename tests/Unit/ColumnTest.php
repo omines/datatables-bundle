@@ -20,6 +20,7 @@ use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\Column\TwigColumn;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\Exception\MissingDependencyException;
+use Omines\DataTablesBundle\Exporter\DataTableExporterManager;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
@@ -36,7 +37,7 @@ class ColumnTest extends TestCase
         $column->initialize('test', 1, [
             'nullValue' => 'foo',
             'format' => 'd-m-Y',
-        ], (new DataTable($this->createMock(EventDispatcher::class)))->setName('foo'));
+        ], $this->createDataTable()->setName('foo'));
 
         $this->assertSame('03-04-2015', $column->transform('2015-04-03'));
         $this->assertSame('foo', $column->transform(null));
@@ -48,7 +49,7 @@ class ColumnTest extends TestCase
         $column->initialize('test', 1, [
             'format' => 'd.m.Y H:i:s',
             'createFromFormat' => 'Y-m-d\TH:i:sP',
-        ], (new DataTable($this->createMock(EventDispatcher::class)))->setName('foo'));
+        ], $this->createDataTable()->setName('foo'));
 
         $this->assertSame('19.02.2020 22:30:34', $column->transform('2020-02-19T22:30:34+00:00'));
     }
@@ -59,7 +60,7 @@ class ColumnTest extends TestCase
         $column->initialize('test', 1, [
             'data' => 'bar',
             'render' => 'foo%s',
-        ], (new DataTable($this->createMock(EventDispatcher::class)))->setName('foo'));
+        ], $this->createDataTable()->setName('foo'));
 
         $this->assertFalse($column->isRaw());
         $this->assertSame('foobar', $column->transform(null));
@@ -72,7 +73,7 @@ class ColumnTest extends TestCase
         $column->initialize('test', 1, [
              'trueValue' => 'yes',
              'nullValue' => '<em>null</em>',
-        ], new DataTable($this->createMock(EventDispatcher::class)));
+        ], $this->createDataTable());
 
         $this->assertSame('yes', $column->transform(5));
         $this->assertSame('yes', $column->transform(true));
@@ -95,7 +96,7 @@ class ColumnTest extends TestCase
                 1 => 'bar',
                 2 => 'baz',
             ],
-        ], new DataTable($this->createMock(EventDispatcher::class)));
+        ], $this->createDataTable());
 
         $this->assertSame('foo', $column->transform(0));
         $this->assertSame('bar', $column->transform(1));
@@ -106,7 +107,7 @@ class ColumnTest extends TestCase
     public function testNumberColumn()
     {
         $column = new NumberColumn();
-        $column->initialize('test', 1, [], new DataTable($this->createMock(EventDispatcher::class)));
+        $column->initialize('test', 1, [], $this->createDataTable());
 
         $this->assertSame('5', $column->transform(5));
         $this->assertSame('1', $column->transform(true));
@@ -127,7 +128,7 @@ class ColumnTest extends TestCase
             'render' => function ($value) {
                 return mb_strtoupper($value);
             },
-        ], new DataTable($this->createMock(EventDispatcher::class)));
+        ], $this->createDataTable());
 
         $this->assertFalse($column->isRaw());
         $this->assertSame('BAR', $column->transform(null));
@@ -139,5 +140,10 @@ class ColumnTest extends TestCase
         $this->expectExceptionMessage('You must have TwigBundle installed to use');
 
         new TwigColumn();
+    }
+
+    private function createDataTable(): DataTable
+    {
+        return new DataTable($this->createMock(EventDispatcher::class), $this->createMock(DataTableExporterManager::class));
     }
 }

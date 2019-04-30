@@ -20,3 +20,9 @@ services:
         class: Symfony\Component\Cache\DoctrineProvider
         arguments:
             - '@doctrine.system_cache_pool'
+
+    test.Omines\DataTablesBundle\Exporter\DataTableExporterCollection: '@Omines\DataTablesBundle\Exporter\DataTableExporterCollection'
+
+    Tests\Fixtures\AppBundle\DataTable\Exporter\TxtExporter:
+        tags:
+            - datatables.exporter

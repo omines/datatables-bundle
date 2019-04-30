@@ -20,6 +20,7 @@ use Omines\DataTablesBundle\DataTableRendererInterface;
 use Omines\DataTablesBundle\DataTablesBundle;
 use Omines\DataTablesBundle\DependencyInjection\DataTablesExtension;
 use Omines\DataTablesBundle\DependencyInjection\Instantiator;
+use Omines\DataTablesBundle\Exporter\DataTableExporterManager;
 use Omines\DataTablesBundle\Exception\InvalidArgumentException;
 use Omines\DataTablesBundle\Exception\InvalidConfigurationException;
 use Omines\DataTablesBundle\Exception\InvalidStateException;
@@ -47,7 +48,7 @@ class DataTableTest extends TestCase
 
     public function testFactory()
     {
-        $factory = new DataTableFactory(['language_from_cdn' => false], $this->createMock(TwigRenderer::class), new Instantiator(), $this->createMock(EventDispatcher::class));
+        $factory = new DataTableFactory(['language_from_cdn' => false], $this->createMock(TwigRenderer::class), new Instantiator(), $this->createMock(EventDispatcher::class), $this->createMock(DataTableExporterManager::class));
 
         $table = $factory->create(['pageLength' => 684, 'dom' => 'bar']);
         $this->assertSame(684, $table->getOption('pageLength'));
@@ -116,7 +117,7 @@ class DataTableTest extends TestCase
         $container = new ContainerBuilder();
         (new DataTablesExtension())->load([], $container);
 
-        $factory = new DataTableFactory($container->getParameter('datatables.config'), $this->createMock(TwigRenderer::class), new Instantiator(), $this->createMock(EventDispatcher::class));
+        $factory = new DataTableFactory($container->getParameter('datatables.config'), $this->createMock(TwigRenderer::class), new Instantiator(), $this->createMock(EventDispatcher::class), $this->createMock(DataTableExporterManager::class));
         $factory->createFromType('foobar');
     }
 
@@ -211,12 +212,12 @@ class DataTableTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Could not resolve type "foo" to a service or class');
 
-        (new DataTableFactory([], $this->createMock(DataTableRendererInterface::class), new Instantiator(), $this->createMock(EventDispatcher::class)))
+        (new DataTableFactory([], $this->createMock(DataTableRendererInterface::class), new Instantiator(), $this->createMock(EventDispatcher::class), $this->createMock(DataTableExporterManager::class)))
             ->createFromType('foo');
     }
 
     private function createMockDataTable(array $options = [])
     {
-        return new DataTable($this->createMock(EventDispatcher::class), $options);
+        return new DataTable($this->createMock(EventDispatcher::class), $this->createMock(DataTableExporterManager::class), $options);
     }
 }

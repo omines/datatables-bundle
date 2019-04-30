@@ -128,6 +128,32 @@
     };
 
     /**
+     * Server-side export.
+     */
+    $.fn.initDataTables.exportBtnAction = function(exporterName, settings) {
+        settings = $.extend({}, $.fn.initDataTables.defaults, settings);
+
+        return function() {
+            const form = document.createElement('form');
+            form.method = settings.method;
+            form.action = settings.url;
+
+            const inputDt = document.createElement('input');
+            inputDt.name = '_dt';
+            inputDt.value = settings.name;
+            form.appendChild(inputDt);
+
+            const inputExporter = document.createElement('input');
+            inputExporter.name = '_exporter';
+            inputExporter.value = exporterName;
+            form.appendChild(inputExporter);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+    };
+
+    /**
      * Convert a querystring to a proper array - reverses $.param
      */
     function deparam(params, coerce) {
