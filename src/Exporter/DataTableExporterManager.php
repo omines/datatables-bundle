@@ -86,7 +86,7 @@ class DataTableExporterManager
         $file = $exporter->export($this->getColumnNames(), $this->getAllData());
 
         $response = new BinaryFileResponse($file);
-        $response->deleteFileAfterSend();
+        $response->deleteFileAfterSend(true);
         $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $response->getFile()->getFilename());
 
         $responseEvent = new DataTableExporterResponseEvent($response);
