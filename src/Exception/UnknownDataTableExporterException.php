@@ -24,10 +24,10 @@ class UnknownDataTableExporterException extends \Exception
     /**
      * UnknownDataTableExporterException constructor.
      *
-     * @param string   $name                The name of the DataTable exporter that cannot be found
-     * @param iterable $referencedExporters Available DataTable exporters
+     * @param string $name The name of the DataTable exporter that cannot be found
+     * @param \Traversable $referencedExporters Available DataTable exporters
      */
-    public function __construct(string $name, iterable $referencedExporters)
+    public function __construct(string $name, \Traversable $referencedExporters)
     {
         $format = <<<EOF
         Cannot find a DataTable exporter named "%s". 
@@ -38,7 +38,7 @@ EOF;
         parent::__construct(sprintf($format, $name, $this->formatReferencedExporters($referencedExporters)));
     }
 
-    private function formatReferencedExporters(iterable $referencedExporters): string
+    private function formatReferencedExporters(\Traversable $referencedExporters): string
     {
         $names = [];
 
