@@ -19,6 +19,7 @@ use Omines\DataTablesBundle\Adapter\Doctrine\ORM\SearchCriteriaProvider;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
+use Omines\DataTablesBundle\Exporter\DataTableExporterManager;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -33,7 +34,7 @@ class DoctrineTest extends TestCase
 {
     public function testSearchCriteriaProvider()
     {
-        $table = new DataTable($this->createMock(EventDispatcher::class));
+        $table = new DataTable($this->createMock(EventDispatcher::class), $this->createMock(DataTableExporterManager::class));
         $table
             ->add('firstName', TextColumn::class)
             ->add('lastName', TextColumn::class)

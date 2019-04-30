@@ -32,3 +32,7 @@ employee.edit:
 orm_adapter_events.pre_query:
     path: /orm-adapter-events/pre-query
     controller: Tests\Fixtures\AppBundle\Controller\ORMAdapterEventsController::preQueryAction
+
+exporter:
+    path: /exporter
+    controller: Tests\Fixtures\AppBundle\Controller\ExporterController::exportAction

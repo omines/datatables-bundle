@@ -18,6 +18,20 @@
             <argument type="service" id="twig" on-invalid="null" />
         </service>
 
+        <!-- Exporters -->
+        <service id="Omines\DataTablesBundle\Exporter\DataTableExporterCollection">
+            <argument type="tagged" tag="datatables.exporter"/>
+        </service>
+
+        <service id="Omines\DataTablesBundle\Exporter\DataTableExporterManager">
+            <argument type="service" id="Omines\DataTablesBundle\Exporter\DataTableExporterCollection"/>
+            <argument type="service" id="translator"/>
+        </service>
+
+        <service id="Omines\DataTablesBundle\Exporter\Excel\ExcelExporter">
+            <tag name="datatables.exporter"/>
+        </service>
+
         <!-- Factory -->
         <service id="Omines\DataTablesBundle\DataTableFactory" public="true">
             <argument>%datatables.config%</argument>

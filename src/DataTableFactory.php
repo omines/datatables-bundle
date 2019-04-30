@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Omines\DataTablesBundle;
 
 use Omines\DataTablesBundle\DependencyInjection\Instantiator;
+use Omines\DataTablesBundle\Exporter\DataTableExporterManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -33,6 +34,9 @@ class DataTableFactory
     /** @var EventDispatcherInterface */
     protected $eventDispatcher;
 
+    /** @var DataTableExporterManager */
+    protected $exporterManager;
+
     /**
      * DataTableFactory constructor.
      *
@@ -40,13 +44,15 @@ class DataTableFactory
      * @param DataTableRendererInterface $renderer
      * @param Instantiator $instantiator
      * @param EventDispatcherInterface $eventDispatcher
+     * @param DataTableExporterManager $exporterManager
      */
-    public function __construct(array $config, DataTableRendererInterface $renderer, Instantiator $instantiator, EventDispatcherInterface $eventDispatcher)
+    public function __construct(array $config, DataTableRendererInterface $renderer, Instantiator $instantiator, EventDispatcherInterface $eventDispatcher, DataTableExporterManager $exporterManager)
     {
         $this->config = $config;
         $this->renderer = $renderer;
         $this->instantiator = $instantiator;
         $this->eventDispatcher = $eventDispatcher;
+        $this->exporterManager = $exporterManager;
     }
 
     /**
@@ -57,7 +63,7 @@ class DataTableFactory
     {
         $config = $this->config;
 
-        return (new DataTable($this->eventDispatcher, array_merge($config['options'] ?? [], $options), $this->instantiator))
+        return (new DataTable($this->eventDispatcher, $this->exporterManager, array_merge($config['options'] ?? [], $options), $this->instantiator))
             ->setRenderer($this->renderer)
             ->setMethod($config['method'] ?? Request::METHOD_POST)
             ->setPersistState($config['persist_state'] ?? 'fragment')

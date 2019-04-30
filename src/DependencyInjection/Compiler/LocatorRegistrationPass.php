@@ -16,6 +16,7 @@ use Omines\DataTablesBundle\Adapter\AdapterInterface;
 use Omines\DataTablesBundle\Column\AbstractColumn;
 use Omines\DataTablesBundle\DataTableTypeInterface;
 use Omines\DataTablesBundle\DependencyInjection\Instantiator;
+use Omines\DataTablesBundle\Exporter\DataTableExporterInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -39,6 +40,7 @@ class LocatorRegistrationPass implements CompilerPassInterface
                 AdapterInterface::class => $this->registerLocator($container, 'adapter'),
                 AbstractColumn::class => $this->registerLocator($container, 'column'),
                 DataTableTypeInterface::class => $this->registerLocator($container, 'type'),
+                DataTableExporterInterface::class => $this->registerLocator($container, 'exporter'),
             ]]);
     }
 

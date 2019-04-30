@@ -48,7 +48,8 @@
         "doctrine/orm": "For full automated integration with Doctrine entities",
         "mongodb/mongodb": "For integration with MongoDB collections",
         "ruflin/elastica": "For integration with Elasticsearch indexes",
-        "symfony/twig-bundle": "To use default Twig based rendering and TwigColumn"
+        "symfony/twig-bundle": "To use default Twig based rendering and TwigColumn",
+        "phpoffice/phpspreadsheet": "To export the data from DataTables to Excel"
     },
     "autoload": {
         "psr-4": { "Omines\\DataTablesBundle\\": "src/"}

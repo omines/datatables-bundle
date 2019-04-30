@@ -49,6 +49,9 @@ class DataTableState
     /** @var bool */
     private $isCallback = false;
 
+    /** @var string */
+    private $exporterName = null;
+
     /**
      * DataTableState constructor.
      *
@@ -88,6 +91,7 @@ class DataTableState
         $this->draw = $parameters->getInt('draw');
         $this->isCallback = true;
         $this->isInitial = $parameters->getBoolean('_init', false);
+        $this->exporterName = $parameters->get('_exporter');
 
         $this->start = (int) $parameters->get('start', $this->start);
         $this->length = (int) $parameters->get('length', $this->length);
@@ -268,5 +272,13 @@ class DataTableState
         $this->searchColumns[$column->getName()] = ['column' => $column, 'search' => $search, 'regex' => $isRegex];
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExporterName()
+    {
+        return $this->exporterName;
     }
 }
