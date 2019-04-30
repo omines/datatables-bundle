@@ -18,7 +18,7 @@ use Omines\DataTablesBundle\Exporter\Event\DataTableExporterResponseEvent;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\Translation\DataCollectorTranslator;
 
 /**
  * DataTableExporterManager.
@@ -36,16 +36,16 @@ class DataTableExporterManager
     /** @var string */
     private $exporterName;
 
-    /** @var TranslatorInterface */
+    /** @var DataCollectorTranslator */
     private $translator;
 
     /**
      * DataTableExporterManager constructor.
      *
      * @param DataTableExporterCollection $exporterCollection
-     * @param TranslatorInterface $translator
+     * @param DataCollectorTranslator $translator
      */
-    public function __construct(DataTableExporterCollection $exporterCollection, TranslatorInterface $translator)
+    public function __construct(DataTableExporterCollection $exporterCollection, DataCollectorTranslator $translator)
     {
         $this->exporterCollection = $exporterCollection;
         $this->translator = $translator;
