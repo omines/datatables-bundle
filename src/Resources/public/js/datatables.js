@@ -137,6 +137,7 @@
             const form = document.createElement('form');
             form.method = settings.method;
             form.action = settings.url;
+            form.style.display = 'none';
 
             const inputDt = document.createElement('input');
             inputDt.name = '_dt';
