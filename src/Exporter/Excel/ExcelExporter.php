@@ -14,6 +14,7 @@ namespace Omines\DataTablesBundle\Exporter\Excel;
 
 use Omines\DataTablesBundle\Exporter\DataTableExporterInterface;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Helper;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -38,7 +39,12 @@ class ExcelExporter implements DataTableExporterInterface
         $sheet->fromArray($columnNames, null, 'A1');
         $sheet->getStyle('A1:' . $sheet->getHighestColumn() . '1')->getFont()->setBold(true);
 
-        $sheet->fromArray(iterator_to_array($data), null, 'A2');
+        $htmlHelper = new Helper\Html();
+        $sheet->fromArray(array_map(function (array $row) use ($htmlHelper) {
+            return array_map(function (string $value) use ($htmlHelper) {
+                return $htmlHelper->toRichTextObject($value);
+            }, $row);
+        }, iterator_to_array($data)), null, 'A2');
 
         $this->autoSizeColumnWidth($sheet);
 

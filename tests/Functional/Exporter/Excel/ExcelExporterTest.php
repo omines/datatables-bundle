@@ -43,23 +43,23 @@ class ExcelExporterTest extends WebTestCase
 
         $sheet = IOFactory::load($response->getFile()->getPathname())->getActiveSheet();
 
-        static::assertSame('dt.columns.firstName', $sheet->getCell('A1')->getValue());
-        static::assertSame('dt.columns.lastName', $sheet->getCell('B1')->getValue());
+        static::assertSame('dt.columns.firstName', $sheet->getCell('A1')->getFormattedValue());
+        static::assertSame('dt.columns.lastName', $sheet->getCell('B1')->getFormattedValue());
 
-        static::assertSame('FirstName0', $sheet->getCell('A2')->getValue());
-        static::assertSame('LastName0', $sheet->getCell('B2')->getValue());
+        static::assertSame('FirstName0', $sheet->getCell('A2')->getFormattedValue());
+        static::assertSame('LastName0', $sheet->getCell('B2')->getFormattedValue());
 
-        static::assertSame('FirstName1', $sheet->getCell('A3')->getValue());
-        static::assertSame('LastName1', $sheet->getCell('B3')->getValue());
+        static::assertSame('FirstName1', $sheet->getCell('A3')->getFormattedValue());
+        static::assertSame('LastName1', $sheet->getCell('B3')->getFormattedValue());
 
-        static::assertSame('FirstName2', $sheet->getCell('A4')->getValue());
-        static::assertSame('LastName2', $sheet->getCell('B4')->getValue());
+        static::assertSame('FirstName2', $sheet->getCell('A4')->getFormattedValue());
+        static::assertSame('LastName2', $sheet->getCell('B4')->getFormattedValue());
 
-        static::assertSame('FirstName3', $sheet->getCell('A5')->getValue());
-        static::assertSame('LastName3', $sheet->getCell('B5')->getValue());
+        static::assertSame('FirstName3', $sheet->getCell('A5')->getFormattedValue());
+        static::assertSame('LastName3', $sheet->getCell('B5')->getFormattedValue());
 
-        static::assertSame('FirstName4', $sheet->getCell('A6')->getValue());
-        static::assertSame('LastName4', $sheet->getCell('B6')->getValue());
+        static::assertSame('FirstName4', $sheet->getCell('A6')->getFormattedValue());
+        static::assertSame('LastName4', $sheet->getCell('B6')->getFormattedValue());
     }
 
     protected function tearDown()

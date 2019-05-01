@@ -34,7 +34,11 @@ class ExporterController extends AbstractController
     public function exportAction(Request $request): Response
     {
         $table = $this->createDataTable()
-            ->add('firstName', TextColumn::class)
+            ->add('firstName', TextColumn::class, [
+                'render' => function (string $value, Person $context) {
+                    return '<a href="http://example.org">' . $value . '</a>';
+                },
+            ])
             ->add('lastName', TextColumn::class)
             ->createAdapter(ORMAdapter::class, [
                 'entity' => Person::class,
