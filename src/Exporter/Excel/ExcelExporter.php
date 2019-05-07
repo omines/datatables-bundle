@@ -39,12 +39,15 @@ class ExcelExporter implements DataTableExporterInterface
         $sheet->fromArray($columnNames, null, 'A1');
         $sheet->getStyle('A1:' . $sheet->getHighestColumn() . '1')->getFont()->setBold(true);
 
+        $rowIndex = 2;
         $htmlHelper = new Helper\Html();
-        $sheet->fromArray(array_map(function (array $row) use ($htmlHelper) {
-            return array_map(function (string $value) use ($htmlHelper) {
-                return $htmlHelper->toRichTextObject($value);
-            }, $row);
-        }, iterator_to_array($data)), null, 'A2');
+        foreach ($data as $row) {
+            $colIndex = 1;
+            foreach ($row as $value) {
+                $sheet->setCellValueByColumnAndRow($colIndex++, $rowIndex, $htmlHelper->toRichTextObject($value));
+            }
+            ++$rowIndex;
+        }
 
         $this->autoSizeColumnWidth($sheet);
 

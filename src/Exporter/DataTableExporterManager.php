@@ -118,9 +118,9 @@ class DataTableExporterManager
     }
 
     /**
-     * Creates an Iterator to browse the entire DataTable (all pages).
+     * Browse the entire DataTable (all pages).
      *
-     * A custom iterator is created in order to remove the 'DT_RowId' key
+     * A Generator is created in order to remove the 'DT_RowId' key
      * which is created by some adapters (e.g. ORMAdapter).
      *
      * @return \Iterator
@@ -129,46 +129,12 @@ class DataTableExporterManager
     {
         $data = $this->dataTable->getAdapter()->getData(new DataTableState($this->dataTable))->getData();
 
-        return new class($data) implements \Iterator {
-            private $data;
-            private $currentPosition;
-
-            public function __construct(\Traversable $data)
-            {
-                $this->data = $data;
-                $this->currentPosition = 0;
+        foreach ($data as $row) {
+            if (isset($row['DT_RowId'])) {
+                $row = array_splice($row, 1);
             }
 
-            public function current()
-            {
-                $d = $this->data[$this->currentPosition];
-
-                if (isset($d['DT_RowId'])) {
-                    $d = array_splice($d, 1);
-                }
-
-                return $d;
-            }
-
-            public function next()
-            {
-                ++$this->currentPosition;
-            }
-
-            public function key()
-            {
-                return $this->currentPosition;
-            }
-
-            public function valid()
-            {
-                return isset($this->data[$this->currentPosition]);
-            }
-
-            public function rewind()
-            {
-                $this->currentPosition = 0;
-            }
-        };
+            yield $row;
+        }
     }
 }
