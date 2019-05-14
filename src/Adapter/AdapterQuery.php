@@ -94,7 +94,7 @@ class AdapterQuery
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getIdentifierPropertyPath()
     {
@@ -102,7 +102,7 @@ class AdapterQuery
     }
 
     /**
-     * @param null|string $identifierPropertyPath
+     * @param string|null $identifierPropertyPath
      * @return $this
      */
     public function setIdentifierPropertyPath($identifierPropertyPath): self

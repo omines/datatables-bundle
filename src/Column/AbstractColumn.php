@@ -135,7 +135,7 @@ abstract class AbstractColumn
             ->setAllowedTypes('orderable', ['null', 'boolean'])
             ->setAllowedTypes('orderField', ['null', 'string'])
             ->setAllowedTypes('searchable', ['null', 'boolean'])
-            ->setAllowedTypes('globalSearchable',  ['null', 'boolean'])
+            ->setAllowedTypes('globalSearchable', ['null', 'boolean'])
             ->setAllowedTypes('filter', ['null', 'array'])
             ->setAllowedTypes('className', ['null', 'string'])
             ->setAllowedTypes('render', ['null', 'string', 'callable'])
@@ -249,10 +249,13 @@ abstract class AbstractColumn
     public function getLeftExpr()
     {
         $leftExpr = $this->options['leftExpr'];
-        if ($leftExpr === null) return $this->getField();
+        if (null === $leftExpr) {
+            return $this->getField();
+        }
         if (is_callable($leftExpr)) {
             return call_user_func($leftExpr, $this->getField());
         }
+
         return $leftExpr;
     }
 
@@ -262,10 +265,13 @@ abstract class AbstractColumn
     public function getRightExpr($value)
     {
         $rightExpr = $this->options['rightExpr'];
-        if ($rightExpr === null) return $value;
+        if (null === $rightExpr) {
+            return $value;
+        }
         if (is_callable($rightExpr)) {
             return call_user_func($rightExpr, $value);
         }
+
         return $rightExpr;
     }
 
@@ -313,5 +319,4 @@ abstract class AbstractColumn
     {
         return true;
     }
-
 }

@@ -1,9 +1,18 @@
 <?php
 
+/*
+ * Symfony DataTables Bundle
+ * (c) Omines Internetbureau B.V. - https://omines.nl/
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
+
 namespace Tests\Fixtures\AppBundle\DataTable\Adapter;
 
 use Doctrine\ORM\Query;
-use Doctrine\ORM\Query\Expr\GroupBy;
 use Doctrine\ORM\QueryBuilder;
 use Omines\DataTablesBundle\Adapter\AdapterQuery;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
@@ -49,11 +58,11 @@ class CustomORMAdapter extends ORMAdapter
                 ->setMaxResults($state->getLength());
         }
 
-        /**
+        /*
          * Use foreach instead of iterate to prevent group by from crashing
          */
         foreach ($builder->getQuery()->getResult($this->hydrationMode) as $result) {
-            /**
+            /*
              * Return everything instead of first element
              */
             yield $result;
