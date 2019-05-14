@@ -5,6 +5,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 Nothing yet.
 
+## [0.3.0] - 2019-05-14
+### Added
+ - Add DataTable events (#76)
+
+### Fixed
+ - Fix double transformations in ArrayAdapter (#70)
+
 ## [0.2.2] - 2019-02-25
 ### Added
  - Add ability to join from inverse side (#63)
@@ -74,7 +81,8 @@ Nothing yet.
 ### Added
  - Basic functionality
 
-[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.2.2...master
+[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.3.0...master
+[0.3.0]: https://github.com/omines/datatables-bundle/compare/0.2.2...0.3.0
 [0.2.2]: https://github.com/omines/datatables-bundle/compare/0.2.1...0.2.2
 [0.2.1]: https://github.com/omines/datatables-bundle/compare/0.2.0...0.2.1
 [0.2.0]: https://github.com/omines/datatables-bundle/compare/0.1.5...0.2.0
