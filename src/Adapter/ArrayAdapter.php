@@ -58,9 +58,7 @@ class ArrayAdapter implements AdapterInterface
         }catch (\Throwable $exception) {
             // ignore exception
         }
-        
-        $length = $state->getLength();
-        $page = $length > 0 ? array_slice($this->data, $state->getStart(), $state->getLength()) : $this->data;
+
         $map = [];
         foreach ($state->getDataTable()->getColumns() as $column) {
             unset($propertyPath);
@@ -72,9 +70,12 @@ class ArrayAdapter implements AdapterInterface
             }
         }
 
-        $data = iterator_to_array($this->processData($state, $page, $map));
+        $data = iterator_to_array($this->processData($state, $this->data, $map));
 
-        return new ArrayResultSet($data, count($this->data), count($data));
+        $length = $state->getLength();
+        $page = $length > 0 ? array_slice($data, $state->getStart(), $state->getLength()) : $data;
+
+        return new ArrayResultSet($page, count($this->data), count($data));
     }
 
     /**
