@@ -43,8 +43,22 @@ class ArrayAdapter implements AdapterInterface
      */
     public function getData(DataTableState $state): ResultSetInterface
     {
-        $length = $state->getLength();
-        $page = $length > 0 ? array_slice($this->data, $state->getStart(), $state->getLength()) : $this->data;
+        // very basic implementation of sorting
+        try {
+            $oc = $state->getOrderBy()[0][0]->getName();
+            $oo = \strtolower($state->getOrderBy()[0][1]);
+
+            \usort($this->data, function ($a, $b) use ($oc, $oo) {
+                if ($oo === 'desc') {
+                    return $b[$oc] <=> $a[$oc];
+                }
+
+                return $a[$oc] <=> $b[$oc];
+            });
+        }catch (\Throwable $exception) {
+            // ignore exception
+        }
+
         $map = [];
         foreach ($state->getDataTable()->getColumns() as $column) {
             unset($propertyPath);
@@ -56,9 +70,12 @@ class ArrayAdapter implements AdapterInterface
             }
         }
 
-        $data = iterator_to_array($this->processData($state, $page, $map));
+        $data = iterator_to_array($this->processData($state, $this->data, $map));
 
-        return new ArrayResultSet($data, count($this->data), count($data));
+        $length = $state->getLength();
+        $page = $length > 0 ? array_slice($data, $state->getStart(), $state->getLength()) : $data;
+
+        return new ArrayResultSet($page, count($this->data), count($data));
     }
 
     /**
