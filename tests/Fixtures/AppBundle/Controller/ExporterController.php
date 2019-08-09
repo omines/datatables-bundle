@@ -66,4 +66,38 @@ class ExporterController extends AbstractController
            'datatable' => $table,
        ]);
     }
+
+    public function exportEmptyDataTableAction(Request $request): Response
+    {
+        $table = $this->createDataTable()
+            ->add('firstName', TextColumn::class, [
+                'render' => function (string $value, Person $context) {
+                    return '<a href="http://example.org">' . $value . '</a>';
+                },
+            ])
+            ->add('lastName', TextColumn::class)
+            ->createAdapter(ORMAdapter::class, [
+                'entity' => Person::class,
+                'query' => function (QueryBuilder $builder) {
+                    $builder
+                        ->select('p')
+                        ->from(Person::class, 'p')
+                        ->where('p.firstName = :firstName')
+                        ->setParameter('firstName', 'This user does not exist.')
+                    ;
+                },
+            ])
+            ->addEventListener(DataTableExporterEvents::PRE_RESPONSE, function (DataTableExporterResponseEvent $e) {
+                $e->getResponse()->deleteFileAfterSend(false);
+            })
+            ->handleRequest($request);
+
+        if ($table->isCallback()) {
+            return $table->getResponse();
+        }
+
+        return $this->render('@App/exporter.html.twig', [
+            'datatable' => $table,
+        ]);
+    }
 }

@@ -62,6 +62,28 @@ class ExcelExporterTest extends WebTestCase
         static::assertSame('LastName4', $sheet->getCell('B6')->getFormattedValue());
     }
 
+    /**
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
+     */
+    public function testEmptyDataTable()
+    {
+        $this->client->request('POST', '/exporter-empty-datatable', ['_dt' => 'dt', '_exporter' => 'excel']);
+
+        /** @var BinaryFileResponse $response */
+        $response = $this->client->getResponse();
+
+        static::assertTrue($response->isSuccessful());
+
+        $sheet = IOFactory::load($response->getFile()->getPathname())->getActiveSheet();
+
+        static::assertSame('dt.columns.firstName', $sheet->getCell('A1')->getFormattedValue());
+        static::assertSame('dt.columns.lastName', $sheet->getCell('B1')->getFormattedValue());
+
+        static::assertEmpty($sheet->getCell('A2')->getFormattedValue());
+        static::assertEmpty($sheet->getCell('B2')->getFormattedValue());
+    }
+
     protected function tearDown()
     {
         $this->client = null;
