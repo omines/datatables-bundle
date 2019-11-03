@@ -402,6 +402,7 @@ searchable | bool/`null` | Whether the column can be searched upon. Defaults to 
 globalSearchable | bool/`null` | Whether the column participates in global searches. Defaults to the presence of `field`.
 className | string/`null` | A CSS class to be applied to all cells in this column.
 render | string/callable/`null` | Either a [`sprintf` compatible format string](http://php.net/manual/en/function.sprintf.php), or a callable function providing rendering conversion, or default `null`.
+dataPriority | integer/`null` | A priority for this column. When using a responsive table higher numbers disappear first.
 
 ## TextColumn
 

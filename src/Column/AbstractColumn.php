@@ -126,6 +126,7 @@ abstract class AbstractColumn
                 'leftExpr' => null,
                 'operator' => '=',
                 'rightExpr' => null,
+                'dataPriority' => null,
             ])
             ->setAllowedTypes('label', ['null', 'string'])
             ->setAllowedTypes('data', ['null', 'string', 'callable'])
@@ -142,6 +143,7 @@ abstract class AbstractColumn
             ->setAllowedTypes('operator', ['string'])
             ->setAllowedTypes('leftExpr', ['null', 'string', 'callable'])
             ->setAllowedTypes('rightExpr', ['null', 'string', 'callable'])
+            ->setAllowedTypes('dataPriority', ['null', 'integer'])
         ;
 
         return $this;
@@ -273,6 +275,14 @@ abstract class AbstractColumn
         }
 
         return $rightExpr;
+    }
+
+    /**
+     * @return null|int
+     */
+    public function getDataPriority()
+    {
+        return $this->options['dataPriority'];
     }
 
     /**
