@@ -25,17 +25,12 @@ class ORMAdapterQueryEvent extends Event
 
     /**
      * ORMAdapterQueryEvent constructor.
-     *
-     * @param Query $query
      */
     public function __construct(Query $query)
     {
         $this->query = $query;
     }
 
-    /**
-     * @return Query
-     */
     public function getQuery(): Query
     {
         return $this->query;

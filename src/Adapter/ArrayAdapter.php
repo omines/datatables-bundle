@@ -79,9 +79,6 @@ class ArrayAdapter implements AdapterInterface
     }
 
     /**
-     * @param DataTableState $state
-     * @param array $data
-     * @param array $map
      * @return \Generator
      */
     protected function processData(DataTableState $state, array $data, array $map)
@@ -99,10 +96,6 @@ class ArrayAdapter implements AdapterInterface
     }
 
     /**
-     * @param DataTableState $state
-     * @param array $result
-     * @param array $map
-     * @param string $search
      * @return array|null
      */
     protected function processRow(DataTableState $state, array $result, array $map, string $search)

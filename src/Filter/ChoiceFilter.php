@@ -23,7 +23,6 @@ class ChoiceFilter extends AbstractFilter
     protected $choices = [];
 
     /**
-     * @param OptionsResolver $resolver
      * @return $this
      */
     protected function configureOptions(OptionsResolver $resolver)

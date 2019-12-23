@@ -45,9 +45,6 @@ class AutomaticQueryBuilder implements QueryBuilderProcessorInterface
 
     /**
      * AutomaticQueryBuilder constructor.
-     *
-     * @param EntityManagerInterface $em
-     * @param ClassMetadata $metadata
      */
     public function __construct(EntityManagerInterface $em, ClassMetadata $metadata)
     {

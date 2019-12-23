@@ -68,10 +68,6 @@ abstract class AbstractAdapter implements AdapterInterface
         return new ArrayResultSet($rows, $query->getTotalRows(), $query->getFilteredRows());
     }
 
-    /**
-     * @param AdapterQuery $query
-     * @return array
-     */
     protected function getPropertyMap(AdapterQuery $query): array
     {
         $propertyMap = [];
@@ -82,21 +78,12 @@ abstract class AbstractAdapter implements AdapterInterface
         return $propertyMap;
     }
 
-    /**
-     * @param AdapterQuery $query
-     */
     abstract protected function prepareQuery(AdapterQuery $query);
 
     /**
-     * @param AdapterQuery $query
-     * @param AbstractColumn $column
      * @return string|null
      */
     abstract protected function mapPropertyPath(AdapterQuery $query, AbstractColumn $column);
 
-    /**
-     * @param AdapterQuery $query
-     * @return \Traversable
-     */
     abstract protected function getResults(AdapterQuery $query): \Traversable;
 }

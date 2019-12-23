@@ -23,7 +23,7 @@ class ORMAdapterTest extends KernelTestCase
     /** @var DataTableFactory $factory */
     private $factory;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $kernel = self::bootKernel();
         $this->factory = $kernel->getContainer()->get(DataTableFactory::class);

@@ -29,7 +29,7 @@ class FunctionalTest extends WebTestCase
     /** @var Client */
     private $client;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->client = self::createClient();
     }

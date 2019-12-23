@@ -25,9 +25,6 @@ abstract class AbstractFilter
     /** @var string */
     protected $operator;
 
-    /**
-     * @param array $options
-     */
     public function set(array $options)
     {
         $resolver = new OptionsResolver();
@@ -39,7 +36,6 @@ abstract class AbstractFilter
     }
 
     /**
-     * @param OptionsResolver $resolver
      * @return $this
      */
     protected function configureOptions(OptionsResolver $resolver)
@@ -79,7 +75,6 @@ abstract class AbstractFilter
 
     /**
      * @param mixed $value
-     * @return bool
      */
     abstract public function isValidValue($value): bool;
 }

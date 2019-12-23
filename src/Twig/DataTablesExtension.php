@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Omines\DataTablesBundle\Twig;
 
 use Omines\DataTablesBundle\DataTable;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DataTablesExtension extends \Twig\Extension\AbstractExtension
 {
@@ -22,8 +22,6 @@ class DataTablesExtension extends \Twig\Extension\AbstractExtension
 
     /**
      * DataTablesExtension constructor.
-     *
-     * @param TranslatorInterface $translator
      */
     public function __construct(TranslatorInterface $translator)
     {
@@ -50,7 +48,6 @@ class DataTablesExtension extends \Twig\Extension\AbstractExtension
     }
 
     /**
-     * @param DataTable $dataTable
      * @return array
      */
     private function getLanguageSettings(DataTable $dataTable)

@@ -33,10 +33,6 @@ class SearchCriteriaProvider implements QueryBuilderProcessorInterface
         $this->processGlobalSearch($queryBuilder, $state);
     }
 
-    /**
-     * @param QueryBuilder $queryBuilder
-     * @param DataTableState $state
-     */
     private function processSearchColumns(QueryBuilder $queryBuilder, DataTableState $state)
     {
         foreach ($state->getSearchColumns() as $searchInfo) {
@@ -51,10 +47,6 @@ class SearchCriteriaProvider implements QueryBuilderProcessorInterface
         }
     }
 
-    /**
-     * @param QueryBuilder $queryBuilder
-     * @param DataTableState $state
-     */
     private function processGlobalSearch(QueryBuilder $queryBuilder, DataTableState $state)
     {
         if (!empty($globalSearch = $state->getGlobalSearch())) {

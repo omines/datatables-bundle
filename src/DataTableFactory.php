@@ -35,11 +35,6 @@ class DataTableFactory
 
     /**
      * DataTableFactory constructor.
-     *
-     * @param array $config
-     * @param DataTableRendererInterface $renderer
-     * @param Instantiator $instantiator
-     * @param EventDispatcherInterface $eventDispatcher
      */
     public function __construct(array $config, DataTableRendererInterface $renderer, Instantiator $instantiator, EventDispatcherInterface $eventDispatcher)
     {
@@ -50,7 +45,6 @@ class DataTableFactory
     }
 
     /**
-     * @param array $options
      * @return DataTable
      */
     public function create(array $options = [])
@@ -69,8 +63,6 @@ class DataTableFactory
 
     /**
      * @param string|DataTableTypeInterface $type
-     * @param array $typeOptions
-     * @param array $options
      * @return DataTable
      */
     public function createFromType($type, array $typeOptions = [], array $options = [])

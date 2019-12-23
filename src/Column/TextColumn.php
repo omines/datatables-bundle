@@ -55,9 +55,6 @@ class TextColumn extends AbstractColumn
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isRaw(): bool
     {
         return $this->options['raw'];

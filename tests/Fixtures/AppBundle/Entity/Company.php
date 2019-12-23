@@ -49,8 +49,6 @@ class Company
 
     /**
      * Company constructor.
-     *
-     * @param string $name
      */
     public function __construct(string $name)
     {
@@ -58,17 +56,11 @@ class Company
         $this->employees = new ArrayCollection();
     }
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
@@ -83,7 +75,6 @@ class Company
     }
 
     /**
-     * @param string $name
      * @return $this
      */
     public function setName(string $name)

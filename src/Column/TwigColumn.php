@@ -28,8 +28,6 @@ class TwigColumn extends AbstractColumn
 
     /**
      * TwigColumn constructor.
-     *
-     * @param Twig_Environment|null $twig
      */
     public function __construct(Twig_Environment $twig = null)
     {
@@ -72,9 +70,6 @@ class TwigColumn extends AbstractColumn
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getTemplate(): string
     {
         return $this->options['template'];

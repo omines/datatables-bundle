@@ -3,9 +3,13 @@ All notable changes to `omines\datatables-bundle` will be documented in this fil
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
-Nothing yet.
+### Changed
+ - Make compatible with Doctrine Bundle 2.0
+ - Make compatible with Symfony 5.0
+ - Drop Symfony 3.x compatibility
+ - Drop PHP <7.2 compatibility
 
-## [0.3.1] - 2019.08-09
+## [0.3.1] - 2019-08-09
 ### Added
  - Update the url used for ajax request on each init. (#75)
 

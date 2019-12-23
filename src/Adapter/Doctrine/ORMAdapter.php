@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle\Adapter\Doctrine;
 
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
@@ -27,7 +28,6 @@ use Omines\DataTablesBundle\Exception\InvalidConfigurationException;
 use Omines\DataTablesBundle\Exception\MissingDependencyException;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
  * ORMAdapter.
@@ -57,8 +57,6 @@ class ORMAdapter extends AbstractAdapter
 
     /**
      * DoctrineAdapter constructor.
-     *
-     * @param ManagerRegistry|null $registry
      */
     public function __construct(ManagerRegistry $registry = null)
     {
@@ -102,9 +100,6 @@ class ORMAdapter extends AbstractAdapter
         $this->criteriaProcessors[] = $this->normalizeProcessor($processor);
     }
 
-    /**
-     * @param AdapterQuery $query
-     */
     protected function prepareQuery(AdapterQuery $query)
     {
         $state = $query->getState();
@@ -134,7 +129,6 @@ class ORMAdapter extends AbstractAdapter
     }
 
     /**
-     * @param AdapterQuery $query
      * @return array
      */
     protected function getAliases(AdapterQuery $query)
@@ -174,10 +168,6 @@ class ORMAdapter extends AbstractAdapter
         return $this->mapFieldToPropertyPath($column->getField(), $query->get('aliases'));
     }
 
-    /**
-     * @param AdapterQuery $query
-     * @return \Traversable
-     */
     protected function getResults(AdapterQuery $query): \Traversable
     {
         /** @var QueryBuilder $builder */
@@ -210,9 +200,6 @@ class ORMAdapter extends AbstractAdapter
         }
     }
 
-    /**
-     * @param DataTableState $state
-     */
     protected function buildCriteria(QueryBuilder $queryBuilder, DataTableState $state)
     {
         foreach ($this->criteriaProcessors as $provider) {
@@ -220,10 +207,6 @@ class ORMAdapter extends AbstractAdapter
         }
     }
 
-    /**
-     * @param DataTableState $state
-     * @return QueryBuilder
-     */
     protected function createQueryBuilder(DataTableState $state): QueryBuilder
     {
         /** @var QueryBuilder $queryBuilder */
@@ -277,7 +260,6 @@ class ORMAdapter extends AbstractAdapter
 
     /**
      * @param string $field
-     * @param array $aliases
      * @return string
      */
     private function mapFieldToPropertyPath($field, array $aliases = [])
@@ -304,9 +286,6 @@ class ORMAdapter extends AbstractAdapter
         }
     }
 
-    /**
-     * @param OptionsResolver $resolver
-     */
     protected function configureOptions(OptionsResolver $resolver)
     {
         $providerNormalizer = function (Options $options, $value) {

@@ -101,10 +101,6 @@ class MongoDBAdapter extends AbstractAdapter
         }
     }
 
-    /**
-     * @param DataTableState $state
-     * @return array
-     */
     private function buildFilter(DataTableState $state): array
     {
         $filter = $this->filters;
@@ -120,10 +116,6 @@ class MongoDBAdapter extends AbstractAdapter
         return $filter;
     }
 
-    /**
-     * @param DataTableState $state
-     * @return array
-     */
     private function buildOptions(DataTableState $state): array
     {
         $options = [
@@ -142,9 +134,6 @@ class MongoDBAdapter extends AbstractAdapter
         return $options;
     }
 
-    /**
-     * @param OptionsResolver $resolver
-     */
     protected function configureOptions(OptionsResolver $resolver)
     {
         $resolver
