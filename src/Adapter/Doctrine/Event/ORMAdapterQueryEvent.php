@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Omines\DataTablesBundle\Adapter\Doctrine\Event;
 
 use Doctrine\ORM\Query;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * @author Maxime Pinot <contact@maximepinot.com>

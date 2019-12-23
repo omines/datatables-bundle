@@ -22,6 +22,8 @@ use Psr\Container\ContainerInterface;
  * @author Niels Keurentjes <niels.keurentjes@omines.com>
  *
  * @property ContainerInterface $container
+ *
+ * @deprecated inject the DataTableFactory in your controllers or actions instead
  */
 trait DataTablesTrait
 {

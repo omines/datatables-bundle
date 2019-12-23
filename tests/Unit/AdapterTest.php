@@ -14,14 +14,14 @@ namespace Tests\Unit;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
  * AdapterTest.
  *
  * @author Niels Keurentjes <niels.keurentjes@omines.com>
  */
-class AdapterTest extends TestCase
+class AdapterTest extends KernelTestCase
 {
     /**
      * @expectedException \Omines\DataTablesBundle\Exception\InvalidConfigurationException

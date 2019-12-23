@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Tests\Functional;
 
-use Symfony\Bundle\FrameworkBundle\Client;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Debug\Exception\FlattenException;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,7 +26,7 @@ use Tests\Fixtures\AppKernel;
  */
 class FunctionalTest extends WebTestCase
 {
-    /** @var Client */
+    /** @var KernelBrowser */
     private $client;
 
     protected function setUp(): void

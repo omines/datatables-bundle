@@ -9,6 +9,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
  - Drop Symfony 3.x compatibility
  - Drop PHP <7.2 compatibility
 
+### Deprecated
+ - DataTablesTrait should be dropped in favor of injection
+
 ## [0.3.1] - 2019-08-09
 ### Added
  - Update the url used for ajax request on each init. (#75)

@@ -14,7 +14,7 @@ namespace Tests\Fixtures\AppBundle\Controller;
 
 use Omines\DataTablesBundle\Adapter\ArrayAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
-use Omines\DataTablesBundle\Controller\DataTablesTrait;
+use Omines\DataTablesBundle\DataTableFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -25,9 +25,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class HomeController extends AbstractController
 {
-    use DataTablesTrait;
-
-    public function showAction(Request $request)
+    public function showAction(Request $request, DataTableFactory $dataTableFactory)
     {
         $datatable1 = $this->createDataTable();
         $datatable1
