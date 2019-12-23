@@ -16,6 +16,8 @@ use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableFactory;
 use Psr\Container\ContainerInterface;
 
+@trigger_error('Omines\DataTablesBundle\Controller\DataTablesTrait is deprecated. Use dependency injection to inject the Omines\DataTablesBundle\DataTableFactory service instead.', E_USER_DEPRECATED);
+
 /**
  * DataTablesTrait.
  *
