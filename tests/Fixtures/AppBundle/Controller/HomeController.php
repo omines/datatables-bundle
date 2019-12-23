@@ -27,13 +27,13 @@ class HomeController extends AbstractController
 {
     public function showAction(Request $request, DataTableFactory $dataTableFactory)
     {
-        $datatable1 = $this->createDataTable();
+        $datatable1 = $dataTableFactory->create();
         $datatable1
             ->add('col1', TextColumn::class, ['label' => 'foo', 'field' => 'bar'])
             ->add('col2', TextColumn::class, ['label' => 'bar', 'field' => 'foo'])
         ;
 
-        $datatable2 = $this->createDataTable();
+        $datatable2 = $dataTableFactory->create();
         $datatable2
             ->setName('noCDN')
             ->setMethod(Request::METHOD_GET)
