@@ -15,7 +15,7 @@ namespace Omines\DataTablesBundle\Twig;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableRendererInterface;
 use Omines\DataTablesBundle\Exception\MissingDependencyException;
-use Twig_Environment;
+use Twig\Environment;
 
 /**
  * TwigRenderer.
@@ -30,9 +30,9 @@ class TwigRenderer implements DataTableRendererInterface
     /**
      * DataTableRenderer constructor.
      *
-     * @param Twig_Environment $twig
+     * @param Environment $twig
      */
-    public function __construct(Twig_Environment $twig = null)
+    public function __construct(Environment $twig = null)
     {
         if (null === ($this->twig = $twig)) {
             throw new MissingDependencyException('You must have symfony/twig-bundle installed to use the default Twig based DataTables rendering');
