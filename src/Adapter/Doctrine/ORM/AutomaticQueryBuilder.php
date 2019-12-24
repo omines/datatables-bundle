@@ -88,25 +88,30 @@ class AutomaticQueryBuilder implements QueryBuilderProcessorInterface
         $currentPart = $this->entityShortName;
         $currentAlias = $currentPart;
         $metadata = $this->metadata;
+
         $parts = explode('.', $field);
 
         if (count($parts) > 1 && $parts[0] === $currentPart) {
             array_shift($parts);
         }
 
-        while (count($parts) > 1) {
-            $previousPart = $currentPart;
-            $previousAlias = $currentAlias;
-            $currentPart = array_shift($parts);
-            $currentAlias = ($previousPart === $this->entityShortName ? '' : $previousPart . '_') . $currentPart;
+        if (sizeof($parts) > 1 && $field = $metadata->hasField(implode('.', $parts))) {
+            $this->addSelectColumn($currentAlias, implode('.', $parts));
+        } else {
+            while (count($parts) > 1) {
+                $previousPart = $currentPart;
+                $previousAlias = $currentAlias;
+                $currentPart = array_shift($parts);
+                $currentAlias = ($previousPart === $this->entityShortName ? '' : $previousPart . '_') . $currentPart;
 
-            $this->joins[$previousAlias . '.' . $currentPart] = ['alias' => $currentAlias, 'type' => 'join'];
+                $this->joins[$previousAlias . '.' . $currentPart] = ['alias' => $currentAlias, 'type' => 'join'];
 
-            $metadata = $this->setIdentifierFromAssociation($currentAlias, $currentPart, $metadata);
+                $metadata = $this->setIdentifierFromAssociation($currentAlias, $currentPart, $metadata);
+            }
+
+            $this->addSelectColumn($currentAlias, $this->getIdentifier($metadata));
+            $this->addSelectColumn($currentAlias, $parts[0]);
         }
-
-        $this->addSelectColumn($currentAlias, $this->getIdentifier($metadata));
-        $this->addSelectColumn($currentAlias, $parts[0]);
     }
 
     private function addSelectColumn($columnTableName, $data)
