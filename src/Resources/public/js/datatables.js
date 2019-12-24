@@ -13,10 +13,10 @@
      * Initializes the datatable dynamically.
      */
     $.fn.initDataTables = function(config, options) {
-        
-        //Update default used url, so it reflects the current location (useful on single side apps)	
+
+        //Update default used url, so it reflects the current location (useful on single side apps)
         $.fn.initDataTables.defaults.url = window.location.origin + window.location.pathname;
-        
+
         var root = this,
             config = $.extend({}, $.fn.initDataTables.defaults, config),
             state = ''
@@ -59,8 +59,10 @@
                             drawCallback(data);
                             data = null;
                             if (Object.keys(state).length) {
-                                var merged = $.extend(true, {}, dt.state(), state);
-                                dt
+                                var api = new $.fn.dataTable.Api( settings );
+                                var merged = $.extend(true, {}, api.state(), state);
+
+                                api
                                     .order(merged.order)
                                     .search(merged.search.search)
                                     .page.len(merged.length)
