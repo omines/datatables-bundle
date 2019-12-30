@@ -30,10 +30,6 @@ class ArrayResultSet implements ResultSetInterface
 
     /**
      * ArrayResultSet constructor.
-     *
-     * @param array $data
-     * @param int|null $totalRows
-     * @param int|null $totalFilteredRows
      */
     public function __construct(array $data, int $totalRows = null, int $totalFilteredRows = null)
     {

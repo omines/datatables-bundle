@@ -5,6 +5,30 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 Nothing yet.
 
+## [0.4.0] - 2019-12-23
+### Changed
+ - Make compatible with Doctrine Bundle 2.0
+ - Make compatible with Symfony 5.0
+ - Drop Symfony 3.x compatibility
+ - Drop PHP <7.2 compatibility
+
+### Deprecated
+ - DataTablesTrait should be dropped in favor of injection
+
+## [0.3.1] - 2019-08-09
+### Added
+ - Update the url used for ajax request on each init. (#75)
+
+### Fixed
+ - Fix array filtering (#88)
+
+## [0.3.0] - 2019-05-14
+### Added
+ - Add DataTable events (#76)
+
+### Fixed
+ - Fix double transformations in ArrayAdapter (#70)
+
 ## [0.2.2] - 2019-02-25
 ### Added
  - Add ability to join from inverse side (#63)
@@ -74,7 +98,10 @@ Nothing yet.
 ### Added
  - Basic functionality
 
-[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.2.2...master
+[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.4.0...master
+[0.4.0]: https://github.com/omines/datatables-bundle/compare/0.3.1...0.4.0
+[0.3.1]: https://github.com/omines/datatables-bundle/compare/0.3.0...0.3.1
+[0.3.0]: https://github.com/omines/datatables-bundle/compare/0.2.2...0.3.0
 [0.2.2]: https://github.com/omines/datatables-bundle/compare/0.2.1...0.2.2
 [0.2.1]: https://github.com/omines/datatables-bundle/compare/0.2.0...0.2.1
 [0.2.0]: https://github.com/omines/datatables-bundle/compare/0.1.5...0.2.0

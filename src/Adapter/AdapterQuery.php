@@ -39,17 +39,12 @@ class AdapterQuery
 
     /**
      * AdapterQuery constructor.
-     *
-     * @param DataTableState $state
      */
     public function __construct(DataTableState $state)
     {
         $this->state = $state;
     }
 
-    /**
-     * @return DataTableState
-     */
     public function getState(): DataTableState
     {
         return $this->state;
@@ -94,7 +89,7 @@ class AdapterQuery
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getIdentifierPropertyPath()
     {
@@ -102,7 +97,7 @@ class AdapterQuery
     }
 
     /**
-     * @param null|string $identifierPropertyPath
+     * @param string|null $identifierPropertyPath
      * @return $this
      */
     public function setIdentifierPropertyPath($identifierPropertyPath): self
@@ -113,7 +108,6 @@ class AdapterQuery
     }
 
     /**
-     * @param string $key
      * @param mixed $default
      * @return mixed|null
      */
@@ -123,7 +117,6 @@ class AdapterQuery
     }
 
     /**
-     * @param string $key
      * @param $value
      */
     public function set(string $key, $value)

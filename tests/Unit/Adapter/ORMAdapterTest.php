@@ -1,10 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: robbert
- * Date: 2/23/19
- * Time: 7:15 PM
+
+/*
+ * Symfony DataTables Bundle
+ * (c) Omines Internetbureau B.V. - https://omines.nl/
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
+
+declare(strict_types=1);
 
 namespace Tests\Unit\Adapter;
 
@@ -19,7 +23,7 @@ class ORMAdapterTest extends KernelTestCase
     /** @var DataTableFactory $factory */
     private $factory;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $kernel = self::bootKernel();
         $this->factory = $kernel->getContainer()->get(DataTableFactory::class);
@@ -35,6 +39,5 @@ class ORMAdapterTest extends KernelTestCase
         /** @var ORMAdapter $adapter */
         $adapter = $datatable->getAdapter();
         $data = $adapter->getData(new DataTableState($datatable));
-
     }
 }

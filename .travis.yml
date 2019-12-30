@@ -7,9 +7,9 @@ cache:
     - $HOME/.composer/cache
 
 php:
-  - 7.1
   - 7.2
   - 7.3
+  - 7.4
 
 services:
   - mongodb
@@ -17,15 +17,15 @@ services:
 matrix:
     fast_finish: true
     include:
-     - php: 7.1
-       env: SYMFONY_VERSION=^3.4
-     - php: 7.1
-       env: COMPOSER_FLAGS="--prefer-lowest"
      - php: 7.2
-       env: SYMFONY_VERSION=^3.4
+       env: SYMFONY_VERSION=4.1.13
+     - php: 7.2
+       env: COMPOSER_FLAGS="--prefer-lowest"
      - php: 7.3
-       env: SYMFONY_VERSION=^4.1
-     - php: 7.3
+       env: SYMFONY_VERSION=^4.4
+     - php: 7.4
+       env: SYMFONY_VERSION=^4.4
+     - php: 7.4
        env: DEPENDENCIES=dev
      - php: nightly
        env: COMPOSER_FLAGS="--ignore-platform-reqs"

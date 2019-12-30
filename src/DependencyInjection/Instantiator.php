@@ -38,36 +38,22 @@ class Instantiator
         $this->locators = $locators;
     }
 
-    /**
-     * @param string $type
-     * @return AdapterInterface
-     */
     public function getAdapter(string $type): AdapterInterface
     {
         return $this->getInstance($type, AdapterInterface::class);
     }
 
-    /**
-     * @param string $type
-     * @return AbstractColumn
-     */
     public function getColumn(string $type): AbstractColumn
     {
         return $this->getInstance($type, AbstractColumn::class);
     }
 
-    /**
-     * @param string $type
-     * @return DataTableTypeInterface
-     */
     public function getType(string $type): DataTableTypeInterface
     {
         return $this->getInstance($type, DataTableTypeInterface::class);
     }
 
     /**
-     * @param string $type
-     * @param string $baseType
      * @return mixed
      */
     private function getInstance(string $type, string $baseType)
@@ -77,7 +63,6 @@ class Instantiator
         } elseif (class_exists($type) && is_subclass_of($type, $baseType)) {
             return new $type();
         }
-        throw new InvalidArgumentException(sprintf('Could not resolve type "%s" to a service or class, are you missing ' .
-            'a use statement? Or is it implemented but does it not correctly derive from "%s"?', $type, $baseType));
+        throw new InvalidArgumentException(sprintf('Could not resolve type "%s" to a service or class, are you missing ' . 'a use statement? Or is it implemented but does it not correctly derive from "%s"?', $type, $baseType));
     }
 }

@@ -14,7 +14,7 @@ namespace Tests\Fixtures\AppBundle\Controller;
 
 use Omines\DataTablesBundle\Adapter\ArrayAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
-use Omines\DataTablesBundle\Controller\DataTablesTrait;
+use Omines\DataTablesBundle\DataTableFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -25,17 +25,15 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class HomeController extends AbstractController
 {
-    use DataTablesTrait;
-
-    public function showAction(Request $request)
+    public function showAction(Request $request, DataTableFactory $dataTableFactory)
     {
-        $datatable1 = $this->createDataTable();
+        $datatable1 = $dataTableFactory->create();
         $datatable1
             ->add('col1', TextColumn::class, ['label' => 'foo', 'field' => 'bar'])
             ->add('col2', TextColumn::class, ['label' => 'bar', 'field' => 'foo'])
         ;
 
-        $datatable2 = $this->createDataTable();
+        $datatable2 = $dataTableFactory->create();
         $datatable2
             ->setName('noCDN')
             ->setMethod(Request::METHOD_GET)

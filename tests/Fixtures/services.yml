@@ -1,28 +1,25 @@
 services:
     _defaults:
-        public: true
-
-    Tests\Fixtures\AppBundle\DataTable\Type\ServicePersonTableType:
         autowire: true
         autoconfigure: true
+        public: false
+
+    Tests\Fixtures\AppBundle\:
+        resource: 'AppBundle/{DataTable}'
+
+    Tests\Fixtures\AppBundle\Controller\:
+        resource: 'AppBundle/Controller'
+        tags: ['controller.service_arguments']
 
     doctrine.result_cache_provider:
         class: Symfony\Component\Cache\DoctrineProvider
-        public: false
         arguments:
             - '@doctrine.result_cache_pool'
 
     doctrine.system_cache_provider:
         class: Symfony\Component\Cache\DoctrineProvider
-        public: false
         arguments:
             - '@doctrine.system_cache_pool'
-
-    Tests\Fixtures\AppBundle\DataTable\Adapter\CustomORMAdapter:
-        autowire: true
-        autoconfigure: true
-
-    test.Omines\DataTablesBundle\Exporter\DataTableExporterCollection: '@Omines\DataTablesBundle\Exporter\DataTableExporterCollection'
 
     Tests\Fixtures\AppBundle\DataTable\Exporter\TxtExporter:
         tags:

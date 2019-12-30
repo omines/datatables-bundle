@@ -27,7 +27,7 @@ class ORMAdapterEventsTest extends WebTestCase
     /** @var Client */
     private $client;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->client = static::createClient();
     }
@@ -43,7 +43,7 @@ class ORMAdapterEventsTest extends WebTestCase
         static::assertTrue($doctrineProvider->contains(ORMAdapterEventsController::PRE_QUERY_RESULT_CACHE_ID));
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->client = null;
     }

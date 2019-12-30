@@ -44,11 +44,6 @@ class LocatorRegistrationPass implements CompilerPassInterface
             ]]);
     }
 
-    /**
-     * @param ContainerBuilder $container
-     * @param string $baseTag
-     * @return Definition
-     */
     private function registerLocator(ContainerBuilder $container, string $baseTag): Definition
     {
         $types = [];

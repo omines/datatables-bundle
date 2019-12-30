@@ -16,7 +16,6 @@ use Doctrine\ORM\Query\Expr\Comparison;
 use Doctrine\ORM\QueryBuilder;
 use Omines\DataTablesBundle\Column\AbstractColumn;
 use Omines\DataTablesBundle\DataTableState;
-use Omines\DataTablesBundle\Adapter\Doctrine\ORM\QueryBuilderProcessorInterface;
 
 /**
  * SearchCriteriaProvider.
@@ -34,10 +33,6 @@ class SearchCriteriaProvider implements QueryBuilderProcessorInterface
         $this->processGlobalSearch($queryBuilder, $state);
     }
 
-    /**
-     * @param QueryBuilder $queryBuilder
-     * @param DataTableState $state
-     */
     private function processSearchColumns(QueryBuilder $queryBuilder, DataTableState $state)
     {
         foreach ($state->getSearchColumns() as $searchInfo) {
@@ -45,16 +40,13 @@ class SearchCriteriaProvider implements QueryBuilderProcessorInterface
             $column = $searchInfo['column'];
             $search = $searchInfo['search'];
 
-            if (!empty($search) && null !== ($filter = $column->getFilter())) {
+            if ('' !== trim($search) && null !== ($filter = $column->getFilter())) {
+                $search = $queryBuilder->expr()->literal($search);
                 $queryBuilder->andWhere(new Comparison($column->getField(), $filter->getOperator(), $search));
             }
         }
     }
 
-    /**
-     * @param QueryBuilder $queryBuilder
-     * @param DataTableState $state
-     */
     private function processGlobalSearch(QueryBuilder $queryBuilder, DataTableState $state)
     {
         if (!empty($globalSearch = $state->getGlobalSearch())) {

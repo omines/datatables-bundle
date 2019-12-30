@@ -38,12 +38,6 @@ abstract class AbstractColumn
     /** @var array<string, mixed> */
     protected $options;
 
-    /**
-     * @param string $name
-     * @param int $index
-     * @param array $options
-     * @param DataTable $dataTable
-     */
     public function initialize(string $name, int $index, array $options = [], DataTable $dataTable)
     {
         $this->name = $name;
@@ -104,7 +98,6 @@ abstract class AbstractColumn
     abstract public function normalize($value);
 
     /**
-     * @param OptionsResolver $resolver
      * @return $this
      */
     protected function configureOptions(OptionsResolver $resolver)
@@ -135,7 +128,7 @@ abstract class AbstractColumn
             ->setAllowedTypes('orderable', ['null', 'boolean'])
             ->setAllowedTypes('orderField', ['null', 'string'])
             ->setAllowedTypes('searchable', ['null', 'boolean'])
-            ->setAllowedTypes('globalSearchable',  ['null', 'boolean'])
+            ->setAllowedTypes('globalSearchable', ['null', 'boolean'])
             ->setAllowedTypes('filter', ['null', 'array'])
             ->setAllowedTypes('className', ['null', 'string'])
             ->setAllowedTypes('render', ['null', 'string', 'callable'])
@@ -147,17 +140,11 @@ abstract class AbstractColumn
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getIndex(): int
     {
         return $this->index;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
@@ -195,25 +182,16 @@ abstract class AbstractColumn
         return $this->options['data'];
     }
 
-    /**
-     * @return bool
-     */
     public function isVisible(): bool
     {
         return $this->options['visible'];
     }
 
-    /**
-     * @return bool
-     */
     public function isSearchable(): bool
     {
         return $this->options['searchable'] ?? !empty($this->getField());
     }
 
-    /**
-     * @return bool
-     */
     public function isOrderable(): bool
     {
         return $this->options['orderable'] ?? !empty($this->getOrderField());
@@ -235,9 +213,6 @@ abstract class AbstractColumn
         return $this->options['orderField'] ?? $this->getField();
     }
 
-    /**
-     * @return bool
-     */
     public function isGlobalSearchable(): bool
     {
         return $this->options['globalSearchable'] ?? $this->isSearchable();
@@ -249,10 +224,13 @@ abstract class AbstractColumn
     public function getLeftExpr()
     {
         $leftExpr = $this->options['leftExpr'];
-        if ($leftExpr === null) return $this->getField();
+        if (null === $leftExpr) {
+            return $this->getField();
+        }
         if (is_callable($leftExpr)) {
             return call_user_func($leftExpr, $this->getField());
         }
+
         return $leftExpr;
     }
 
@@ -262,10 +240,13 @@ abstract class AbstractColumn
     public function getRightExpr($value)
     {
         $rightExpr = $this->options['rightExpr'];
-        if ($rightExpr === null) return $value;
+        if (null === $rightExpr) {
+            return $value;
+        }
         if (is_callable($rightExpr)) {
             return call_user_func($rightExpr, $value);
         }
+
         return $rightExpr;
     }
 
@@ -285,16 +266,12 @@ abstract class AbstractColumn
         return $this->options['className'];
     }
 
-    /**
-     * @return DataTable
-     */
     public function getDataTable(): DataTable
     {
         return $this->dataTable;
     }
 
     /**
-     * @param string $name
      * @param mixed $value
      * @return $this
      */
@@ -313,5 +290,4 @@ abstract class AbstractColumn
     {
         return true;
     }
-
 }

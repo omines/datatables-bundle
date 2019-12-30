@@ -1,4 +1,4 @@
-/.php_cs.cache
+/.*.cache
 /composer.lock
 /tmp
 /vendor

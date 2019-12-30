@@ -16,7 +16,7 @@ use Omines\DataTablesBundle\Adapter\Doctrine\Event\ORMAdapterQueryEvent;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapterEvents;
 use Omines\DataTablesBundle\Column\TextColumn;
-use Omines\DataTablesBundle\Controller\DataTablesTrait;
+use Omines\DataTablesBundle\DataTableFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,11 +29,9 @@ class ORMAdapterEventsController extends AbstractController
 {
     const PRE_QUERY_RESULT_CACHE_ID = 'datatable_result_cache';
 
-    use DataTablesTrait;
-
-    public function preQueryAction(Request $request): Response
+    public function preQueryAction(Request $request, DataTableFactory $dataTableFactory): Response
     {
-        $datatable = $this->createDataTable()
+        $datatable = $dataTableFactory->create()
             ->add('firstName', TextColumn::class)
             ->add('lastName', TextColumn::class)
             ->add('company', TextColumn::class, ['field' => 'company.name'])

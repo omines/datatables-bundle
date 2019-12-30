@@ -67,15 +67,13 @@ The code snippets here should get you started quickly, including jQuery 3. For m
 ```php?start_inline=true
 use Omines\DataTablesBundle\Adapter\ArrayAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
-use Omines\DataTablesBundle\Controller\DataTablesTrait;
+use Omines\DataTablesBundle\DataTableFactory;
 
 class MyController extends Controller
 {
-    use DataTablesTrait;
-    
-    public function showAction(Request $request)
+    public function showAction(Request $request, DataTableFactory $dataTableFactory)
     {
-        $table = $this->createDataTable()
+        $table = $dataTableFactory->create()
             ->add('firstName', TextColumn::class)
             ->add('lastName', TextColumn::class)
             ->createAdapter(ArrayAdapter::class, [
@@ -94,8 +92,8 @@ class MyController extends Controller
 ```
 This trivial bit of code in your controller prepares a fully functional DataTables instance for use.
 
-The optional <code>DataTablesTrait</code> is included to expose convenience methods in your controller for
-easy instantiation. The `createDataTable` function is used in this example. On the DataTable instance we 
+The <code>DataTableFactory</code> service is injected to expose convenience methods in your controller
+for easy instantiation. The `create` function is used in this example. On the DataTable instance we 
 add 2 columns of type `TextColumn`, and we bind it to an adapter providing a static array as the
 source of the data.
 
@@ -107,11 +105,9 @@ otherwise we render a template with the table provided as a parameter.
 
 ## Controller setup
 
-When using <code>DataTablesTrait</code> it is assumed that the <code>DataTableFactory</code> trait is available
-in the controller's <code>$container</code>. When using Symfony's legacy <code>Controller</code> base class this
-is true. If using <code>AbstractController</code> instead, which is currently recommended practice, ensure
-you subscribe to the <code>DataTableFactory</code> service yourself. Alternatively you can bypass the convenience
-trait and inject the service via regular constructor injection.
+Previous versions of this bundle offered a <code>DataTablesTrait</code> which assumed that the
+<code>DataTableFactory</code> class was available in the controller's <code>$container</code>. As this
+is deprecated in current versions of Symfony you should use dependency injection instead.
 
 ## Frontend code
 

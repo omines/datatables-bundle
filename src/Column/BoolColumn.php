@@ -44,7 +44,7 @@ class BoolColumn extends AbstractColumn
             ->setDefault(
                 'rightExpr',
                 function ($value) {
-                    return trim(strtolower($value)) == $this->getTrueValue();
+                    return trim(mb_strtolower($value)) === $this->getTrueValue();
                 }
         );
 
@@ -60,25 +60,16 @@ class BoolColumn extends AbstractColumn
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getTrueValue(): string
     {
         return $this->options['trueValue'];
     }
 
-    /**
-     * @return string
-     */
     public function getFalseValue(): string
     {
         return $this->options['falseValue'];
     }
 
-    /**
-     * @return string
-     */
     public function getNullValue(): string
     {
         return $this->options['nullValue'];
@@ -90,7 +81,8 @@ class BoolColumn extends AbstractColumn
      */
     public function isValidForSearch($value)
     {
-        $value = trim(strtolower($value));
-        return ($value == $this->getTrueValue()) || ($value == $this->getFalseValue());
+        $value = trim(mb_strtolower($value));
+
+        return ($value === $this->getTrueValue()) || ($value === $this->getFalseValue());
     }
 }

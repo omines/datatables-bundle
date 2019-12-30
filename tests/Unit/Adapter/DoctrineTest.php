@@ -14,6 +14,7 @@ namespace Tests\Unit\Adapter;
 
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use Omines\DataTablesBundle\Adapter\AdapterQuery;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORM\SearchCriteriaProvider;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
@@ -21,7 +22,6 @@ use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\Exporter\DataTableExporterManager;
 use PHPUnit\Framework\TestCase;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -74,7 +74,7 @@ class DoctrineTest extends TestCase
      */
     public function testInvalidQueryProcessorThrows()
     {
-        (new ORMAdapter($this->createMock(RegistryInterface::class)))
+        (new ORMAdapter($this->createMock(ManagerRegistry::class)))
             ->configure([
                 'entity' => 'bar',
                 'query' => ['foo'],
@@ -92,7 +92,7 @@ class DoctrineTest extends TestCase
         $column = new TextColumn();
         $column->initialize('foo', 0, ['field' => 'invalid'], $this->createMock(DataTable::class));
 
-        $mock = new class($this->createMock(RegistryInterface::class)) extends ORMAdapter {
+        $mock = new class($this->createMock(ManagerRegistry::class)) extends ORMAdapter {
             public function foo($query, $column)
             {
                 return $this->mapPropertyPath($query, $column);

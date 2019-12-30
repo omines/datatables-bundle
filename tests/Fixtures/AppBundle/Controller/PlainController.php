@@ -17,8 +17,8 @@ use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\DateTimeColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\Column\TwigColumn;
-use Omines\DataTablesBundle\Controller\DataTablesTrait;
 use Omines\DataTablesBundle\DataTable;
+use Omines\DataTablesBundle\DataTableFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Tests\Fixtures\AppBundle\Entity\Employee;
@@ -30,11 +30,9 @@ use Tests\Fixtures\AppBundle\Entity\Employee;
  */
 class PlainController extends AbstractController
 {
-    use DataTablesTrait;
-
-    public function tableAction(Request $request)
+    public function tableAction(Request $request, DataTableFactory $dataTableFactory)
     {
-        $datatable = $this->createDataTable()
+        $datatable = $dataTableFactory->create()
             ->setName('persons')
             ->setMethod(Request::METHOD_GET)
             ->add('id', TextColumn::class, ['field' => 'employee.id'])

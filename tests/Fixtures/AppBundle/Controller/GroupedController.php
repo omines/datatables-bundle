@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Tests\Fixtures\AppBundle\Controller;
 
-use Omines\DataTablesBundle\Controller\DataTablesTrait;
+use Omines\DataTablesBundle\DataTableFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Tests\Fixtures\AppBundle\DataTable\Type\Grouped2TableType;
@@ -25,11 +25,9 @@ use Tests\Fixtures\AppBundle\DataTable\Type\GroupedTableType;
  */
 class GroupedController extends AbstractController
 {
-    use DataTablesTrait;
-
-    public function tableAction(Request $request)
+    public function tableAction(Request $request, DataTableFactory $dataTableFactory)
     {
-        $datatable = $this->createDataTableFromType(GroupedTableType::class)
+        $datatable = $dataTableFactory->createFromType(GroupedTableType::class)
             ->setName('companies')
             ->setMethod(Request::METHOD_GET)
         ;
@@ -37,9 +35,9 @@ class GroupedController extends AbstractController
         return $datatable->handleRequest($request)->getResponse();
     }
 
-    public function table2Action(Request $request)
+    public function table2Action(Request $request, DataTableFactory $dataTableFactory)
     {
-        $datatable = $this->createDataTableFromType(Grouped2TableType::class)
+        $datatable = $dataTableFactory->createFromType(Grouped2TableType::class)
             ->setName('companies2')
             ->setMethod(Request::METHOD_GET)
         ;
