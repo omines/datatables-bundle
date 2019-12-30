@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Tests\Functional\Exporter\Event;
 
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\BrowserKit\Client;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /**
@@ -21,45 +21,33 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
  */
 class DataTableExporterResponseEventTest extends WebTestCase
 {
-    /** @var Client */
+    /** @var KernelBrowser */
     private $client;
 
-    protected function setUp()
+    protected function setUp(): void
     {
-        $this->client = static::createClient();
+        self::ensureKernelShutdown();
+        $this->client = self::createClient();
     }
 
     /**
-     * @param string $exporterName
-     * @param string $ext
-     *
      * @dataProvider exporterNameProvider
      */
-    public function testPreResponseEvent(string $exporterName, string $ext)
+    public function testPreResponseEvent(string $exporterName, string $ext): void
     {
         $this->client->request('POST', '/exporter', ['_dt' => 'dt', '_exporter' => $exporterName]);
 
         /** @var BinaryFileResponse $response */
         $response = $this->client->getResponse();
 
-        $headers = [
-            sprintf('attachment; filename="custom_filename.%s"', $ext), // Symfony 3
-            sprintf('attachment; filename=custom_filename.%s', $ext),    // Symfony 4
-        ];
-
-        static::assertContains($response->headers->get('content-disposition'), $headers);
+        static::assertContains($response->headers->get('content-disposition'), sprintf('attachment; filename=custom_filename.%s', $ext));
     }
 
-    public function exporterNameProvider()
+    public function exporterNameProvider(): array
     {
         return [
             ['excel', 'xlsx'],
             ['txt', 'txt'],
         ];
-    }
-
-    protected function tearDown()
-    {
-        $this->client = null;
     }
 }
