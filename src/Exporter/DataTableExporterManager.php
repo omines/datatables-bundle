@@ -95,8 +95,7 @@ class DataTableExporterManager
         $response->deleteFileAfterSend(true);
         $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $response->getFile()->getFilename());
 
-        $responseEvent = new DataTableExporterResponseEvent($response);
-        $this->dataTable->getEventDispatcher()->dispatch(DataTableExporterEvents::PRE_RESPONSE, $responseEvent);
+        $this->dataTable->getEventDispatcher()->dispatch(new DataTableExporterResponseEvent($response), DataTableExporterEvents::PRE_RESPONSE);
 
         return $response;
     }

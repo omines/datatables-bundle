@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace Tests\Functional\Exporter\Excel;
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\BrowserKit\Client;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /**
@@ -22,19 +22,20 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
  */
 class ExcelExporterTest extends WebTestCase
 {
-    /** @var Client */
+    /** @var KernelBrowser */
     private $client;
 
-    protected function setUp()
+    protected function setUp(): void
     {
-        $this->client = static::createClient();
+        self::ensureKernelShutdown();
+        $this->client = self::createClient();
     }
 
     /**
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      */
-    public function testExport()
+    public function testExport(): void
     {
         $this->client->request('POST', '/exporter', ['_dt' => 'dt', '_exporter' => 'excel']);
 
@@ -66,7 +67,7 @@ class ExcelExporterTest extends WebTestCase
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      */
-    public function testEmptyDataTable()
+    public function testEmptyDataTable(): void
     {
         $this->client->request('POST', '/exporter-empty-datatable', ['_dt' => 'dt', '_exporter' => 'excel']);
 
@@ -82,10 +83,5 @@ class ExcelExporterTest extends WebTestCase
 
         static::assertEmpty($sheet->getCell('A2')->getFormattedValue());
         static::assertEmpty($sheet->getCell('B2')->getFormattedValue());
-    }
-
-    protected function tearDown()
-    {
-        $this->client = null;
     }
 }

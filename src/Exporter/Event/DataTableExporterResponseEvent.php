@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle\Exporter\Event;
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /**

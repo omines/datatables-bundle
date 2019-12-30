@@ -15,7 +15,7 @@ namespace Tests\Fixtures\AppBundle\Controller;
 use Doctrine\ORM\QueryBuilder;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
-use Omines\DataTablesBundle\Controller\DataTablesTrait;
+use Omines\DataTablesBundle\DataTableFactory;
 use Omines\DataTablesBundle\Exporter\DataTableExporterEvents;
 use Omines\DataTablesBundle\Exporter\Event\DataTableExporterResponseEvent;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,11 +29,10 @@ use Tests\Fixtures\AppBundle\Entity\Person;
  */
 class ExporterController extends AbstractController
 {
-    use DataTablesTrait;
-
-    public function exportAction(Request $request): Response
+    public function exportAction(Request $request, DataTableFactory $dataTableFactory): Response
     {
-        $table = $this->createDataTable()
+        $table = $dataTableFactory
+            ->create()
             ->add('firstName', TextColumn::class, [
                 'render' => function (string $value, Person $context) {
                     return '<a href="http://example.org">' . $value . '</a>';
@@ -67,9 +66,10 @@ class ExporterController extends AbstractController
        ]);
     }
 
-    public function exportEmptyDataTableAction(Request $request): Response
+    public function exportEmptyDataTableAction(Request $request, DataTableFactory $dataTableFactory): Response
     {
-        $table = $this->createDataTable()
+        $table = $dataTableFactory
+            ->create()
             ->add('firstName', TextColumn::class, [
                 'render' => function (string $value, Person $context) {
                     return '<a href="http://example.org">' . $value . '</a>';
