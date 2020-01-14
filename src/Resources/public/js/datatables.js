@@ -133,24 +133,69 @@
     $.fn.initDataTables.exportBtnAction = function(exporterName, settings) {
         settings = $.extend({}, $.fn.initDataTables.defaults, settings);
 
-        return function() {
-            const form = document.createElement('form');
-            form.method = settings.method;
-            form.action = settings.url;
-            form.style.display = 'none';
+        return function(e, dt) {
+            // Credit: https://stackoverflow.com/a/23797348
+            const xhr = new XMLHttpRequest();
+            xhr.open(settings.method, settings.url, true);
+            xhr.responseType = 'arraybuffer';
+            xhr.onload = function () {
+                if (this.status === 200) {
+                    let filename = "";
+                    const disposition = xhr.getResponseHeader('Content-Disposition');
+                    if (disposition && disposition.indexOf('attachment') !== -1) {
+                        const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                        const matches = filenameRegex.exec(disposition);
+                        if (matches != null && matches[1]) {
+                            filename = matches[1].replace(/['"]/g, '');
+                        }
+                    }
 
-            const inputDt = document.createElement('input');
-            inputDt.name = '_dt';
-            inputDt.value = settings.name;
-            form.appendChild(inputDt);
+                    const type = xhr.getResponseHeader('Content-Type');
 
-            const inputExporter = document.createElement('input');
-            inputExporter.name = '_exporter';
-            inputExporter.value = exporterName;
-            form.appendChild(inputExporter);
+                    let blob;
+                    if (typeof File === 'function') {
+                        try {
+                            blob = new File([this.response], filename, { type: type });
+                        } catch (e) { /* Edge */ }
+                    }
 
-            document.body.appendChild(form);
-            form.submit();
+                    if (typeof blob === 'undefined') {
+                        blob = new Blob([this.response], { type: type });
+                    }
+
+                    if (typeof window.navigator.msSaveBlob !== 'undefined') {
+                        // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created. These URLs will no longer resolve as the data backing the URL has been freed."
+                        window.navigator.msSaveBlob(blob, filename);
+                    }
+                    else {
+                        const URL = window.URL || window.webkitURL;
+                        const downloadUrl = URL.createObjectURL(blob);
+
+                        if (filename) {
+                            // use HTML5 a[download] attribute to specify filename
+                            const a = document.createElement("a");
+                            // safari doesn't support this yet
+                            if (typeof a.download === 'undefined') {
+                                window.location = downloadUrl;
+                            }
+                            else {
+                                a.href = downloadUrl;
+                                a.download = filename;
+                                document.body.appendChild(a);
+                                a.click();
+                            }
+                        }
+                        else {
+                            window.location = downloadUrl;
+                        }
+
+                        setTimeout(function() { URL.revokeObjectURL(downloadUrl); }, 100); // cleanup
+                    }
+                }
+            };
+
+            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            xhr.send($.param($.extend({}, dt.ajax.params(), {'_exporter': exporterName})));
         }
     };
 

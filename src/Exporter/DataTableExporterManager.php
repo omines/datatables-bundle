@@ -126,7 +126,10 @@ class DataTableExporterManager
      */
     private function getAllData(): \Iterator
     {
-        $data = $this->dataTable->getAdapter()->getData(new DataTableState($this->dataTable))->getData();
+        $data = $this->dataTable
+            ->getAdapter()
+            ->getData($this->dataTable->getState()->setStart(0)->setLength(-1))
+            ->getData();
 
         foreach ($data as $row) {
             if (isset($row['DT_RowId'])) {
