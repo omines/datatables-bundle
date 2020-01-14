@@ -20,7 +20,3 @@ services:
         class: Symfony\Component\Cache\DoctrineProvider
         arguments:
             - '@doctrine.system_cache_pool'
-
-    Tests\Fixtures\AppBundle\DataTable\Exporter\TxtExporter:
-        tags:
-            - datatables.exporter
