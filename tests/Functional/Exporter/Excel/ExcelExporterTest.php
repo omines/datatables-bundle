@@ -84,4 +84,31 @@ class ExcelExporterTest extends WebTestCase
         static::assertEmpty($sheet->getCell('A2')->getFormattedValue());
         static::assertEmpty($sheet->getCell('B2')->getFormattedValue());
     }
+
+    /**
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
+     */
+    public function testWithSearch(): void
+    {
+        $this->client->request('POST', '/exporter', [
+            '_dt' => 'dt',
+            '_exporter' => 'excel',
+            'search' => ['value' => 'FirstName124'],
+        ]);
+
+        /** @var BinaryFileResponse $response */
+        $response = $this->client->getResponse();
+
+        $sheet = IOFactory::load($response->getFile()->getPathname())->getActiveSheet();
+
+        static::assertSame('dt.columns.firstName', $sheet->getCell('A1')->getFormattedValue());
+        static::assertSame('dt.columns.lastName', $sheet->getCell('B1')->getFormattedValue());
+
+        static::assertSame('FirstName124', $sheet->getCell('A2')->getFormattedValue());
+        static::assertSame('LastName124', $sheet->getCell('B2')->getFormattedValue());
+
+        static::assertEmpty($sheet->getCell('A3')->getFormattedValue());
+        static::assertEmpty($sheet->getCell('B3')->getFormattedValue());
+    }
 }
