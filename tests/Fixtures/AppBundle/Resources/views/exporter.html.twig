@@ -17,6 +17,10 @@
                   action: $.fn.initDataTables.exportBtnAction('excel', {{ datatable_settings(datatable) }})
                 },
                 {
+                    text: 'CSV',
+                    action: $.fn.initDataTables.exportBtnAction('csv', {{ datatable_settings(datatable) }})
+                },
+                {
                   // Custom exporter
                   text: 'Txt',
                   action: $.fn.initDataTables.exportBtnAction('txt', {{ datatable_settings(datatable) }})
