@@ -195,7 +195,7 @@
             };
 
             xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-            xhr.send($.param($.extend({}, dt.ajax.params(), {'_exporter': exporterName})));
+            xhr.send($.param($.extend({}, dt.ajax.params(), {'_dt': settings.name, '_exporter': exporterName})));
         }
     };
 
