@@ -132,8 +132,8 @@ class DataTableExporterManager
             ->getData();
 
         foreach ($data as $row) {
-            if (isset($row['DT_RowId'])) {
-                $row = array_splice($row, 1);
+            if (array_key_exists('DT_RowId', $row)) {
+                unset($row['DT_RowId']);
             }
 
             yield $row;
