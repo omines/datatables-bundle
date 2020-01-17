@@ -41,10 +41,10 @@ class ORMAdapter extends AbstractAdapter
     private $registry;
 
     /** @var EntityManager */
-    private $manager;
+    protected $manager;
 
     /** @var \Doctrine\ORM\Mapping\ClassMetadata */
-    private $metadata;
+    protected $metadata;
 
     /** @var int */
     private $hydrationMode;
@@ -262,7 +262,7 @@ class ORMAdapter extends AbstractAdapter
      * @param string $field
      * @return string
      */
-    private function mapFieldToPropertyPath($field, array $aliases = [])
+    protected function mapFieldToPropertyPath($field, array $aliases = [])
     {
         $parts = explode('.', $field);
         if (count($parts) < 2) {
