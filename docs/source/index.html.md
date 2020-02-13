@@ -13,7 +13,7 @@ search: true
 # Introduction
 
 This bundle provides convenient integration of the popular [DataTables](https://datatables.net/) jQuery library
-for realtime AJAX tables in your 4.1+ application.
+for realtime AJAX tables in your Symfony 4.1+ application.
 
 Designed to be fully pluggable there are no limits to the data sources you can display through this library, nor
 are there any bounds on how they are displayed. In full *'batteries included but replaceable'* philosophy there are
