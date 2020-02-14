@@ -42,10 +42,4 @@ class ORMAdapterEventsTest extends WebTestCase
 
         static::assertTrue($doctrineProvider->contains(ORMAdapterEventsController::PRE_QUERY_RESULT_CACHE_ID));
     }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        $this->client = null;
-    }
 }
