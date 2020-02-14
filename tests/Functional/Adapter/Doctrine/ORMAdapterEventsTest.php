@@ -45,6 +45,7 @@ class ORMAdapterEventsTest extends WebTestCase
 
     protected function tearDown(): void
     {
+        parent::tearDown();
         $this->client = null;
     }
 }
