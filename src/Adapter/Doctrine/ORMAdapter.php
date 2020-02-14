@@ -238,7 +238,11 @@ class ORMAdapter extends AbstractAdapter
             $qb->resetDQLPart('groupBy');
             $qb->select($qb->expr()->countDistinct($identifier));
 
-            return (int) $qb->getQuery()->getSingleScalarResult();
+            try {
+                return (int) $qb->getQuery()->getSingleScalarResult();
+            } catch (NoResultException $noResultException) {
+                return 0;
+            }
         }
     }
 
