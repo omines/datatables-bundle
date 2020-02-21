@@ -496,6 +496,29 @@ template | string | Template path resolvable by the Symfony templating component
 
 TBD.
 
+## Postponing column rendering (N+1 problem)
+
+Rendering of columns can be postponed in order to avoid `N+1` problem. In order to achieve this, the `render` column option should return an instance of `DataTable\Adapter\CallableResult`. The callable will be called for every cell with first parameter the entire row, following any other specified parameters in CallableResult constructor.
+
+```php?start_inline=1
+$table->add('callback', TextColumn::class, [
+    'render' => function ($value, $context) {
+        // We build a promise for loading related data.
+        $promise = $this->dataLoader->load($context['related_id']);
+
+        return new CallableResult(
+            static function (array $row, $promise): string {
+                // This will await the promise and use its result.
+                $result = DataLoader::await($promise);
+
+                return $result['name'];
+            },
+            [$promise], // The promise will be passed as second argument to the callback.
+        );
+    },
+])
+```
+
 # DataTable Types
 
 ```php?start_inline=1

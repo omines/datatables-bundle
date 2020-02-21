@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Tests\Fixtures\AppBundle\Controller;
 
 use Doctrine\ORM\Query;
+use Omines\DataTablesBundle\Adapter\CallableResult;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\DateTimeColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
@@ -48,6 +49,16 @@ class PlainController extends AbstractController
             ->add('buttons', TwigColumn::class, [
                 'template' => '@App/buttons.html.twig',
                 'data' => '<button>Click me</button>',
+            ])
+            ->add('callback', TextColumn::class, [
+                'render' => static function ($value, $context) {
+                    return new CallableResult(
+                        static function (array $row, int $id): string {
+                            return $row['DT_RowId'] === $id ? '_' . $id : '';
+                        },
+                        [$context['id']],
+                    );
+                },
             ])
             ->addOrderBy('lastName', DataTable::SORT_ASCENDING)
             ->addOrderBy('firstName', DataTable::SORT_DESCENDING)

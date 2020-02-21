@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Omines\DataTablesBundle;
 
 use Omines\DataTablesBundle\Adapter\AdapterInterface;
+use Omines\DataTablesBundle\Adapter\CallableResult;
 use Omines\DataTablesBundle\Adapter\ResultSetInterface;
 use Omines\DataTablesBundle\Column\AbstractColumn;
 use Omines\DataTablesBundle\DependencyInjection\Instantiator;
@@ -288,7 +289,19 @@ class DataTable
             'draw' => $this->state->getDraw(),
             'recordsTotal' => $resultSet->getTotalRecords(),
             'recordsFiltered' => $resultSet->getTotalDisplayRecords(),
-            'data' => iterator_to_array($resultSet->getData()),
+            'data' => array_map(
+                static function ($row) {
+                    return array_map(
+                        static function ($data) use ($row) {
+                            return $data instanceof CallableResult
+                                ? call_user_func_array($data->getCallable(), array_merge([$row], $data->getArgs()))
+                                : $data;
+                        },
+                        $row
+                    );
+                },
+                iterator_to_array($resultSet->getData())
+            ),
         ];
         if ($this->state->isInitial()) {
             $response['options'] = $this->getInitialResponse();
