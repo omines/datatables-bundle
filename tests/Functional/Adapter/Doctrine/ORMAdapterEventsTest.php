@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Tests\Functional\Adapter\Doctrine;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\BrowserKit\Client;
 use Symfony\Component\Cache\DoctrineProvider;
 use Tests\Fixtures\AppBundle\Controller\ORMAdapterEventsController;
 

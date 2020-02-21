@@ -33,12 +33,12 @@ class DateTimeColumn extends AbstractColumn
         if (!$value instanceof \DateTimeInterface) {
             if (!empty($this->options['createFromFormat'])) {
                 $value = \DateTime::createFromFormat($this->options['createFromFormat'], (string) $value);
-                if ($value === false) {
+                if (false === $value) {
                     $errors = \DateTime::getLastErrors();
                     throw new \Exception(implode(', ', $errors['errors'] ?: $errors['warnings']));
                 }
             } else {
-                $value = new \DateTime((string)$value);
+                $value = new \DateTime((string) $value);
             }
         }
 
