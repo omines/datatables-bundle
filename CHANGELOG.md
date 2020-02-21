@@ -5,6 +5,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 Nothing yet.
 
+## [0.4.1] - 2020-02-21
+### Added
+ - Implement basic support for embeddables (#86)
+ - Option for custom datetime format for creating object (#127)
+
+### Fixed
+ - Fixed issue with unitialized datatable (#40)
+ - Fixed some autowiring issues surrounding contracts (#122)
+
 ## [0.4.0] - 2019-12-23
 ### Changed
  - Make compatible with Doctrine Bundle 2.0
@@ -98,7 +107,8 @@ Nothing yet.
 ### Added
  - Basic functionality
 
-[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.4.0...master
+[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.4.1...master
+[0.4.1]: https://github.com/omines/datatables-bundle/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/omines/datatables-bundle/compare/0.3.1...0.4.0
 [0.3.1]: https://github.com/omines/datatables-bundle/compare/0.3.0...0.3.1
 [0.3.0]: https://github.com/omines/datatables-bundle/compare/0.2.2...0.3.0
