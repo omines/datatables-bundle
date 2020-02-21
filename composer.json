@@ -30,7 +30,7 @@
         "ext-pdo_sqlite": "*",
         "doctrine/common": "^2.6",
         "doctrine/doctrine-bundle": "^2.0",
-        "doctrine/orm": "^2.5",
+        "doctrine/orm": "^2.6.3",
         "doctrine/persistence": "^1.3.4",
         "friendsofphp/php-cs-fixer": "^2.7",
         "mongodb/mongodb": "^1.2",
