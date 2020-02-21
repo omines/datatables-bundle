@@ -24,27 +24,16 @@ use Tests\Fixtures\AppBundle\Controller\ORMAdapterEventsController;
  */
 class ORMAdapterEventsTest extends WebTestCase
 {
-    /** @var Client */
-    private $client;
-
-    protected function setUp(): void
-    {
-        $this->client = static::createClient();
-    }
-
     public function testPreQueryEvent()
     {
+        $client = self::createClient();
+
         /** @var DoctrineProvider $doctrineProvider */
         $doctrineProvider = self::$kernel->getContainer()->get('doctrine')->getManager()->getConfiguration()->getResultCacheImpl();
         $doctrineProvider->delete(ORMAdapterEventsController::PRE_QUERY_RESULT_CACHE_ID);
 
-        $this->client->request('POST', '/orm-adapter-events/pre-query', ['_dt' => 'dt', '_init' => true]);
+        $client->request('POST', '/orm-adapter-events/pre-query', ['_dt' => 'dt', '_init' => true]);
 
         static::assertTrue($doctrineProvider->contains(ORMAdapterEventsController::PRE_QUERY_RESULT_CACHE_ID));
-    }
-
-    protected function tearDown(): void
-    {
-        $this->client = null;
     }
 }
