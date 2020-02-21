@@ -40,7 +40,6 @@
         "symfony/css-selector": "^4.1|^5.0",
         "symfony/dom-crawler": "^4.1|^5.0",
         "symfony/phpunit-bridge": "^4.1|^5.0",
-        "symfony/templating": "^4.1|^5.0",
         "symfony/twig-bundle": "^4.1|^5.0",
         "symfony/var-dumper": "^4.1|^5.0",
         "symfony/yaml": "^4.1|^5.0"
