@@ -41,6 +41,17 @@ class ColumnTest extends TestCase
         $this->assertSame('foo', $column->transform(null));
     }
 
+    public function testDateTimeColumnWithCreateFromFormat()
+    {
+        $column = new DateTimeColumn();
+        $column->initialize('test', 1, [
+            'format' => 'd.m.Y H:i:s',
+            'createFromFormat' => 'Y-m-d\TH:i:sP',
+        ], (new DataTable($this->createMock(EventDispatcher::class)))->setName('foo'));
+
+        $this->assertSame('19.02.2020 22:30:34', $column->transform('2020-02-19T22:30:34+00:00'));
+    }
+
     public function testTextColumn()
     {
         $column = new TextColumn();

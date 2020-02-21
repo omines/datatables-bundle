@@ -444,6 +444,7 @@ result. If data of other types is encountered automatic conversion is attempted 
 
 Option | Type | Description
 ------ | ---- | -----------
+createFromFormat | string | Custom format for creating DateTime objects from values. A format string accepted by [`DateTime::createFromFormat()`](https://www.php.net/manual/en/datetime.createfromformat.php) function.
 format | string | A date format string as accepted by the [`date()`](http://php.net/manual/en/function.date.php) function. Default `'c'`.
 nullValue | string | Raw string to display for null values. Defaults to the empty string.
 
