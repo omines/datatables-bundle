@@ -56,7 +56,7 @@ class PlainController extends AbstractController
                         static function (array $row, int $id): string {
                             return $row['DT_RowId'] === $id ? '_' . $id : '';
                         },
-                        [$context['id']],
+                        [$context['id']]
                     );
                 },
             ])
