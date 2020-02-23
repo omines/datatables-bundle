@@ -379,7 +379,7 @@ $table
     ->add('lastName', TextColumn::class, ['render' => '<strong>%s</strong>', 'raw' => true])
     ->add('email', TextColumn::class, ['render' => function($value, $context) {
         return sprintf('<a href="%s">%s</a>', $value, $value);
-    })
+    }])
 ;
 ```
 
