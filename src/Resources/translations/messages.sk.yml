@@ -12,7 +12,7 @@ datatable:
         infoEmpty: 'Záznamy 0 až 0 z celkom 0 '
         infoFiltered: '(vyfiltrované spomedzi _MAX_ záznamov)'
         infoPostFix: ''
-        infoThousands: ' '
+        infoThousands: ','
         lengthMenu: 'Zobraz _MENU_ záznamov'
         loadingRecords: Načítavam...
         processing: Spracúvam...
