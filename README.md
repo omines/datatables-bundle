@@ -13,8 +13,8 @@ for realtime Ajax tables in your [Symfony](https://symfony.com/) 4.1+ or 5.0+ ap
 
 Unlike other bundles providing similar functionality we decoupled the implementation of the DataTables logic
 completely from the source of the data. Therefore it is possible to implement your own custom adapters for
-every possible data source. [Doctrine ORM](https://github.com/doctrine/DoctrineBundle) and [Elastica](https://github.com/ruflin/Elastica) come bundled already, we intend to provide popular
-choices like FOSElasticaBundle, Doctrine DBAL and MongoDB out of the box as well. 
+every possible data source. [Doctrine ORM](https://github.com/doctrine/DoctrineBundle), [MongoDB](https://github.com/mongodb/mongo-php-library) and [Elastica](https://github.com/ruflin/Elastica) come bundled. Handling other popular
+choices like FOSElasticaBundle and Doctrine DBAL is possible.
 
 ## Documentation
 
