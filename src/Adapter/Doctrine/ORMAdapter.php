@@ -262,7 +262,7 @@ class ORMAdapter extends AbstractAdapter
      * @param string $field
      * @return string
      */
-    private function mapFieldToPropertyPath($field, array $aliases = [])
+    protected function mapFieldToPropertyPath($field, array $aliases = [])
     {
         $parts = explode('.', $field);
         if (count($parts) < 2) {
@@ -317,7 +317,7 @@ class ORMAdapter extends AbstractAdapter
      * @param callable|QueryBuilderProcessorInterface $provider
      * @return QueryBuilderProcessorInterface
      */
-    private function normalizeProcessor($provider)
+    protected function normalizeProcessor($provider)
     {
         if ($provider instanceof QueryBuilderProcessorInterface) {
             return $provider;
