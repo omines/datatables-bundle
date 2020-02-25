@@ -38,19 +38,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ORMAdapter extends AbstractAdapter
 {
     /** @var ManagerRegistry */
-    private $registry;
+    protected $registry;
 
     /** @var EntityManager */
-    private $manager;
+    protected $manager;
 
     /** @var \Doctrine\ORM\Mapping\ClassMetadata */
-    private $metadata;
+    protected $metadata;
 
     /** @var int */
-    private $hydrationMode;
+    protected $hydrationMode;
 
     /** @var QueryBuilderProcessorInterface[] */
-    private $queryBuilderProcessors;
+    protected $queryBuilderProcessors;
 
     /** @var QueryBuilderProcessorInterface[] */
     protected $criteriaProcessors;
