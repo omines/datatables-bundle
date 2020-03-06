@@ -123,6 +123,30 @@ class FunctionalTest extends WebTestCase
         $this->assertStringStartsWith('Company ', $json->data[0]->company);
     }
 
+    /**
+     * @dataProvider translationProvider
+     */
+    public function testTranslation(string $locale, string $languageProcessing, string $languageInfoFiltered)
+    {
+        $this->client->enableProfiler();
+        $crawler = $this->client->request('GET', sprintf('/%s/translation', $locale));
+        $this->assertSuccessful($response = $this->client->getResponse());
+
+        $content = $response->getContent();
+        $this->assertNotContains('"options":{"language":{"url"', $content);
+        $this->assertContains(sprintf('"processing":"%s"', $languageProcessing), $content);
+        $this->assertContains(sprintf('"infoFiltered":"%s"', $languageInfoFiltered), $content);
+    }
+
+    public function translationProvider(): array
+    {
+        return [
+            ['en', 'Processing...', '(filtered from _MAX_ total entries)'],
+            ['de', 'Bitte warten...', ' (gefiltert von _MAX_ Eintr\u00e4gen)'],
+            ['fr', 'Traitement en cours...', '(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)'],
+        ];
+    }
+
     private function callDataTableUrl(string $url)
     {
         $this->client->enableProfiler();
