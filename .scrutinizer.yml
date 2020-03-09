@@ -1,9 +1,26 @@
 build:
+    environment:
+        php:
+            version: 7.4
+    dependencies:
+        override:
+            - composer install --no-interaction --no-scripts
+    tests:
+        override:
+            - php-scrutinizer-run
     nodes:
-        analysis:
-            tests:
-                override:
-                    - php-scrutinizer-run
+        php72:
+            environment:
+                php:
+                    version: 7.2
+        php73:
+            environment:
+                php:
+                    version: 7.3
+        php74:
+            environment:
+                php:
+                    version: 7.4
 
 tools:
     external_code_coverage:
