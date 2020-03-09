@@ -19,6 +19,7 @@ use Omines\DataTablesBundle\Column\NumberColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\Column\TwigColumn;
 use Omines\DataTablesBundle\DataTable;
+use Omines\DataTablesBundle\Exception\MissingDependencyException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
@@ -132,12 +133,11 @@ class ColumnTest extends TestCase
         $this->assertSame('BAR', $column->transform(null));
     }
 
-    /**
-     * @expectedException \Omines\DataTablesBundle\Exception\MissingDependencyException
-     * @expectedExceptionMessage You must have TwigBundle installed to use
-     */
     public function testTwigDependencyDetection()
     {
+        $this->expectException(MissingDependencyException::class);
+        $this->expectExceptionMessage('You must have TwigBundle installed to use');
+
         new TwigColumn();
     }
 }

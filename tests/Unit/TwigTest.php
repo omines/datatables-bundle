@@ -12,11 +12,12 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use Omines\DataTablesBundle\Exception\MissingDependencyException;
 use Omines\DataTablesBundle\Twig\DataTablesExtension;
 use Omines\DataTablesBundle\Twig\TwigRenderer;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Translation\Translator;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * TwigTest.
@@ -34,12 +35,11 @@ class TwigTest extends TestCase
         $this->assertSame('DataTablesBundle', $twig->getName());
     }
 
-    /**
-     * @expectedException \LogicException
-     * @expectedExceptionMessage You must have symfony/twig-bundle installed
-     */
     public function testMissingTwigBundleThrows()
     {
+        $this->expectException(MissingDependencyException::class);
+        $this->expectExceptionMessage('You must have symfony/twig-bundle installed');
+
         new TwigRenderer();
     }
 }

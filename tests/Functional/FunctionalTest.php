@@ -41,8 +41,8 @@ class FunctionalTest extends WebTestCase
         $this->assertSuccessful($response = $this->client->getResponse());
 
         $content = $response->getContent();
-        $this->assertContains('"name":"dt"', $content);
-        $this->assertContains('(filtered from _MAX_ total entries)', $content);
+        $this->assertStringContainsString('"name":"dt"', $content);
+        $this->assertStringContainsString('(filtered from _MAX_ total entries)', $content);
         $json = $this->callDataTableUrl('/?_dt=noCDN&_init=true');
         $this->assertEmpty($json->data);
     }
@@ -56,7 +56,7 @@ class FunctionalTest extends WebTestCase
         $this->assertSame(125, $json->recordsFiltered);
         $this->assertCount(50, $json->data);
 
-        $this->assertContains('<table id="persons"', $json->template);
+        $this->assertStringContainsString('<table id="persons"', $json->template);
         $this->assertNotEmpty($json->options);
 
         $sample = $json->data[5];
@@ -133,9 +133,9 @@ class FunctionalTest extends WebTestCase
         $this->assertSuccessful($response = $this->client->getResponse());
 
         $content = $response->getContent();
-        $this->assertNotContains('"options":{"language":{"url"', $content);
-        $this->assertContains(sprintf('"processing":"%s"', $languageProcessing), $content);
-        $this->assertContains(sprintf('"infoFiltered":"%s"', $languageInfoFiltered), $content);
+        $this->assertStringNotContainsString('"options":{"language":{"url"', $content);
+        $this->assertStringContainsString(sprintf('"processing":"%s"', $languageProcessing), $content);
+        $this->assertStringContainsString(sprintf('"infoFiltered":"%s"', $languageInfoFiltered), $content);
     }
 
     public function translationProvider(): array
@@ -152,7 +152,7 @@ class FunctionalTest extends WebTestCase
         $this->client->enableProfiler();
         $this->client->request('GET', $url);
         $this->assertSuccessful($response = $this->client->getResponse());
-        $this->assertContains('application/json', $response->headers->get('Content-type'));
+        $this->assertStringContainsString('application/json', $response->headers->get('Content-type'));
 
         return json_decode($response->getContent());
     }
