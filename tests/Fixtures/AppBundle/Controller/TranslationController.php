@@ -27,9 +27,9 @@ class TranslationController extends AbstractController
     {
         $datatable = $dataTableFactory->create();
         $datatable
-            ->setName('noCDN')
+            ->setName($request->query->has('cdn') ? 'CDN' : 'noCDN')
             ->setMethod(Request::METHOD_GET)
-            ->setLanguageFromCDN(false)
+            ->setLanguageFromCDN($request->query->has('cdn'))
             ->add('col3', TextColumn::class, ['label' => 'foo', 'field' => 'bar'])
             ->add('col4', TextColumn::class, ['label' => 'bar', 'field' => 'foo'])
             ->createAdapter(ArrayAdapter::class)
