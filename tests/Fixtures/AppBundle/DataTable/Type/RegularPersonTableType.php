@@ -52,6 +52,11 @@ class RegularPersonTableType implements DataTableTypeInterface
 
                 return $row;
             })
+            ->setResultTransformer(function ($rows) {
+                $rows[1]['firstName'] .= ' transformer';
+
+                return $rows;
+            })
         ;
     }
 }

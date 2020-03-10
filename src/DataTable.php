@@ -93,6 +93,9 @@ class DataTable
     /** @var callable */
     protected $transformer;
 
+    /** @var callable */
+    protected $resultTransformer;
+
     /** @var string */
     protected $translationDomain = 'messages';
 
@@ -332,6 +335,14 @@ class DataTable
         return $this->transformer;
     }
 
+    /**
+     * @return callable|null
+     */
+    public function getResultTransformer()
+    {
+        return $this->resultTransformer;
+    }
+
     public function getOptions(): array
     {
         return $this->options;
@@ -439,6 +450,16 @@ class DataTable
     public function setTransformer(callable $formatter)
     {
         $this->transformer = $formatter;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setResultTransformer(callable $transformer)
+    {
+        $this->resultTransformer = $transformer;
 
         return $this;
     }

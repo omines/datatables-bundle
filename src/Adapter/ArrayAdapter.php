@@ -72,6 +72,11 @@ class ArrayAdapter implements AdapterInterface
 
         $data = iterator_to_array($this->processData($state, $this->data, $map));
 
+        $resultTransformer = $state->getDataTable()->getResultTransformer();
+        if (null !== $resultTransformer) {
+            $data = call_user_func($resultTransformer, $data);
+        }
+
         $length = $state->getLength();
         $page = $length > 0 ? array_slice($data, $state->getStart(), $state->getLength()) : $data;
 

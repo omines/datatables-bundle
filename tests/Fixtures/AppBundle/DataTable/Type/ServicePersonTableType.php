@@ -60,6 +60,11 @@ class ServicePersonTableType implements DataTableTypeInterface
 
                 return $row;
             })
+            ->setResultTransformer(function ($rows) {
+                $rows[1]['company'] .= ' Transformer';
+
+                return $rows;
+            })
             ->createAdapter(ORMAdapter::class, [
                 'entity' => Employee::class,
                 'criteria' => [

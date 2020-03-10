@@ -78,6 +78,7 @@ class FunctionalTest extends WebTestCase
         $this->assertSame('George W.', $json->data[0]->firstName);
         $this->assertSame('BUSH', $json->data[0]->lastName);
         $this->assertSame('01-01-2017', $json->data[0]->lastActivity);
+        $this->assertSame('George H.W. transformer', $json->data[1]->firstName);
 
         $json = $this->callDataTableUrl('/type?_dt=persons&draw=1&search[value]=Bush');
 
@@ -91,6 +92,7 @@ class FunctionalTest extends WebTestCase
         $this->assertSame(2, $json->draw);
         $this->assertStringStartsWith('Company ', $json->data[0]->company);
         $this->assertSame('LastName0 (Company 0)', $json->data[0]->fullName);
+        $this->assertSame('Company 1 Transformer', $json->data[1]->company);
 
         $json = $this->callDataTableUrl('/service?_dt=persons&draw=2&order[0][column]=2&order[0][dir]=desc&search[value]=24&columns[1][search][value]=24');
 

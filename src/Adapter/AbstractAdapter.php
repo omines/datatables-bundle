@@ -65,6 +65,11 @@ abstract class AbstractAdapter implements AdapterInterface
             $rows[] = $row;
         }
 
+        $resultTransformer = $state->getDataTable()->getResultTransformer();
+        if (null !== $resultTransformer) {
+            $rows = call_user_func($resultTransformer, $rows);
+        }
+
         return new ArrayResultSet($rows, $query->getTotalRows(), $query->getFilteredRows());
     }
 
