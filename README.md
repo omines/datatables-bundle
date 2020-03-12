@@ -6,7 +6,7 @@
 [![Build Status](https://travis-ci.org/omines/datatables-bundle.svg?branch=master)](https://travis-ci.org/omines/datatables-bundle)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/omines/datatables-bundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/omines/datatables-bundle/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/omines/datatables-bundle/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/omines/datatables-bundle/?branch=master)
-[![SensioLabs Insight](https://img.shields.io/sensiolabs/i/05d79ba2-cba4-4201-a17a-2868c51f9c6c.svg)](https://insight.sensiolabs.com/projects/05d79ba2-cba4-4201-a17a-2868c51f9c6c)
+[![SymfonyInsight](https://insight.symfony.com/projects/05d79ba2-cba4-4201-a17a-2868c51f9c6c/mini.svg)](https://insight.symfony.com/projects/05d79ba2-cba4-4201-a17a-2868c51f9c6c)
 
 This bundle provides convenient integration of the popular [DataTables](https://datatables.net/) jQuery library
 for realtime Ajax tables in your [Symfony](https://symfony.com/) 4.1+ or 5.0+ application.
