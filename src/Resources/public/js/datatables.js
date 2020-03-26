@@ -71,7 +71,16 @@
                             }
                         } else {
                             request._dt = config.name;
-                            $.ajax(config.url, {
+                            // Build url for ajax request or use default one.
+                            var url = '';
+                            if (config.urlBuilder && {}.toString.call(config.urlBuilder) === '[object Function]') {
+                                url = config.urlBuilder();
+                            }
+                            if (!url) {
+                                url = config.url;
+                            }
+
+                            $.ajax(url, {
                                 method: config.method,
                                 data: request
                             }).done(function(data) {
@@ -80,6 +89,10 @@
                         }
                     }
                 });
+
+                if (!dtOpts.dom) {
+                    delete dtOpts.dom;
+                }
 
                 root.html(data.template);
                 dt = $('table', root).DataTable(dtOpts);
