@@ -17,6 +17,7 @@ use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\DateTimeColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\Column\TwigColumn;
+use Omines\DataTablesBundle\Column\TwigStringColumn;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -45,6 +46,9 @@ class PlainController extends AbstractController
                 },
             ])
             ->add('employer', TextColumn::class, ['field' => 'company.name'])
+            ->add('link', TwigStringColumn::class, [
+                'template' => '<a href="{{ url(\'employee.edit\', {id: row.id}) }}">{{ row.firstName }} {{ row.lastName }}</a>',
+            ])
             ->add('buttons', TwigColumn::class, [
                 'template' => '@App/buttons.html.twig',
                 'data' => '<button>Click me</button>',
