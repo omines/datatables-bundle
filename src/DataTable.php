@@ -51,7 +51,6 @@ class DataTable
         'orderCellsTop' => true,
         'stateSave' => false,
         'fixedHeader' => false,
-        'scrollX' => false,
     ];
 
     const DEFAULT_TEMPLATE = '@DataTables/datatable_html.html.twig';
