@@ -2,6 +2,9 @@ build:
     environment:
         php:
             version: 7.4
+            pecl_extensions:
+                - mongodb
+                - zip
     dependencies:
         override:
             - composer install --no-interaction --no-scripts
