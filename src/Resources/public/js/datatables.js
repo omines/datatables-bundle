@@ -71,7 +71,6 @@
                             }
                         } else {
                             request._dt = config.name;
-
                             $.ajax(typeof config.url === 'function' ? config.url(dt) : config.url, {
                                 method: config.method,
                                 data: request
