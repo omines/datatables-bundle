@@ -42,7 +42,7 @@
 
         return new Promise((fulfill, reject) => {
             // Perform initial load
-            $.ajax(config.url, {
+            $.ajax(typeof config.url === 'function' ? config.url(null) : config.url, {
                 method: config.method,
                 data: {
                     _dt: config.name,
@@ -52,7 +52,7 @@
                 var baseState;
 
                 // Merge all options from different sources together and add the Ajax loader
-                var dtOpts = $.extend({}, data.options, config.options, options, persistOptions, {
+                var dtOpts = $.extend({}, data.options, typeof config.options === 'function' ? {} : config.options, options, persistOptions, {
                     ajax: function (request, drawCallback, settings) {
                         if (data) {
                             data.draw = request.draw;
@@ -71,7 +71,7 @@
                             }
                         } else {
                             request._dt = config.name;
-                            $.ajax(config.url, {
+                            $.ajax(typeof config.url === 'function' ? config.url(dt) : config.url, {
                                 method: config.method,
                                 data: request
                             }).done(function(data) {
@@ -80,6 +80,10 @@
                         }
                     }
                 });
+
+                if (typeof config.options === 'function') {
+                    dtOpts = config.options(dtOpts);
+                }
 
                 root.html(data.template);
                 dt = $('table', root).DataTable(dtOpts);
