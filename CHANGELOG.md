@@ -5,6 +5,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 Nothing yet.
 
+## [0.4.2] - 2020-04-08
+### Added
+ - Update translations automatically with script (#130)
+ - Add support for closures in frontend JS code (#145)
+ 
+### Fixed
+ - Fixed deprecation warnings (#129)
+
 ## [0.4.1] - 2020-02-21
 ### Added
  - Implement basic support for embeddables (#86)
@@ -107,7 +115,8 @@ Nothing yet.
 ### Added
  - Basic functionality
 
-[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.4.1...master
+[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.4.2...master
+[0.4.2]: https://github.com/omines/datatables-bundle/compare/0.4.1...0.4.2
 [0.4.1]: https://github.com/omines/datatables-bundle/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/omines/datatables-bundle/compare/0.3.1...0.4.0
 [0.3.1]: https://github.com/omines/datatables-bundle/compare/0.3.0...0.3.1
