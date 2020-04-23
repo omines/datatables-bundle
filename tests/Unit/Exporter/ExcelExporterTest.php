@@ -26,7 +26,7 @@ class ExcelExporterTest extends KernelTestCase
     /** @var DataTableExporterCollection */
     private $exporterCollection;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         static::bootKernel();
 

@@ -62,7 +62,7 @@ class DataTableTest extends TestCase
 
     public function testFactoryRemembersInstances()
     {
-        $factory = new DataTableFactory([], $this->createMock(TwigRenderer::class), new Instantiator(), $this->createMock(EventDispatcher::class));
+        $factory = new DataTableFactory([], $this->createMock(TwigRenderer::class), new Instantiator(), $this->createMock(EventDispatcher::class), $this->createMock(DataTableExporterManager::class));
 
         $reflection = new \ReflectionClass(DataTableFactory::class);
         $property = $reflection->getProperty('resolvedTypes');

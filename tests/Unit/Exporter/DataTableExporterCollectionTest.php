@@ -22,7 +22,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class DataTableExporterCollectionTest extends KernelTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         static::bootKernel();
     }

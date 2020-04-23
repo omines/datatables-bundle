@@ -40,7 +40,7 @@ class DataTableExporterResponseEventTest extends WebTestCase
         /** @var BinaryFileResponse $response */
         $response = $this->client->getResponse();
 
-        static::assertContains($response->headers->get('content-disposition'), sprintf('attachment; filename=custom_filename.%s', $ext));
+        static::assertStringContainsString($response->headers->get('content-disposition'), sprintf('attachment; filename=custom_filename.%s', $ext));
     }
 
     public function exporterNameProvider(): array
