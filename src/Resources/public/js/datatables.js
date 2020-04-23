@@ -130,9 +130,11 @@
         settings = $.extend({}, $.fn.initDataTables.defaults, settings);
 
         return function(e, dt) {
+            const params = $.param($.extend({}, dt.ajax.params(), {'_dt': settings.name, '_exporter': exporterName}));
+
             // Credit: https://stackoverflow.com/a/23797348
             const xhr = new XMLHttpRequest();
-            xhr.open(settings.method, settings.url, true);
+            xhr.open(settings.method, settings.method === 'GET' ? (settings.url + '?' +  params) : settings.url, true);
             xhr.responseType = 'arraybuffer';
             xhr.onload = function () {
                 if (this.status === 200) {
@@ -191,7 +193,7 @@
             };
 
             xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-            xhr.send($.param($.extend({}, dt.ajax.params(), {'_dt': settings.name, '_exporter': exporterName})));
+            xhr.send(settings.method === 'POST' ? params : null);
         }
     };
 
