@@ -3,7 +3,8 @@ All notable changes to `omines\datatables-bundle` will be documented in this fil
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
-Nothing yet.
+### Changed
+ - Fix contract dependency handling by upping Symfony requirement to 4.2+
 
 ## [0.4.2] - 2020-04-08
 ### Added

@@ -9,7 +9,7 @@
 [![SymfonyInsight](https://img.shields.io/symfony/i/grade/05d79ba2-cba4-4201-a17a-2868c51f9c6c)](https://insight.symfony.com/projects/05d79ba2-cba4-4201-a17a-2868c51f9c6c)
 
 This bundle provides convenient integration of the popular [DataTables](https://datatables.net/) jQuery library
-for realtime Ajax tables in your [Symfony](https://symfony.com/) 4.1+ or 5.0+ application.
+for realtime Ajax tables in your [Symfony](https://symfony.com/) 4.2+ or 5.0+ application.
 
 Unlike other bundles providing similar functionality we decoupled the implementation of the DataTables logic
 completely from the source of the data. Therefore it is possible to implement your own custom adapters for
