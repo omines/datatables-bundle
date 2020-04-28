@@ -20,6 +20,7 @@ use Omines\DataTablesBundle\Adapter\Doctrine\ORM\SearchCriteriaProvider;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
+use Omines\DataTablesBundle\Exporter\DataTableExporterManager;
 use Omines\DataTablesBundle\Exception\InvalidConfigurationException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -34,7 +35,7 @@ class DoctrineTest extends TestCase
 {
     public function testSearchCriteriaProvider()
     {
-        $table = new DataTable($this->createMock(EventDispatcher::class));
+        $table = new DataTable($this->createMock(EventDispatcher::class), $this->createMock(DataTableExporterManager::class));
         $table
             ->add('firstName', TextColumn::class)
             ->add('lastName', TextColumn::class)
@@ -63,6 +64,7 @@ class DoctrineTest extends TestCase
     {
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('doctrine/doctrine-bundle');
+
         (new ORMAdapter());
     }
 
@@ -70,6 +72,7 @@ class DoctrineTest extends TestCase
     {
         $this->expectException(InvalidConfigurationException::class);
         $this->expectExceptionMessage('Provider must be a callable or implement QueryBuilderProcessorInterface');
+
         (new ORMAdapter($this->createMock(ManagerRegistry::class)))
             ->configure([
                 'entity' => 'bar',
