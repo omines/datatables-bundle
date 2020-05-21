@@ -94,10 +94,6 @@ class ElasticaAdapter extends AbstractAdapter
         }
     }
 
-    /**
-     * @param DataTableState $state
-     * @return \Elastica\Query
-     */
     protected function buildQuery(DataTableState $state): \Elastica\Query
     {
         $q = new \Elastica\Query();
@@ -118,10 +114,6 @@ class ElasticaAdapter extends AbstractAdapter
         return $q;
     }
 
-    /**
-     * @param \Elastica\Query $query
-     * @param DataTableState $state
-     */
     protected function applyOrdering(\Elastica\Query $query, DataTableState $state)
     {
         foreach ($state->getOrderBy() as list($column, $direction)) {
@@ -132,9 +124,6 @@ class ElasticaAdapter extends AbstractAdapter
         }
     }
 
-    /**
-     * @param OptionsResolver $resolver
-     */
     protected function configureOptions(OptionsResolver $resolver)
     {
         $resolver

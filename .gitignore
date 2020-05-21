@@ -1,5 +1,5 @@
-/.php_cs.cache
+/.*.cache
 /composer.lock
-/tests/Fixtures/var
 /tmp
 /vendor
+/tests/Fixtures/var/

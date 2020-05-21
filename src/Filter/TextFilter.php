@@ -44,7 +44,6 @@ class TextFilter extends AbstractFilter
 
     /**
      * @param $value
-     * @return bool
      */
     public function isValidValue($value): bool
     {

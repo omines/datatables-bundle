@@ -33,8 +33,6 @@ class ServicePersonTableType implements DataTableTypeInterface
 
     /**
      * ServicePersonTableType constructor.
-     *
-     * @param RouterInterface $router
      */
     public function __construct(RouterInterface $router)
     {

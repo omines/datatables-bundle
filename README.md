@@ -6,15 +6,15 @@
 [![Build Status](https://travis-ci.org/omines/datatables-bundle.svg?branch=master)](https://travis-ci.org/omines/datatables-bundle)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/omines/datatables-bundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/omines/datatables-bundle/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/omines/datatables-bundle/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/omines/datatables-bundle/?branch=master)
-[![SensioLabs Insight](https://img.shields.io/sensiolabs/i/05d79ba2-cba4-4201-a17a-2868c51f9c6c.svg)](https://insight.sensiolabs.com/projects/05d79ba2-cba4-4201-a17a-2868c51f9c6c)
+[![SymfonyInsight](https://img.shields.io/symfony/i/grade/05d79ba2-cba4-4201-a17a-2868c51f9c6c)](https://insight.symfony.com/projects/05d79ba2-cba4-4201-a17a-2868c51f9c6c)
 
 This bundle provides convenient integration of the popular [DataTables](https://datatables.net/) jQuery library
-for realtime Ajax tables in your [Symfony](https://symfony.com/) 3.4+ or 4.1+ application.
+for realtime Ajax tables in your [Symfony](https://symfony.com/) 4.2+ or 5.0+ application.
 
 Unlike other bundles providing similar functionality we decoupled the implementation of the DataTables logic
 completely from the source of the data. Therefore it is possible to implement your own custom adapters for
-every possible data source. [Doctrine ORM](https://github.com/doctrine/DoctrineBundle) and [Elastica](https://github.com/ruflin/Elastica) come bundled already, we intend to provide popular
-choices like FOSElasticaBundle, Doctrine DBAL and MongoDB out of the box as well. 
+every possible data source. [Doctrine ORM](https://github.com/doctrine/DoctrineBundle), [MongoDB](https://github.com/mongodb/mongo-php-library) and [Elastica](https://github.com/ruflin/Elastica) come bundled. Handling other popular
+choices like FOSElasticaBundle and Doctrine DBAL is possible.
 
 ## Documentation
 

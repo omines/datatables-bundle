@@ -21,22 +21,16 @@ interface ResultSetInterface
 {
     /**
      * Retrieves the total number of accessible records in the original data.
-     *
-     * @return int
      */
     public function getTotalRecords(): int;
 
     /**
      * Retrieves the number of records available after applying filters.
-     *
-     * @return int
      */
     public function getTotalDisplayRecords(): int;
 
     /**
      * Returns the raw data in the result set.
-     *
-     * @return \Iterator
      */
     public function getData(): \Iterator;
 }

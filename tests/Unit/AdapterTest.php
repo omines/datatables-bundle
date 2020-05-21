@@ -14,21 +14,21 @@ namespace Tests\Unit;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
+use Omines\DataTablesBundle\Exception\InvalidConfigurationException;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
  * AdapterTest.
  *
  * @author Niels Keurentjes <niels.keurentjes@omines.com>
  */
-class AdapterTest extends TestCase
+class AdapterTest extends KernelTestCase
 {
-    /**
-     * @expectedException \Omines\DataTablesBundle\Exception\InvalidConfigurationException
-     * @expectedExceptionMessage Doctrine has no manager for entity "foobar"
-     */
     public function testInvalidEntity()
     {
+        $this->expectException(InvalidConfigurationException::class);
+        $this->expectExceptionMessage('Doctrine has no manager for entity "foobar"');
+
         /** @var Registry $registryMock */
         $registryMock = $this->createMock(Registry::class);
         $adapter = new ORMAdapter($registryMock);

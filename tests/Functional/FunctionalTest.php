@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Tests\Functional;
 
-use Symfony\Bundle\FrameworkBundle\Client;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Debug\Exception\FlattenException;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,10 +26,10 @@ use Tests\Fixtures\AppKernel;
  */
 class FunctionalTest extends WebTestCase
 {
-    /** @var Client */
+    /** @var KernelBrowser */
     private $client;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->client = self::createClient();
     }
@@ -41,8 +41,8 @@ class FunctionalTest extends WebTestCase
         $this->assertSuccessful($response = $this->client->getResponse());
 
         $content = $response->getContent();
-        $this->assertContains('"name":"dt"', $content);
-        $this->assertContains('(filtered from _MAX_ total entries)', $content);
+        $this->assertStringContainsString('"name":"dt"', $content);
+        $this->assertStringContainsString('(filtered from _MAX_ total entries)', $content);
         $json = $this->callDataTableUrl('/?_dt=noCDN&_init=true');
         $this->assertEmpty($json->data);
     }
@@ -56,7 +56,7 @@ class FunctionalTest extends WebTestCase
         $this->assertSame(125, $json->recordsFiltered);
         $this->assertCount(50, $json->data);
 
-        $this->assertContains('<table id="persons"', $json->template);
+        $this->assertStringContainsString('<table id="persons"', $json->template);
         $this->assertNotEmpty($json->options);
 
         $sample = $json->data[5];
@@ -123,12 +123,36 @@ class FunctionalTest extends WebTestCase
         $this->assertStringStartsWith('Company ', $json->data[0]->company);
     }
 
+    /**
+     * @dataProvider translationProvider
+     */
+    public function testTranslation(string $locale, string $languageProcessing, string $languageInfoFiltered)
+    {
+        $this->client->enableProfiler();
+        $crawler = $this->client->request('GET', sprintf('/%s/translation', $locale));
+        $this->assertSuccessful($response = $this->client->getResponse());
+
+        $content = $response->getContent();
+        $this->assertStringNotContainsString('"options":{"language":{"url"', $content);
+        $this->assertStringContainsString(sprintf('"processing":"%s"', $languageProcessing), $content);
+        $this->assertStringContainsString(sprintf('"infoFiltered":"%s"', $languageInfoFiltered), $content);
+    }
+
+    public function translationProvider(): array
+    {
+        return [
+            ['en', 'Processing...', '(filtered from _MAX_ total entries)'],
+            ['de', 'Bitte warten...', ' (gefiltert von _MAX_ Eintr\u00e4gen)'],
+            ['fr', 'Traitement en cours...', '(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)'],
+        ];
+    }
+
     private function callDataTableUrl(string $url)
     {
         $this->client->enableProfiler();
         $this->client->request('GET', $url);
         $this->assertSuccessful($response = $this->client->getResponse());
-        $this->assertContains('application/json', $response->headers->get('Content-type'));
+        $this->assertStringContainsString('application/json', $response->headers->get('Content-type'));
 
         return json_decode($response->getContent());
     }

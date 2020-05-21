@@ -1,2 +1,10 @@
 {
+  "extends": [
+    "config:base",
+    "schedule:monthly",
+    ":preserveSemverRanges"
+  ],
+  "bundler": {
+    "enabled": false
+  }
 }

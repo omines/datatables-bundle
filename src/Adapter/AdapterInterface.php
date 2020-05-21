@@ -23,16 +23,11 @@ interface AdapterInterface
 {
     /**
      * Provides initial configuration to the adapter.
-     *
-     * @param array $options
      */
     public function configure(array $options);
 
     /**
      * Processes a datatable's state into a result set fit for further processing.
-     *
-     * @param DataTableState $state
-     * @return ResultSetInterface
      */
     public function getData(DataTableState $state): ResultSetInterface;
 }

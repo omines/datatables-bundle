@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle\Adapter\Doctrine;
 
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
@@ -25,7 +26,6 @@ use Omines\DataTablesBundle\Column\AbstractColumn;
 use Omines\DataTablesBundle\DataTableState;
 use Omines\DataTablesBundle\Exception\InvalidConfigurationException;
 use Omines\DataTablesBundle\Exception\MissingDependencyException;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -37,14 +37,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ORMAdapter extends AbstractAdapter
 {
-    /** @var RegistryInterface */
+    /** @var ManagerRegistry */
     private $registry;
 
     /** @var EntityManager */
-    private $manager;
+    protected $manager;
 
     /** @var \Doctrine\ORM\Mapping\ClassMetadata */
-    private $metadata;
+    protected $metadata;
 
     /** @var int */
     private $hydrationMode;
@@ -57,10 +57,8 @@ class ORMAdapter extends AbstractAdapter
 
     /**
      * DoctrineAdapter constructor.
-     *
-     * @param RegistryInterface|null $registry
      */
-    public function __construct(RegistryInterface $registry = null)
+    public function __construct(ManagerRegistry $registry = null)
     {
         if (null === $registry) {
             throw new MissingDependencyException('Install doctrine/doctrine-bundle to use the ORMAdapter');
@@ -102,9 +100,6 @@ class ORMAdapter extends AbstractAdapter
         $this->criteriaProcessors[] = $this->normalizeProcessor($processor);
     }
 
-    /**
-     * @param AdapterQuery $query
-     */
     protected function prepareQuery(AdapterQuery $query)
     {
         $state = $query->getState();
@@ -134,7 +129,6 @@ class ORMAdapter extends AbstractAdapter
     }
 
     /**
-     * @param AdapterQuery $query
      * @return array
      */
     protected function getAliases(AdapterQuery $query)
@@ -174,10 +168,6 @@ class ORMAdapter extends AbstractAdapter
         return $this->mapFieldToPropertyPath($column->getField(), $query->get('aliases'));
     }
 
-    /**
-     * @param AdapterQuery $query
-     * @return \Traversable
-     */
     protected function getResults(AdapterQuery $query): \Traversable
     {
         /** @var QueryBuilder $builder */
@@ -200,7 +190,7 @@ class ORMAdapter extends AbstractAdapter
 
         $query = $builder->getQuery();
         $event = new ORMAdapterQueryEvent($query);
-        $state->getDataTable()->getEventDispatcher()->dispatch(ORMAdapterEvents::PRE_QUERY, $event);
+        $state->getDataTable()->getEventDispatcher()->dispatch($event, ORMAdapterEvents::PRE_QUERY);
 
         foreach ($query->iterate([], $this->hydrationMode) as $result) {
             yield $entity = array_values($result)[0];
@@ -210,9 +200,6 @@ class ORMAdapter extends AbstractAdapter
         }
     }
 
-    /**
-     * @param DataTableState $state
-     */
     protected function buildCriteria(QueryBuilder $queryBuilder, DataTableState $state)
     {
         foreach ($this->criteriaProcessors as $provider) {
@@ -220,10 +207,6 @@ class ORMAdapter extends AbstractAdapter
         }
     }
 
-    /**
-     * @param DataTableState $state
-     * @return QueryBuilder
-     */
     protected function createQueryBuilder(DataTableState $state): QueryBuilder
     {
         /** @var QueryBuilder $queryBuilder */
@@ -277,19 +260,21 @@ class ORMAdapter extends AbstractAdapter
 
     /**
      * @param string $field
-     * @param array $aliases
      * @return string
      */
-    private function mapFieldToPropertyPath($field, array $aliases = [])
+    protected function mapFieldToPropertyPath($field, array $aliases = [])
     {
         $parts = explode('.', $field);
         if (count($parts) < 2) {
             throw new InvalidConfigurationException(sprintf("Field name '%s' must consist at least of an alias and a field separated with a period", $field));
         }
-        list($origin, $target) = $parts;
 
-        $path = [$target];
-        $current = $aliases[$origin][0];
+        $origin = $parts[0];
+        array_shift($parts);
+        $target = array_reverse($parts);
+        $path = $target;
+
+        $current = isset($aliases[$origin]) ? $aliases[$origin][0] : null;
 
         while (null !== $current) {
             list($origin, $target) = explode('.', $current);
@@ -304,9 +289,6 @@ class ORMAdapter extends AbstractAdapter
         }
     }
 
-    /**
-     * @param OptionsResolver $resolver
-     */
     protected function configureOptions(OptionsResolver $resolver)
     {
         $providerNormalizer = function (Options $options, $value) {

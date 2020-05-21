@@ -29,6 +29,18 @@ grouped2:
 employee.edit:
     path:       /employee/{id}
 
+translation:
+    path:       /{_locale}/translation
+    controller: Tests\Fixtures\AppBundle\Controller\TranslationController::tableAction
+
 orm_adapter_events.pre_query:
     path: /orm-adapter-events/pre-query
     controller: Tests\Fixtures\AppBundle\Controller\ORMAdapterEventsController::preQueryAction
+
+exporter:
+    path: /exporter
+    controller: Tests\Fixtures\AppBundle\Controller\ExporterController::exportAction
+
+exporter_empty_datatable:
+    path: /exporter-empty-datatable
+    controller: Tests\Fixtures\AppBundle\Controller\ExporterController::exportEmptyDataTableAction

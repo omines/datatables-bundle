@@ -19,9 +19,5 @@ namespace Omines\DataTablesBundle;
  */
 interface DataTableTypeInterface
 {
-    /**
-     * @param DataTable $dataTable
-     * @param array $options
-     */
     public function configure(DataTable $dataTable, array $options);
 }

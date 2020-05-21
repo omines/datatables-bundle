@@ -35,10 +35,6 @@ class CustomORMAdapter extends ORMAdapter
         $query->setIdentifierPropertyPath(null);
     }
 
-    /**
-     * @param AdapterQuery $query
-     * @return \Traversable
-     */
     protected function getResults(AdapterQuery $query): \Traversable
     {
         /** @var QueryBuilder $builder */

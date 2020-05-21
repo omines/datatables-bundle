@@ -39,11 +39,6 @@ class Employee extends Person
 
     /**
      * Person constructor.
-     *
-     * @param string $firstName
-     * @param string $lastName
-     * @param \DateTime|null $employedSince
-     * @param Company $company
      */
     public function __construct(string $firstName, string $lastName, \DateTime $employedSince = null, Company $company)
     {
@@ -61,9 +56,6 @@ class Employee extends Person
         return $this->employedSince;
     }
 
-    /**
-     * @return Company
-     */
     public function getCompany(): Company
     {
         return $this->company;

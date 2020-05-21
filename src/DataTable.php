@@ -19,9 +19,11 @@ use Omines\DataTablesBundle\DependencyInjection\Instantiator;
 use Omines\DataTablesBundle\Exception\InvalidArgumentException;
 use Omines\DataTablesBundle\Exception\InvalidConfigurationException;
 use Omines\DataTablesBundle\Exception\InvalidStateException;
+use Omines\DataTablesBundle\Exporter\DataTableExporterManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -69,6 +71,9 @@ class DataTable
     /** @var EventDispatcherInterface */
     protected $eventDispatcher;
 
+    /** @var DataTableExporterManager */
+    protected $exporterManager;
+
     /** @var string */
     protected $method = Request::METHOD_POST;
 
@@ -109,12 +114,14 @@ class DataTable
      * DataTable constructor.
      *
      * @param EventDispatcherInterface $eventDispatcher
+     * @param DataTableExporterManager $exporterManager
      * @param array $options
      * @param Instantiator|null $instantiator
      */
-    public function __construct(EventDispatcherInterface $eventDispatcher, array $options = [], Instantiator $instantiator = null)
+    public function __construct(EventDispatcherInterface $eventDispatcher, DataTableExporterManager $exporterManager, array $options = [], Instantiator $instantiator = null)
     {
         $this->eventDispatcher = $eventDispatcher;
+        $this->exporterManager = $exporterManager;
 
         $this->instantiator = $instantiator ?? new Instantiator();
 
@@ -124,9 +131,6 @@ class DataTable
     }
 
     /**
-     * @param string $name
-     * @param string $type
-     * @param array $options
      * @return $this
      */
     public function add(string $name, string $type, array $options = [])
@@ -165,7 +169,6 @@ class DataTable
 
     /**
      * @param int|string|AbstractColumn $column
-     * @param string $direction
      * @return $this
      */
     public function addOrderBy($column, string $direction = self::SORT_ASCENDING)
@@ -179,7 +182,6 @@ class DataTable
     }
 
     /**
-     * @param string $adapter
      * @return $this
      */
     public function createAdapter(string $adapter, array $options = []): self
@@ -187,18 +189,11 @@ class DataTable
         return $this->setAdapter($this->instantiator->getAdapter($adapter), $options);
     }
 
-    /**
-     * @return AdapterInterface
-     */
     public function getAdapter(): AdapterInterface
     {
         return $this->adapter;
     }
 
-    /**
-     * @param int $index
-     * @return AbstractColumn
-     */
     public function getColumn(int $index): AbstractColumn
     {
         if ($index < 0 || $index >= count($this->columns)) {
@@ -208,10 +203,6 @@ class DataTable
         return $this->columns[$index];
     }
 
-    /**
-     * @param string $name
-     * @return AbstractColumn
-     */
     public function getColumnByName(string $name): AbstractColumn
     {
         if (!isset($this->columnsByName[$name])) {
@@ -229,41 +220,26 @@ class DataTable
         return $this->columns;
     }
 
-    /**
-     * @return EventDispatcherInterface
-     */
     public function getEventDispatcher(): EventDispatcherInterface
     {
         return $this->eventDispatcher;
     }
 
-    /**
-     * @return bool
-     */
     public function isLanguageFromCDN(): bool
     {
         return $this->languageFromCDN;
     }
 
-    /**
-     * @return string
-     */
     public function getMethod(): string
     {
         return $this->method;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @return string
-     */
     public function getPersistState(): string
     {
         return $this->persistState;
@@ -277,24 +253,17 @@ class DataTable
         return $this->state;
     }
 
-    /**
-     * @return string
-     */
     public function getTranslationDomain(): string
     {
         return $this->translationDomain;
     }
 
-    /**
-     * @return bool
-     */
     public function isCallback(): bool
     {
         return (null === $this->state) ? false : $this->state->isCallback();
     }
 
     /**
-     * @param Request $request
      * @return $this
      */
     public function handleRequest(Request $request): self
@@ -319,13 +288,18 @@ class DataTable
         return $this;
     }
 
-    /**
-     * @return JsonResponse
-     */
-    public function getResponse(): JsonResponse
+    public function getResponse(): Response
     {
         if (null === $this->state) {
             throw new InvalidStateException('The DataTable does not know its state yet, did you call handleRequest?');
+        }
+
+        // Server side export
+        if (null !== $this->state->getExporterName()) {
+            return $this->exporterManager
+                ->setDataTable($this)
+                ->setExporterName($this->state->getExporterName())
+                ->getResponse();
         }
 
         $resultSet = $this->getResultSet();
@@ -360,9 +334,6 @@ class DataTable
         ]);
     }
 
-    /**
-     * @return ResultSetInterface
-     */
     protected function getResultSet(): ResultSetInterface
     {
         if (null === $this->adapter) {
@@ -380,9 +351,6 @@ class DataTable
         return $this->transformer;
     }
 
-    /**
-     * @return array
-     */
     public function getOptions(): array
     {
         return $this->options;
@@ -398,8 +366,6 @@ class DataTable
     }
 
     /**
-     * @param AdapterInterface $adapter
-     * @param array|null $options
      * @return DataTable
      */
     public function setAdapter(AdapterInterface $adapter, array $options = null): self
@@ -413,7 +379,6 @@ class DataTable
     }
 
     /**
-     * @param bool $languageFromCDN
      * @return $this
      */
     public function setLanguageFromCDN(bool $languageFromCDN): self
@@ -424,7 +389,6 @@ class DataTable
     }
 
     /**
-     * @param string $method
      * @return $this
      */
     public function setMethod(string $method): self
@@ -435,7 +399,6 @@ class DataTable
     }
 
     /**
-     * @param string $persistState
      * @return $this
      */
     public function setPersistState(string $persistState): self
@@ -446,7 +409,6 @@ class DataTable
     }
 
     /**
-     * @param DataTableRendererInterface $renderer
      * @return $this
      */
     public function setRenderer(DataTableRendererInterface $renderer): self
@@ -457,7 +419,6 @@ class DataTable
     }
 
     /**
-     * @param string $name
      * @return $this
      */
     public function setName(string $name): self
@@ -471,7 +432,6 @@ class DataTable
     }
 
     /**
-     * @param string $template
      * @return $this
      */
     public function setTemplate(string $template, array $parameters = []): self
@@ -483,7 +443,6 @@ class DataTable
     }
 
     /**
-     * @param string $translationDomain
      * @return $this
      */
     public function setTranslationDomain(string $translationDomain): self
@@ -494,7 +453,6 @@ class DataTable
     }
 
     /**
-     * @param callable $formatter
      * @return $this
      */
     public function setTransformer(callable $formatter)
@@ -505,7 +463,6 @@ class DataTable
     }
 
     /**
-     * @param OptionsResolver $resolver
      * @return $this
      */
     protected function configureOptions(OptionsResolver $resolver)

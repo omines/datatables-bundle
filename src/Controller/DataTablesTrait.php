@@ -16,12 +16,16 @@ use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableFactory;
 use Psr\Container\ContainerInterface;
 
+@trigger_error('Omines\DataTablesBundle\Controller\DataTablesTrait is deprecated. Use dependency injection to inject the Omines\DataTablesBundle\DataTableFactory service instead.', E_USER_DEPRECATED);
+
 /**
  * DataTablesTrait.
  *
  * @author Niels Keurentjes <niels.keurentjes@omines.com>
  *
  * @property ContainerInterface $container
+ *
+ * @deprecated inject the DataTableFactory in your controllers or actions instead
  */
 trait DataTablesTrait
 {
