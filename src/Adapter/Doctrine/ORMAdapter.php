@@ -12,10 +12,10 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle\Adapter\Doctrine;
 
-use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use Omines\DataTablesBundle\Adapter\AbstractAdapter;
 use Omines\DataTablesBundle\Adapter\AdapterQuery;
 use Omines\DataTablesBundle\Adapter\Doctrine\Event\ORMAdapterQueryEvent;
@@ -286,7 +286,7 @@ class ORMAdapter extends AbstractAdapter
         }
 
         if (Query::HYDRATE_ARRAY === $this->hydrationMode) {
-            return '['.implode('][', array_reverse($path)).']';
+            return '[' . implode('][', array_reverse($path)) . ']';
         } else {
             return implode('.', array_reverse($path));
         }
