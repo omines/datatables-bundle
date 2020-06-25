@@ -16,7 +16,6 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Omines\DataTablesBundle\Adapter\AdapterQuery;
 use Omines\DataTablesBundle\Adapter\Doctrine\Event\ORMAdapterQueryEvent;
-use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapterEvents;
 use Omines\DataTablesBundle\Column\AbstractColumn;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -24,6 +23,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * Similar to ORMAdapter this class allows to access objects from the doctrine ORM.
  * Unlike the default ORMAdapter supports Fetch Joins (additional entites are fetched from DB via joins) using
  * the Doctrine Paginator.
+ *
  * @author Jan Böhmer
  */
 class FetchJoinORMAdapter extends ORMAdapter
@@ -43,7 +43,7 @@ class FetchJoinORMAdapter extends ORMAdapter
         //Enforce object hydration mode (fetch join only works for objects)
         $resolver->addAllowedValues('hydrate', Query::HYDRATE_OBJECT);
 
-        /**
+        /*
          * Add the possibility to replace the query for total entity count through a very simple one, to improve performance.
          * You can only use this option, if you did not apply any criteria to your total count.
          */
@@ -120,6 +120,7 @@ class FetchJoinORMAdapter extends ORMAdapter
     public function getCount(QueryBuilder $queryBuilder, $identifier)
     {
         $paginator = new Paginator($queryBuilder);
+
         return $paginator->count();
     }
 
@@ -130,6 +131,7 @@ class FetchJoinORMAdapter extends ORMAdapter
          */
         /** @var Query\Expr\From $from_expr */
         $from_expr = $queryBuilder->getDQLPart('from')[0];
+
         return $this->manager->getRepository($from_expr->getFrom())->count([]);
     }
 }
