@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle\Adapter\Doctrine;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
@@ -222,6 +222,7 @@ class ORMAdapter extends AbstractAdapter
 
     /**
      * @param $identifier
+     *
      * @return int
      */
     protected function getCount(QueryBuilder $queryBuilder, $identifier)
@@ -245,6 +246,7 @@ class ORMAdapter extends AbstractAdapter
     /**
      * @param $identifier
      * @param Query\Expr\GroupBy[] $gbList
+     *
      * @return bool
      */
     protected function hasGroupByPart($identifier, array $gbList)
@@ -260,6 +262,7 @@ class ORMAdapter extends AbstractAdapter
 
     /**
      * @param string $field
+     *
      * @return string
      */
     protected function mapFieldToPropertyPath($field, array $aliases = [])
@@ -283,7 +286,7 @@ class ORMAdapter extends AbstractAdapter
         }
 
         if (Query::HYDRATE_ARRAY === $this->hydrationMode) {
-            return '[' . implode('][', array_reverse($path)) . ']';
+            return '['.implode('][', array_reverse($path)).']';
         } else {
             return implode('.', array_reverse($path));
         }
@@ -315,6 +318,7 @@ class ORMAdapter extends AbstractAdapter
 
     /**
      * @param callable|QueryBuilderProcessorInterface $provider
+     *
      * @return QueryBuilderProcessorInterface
      */
     private function normalizeProcessor($provider)
