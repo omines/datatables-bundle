@@ -492,6 +492,33 @@ template | string | Template path resolvable by the Symfony templating component
 
 <aside class="warning">Keep in mind that for most simple use cases a decorated TextColumn will perform better than a full Twig template per row.</aside>
 
+## TwigStringColumn
+
+```php?start_inline=1
+$table->add('link', TwigStringColumn::class, [
+    'template' => '<a href="{{ url(\'employee.edit\', {id: row.id}) }}">{{ row.firstName }} {{ row.lastName }}</a>',
+])
+```
+
+This column type allows you to inline a Twig template as a string used to render the column's cells. The
+template is rendered using the main application context by injecting the main Twig service.
+Additionally, the `value` and `row` parameters are being filled by the cell value and the row
+level context respectively.
+
+This column type requires `StringLoaderExtension` to be [enabled in your Twig environment](https://symfony.com/doc/4.4/reference/dic_tags.html#twig-extension).
+
+```yaml
+services:
+    Twig\Extension\StringLoaderExtension:
+        tags: [twig.extension]
+```
+
+Option | Type | Description
+------ | ---- | -----------
+template | string | Template content resolvable by the Symfony templating component. Required without default.
+
+<aside class="warning">Keep in mind that for most simple use cases a decorated TextColumn will perform better than a full Twig template per row.</aside>
+
 ## Implementing custom columns
 
 TBD.
