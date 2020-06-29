@@ -20,6 +20,9 @@
         <service id="Omines\DataTablesBundle\Column\TwigColumn">
             <argument type="service" id="twig" on-invalid="null" />
         </service>
+        <service id="Omines\DataTablesBundle\Column\TwigStringColumn">
+            <argument type="service" id="twig" on-invalid="null" />
+        </service>
 
         <!-- Exporters -->
         <service id="Omines\DataTablesBundle\Exporter\DataTableExporterCollection">

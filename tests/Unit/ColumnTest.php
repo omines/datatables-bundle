@@ -18,11 +18,13 @@ use Omines\DataTablesBundle\Column\MapColumn;
 use Omines\DataTablesBundle\Column\NumberColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\Column\TwigColumn;
+use Omines\DataTablesBundle\Column\TwigStringColumn;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\Exception\MissingDependencyException;
 use Omines\DataTablesBundle\Exporter\DataTableExporterManager;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Twig\Environment as Twig;
 
 /**
  * ColumnTest.
@@ -140,6 +142,14 @@ class ColumnTest extends TestCase
         $this->expectExceptionMessage('You must have TwigBundle installed to use');
 
         new TwigColumn();
+    }
+
+    public function testTwigStringColumnExtensionDetection()
+    {
+        $this->expectException(MissingDependencyException::class);
+        $this->expectExceptionMessage('You must have StringLoaderExtension enabled to use');
+
+        new TwigStringColumn($this->createMock(Twig::class));
     }
 
     private function createDataTable(): DataTable
