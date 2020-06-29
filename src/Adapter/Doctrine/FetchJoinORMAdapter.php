@@ -1,7 +1,8 @@
 <?php
+
 /*
  * Symfony DataTables Bundle
- * (c) Jan Böhmer 2020
+ * (c) Omines Internetbureau B.V. - https://omines.nl/
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.

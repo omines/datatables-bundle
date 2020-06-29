@@ -52,7 +52,7 @@ class DataTablesExtension extends \Twig\Extension\AbstractExtension
      */
     private function getLanguageSettings(DataTable $dataTable)
     {
-        if ($dataTable->isLanguageFromCDN() && ($cdnFile = $this->getCDNLanguageFile()) !== null) {
+        if ($dataTable->isLanguageFromCDN() && null !== ($cdnFile = $this->getCDNLanguageFile())) {
             return ['url' => '//cdn.datatables.net/plug-ins/1.10.15/i18n/' . $cdnFile];
         }
 
@@ -98,7 +98,7 @@ class DataTablesExtension extends \Twig\Extension\AbstractExtension
         $file = $this->translator->trans('file', [], 'DataTablesCDN');
 
         // CDN language file does not exists
-        if ($file === 'file') {
+        if ('file' === $file) {
             return null;
         }
 

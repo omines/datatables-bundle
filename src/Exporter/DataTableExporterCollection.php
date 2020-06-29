@@ -27,8 +27,6 @@ class DataTableExporterCollection
 
     /**
      * DataTableExporterCollection constructor.
-     *
-     * @param \Traversable $exporters
      */
     public function __construct(\Traversable $exporters)
     {
@@ -37,10 +35,6 @@ class DataTableExporterCollection
 
     /**
      * Finds a DataTable exporter that matches the given name.
-     *
-     * @param string $name
-     *
-     * @return DataTableExporterInterface
      *
      * @throws UnknownDataTableExporterException
      */

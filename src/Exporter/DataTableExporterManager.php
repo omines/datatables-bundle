@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Omines\DataTablesBundle\Exporter;
 
 use Omines\DataTablesBundle\DataTable;
-use Omines\DataTablesBundle\DataTableState;
 use Omines\DataTablesBundle\Exception\InvalidArgumentException;
 use Omines\DataTablesBundle\Exporter\Event\DataTableExporterResponseEvent;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -44,7 +43,6 @@ class DataTableExporterManager
     /**
      * DataTableExporterManager constructor.
      *
-     * @param DataTableExporterCollection $exporterCollection
      * @param TranslatorInterface|LegacyTranslatorInterface $translator
      */
     public function __construct(DataTableExporterCollection $exporterCollection, $translator)
@@ -58,8 +56,6 @@ class DataTableExporterManager
     }
 
     /**
-     * @param string $exporterName
-     *
      * @return DataTableExporterManager
      */
     public function setExporterName(string $exporterName): self
@@ -70,8 +66,6 @@ class DataTableExporterManager
     }
 
     /**
-     * @param DataTable $dataTable
-     *
      * @return DataTableExporterManager
      */
     public function setDataTable(DataTable $dataTable): self
@@ -82,8 +76,6 @@ class DataTableExporterManager
     }
 
     /**
-     * @return Response
-     *
      * @throws \Omines\DataTablesBundle\Exception\UnknownDataTableExporterException
      */
     public function getResponse(): Response
@@ -121,8 +113,6 @@ class DataTableExporterManager
      *
      * A Generator is created in order to remove the 'DT_RowId' key
      * which is created by some adapters (e.g. ORMAdapter).
-     *
-     * @return \Iterator
      */
     private function getAllData(): \Iterator
     {

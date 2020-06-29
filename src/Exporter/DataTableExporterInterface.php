@@ -21,18 +21,11 @@ interface DataTableExporterInterface
 {
     /**
      * Exports the data from the DataTable to a file.
-     *
-     * @param array $columnNames
-     * @param \Iterator $data
-     *
-     * @return \SplFileInfo
      */
     public function export(array $columnNames, \Iterator $data): \SplFileInfo;
 
     /**
      * A unique name to identify the exporter.
-     *
-     * @return string
      */
     public function getName(): string;
 }

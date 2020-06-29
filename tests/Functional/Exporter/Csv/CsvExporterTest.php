@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * Symfony DataTables Bundle
+ * (c) Omines Internetbureau B.V. - https://omines.nl/
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 declare(strict_types=1);
 
 namespace Tests\Functional\Exporter\Csv;
@@ -37,7 +45,7 @@ class CsvExporterTest extends WebTestCase
 
         $i = 0;
         while (false !== ($row = fgetcsv($csvFile))) {
-            self::assertEquals(['FirstName'.$i, 'LastName'.$i], $row);
+            self::assertEquals(['FirstName' . $i, 'LastName' . $i], $row);
             ++$i;
         }
     }

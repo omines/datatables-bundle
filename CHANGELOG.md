@@ -3,8 +3,20 @@ All notable changes to `omines\datatables-bundle` will be documented in this fil
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+Nothing yet.
+
+## [0.5.0] - 2020-06-29
+### Added
+ - Support for server-side exportsv (#83)
+ - Support for per-column searches (#120)
+ - ORM adapter supporting fetch joins (#121)
+ - TwigStringColumn type for simple inline templating (#146)
+
 ### Changed
  - Fix contract dependency handling by upping Symfony requirement to 4.2+
+
+### Fixed
+ - Use trans() for proper locale fallback when using CDN languages (#141)
 
 ## [0.4.2] - 2020-04-08
 ### Added
@@ -116,7 +128,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - Basic functionality
 
-[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.4.2...master
+[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.5.0...master
+[0.5.0]: https://github.com/omines/datatables-bundle/compare/0.4.2...0.5.0
 [0.4.2]: https://github.com/omines/datatables-bundle/compare/0.4.1...0.4.2
 [0.4.1]: https://github.com/omines/datatables-bundle/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/omines/datatables-bundle/compare/0.3.1...0.4.0

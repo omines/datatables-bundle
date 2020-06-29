@@ -62,8 +62,6 @@ class ExcelExporter implements DataTableExporterInterface
     /**
      * Sets the columns width to automatically fit the contents.
      *
-     * @param Worksheet $sheet
-     *
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     private function autoSizeColumnWidth(Worksheet $sheet)

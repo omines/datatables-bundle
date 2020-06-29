@@ -112,11 +112,6 @@ class DataTable
 
     /**
      * DataTable constructor.
-     *
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param DataTableExporterManager $exporterManager
-     * @param array $options
-     * @param Instantiator|null $instantiator
      */
     public function __construct(EventDispatcherInterface $eventDispatcher, DataTableExporterManager $exporterManager, array $options = [], Instantiator $instantiator = null)
     {
