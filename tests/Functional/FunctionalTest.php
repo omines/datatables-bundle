@@ -129,11 +129,11 @@ class FunctionalTest extends WebTestCase
      */
     public function testTranslation(string $locale, string $languageProcessing, string $languageInfoFiltered)
     {
-        $this->client->enableProfiler();
-        $crawler = $this->client->request('GET', sprintf('/%s/translation', $locale));
+        $this->client->request('GET', sprintf('/%s/translation', $locale));
         $this->assertSuccessful($response = $this->client->getResponse());
 
         $content = $response->getContent();
+        $this->assertStringContainsString('"name":"noCDN"', $content);
         $this->assertStringNotContainsString('"options":{"language":{"url"', $content);
         $this->assertStringContainsString(sprintf('"processing":"%s"', $languageProcessing), $content);
         $this->assertStringContainsString(sprintf('"infoFiltered":"%s"', $languageInfoFiltered), $content);
@@ -145,6 +145,48 @@ class FunctionalTest extends WebTestCase
             ['en', 'Processing...', '(filtered from _MAX_ total entries)'],
             ['de', 'Bitte warten...', ' (gefiltert von _MAX_ Eintr\u00e4gen)'],
             ['fr', 'Traitement en cours...', '(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)'],
+        ];
+    }
+
+    /**
+     * @dataProvider languageInCDNProvider
+     */
+    public function testLanguageInCDN(string $locale)
+    {
+        $this->client->request('GET', sprintf('/%s/translation?cdn', $locale));
+        $this->assertSuccessful($response = $this->client->getResponse());
+
+        $content = $response->getContent();
+        $this->assertStringContainsString('"name":"CDN"', $content);
+        $this->assertStringContainsString('"options":{"language":{"url"', $content);
+    }
+
+    public function languageInCDNProvider(): array
+    {
+        return [
+            ['en'],
+            ['de'],
+            ['fr_FR'],
+        ];
+    }
+
+    /**
+     * @dataProvider languageNotInCDNProvider
+     */
+    public function testLanguageNotInCDN(string $locale)
+    {
+        $this->client->request('GET', sprintf('/%s/translation?cdn', $locale));
+        $this->assertSuccessful($response = $this->client->getResponse());
+
+        $content = $response->getContent();
+        $this->assertStringContainsString('"name":"CDN"', $content);
+        $this->assertStringNotContainsString('"options":{"language":{"url"', $content);
+    }
+
+    public function languageNotInCDNProvider(): array
+    {
+        return [
+            ['ua'],
         ];
     }
 

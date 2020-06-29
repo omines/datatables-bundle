@@ -17,19 +17,23 @@ use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTableFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * TranslationController.
  */
 class TranslationController extends AbstractController
 {
-    public function tableAction(Request $request, DataTableFactory $dataTableFactory)
+    public function tableAction(Request $request, DataTableFactory $dataTableFactory, TranslatorInterface $translator)
     {
+        // override default "en" fallback locale
+        $translator->setFallbackLocales([$request->getLocale()]);
+
         $datatable = $dataTableFactory->create();
         $datatable
-            ->setName('noCDN')
+            ->setName($request->query->has('cdn') ? 'CDN' : 'noCDN')
             ->setMethod(Request::METHOD_GET)
-            ->setLanguageFromCDN(false)
+            ->setLanguageFromCDN($request->query->has('cdn'))
             ->add('col3', TextColumn::class, ['label' => 'foo', 'field' => 'bar'])
             ->add('col4', TextColumn::class, ['label' => 'bar', 'field' => 'foo'])
             ->createAdapter(ArrayAdapter::class)
