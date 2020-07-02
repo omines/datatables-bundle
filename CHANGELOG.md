@@ -5,15 +5,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 Nothing yet.
 
-## [0.5.0] - 2020-06-29
+## [0.5.0] - 2020-07-03
 ### Added
- - Support for server-side exportsv (#83)
+ - Support for server-side exports (#83)
  - Support for per-column searches (#120)
  - ORM adapter supporting fetch joins (#121)
  - TwigStringColumn type for simple inline templating (#146)
 
 ### Changed
- - Fix contract dependency handling by upping Symfony requirement to 4.2+
+ - Drop Symfony <4.4 compatibility
 
 ### Fixed
  - Use trans() for proper locale fallback when using CDN languages (#141)

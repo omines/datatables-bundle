@@ -8,7 +8,7 @@
 [![Code Coverage](https://scrutinizer-ci.com/g/omines/datatables-bundle/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/omines/datatables-bundle/?branch=master)
 
 This bundle provides convenient integration of the popular [DataTables](https://datatables.net/) jQuery library
-for realtime Ajax tables in your [Symfony](https://symfony.com/) 4.2+ or 5.0+ application.
+for realtime Ajax tables in your [Symfony](https://symfony.com/) 4.4+ or 5.0+ application.
 
 Unlike other bundles providing similar functionality we decoupled the implementation of the DataTables logic
 completely from the source of the data. Therefore it is possible to implement your own custom adapters for
