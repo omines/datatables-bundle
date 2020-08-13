@@ -49,7 +49,7 @@
         "symfony/phpunit-bridge": "^4.4|^5.0",
         "symfony/twig-bundle": "^4.4|^5.0",
         "symfony/var-dumper": "^4.4|^5.0",
-        "symfony/yaml": "^4.4|^5.0"
+        "symfony/yaml": "^4.4|^5.0",
         "symfony/options-resolver": "^4.4|^5.0"
     },
     "suggest": {
