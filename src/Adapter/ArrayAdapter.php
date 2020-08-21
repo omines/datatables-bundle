@@ -59,6 +59,18 @@ class ArrayAdapter implements AdapterInterface
             // ignore exception
         }
 
+        $map = $this->getPropertyMap($state);
+        
+        $data = iterator_to_array($this->processData($state, $this->data, $map));
+
+        $length = $state->getLength();
+        $page = $length > 0 ? array_slice($data, $state->getStart(), $state->getLength()) : $data;
+
+        return new ArrayResultSet($page, count($this->data), count($data));
+    }
+
+    protected function getPropertyMap($state): array
+    {
         $map = [];
         foreach ($state->getDataTable()->getColumns() as $column) {
             unset($propertyPath);
@@ -69,13 +81,7 @@ class ArrayAdapter implements AdapterInterface
                 $map[$column->getName()] = $propertyPath;
             }
         }
-
-        $data = iterator_to_array($this->processData($state, $this->data, $map));
-
-        $length = $state->getLength();
-        $page = $length > 0 ? array_slice($data, $state->getStart(), $state->getLength()) : $data;
-
-        return new ArrayResultSet($page, count($this->data), count($data));
+        return $map;
     }
 
     /**
