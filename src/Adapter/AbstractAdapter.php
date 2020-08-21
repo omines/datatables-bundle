@@ -45,25 +45,7 @@ abstract class AbstractAdapter implements AdapterInterface
         $this->prepareQuery($query);
         $propertyMap = $this->getPropertyMap($query);
 
-        $rows = [];
-        $transformer = $state->getDataTable()->getTransformer();
-        $identifier = $query->getIdentifierPropertyPath();
-        foreach ($this->getResults($query) as $result) {
-            $row = [];
-            if (!empty($identifier)) {
-                $row['DT_RowId'] = $this->accessor->getValue($result, $identifier);
-            }
-
-            /** @var AbstractColumn $column */
-            foreach ($propertyMap as list($column, $mapping)) {
-                $value = ($mapping && $this->accessor->isReadable($result, $mapping)) ? $this->accessor->getValue($result, $mapping) : null;
-                $row[$column->getName()] = $column->transform($value, $result);
-            }
-            if (null !== $transformer) {
-                $row = call_user_func($transformer, $row, $result);
-            }
-            $rows[] = $row;
-        }
+        $rows = iterator_to_array($this->processData($state, $query, $propertyMap));
 
         return new ArrayResultSet($rows, $query->getTotalRows(), $query->getFilteredRows());
     }
@@ -76,6 +58,42 @@ abstract class AbstractAdapter implements AdapterInterface
         }
 
         return $propertyMap;
+    }
+
+    /**
+     * @return \Generator
+     */
+    protected function processData(DataTableState $state, $query, array $propertyMap)
+    {
+        $transformer = $state->getDataTable()->getTransformer();
+        $identifier = $query->getIdentifierPropertyPath();
+        foreach ($this->getResults($query) as $result) {
+            if ($row = $this->processRow($state, $result, $propertyMap, $identifier)) {
+                if (null !== $transformer) {
+                    $row = call_user_func($transformer, $row, $result);
+                }
+                yield $row;
+            }
+        }
+    }
+
+    /**
+     * @return array|null
+     */
+    protected function processRow(DataTableState $state, $result, array $propertyMap, $identifier)
+    {
+        $row = [];
+        if (!empty($identifier)) {
+            $row['DT_RowId'] = $this->accessor->getValue($result, $identifier);
+        }
+
+        /** @var AbstractColumn $column */
+        foreach ($propertyMap as list($column, $mapping)) {
+            $value = ($mapping && $this->accessor->isReadable($result, $mapping)) ? $this->accessor->getValue($result, $mapping) : null;
+            $row[$column->getName()] = $column->transform($value, $result);
+        }
+
+        return $row;
     }
 
     abstract protected function prepareQuery(AdapterQuery $query);
