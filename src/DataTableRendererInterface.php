@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle;
 
-use Iterator;
-
 /**
  * DataTableRendererInterface.
  *
@@ -26,5 +24,5 @@ interface DataTableRendererInterface
      */
     public function renderDataTable(DataTable $dataTable, string $template, array $parameters): string;
 
-    public function renderResultSet(Iterator $resultSet, string $template, array $parameters): array;
+    public function getColumnRenderer($template): callable;
 }

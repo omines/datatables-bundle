@@ -68,7 +68,11 @@ abstract class AbstractColumn
             $value = $data;
         }
 
-        return $this->render($this->normalize($value), $context);
+        $value = $this->render($this->normalize($value), $context);
+        if (null !== ($columnRenderer = $this->dataTable->getColumnRenderer())) {
+            $value = $columnRenderer($this, $value, $context);
+        }
+        return $value;
     }
 
     /**

@@ -110,6 +110,8 @@ class DataTable
     /** @var Instantiator */
     private $instantiator;
 
+    private $columnRenderer;
+
     /**
      * DataTable constructor.
      */
@@ -258,6 +260,16 @@ class DataTable
         return (null === $this->state) ? false : $this->state->isCallback();
     }
 
+    public function setColumnTheme(string $theme)
+    {
+        $this->columnRenderer = $this->renderer->getColumnRenderer($theme);
+    }
+
+    public function getColumnRenderer()
+    {
+        return $this->columnRenderer;
+    }
+
     /**
      * @return $this
      */
@@ -303,27 +315,6 @@ class DataTable
             'recordsTotal' => $resultSet->getTotalRecords(),
             'recordsFiltered' => $resultSet->getTotalDisplayRecords(),
             'data' => iterator_to_array($resultSet->getData()),
-        ];
-        if ($this->state->isInitial()) {
-            $response['options'] = $this->getInitialResponse();
-            $response['template'] = $this->renderer->renderDataTable($this, $this->template, $this->templateParams);
-        }
-
-        return JsonResponse::create($response);
-    }
-
-    public function render($template, $templateParams = []): Response
-    {
-        if (null === $this->state) {
-            throw new InvalidStateException('The DataTable does not know its state yet, did you call handleRequest?');
-        }
-
-        $resultSet = $this->getResultSet();
-        $response = [
-            'draw' => $this->state->getDraw(),
-            'recordsTotal' => $resultSet->getTotalRecords(),
-            'recordsFiltered' => $resultSet->getTotalDisplayRecords(),
-            'data' => $this->renderer->renderResultSet($resultSet->getData(), $template, $templateParams),
         ];
         if ($this->state->isInitial()) {
             $response['options'] = $this->getInitialResponse();
