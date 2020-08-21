@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle;
 
+use Iterator;
+
 /**
  * DataTableRendererInterface.
  *
@@ -23,4 +25,6 @@ interface DataTableRendererInterface
      * Provides the HTML layout of the configured datatable.
      */
     public function renderDataTable(DataTable $dataTable, string $template, array $parameters): string;
+
+    public function renderResultSet(Iterator $resultSet, string $template, array $parameters): array;
 }

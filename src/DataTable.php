@@ -312,6 +312,27 @@ class DataTable
         return JsonResponse::create($response);
     }
 
+    public function render($template, $templateParams = []): Response
+    {
+        if (null === $this->state) {
+            throw new InvalidStateException('The DataTable does not know its state yet, did you call handleRequest?');
+        }
+
+        $resultSet = $this->getResultSet();
+        $response = [
+            'draw' => $this->state->getDraw(),
+            'recordsTotal' => $resultSet->getTotalRecords(),
+            'recordsFiltered' => $resultSet->getTotalDisplayRecords(),
+            'data' => $this->renderer->renderResultSet($resultSet->getData(), $template, $templateParams),
+        ];
+        if ($this->state->isInitial()) {
+            $response['options'] = $this->getInitialResponse();
+            $response['template'] = $this->renderer->renderDataTable($this, $this->template, $this->templateParams);
+        }
+
+        return JsonResponse::create($response);
+    }
+
     protected function getInitialResponse(): array
     {
         return array_merge($this->getOptions(), [

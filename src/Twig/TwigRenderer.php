@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle\Twig;
 
+use Iterator;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableRendererInterface;
 use Omines\DataTablesBundle\Exception\MissingDependencyException;
@@ -47,5 +48,25 @@ class TwigRenderer implements DataTableRendererInterface
         $parameters['datatable'] = $dataTable;
 
         return $this->twig->render($template, $parameters);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function renderResultSet(Iterator $resultSet, string $template, array $parameters): array
+    {
+        $renderer = $this->twig->load($template);
+
+        $result = [];
+        foreach($resultSet as $row) {
+            foreach($row as $key=>$cell) {
+                if($key == 'DT_RowId') continue;
+                $params = array_merge($parameters, ["value" => $cell]);
+                $row[$key] = $renderer->renderBlock($key . '_row', $params);
+            }
+            $result[] = $row;
+        }
+
+        return $result;
     }
 }
