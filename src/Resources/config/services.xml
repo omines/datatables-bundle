@@ -7,6 +7,10 @@
     <services>
         <defaults autowire="true" autoconfigure="true" public="false" />
 
+        <!--Command-->
+        <service id="Omines\DataTablesBundle\Command\DatatablesGenerateCommand" autowire="true">
+            <tag name="console.command" command="datatables:generate"/>
+        </service>
         <!-- Adapters -->
         <service id="Omines\DataTablesBundle\Adapter\ArrayAdapter" />
         <service id="Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter">

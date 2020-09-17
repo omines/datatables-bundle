@@ -27,13 +27,12 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
  *
  * @author Niels Keurentjes <niels.keurentjes@omines.com>
  */
-class DataTablesExtension extends Extension
-{
+class DataTablesExtension extends Extension {
+
     /**
      * {@inheritdoc}
      */
-    public function load(array $configs, ContainerBuilder $container)
-    {
+    public function load(array $configs, ContainerBuilder $container) {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
@@ -46,26 +45,26 @@ class DataTablesExtension extends Extension
         $container->setParameter('datatables.config', $config);
 
         $container->registerForAutoconfiguration(AbstractColumn::class)
-            ->addTag('datatables.column')
-            ->setShared(false);
+                ->addTag('datatables.column')
+                ->setShared(false);
         $container->registerForAutoconfiguration(AbstractFilter::class)
-            ->addTag('datatables.filter')
-            ->setShared(false);
+                ->addTag('datatables.filter')
+                ->setShared(false);
         $container->registerForAutoconfiguration(AdapterInterface::class)
-            ->addTag('datatables.adapter')
-            ->setShared(false);
+                ->addTag('datatables.adapter')
+                ->setShared(false);
         $container->registerForAutoconfiguration(DataTableTypeInterface::class)
-            ->addTag('datatables.type');
+                ->addTag('datatables.type');
         $container->registerForAutoconfiguration(DataTableExporterInterface::class)
-            ->addTag('datatables.exporter');
+                ->addTag('datatables.exporter');
     }
 
     /**
      * @return string
      */
-    public function getAlias()
-    {
+    public function getAlias() {
         // Default would underscore the camelcase unintuitively
         return 'datatables';
     }
+
 }
