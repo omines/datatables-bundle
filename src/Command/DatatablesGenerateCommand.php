@@ -263,7 +263,7 @@ $(function() {
         $function = $annotaion . "\n" . ''
                 . 'public function ' . $functionName . '(\Symfony\Component\HttpFoundation\Request $request ,\Omines\DataTablesBundle\DataTableFactory $dataTableFactory){'
                 . '$table = $dataTableFactory->create()
-            ->add("id", TextColumn::class)
+            ->add("id", \Omines\DataTablesBundle\Column\TextColumn::class)
             ->createAdapter(\Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter::class, [
         \'entity\' => \\' . $entityNameSpace . '::class,
         ])
