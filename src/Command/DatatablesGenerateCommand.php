@@ -13,8 +13,7 @@ use Symfony\Component\Finder\Finder;
 class DatatablesGenerateCommand extends Command {
 
     protected static $defaultName = 'datatables:generate';
-    private $em;
-    private $cs;
+
     private $io;
 
     public function __construct(?string $name = null) {
@@ -23,7 +22,7 @@ class DatatablesGenerateCommand extends Command {
 
     protected function configure() {
         $this
-                ->setDescription('Add a short description for your command')
+                ->setDescription('Omines Datatable Generator Command')
 //                ->addArgument('controllerName', InputArgument::REQUIRED, 'Name of controller with sufix of Controller')
         ;
     }
