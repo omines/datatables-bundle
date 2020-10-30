@@ -20,6 +20,7 @@ use Omines\DataTablesBundle\Adapter\AbstractAdapter;
 use Omines\DataTablesBundle\Adapter\AdapterQuery;
 use Omines\DataTablesBundle\Adapter\Doctrine\Event\ORMAdapterQueryEvent;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORM\AutomaticQueryBuilder;
+use Omines\DataTablesBundle\Adapter\Doctrine\ORM\QueryBuilderProcessor;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORM\QueryBuilderProcessorInterface;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORM\SearchCriteriaProvider;
 use Omines\DataTablesBundle\Column\AbstractColumn;
@@ -326,19 +327,7 @@ class ORMAdapter extends AbstractAdapter
         if ($provider instanceof QueryBuilderProcessorInterface) {
             return $provider;
         } elseif (is_callable($provider)) {
-            return new class($provider) implements QueryBuilderProcessorInterface {
-                private $callable;
-
-                public function __construct(callable $value)
-                {
-                    $this->callable = $value;
-                }
-
-                public function process(QueryBuilder $queryBuilder, DataTableState $state)
-                {
-                    return call_user_func($this->callable, $queryBuilder, $state);
-                }
-            };
+            return new QueryBuilderProcessor($provider);
         }
 
         throw new InvalidConfigurationException('Provider must be a callable or implement QueryBuilderProcessorInterface');
