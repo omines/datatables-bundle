@@ -20,7 +20,7 @@
       "issues": "https://github.com/omines/datatables-bundle/issues"
     },
     "require": {
-        "php": "^7.2",
+        "php": ">=7.2",
         "symfony/event-dispatcher": "^4.4|^5.0",
         "symfony/framework-bundle": "^4.4|^5.0",
         "symfony/property-access": "^4.4|^5.0",
