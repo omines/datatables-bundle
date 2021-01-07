@@ -5,6 +5,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 Nothing yet.
 
+## [0.5.2] - 2021-01-07
+### Fixed
+ - Fix depreciations (#198)
+ - Fix spurious deprecation warnings in Symfony
+
+## [0.5.1] - 2020-08-25
+### Fixed
+ - Fix dependency issue
+
 ## [0.5.0] - 2020-07-03
 ### Added
  - Support for server-side exports (#83)
@@ -128,7 +137,9 @@ Nothing yet.
 ### Added
  - Basic functionality
 
-[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.5.0...master
+[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.5.2...master
+[0.5.2]: https://github.com/omines/datatables-bundle/compare/0.5.1...0.5.2
+[0.5.1]: https://github.com/omines/datatables-bundle/compare/0.5.0...0.5.1
 [0.5.0]: https://github.com/omines/datatables-bundle/compare/0.4.2...0.5.0
 [0.4.2]: https://github.com/omines/datatables-bundle/compare/0.4.1...0.4.2
 [0.4.1]: https://github.com/omines/datatables-bundle/compare/0.4.0...0.4.1
