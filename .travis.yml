@@ -50,7 +50,7 @@ before_install:
 before_script:
   - set -eo pipefail
   - pecl install -f mongodb-stable
-  - composer update --no-interaction --no-progress $COMPOSER_FLAGS
+  - composer update --no-interaction --ignore-platform-reqs --no-progress $COMPOSER_FLAGS
 
 script:
   - ./vendor/bin/phpunit -v --coverage-text --coverage-clover=coverage.clover
