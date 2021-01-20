@@ -114,6 +114,7 @@ class FetchJoinORMAdapter extends ORMAdapter
 
         foreach ($paginator->getIterator() as $result) {
             yield $result;
+            $this->manager->detach($result);
         }
     }
 

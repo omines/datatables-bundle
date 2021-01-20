@@ -309,7 +309,7 @@ class DataTable
             $response['template'] = $this->renderer->renderDataTable($this, $this->template, $this->templateParams);
         }
 
-        return new JsonResponse($response);
+        return JsonResponse::create($response);
     }
 
     protected function getInitialResponse(): array
