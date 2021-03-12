@@ -1,5 +1,5 @@
 {
-    "name": "omines/datatables-bundle",
+    "name": "moldwebs/datatables-bundle",
     "type": "symfony-bundle",
     "description": "Symfony DataTables Bundle with native Doctrine ORM, Elastica and MongoDB support",
     "keywords": ["symfony","jquery","datatable", "datatables", "bundle", "doctrine", "orm", "elastica", "mongodb"],
