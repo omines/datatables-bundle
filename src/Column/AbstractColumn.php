@@ -38,7 +38,7 @@ abstract class AbstractColumn
     /** @var array<string, mixed> */
     protected $options;
 
-    public function initialize(string $name, int $index, array $options = [], DataTable $dataTable)
+    public function initialize(string $name, int $index, array $options, DataTable $dataTable)
     {
         $this->name = $name;
         $this->index = $index;
