@@ -504,6 +504,10 @@ ie. <code>setLanguageFromCDN(bool)</code>.</p>
 <a href="https://datatables.net/reference/option/">external documentation</a> below for details on individual
 options. Only options which are meaningful to be defined serverside can be set at this level, so
 setting callbacks and events is not possible. These are however easily set on the Javascript end.</p>
+
+<p> e.g: to enable search field in the datatables, you should add <code>dom: "<'row' <'col-sm-12' ftr>><'row' <'col-sm-6'l>
+    <'col-sm-6 text-right'pi>>"</code> to the <code>config/packages/datatables.yaml</code> file under <code>options</code> indentation, than add <code>{searching: true}</code> to the front side, to make it look like <code>$('#presidents').initDataTables({{ datatable_settings(datatable) }},{searching: true});</code></p>
+
 <h2 id='table-configuration'>Table configuration</h2>
 <p>Configuring a specific table is done mainly via the methods on <code>DataTable</code>. The most common call
 is <code>add</code> to add an extra column to the table as seen in all the examples. More utility methods
