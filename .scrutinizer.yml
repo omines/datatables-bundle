@@ -4,6 +4,10 @@ build:
             tests:
                 override:
                     - php-scrutinizer-run
+        tests:
+            tests:
+                override:
+                    - vendor/bin/simple-phpunit
 
 tools:
     external_code_coverage:
