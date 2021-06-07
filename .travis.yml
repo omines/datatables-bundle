@@ -47,7 +47,7 @@ matrix:
          - DEPENDENCIES=dev
          - COMPOSER_FLAGS="--ignore-platform-reqs"
     allow_failures:
-     - env: DEPENDENCIES=dev
+     - php: 8.0snapshot
 
 before_install:
   - if [ "$DEPENDENCIES" != "" ]; then composer config minimum-stability ${DEPENDENCIES}; fi;

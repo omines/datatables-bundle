@@ -91,7 +91,7 @@ class DataTableState
         $this->start = (int) $parameters->get('start', $this->start);
         $this->length = (int) $parameters->get('length', $this->length);
 
-        $search = $parameters->get('search', []);
+        $search = $parameters->all()['search'] ?? [];
         $this->setGlobalSearch($search['value'] ?? $this->globalSearch);
 
         $this->handleOrderBy($parameters);
@@ -102,7 +102,7 @@ class DataTableState
     {
         if ($parameters->has('order')) {
             $this->orderBy = [];
-            foreach ($parameters->get('order', []) as $order) {
+            foreach ($parameters->all()['order'] ?? [] as $order) {
                 $column = $this->getDataTable()->getColumn((int) $order['column']);
                 $this->addOrderBy($column, $order['dir'] ?? DataTable::SORT_ASCENDING);
             }
@@ -111,7 +111,7 @@ class DataTableState
 
     private function handleSearch(ParameterBag $parameters)
     {
-        foreach ($parameters->get('columns', []) as $key => $search) {
+        foreach ($parameters->all()['columns'] ?? [] as $key => $search) {
             $column = $this->dataTable->getColumn((int) $key);
             $value = $this->isInitial ? $search : $search['search']['value'];
 
