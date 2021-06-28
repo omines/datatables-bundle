@@ -40,7 +40,7 @@
         "mongodb/mongodb": "^1.2",
         "ocramius/package-versions": "^1.4",
         "phpoffice/phpspreadsheet": "^1.6",
-        "ruflin/elastica": "^6.0",
+        "ruflin/elastica": "^7.0",
         "symfony/browser-kit": "^4.4|^5.0",
         "symfony/css-selector": "^4.4|^5.0",
         "symfony/dom-crawler": "^4.4|^5.0",
