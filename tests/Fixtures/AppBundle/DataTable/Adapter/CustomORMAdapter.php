@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Tests\Fixtures\AppBundle\DataTable\Adapter;
 
-use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Omines\DataTablesBundle\Adapter\AdapterQuery;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
@@ -21,13 +20,6 @@ use Omines\DataTablesBundle\Column\AbstractColumn;
 class CustomORMAdapter extends ORMAdapter
 {
     protected $hydrationMode;
-
-    public function configure(array $options)
-    {
-        parent::configure($options);
-
-        $this->hydrationMode = isset($options['hydrate']) ? $options['hydrate'] : Query::HYDRATE_OBJECT;
-    }
 
     protected function prepareQuery(AdapterQuery $query)
     {
@@ -63,5 +55,12 @@ class CustomORMAdapter extends ORMAdapter
              */
             yield $result;
         }
+    }
+
+    protected function afterConfiguration(array $options): void
+    {
+        parent::afterConfiguration($options);
+
+        $this->hydrationMode = $options['hydrate'];
     }
 }

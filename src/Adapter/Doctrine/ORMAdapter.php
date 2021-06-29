@@ -77,19 +77,7 @@ class ORMAdapter extends AbstractAdapter
         $this->configureOptions($resolver);
         $options = $resolver->resolve($options);
 
-        // Enable automated mode or just get the general default entity manager
-        if (null === ($this->manager = $this->registry->getManagerForClass($options['entity']))) {
-            throw new InvalidConfigurationException(sprintf('Doctrine has no manager for entity "%s", is it correctly imported and referenced?', $options['entity']));
-        }
-        $this->metadata = $this->manager->getClassMetadata($options['entity']);
-        if (empty($options['query'])) {
-            $options['query'] = [new AutomaticQueryBuilder($this->manager, $this->metadata)];
-        }
-
-        // Set options
-        $this->hydrationMode = $options['hydrate'];
-        $this->queryBuilderProcessors = $options['query'];
-        $this->criteriaProcessors = $options['criteria'];
+        $this->afterConfiguration($options);
     }
 
     /**
@@ -314,6 +302,23 @@ class ORMAdapter extends AbstractAdapter
             ->setNormalizer('query', $providerNormalizer)
             ->setNormalizer('criteria', $providerNormalizer)
         ;
+    }
+
+    protected function afterConfiguration(array $options): void
+    {
+        // Enable automated mode or just get the general default entity manager
+        if (null === ($this->manager = $this->registry->getManagerForClass($options['entity']))) {
+            throw new InvalidConfigurationException(sprintf('Doctrine has no manager for entity "%s", is it correctly imported and referenced?', $options['entity']));
+        }
+        $this->metadata = $this->manager->getClassMetadata($options['entity']);
+        if (empty($options['query'])) {
+            $options['query'] = [new AutomaticQueryBuilder($this->manager, $this->metadata)];
+        }
+
+        // Set options
+        $this->hydrationMode = $options['hydrate'];
+        $this->queryBuilderProcessors = $options['query'];
+        $this->criteriaProcessors = $options['criteria'];
     }
 
     /**

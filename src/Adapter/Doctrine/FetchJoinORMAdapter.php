@@ -31,12 +31,6 @@ class FetchJoinORMAdapter extends ORMAdapter
 {
     protected $use_simple_total;
 
-    public function configure(array $options)
-    {
-        parent::configure($options);
-        $this->use_simple_total = $options['simple_total_query'];
-    }
-
     protected function configureOptions(OptionsResolver $resolver)
     {
         parent::configureOptions($resolver);
@@ -51,6 +45,13 @@ class FetchJoinORMAdapter extends ORMAdapter
         $resolver->setDefault('simple_total_query', false);
 
         return $resolver;
+    }
+
+    protected function afterConfiguration(array $options): void
+    {
+        parent::afterConfiguration($options);
+
+        $this->use_simple_total = $options['simple_total_query'];
     }
 
     protected function prepareQuery(AdapterQuery $query)
