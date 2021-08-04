@@ -31,7 +31,7 @@ class MoneyColumn extends AbstractColumn
 
     public function normalize($value): string
     {
-        return $this->isRaw() ? (string)$value : $this->format(intval($value));
+        return $this->isRaw() ? (string) $value : $this->format(intval($value));
     }
 
     protected function configureOptions(OptionsResolver $resolver)
@@ -40,16 +40,17 @@ class MoneyColumn extends AbstractColumn
 
         $resolver
             ->setDefaults([
-                'raw'=>false,
-                'currency'=>'',
-                'divisor'=>1,
-                'scale'=>2
+                'raw' => false,
+                'currency' => '',
+                'divisor' => 1,
+                'scale' => 2,
             ])
             ->setAllowedTypes('raw', 'bool')
             ->setAllowedTypes('currency', 'string')
             ->setAllowedTypes('divisor', 'int')
             ->setAllowedTypes('scale', 'int')
         ;
+
         return $this;
     }
 
@@ -62,7 +63,6 @@ class MoneyColumn extends AbstractColumn
             throw new MissingDependencyException('You must have Symfony\Form installed to use ' . self::class);
         }
     }
-
 
     public function isRaw(): bool
     {
@@ -102,14 +102,13 @@ class MoneyColumn extends AbstractColumn
         preg_match('/^([^\s\xc2\xa0]*)[\s\xc2\xa0]*123(?:[,.]0+)?[\s\xc2\xa0]*([^\s\xc2\xa0]*)$/u', $pattern, $matches);
 
         if (!empty($matches[1])) {
-            $format  = $matches[1].$this->transformer->transform($val);
+            $format = $matches[1] . $this->transformer->transform($val);
         } elseif (!empty($matches[2])) {
-            $format  = $this->transformer->transform($val).$matches[2];
+            $format = $this->transformer->transform($val) . $matches[2];
         } else {
-            $format  = $this->transformer->transform($val);
+            $format = $this->transformer->transform($val);
         }
 
         return $format;
     }
-
 }

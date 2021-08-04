@@ -15,10 +15,10 @@ namespace Tests\Unit;
 use Omines\DataTablesBundle\Column\BoolColumn;
 use Omines\DataTablesBundle\Column\DateTimeColumn;
 use Omines\DataTablesBundle\Column\MapColumn;
+use Omines\DataTablesBundle\Column\MoneyColumn;
 use Omines\DataTablesBundle\Column\NumberColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\Column\TwigColumn;
-use Omines\DataTablesBundle\Column\MoneyColumn;
 use Omines\DataTablesBundle\DataTable;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -136,7 +136,7 @@ class ColumnTest extends TestCase
         $this->assertFalse($column->isValidForSearch('foo.bar'));
 
         // test with money options
-        $column->initialize('test', 1, ['divisor'=>100,'currency'=>'GBP'], new DataTable($this->createMock(EventDispatcher::class)));
+        $column->initialize('test', 1, ['divisor' => 100, 'currency' => 'GBP'], new DataTable($this->createMock(EventDispatcher::class)));
         $this->assertSame('£5.00', $column->transform(500));
         $this->assertSame('£0.01', $column->transform(true));
         $this->assertSame('£3.40', $column->transform('340'));
@@ -147,22 +147,21 @@ class ColumnTest extends TestCase
 
         // test DE locale
         \Locale::setDefault('de');
-        $column->initialize('test', 1, ['divisor'=>100,'currency'=>'EUR'], new DataTable($this->createMock(EventDispatcher::class)));
+        $column->initialize('test', 1, ['divisor' => 100, 'currency' => 'EUR'], new DataTable($this->createMock(EventDispatcher::class)));
         $this->assertSame('5,00€', $column->transform(500));
         $this->assertSame('1.340,00€', $column->transform('134000'));
 
         // differnt scale
-        $column->initialize('test', 1, ['scale'=>4, 'divisor'=>100,'currency'=>'EUR'], new DataTable($this->createMock(EventDispatcher::class)));
+        $column->initialize('test', 1, ['scale' => 4, 'divisor' => 100, 'currency' => 'EUR'], new DataTable($this->createMock(EventDispatcher::class)));
         $this->assertSame('5,0000€', $column->transform(500));
         $this->assertSame('1.340,2800€', $column->transform('134028'));
         $this->assertEquals(4, $column->getScale());
 
         //raw input
-        $column->initialize('test', 1, ['raw'=>true], new DataTable($this->createMock(EventDispatcher::class)));
+        $column->initialize('test', 1, ['raw' => true], new DataTable($this->createMock(EventDispatcher::class)));
         $this->assertSame('500', $column->transform(500));
         $this->assertSame('134028', $column->transform('134028'));
         $this->assertTrue($column->isRaw());
-
     }
 
     /**

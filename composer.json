@@ -27,6 +27,7 @@
     },
     "require-dev": {
         "ext-pdo_sqlite": "*",
+        "ext-intl": "*",
         "doctrine/common": "^2.6",
         "doctrine/doctrine-bundle": "^2.0",
         "doctrine/orm": "^2.5",
