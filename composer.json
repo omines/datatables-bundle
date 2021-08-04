@@ -41,6 +41,7 @@
         "symfony/phpunit-bridge": "^4.1|^5.0",
         "symfony/templating": "^4.1|^5.0",
         "symfony/twig-bundle": "^4.1|^5.0",
+        "symfony/form": "^4.1|^5.0",
         "symfony/var-dumper": "^4.1|^5.0",
         "symfony/yaml": "^4.1|^5.0"
     },
@@ -49,7 +50,8 @@
         "doctrine/orm": "For full automated integration with Doctrine entities",
         "mongodb/mongodb": "For integration with MongoDB collections",
         "ruflin/elastica": "For integration with Elasticsearch indexes",
-        "symfony/twig-bundle": "To use default Twig based rendering and TwigColumn"
+        "symfony/twig-bundle": "To use default Twig based rendering and TwigColumn",
+        "symfony/form": "To use application wide localized money formatting in MoneyColumn"
     },
     "autoload": {
         "psr-4": { "Omines\\DataTablesBundle\\": "src/"}
