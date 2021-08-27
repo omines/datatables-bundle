@@ -439,12 +439,12 @@ nullValue | string | Raw string to use for null values. Default `null`.
 $table->add('price', MoneyColumn::class, ['currency' => 'EUR', 'divisor'=>100]);
 ```
 
-Money columns render a numeric values in currency format. It is adle to render decimal values as well as values stored in ingeger with some disisor (i.e. 1550 for €15.50). MoneyColumn uses applicationwide locale settings. It means that default formatting will be the same as Twig's and Forms money/currency formatting. 
+Money columns render a numeric values in currency format. It is able to render decimal values as well as values stored in integer with some divisor (i.e. 1550 for €15.50). MoneyColumn uses application wide locale settings. It means that default formatting will be the same as Twig's and Forms money/currency formatting. 
 
 Option | Type | Description
 ------ | ---- | -----------
 currency | string | 3-letter ISO 4217 currency code. If empty column values will be formatted as money but without currency signs.
-scale | int | Defines numder of decimal places. Defaults to 2.
+scale | int | Defines number of decimal places. Defaults to 2.
 divisor | int | If you need to divide your stored value by a number before rendering it to the user, you can use the divisor option. Defaults to 1.
 raw | bool | Skip any transformations if raw option is TRUE. Defaults to FALSE 
 
