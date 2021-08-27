@@ -84,7 +84,7 @@ class MoneyColumn extends AbstractColumn
         return $this->options['scale'];
     }
 
-    public function isValidForSearch($value)
+    public function isValidForSearch($value): bool
     {
         return is_numeric($value);
     }
