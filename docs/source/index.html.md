@@ -572,6 +572,69 @@ The function returns a [`Promise`](https://developer.mozilla.org/en-US/docs/Web/
 which is fulfilled with the `DataTables` instance once initialization is completed. This allows you
 all the flexibility you could need to [invoke API functions](https://datatables.net/reference/api/).
 
+# Exporting Data
+
+DataTables natively supports exporting the current view as an Excel sheet, PDF, etc. The problem with this
+is that this is all generated on the client's end meaning you'll be unable to export all data at once unless it
+happens to fit on a single screen. This is why this bundle supports exporting data from the server's end instead.
+
+## Prerequisites
+
+To make use of the exporting functionality in this bundle there are some extra dependencies you may want to install.
+These are optional as you may not need the export feature at all, or you might not need all options available.
+
+The easiest way to make the export feature work on the client side is by using the [Buttons extension](https://datatables.net/extensions/buttons/)
+offered by `DataTables`.
+
+Currently included in the bundle there are a `DataTableExporter` for Excel spreadsheets and one for CSV. If you'd like
+to use the Excel exporter you will need to add [phpoffice/phpspreadsheet](https://packagist.org/packages/phpoffice/phpspreadsheet)
+to your dependencies.
+
+## Examples
+
+### Server Side Setup
+
+On the server side of things all you will need to add is an event listener that will handle passing the resulting file
+back to the user:
+
+```php
+$table = $this->createDataTable()
+    ->add(...)
+    ->addEventListener(DataTableExporterEvents::PRE_RESPONSE, function (DataTableExporterResponseEvent $e) {
+        $response = $e->getResponse();
+        $response->deleteFileAfterSend(true);
+        $ext = $response->getFile()->getExtension();
+        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, 'custom_filename.' . $ext);
+    })
+    ->handleRequest($request);
+```
+
+### Client Side Setup
+
+On the client side of things you will need to actually show a button that will trigger the export action. As mentioned
+before the easiest way of doing this is by using the Buttons extension:
+
+```javascript
+$(function() {
+    $('#table').initDataTables({{ datatable_settings(datatable) }}, {
+        dom:'<"html5buttons"B>lTfgitp',
+        buttons: [
+            {
+                text: 'Export to Excel',
+                action: $.fn.initDataTables.exportBtnAction('excel', {{ datatable_settings(datatable) }})
+            }
+        ]
+    });
+});
+```
+
+## Custom Exporters
+
+Excel and CSV are nice but there are other formats you may want to export to. You can support this by implementing
+the [Omines\DataTablesBundle\Exporter\DataTableExporterInterface](https://github.com/omines/datatables-bundle/blob/master/src/Exporter/DataTableExporterInterface.php)
+in a class of your own. You will need to register this class as service in Symfony as well and the service
+needs to be tagged with `datatables.exporter`.
+
 # Legal
 
 This software was developed for internal use at [Omines Full Service Internetbureau](https://www.omines.nl/)
