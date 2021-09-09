@@ -575,16 +575,13 @@ all the flexibility you could need to [invoke API functions](https://datatables.
 # Exporting Data
 
 DataTables natively supports exporting the current view as an Excel sheet, PDF, etc. The problem with this
-is that this is all generated on the client's end meaning you'll be unable to export all data at once unless it
+is that this is all generated on the client's end, meaning you'll be unable to export all data at once unless it
 happens to fit on a single screen. This is why this bundle supports exporting data from the server's end instead.
 
 ## Prerequisites
 
-To make use of the exporting functionality in this bundle there are some extra dependencies you may want to install.
-These are optional as you may not need the export feature at all, or you might not need all options available.
-
-The easiest way to make the export feature work on the client side is by using the [Buttons extension](https://datatables.net/extensions/buttons/)
-offered by `DataTables`.
+To make use of the exporting functionality in this bundle, there are some extra dependencies you may want to install.
+The server-side export feature requires the [Buttons extension](https://datatables.net/extensions/buttons/) offered by `DataTables`. Make sure to install it before using this feature.
 
 Currently included in the bundle there are a `DataTableExporter` for Excel spreadsheets and one for CSV. If you'd like
 to use the Excel exporter you will need to add [phpoffice/phpspreadsheet](https://packagist.org/packages/phpoffice/phpspreadsheet)
@@ -633,7 +630,7 @@ $(function() {
 Excel and CSV are nice but there are other formats you may want to export to. You can support this by implementing
 the [Omines\DataTablesBundle\Exporter\DataTableExporterInterface](https://github.com/omines/datatables-bundle/blob/master/src/Exporter/DataTableExporterInterface.php)
 in a class of your own. You will need to register this class as service in Symfony as well and the service
-needs to be tagged with `datatables.exporter`.
+needs to be tagged with `datatables.exporter` (this should be done automatically if you have [autoconfigure](https://symfony.com/doc/current/service_container.html#the-autoconfigure-option) turned on).
 
 # Legal
 
