@@ -596,7 +596,7 @@ things like the filename of the file that is being generated. To do this, all yo
 that will handle passing the resulting file back to the user.
 
 ```php
-$table = $this->createDataTable()
+$table = $dataTableFactory->create()
     ->add(...)
     ->addEventListener(DataTableExporterEvents::PRE_RESPONSE, function (DataTableExporterResponseEvent $e) {
         $response = $e->getResponse();
