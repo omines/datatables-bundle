@@ -41,8 +41,8 @@ class FunctionalTest extends WebTestCase
         $this->assertSuccessful($response = $this->client->getResponse());
 
         $content = $response->getContent();
-        $this->assertContains('"name":"dt"', $content);
-        $this->assertContains('(filtered from _MAX_ total entries)', $content);
+        $this->assertStringContainsString('"name":"dt"', $content);
+        $this->assertStringContainsString('(filtered from _MAX_ total entries)', $content);
         $json = $this->callDataTableUrl('/?_dt=noCDN&_init=true');
         $this->assertEmpty($json->data);
     }
@@ -56,7 +56,7 @@ class FunctionalTest extends WebTestCase
         $this->assertSame(125, $json->recordsFiltered);
         $this->assertCount(50, $json->data);
 
-        $this->assertContains('<table id="persons"', $json->template);
+        $this->assertStringContainsString('<table id="persons"', $json->template);
         $this->assertNotEmpty($json->options);
 
         $sample = $json->data[5];
@@ -64,8 +64,11 @@ class FunctionalTest extends WebTestCase
         $this->assertSame('LastName94', $sample->lastName);
         $this->assertEmpty($sample->employedSince);
         $this->assertSame('FirstName94 &lt;img src=&quot;https://symfony.com/images/v5/logos/sf-positive.svg&quot;&gt; LastName94', $sample->fullName);
-        $this->assertRegExp('#href="/employee/[0-9]+"#', $sample->buttons);
+        $this->assertSame('<a href="http://localhost/employee/95">FirstName94 LastName94</a>', $sample->link);
 
+        // Change when we drop old PHP versions and thus old PHPunit versions
+        $this->assertRegExp('#href="/employee/[0-9]+"#', $sample->buttons);
+        //$this->assertMatchesRegularExpression('#href="/employee/[0-9]+"#', $sample->buttons);
         $this->assertSame('04-07-2016', $json->data[6]->employedSince);
     }
 
@@ -123,12 +126,78 @@ class FunctionalTest extends WebTestCase
         $this->assertStringStartsWith('Company ', $json->data[0]->company);
     }
 
+    /**
+     * @dataProvider translationProvider
+     */
+    public function testTranslation(string $locale, string $languageProcessing, string $languageInfoFiltered)
+    {
+        $this->client->request('GET', sprintf('/%s/translation', $locale));
+        $this->assertSuccessful($response = $this->client->getResponse());
+
+        $content = $response->getContent();
+        $this->assertStringContainsString('"name":"noCDN"', $content);
+        $this->assertStringNotContainsString('"options":{"language":{"url"', $content);
+        $this->assertStringContainsString(sprintf('"processing":"%s"', $languageProcessing), $content);
+        $this->assertStringContainsString(sprintf('"infoFiltered":"%s"', $languageInfoFiltered), $content);
+    }
+
+    public function translationProvider(): array
+    {
+        return [
+            ['en', 'Processing...', '(filtered from _MAX_ total entries)'],
+            ['de', 'Bitte warten...', ' (gefiltert von _MAX_ Eintr\u00e4gen)'],
+            ['fr', 'Traitement en cours...', '(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)'],
+        ];
+    }
+
+    /**
+     * @dataProvider languageInCDNProvider
+     */
+    public function testLanguageInCDN(string $locale)
+    {
+        $this->client->request('GET', sprintf('/%s/translation?cdn', $locale));
+        $this->assertSuccessful($response = $this->client->getResponse());
+
+        $content = $response->getContent();
+        $this->assertStringContainsString('"name":"CDN"', $content);
+        $this->assertStringContainsString('"options":{"language":{"url"', $content);
+    }
+
+    public function languageInCDNProvider(): array
+    {
+        return [
+            ['en'],
+            ['de'],
+            ['fr_FR'],
+        ];
+    }
+
+    /**
+     * @dataProvider languageNotInCDNProvider
+     */
+    public function testLanguageNotInCDN(string $locale)
+    {
+        $this->client->request('GET', sprintf('/%s/translation?cdn', $locale));
+        $this->assertSuccessful($response = $this->client->getResponse());
+
+        $content = $response->getContent();
+        $this->assertStringContainsString('"name":"CDN"', $content);
+        $this->assertStringNotContainsString('"options":{"language":{"url"', $content);
+    }
+
+    public function languageNotInCDNProvider(): array
+    {
+        return [
+            ['ua'],
+        ];
+    }
+
     private function callDataTableUrl(string $url)
     {
         $this->client->enableProfiler();
         $this->client->request('GET', $url);
         $this->assertSuccessful($response = $this->client->getResponse());
-        $this->assertContains('application/json', $response->headers->get('Content-type'));
+        $this->assertStringContainsString('application/json', $response->headers->get('Content-type'));
 
         return json_decode($response->getContent());
     }

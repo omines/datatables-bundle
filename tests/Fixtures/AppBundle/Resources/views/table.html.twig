@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="{{ app.request.locale }}">
+<head>
+    <title>Testpage</title>
+</head>
+<body>
+<h2>Table</h2>
+<div id="table"></div>
+
+<script src="bundles/datatables/js/datatables.js"></script>
+<script>
+$(function() {
+    $('#table').initDataTables({{ datatable_settings(datatable) }}, {
+        searching: true,
+        dom:'<"html5buttons"B>lTfgitp',
+        buttons: [
+            'copy',
+            'csv',
+            { extend: 'excel', title: 'domains'},
+            { extend: 'pdf', title: 'domains'},
+            { extend: 'print' }
+        ]
+    });
+});
+</script>
+</body>
+</html>

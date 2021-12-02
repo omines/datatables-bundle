@@ -20,12 +20,17 @@ use Omines\DataTablesBundle\DataTableRendererInterface;
 use Omines\DataTablesBundle\DataTablesBundle;
 use Omines\DataTablesBundle\DependencyInjection\DataTablesExtension;
 use Omines\DataTablesBundle\DependencyInjection\Instantiator;
+use Omines\DataTablesBundle\Exception\InvalidArgumentException;
+use Omines\DataTablesBundle\Exception\InvalidConfigurationException;
+use Omines\DataTablesBundle\Exception\InvalidStateException;
+use Omines\DataTablesBundle\Exporter\DataTableExporterManager;
 use Omines\DataTablesBundle\Twig\TwigRenderer;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
 use Tests\Fixtures\AppBundle\DataTable\Type\RegularPersonTableType;
 
 /**
@@ -43,7 +48,7 @@ class DataTableTest extends TestCase
 
     public function testFactory()
     {
-        $factory = new DataTableFactory(['language_from_cdn' => false], $this->createMock(TwigRenderer::class), new Instantiator(), $this->createMock(EventDispatcher::class));
+        $factory = new DataTableFactory(['language_from_cdn' => false], $this->createMock(TwigRenderer::class), new Instantiator(), $this->createMock(EventDispatcher::class), $this->createMock(DataTableExporterManager::class));
 
         $table = $factory->create(['pageLength' => 684, 'dom' => 'bar']);
         $this->assertSame(684, $table->getOption('pageLength'));
@@ -57,7 +62,7 @@ class DataTableTest extends TestCase
 
     public function testFactoryRemembersInstances()
     {
-        $factory = new DataTableFactory([], $this->createMock(TwigRenderer::class), new Instantiator(), $this->createMock(EventDispatcher::class));
+        $factory = new DataTableFactory([], $this->createMock(TwigRenderer::class), new Instantiator(), $this->createMock(EventDispatcher::class), $this->createMock(DataTableExporterManager::class));
 
         $reflection = new \ReflectionClass(DataTableFactory::class);
         $property = $reflection->getProperty('resolvedTypes');
@@ -71,7 +76,7 @@ class DataTableTest extends TestCase
 
     public function testDataTableState()
     {
-        $datatable = new DataTable($this->createMock(EventDispatcher::class));
+        $datatable = $this->createMockDataTable();
         $datatable->add('foo', TextColumn::class)->setMethod(Request::METHOD_GET);
         $datatable->handleRequest(Request::create('/?_dt=' . $datatable->getName()));
         $state = $datatable->getState();
@@ -97,90 +102,78 @@ class DataTableTest extends TestCase
 
     public function testPostMethod()
     {
-        $datatable = new DataTable($this->createMock(EventDispatcher::class));
+        $datatable = $this->createMockDataTable();
         $datatable->handleRequest(Request::create('/foo', Request::METHOD_POST, ['_dt' => $datatable->getName(), 'draw' => 684]));
 
         $this->assertSame(684, $datatable->getState()->getDraw());
     }
 
-    /**
-     * @expectedException \LogicException
-     * @expectedExceptionMessage Could not resolve type
-     */
     public function testFactoryFailsOnInvalidType()
     {
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Could not resolve type');
+
         $dummy = new ServiceLocator([]);
         $container = new ContainerBuilder();
         (new DataTablesExtension())->load([], $container);
 
-        $factory = new DataTableFactory($container->getParameter('datatables.config'), $this->createMock(TwigRenderer::class), new Instantiator(), $this->createMock(EventDispatcher::class));
+        $factory = new DataTableFactory($container->getParameter('datatables.config'), $this->createMock(TwigRenderer::class), new Instantiator(), $this->createMock(EventDispatcher::class), $this->createMock(DataTableExporterManager::class));
         $factory->createFromType('foobar');
     }
 
-    /**
-     * @expectedException \Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException
-     */
     public function testInvalidOption()
     {
-        new DataTable($this->createMock(EventDispatcher::class), ['option' => 'bar']);
+        $this->expectException(UndefinedOptionsException::class);
+
+        $this->createMockDataTable(['option' => 'bar']);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testDataTableInvalidColumn()
     {
-        (new DataTable($this->createMock(EventDispatcher::class)))->getColumn(5);
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->createMockDataTable()->getColumn(5);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testDataTableInvalidColumnByName()
     {
-        (new DataTable($this->createMock(EventDispatcher::class)))->getColumnByName('foo');
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->createMockDataTable()->getColumnByName('foo');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage There already is a column with name
-     */
     public function testDuplicateColumnNameThrows()
     {
-        (new DataTable($this->createMock(EventDispatcher::class)))
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('There already is a column with name');
+
+        $this->createMockDataTable()
             ->add('foo', TextColumn::class)
             ->add('foo', TextColumn::class)
         ;
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Could not resolve type "foo\bar" to a service or class, are you missing a use statement? Or is it implemented but does it not correctly derive from "Omines\DataTablesBundle\Adapter\AdapterInterface"?
-     */
     public function testInvalidAdapterThrows()
     {
-        (new DataTable($this->createMock(EventDispatcher::class)))
-            ->createAdapter('foo\bar')
-        ;
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Could not resolve type "foo\\bar" to a service or class, are you missing a use statement? Or is it implemented but does it not correctly derive from "Omines\\DataTablesBundle\\Adapter\\AdapterInterface"?');
+
+        $this->createMockDataTable()->createAdapter('foo\bar');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Could not resolve type "bar" to a service or class, are you missing a use statement? Or is it implemented but does it not correctly derive from "Omines\DataTablesBundle\Column\AbstractColumn"?
-     */
     public function testInvalidColumnThrows()
     {
-        (new DataTable($this->createMock(EventDispatcher::class)))
-            ->add('foo', 'bar');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Could not resolve type "bar" to a service or class, are you missing a use statement? Or is it implemented but does it not correctly derive from "Omines\\DataTablesBundle\\Column\\AbstractColumn"?');
+
+        $this->createMockDataTable()->add('foo', 'bar');
     }
 
-    /**
-     * @expectedException \Omines\DataTablesBundle\Exception\InvalidStateException
-     * @expectedExceptionMessage No adapter was configured yet to retrieve data with
-     */
     public function testMissingAdapterThrows()
     {
-        $datatable = new DataTable($this->createMock(EventDispatcher::class));
+        $this->expectException(InvalidStateException::class);
+        $this->expectExceptionMessage('No adapter was configured yet to retrieve data with');
+        $datatable = $this->createMockDataTable();
         $datatable
             ->setMethod(Request::METHOD_GET)
             ->handleRequest(Request::create('/?_dt=' . $datatable->getName()))
@@ -188,43 +181,43 @@ class DataTableTest extends TestCase
         ;
     }
 
-    /**
-     * @expectedException \Omines\DataTablesBundle\Exception\InvalidArgumentException
-     * @expectedExceptionMessage DataTable name cannot be empty
-     */
     public function testEmptyNameThrows()
     {
-        (new DataTable($this->createMock(EventDispatcher::class)))->setName('');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('DataTable name cannot be empty');
+
+        $this->createMockDataTable()->setName('');
     }
 
-    /**
-     * @expectedException \Omines\DataTablesBundle\Exception\InvalidConfigurationException
-     * @expectedExceptionMessage Unknown request method 'OPTIONS'
-     */
     public function testStateWillNotProcessInvalidMethod()
     {
-        $datatable = new DataTable($this->createMock(EventDispatcher::class));
+        $this->expectException(InvalidConfigurationException::class);
+        $this->expectExceptionMessage("Unknown request method 'OPTIONS'");
+
+        $datatable = $this->createMockDataTable();
         $datatable->setMethod(Request::METHOD_OPTIONS);
         $datatable->handleRequest(Request::create('/foo'));
     }
 
-    /**
-     * @expectedException \Omines\DataTablesBundle\Exception\InvalidStateException
-     * @expectedExceptionMessage The DataTable does not know its state yet
-     */
     public function testMissingStateThrows()
     {
-        (new DataTable($this->createMock(EventDispatcher::class)))
-            ->getResponse();
+        $this->expectException(InvalidStateException::class);
+        $this->expectExceptionMessage('The DataTable does not know its state yet');
+
+        $this->createMockDataTable()->getResponse();
     }
 
-    /**
-     * @expectedException \Omines\DataTablesBundle\Exception\InvalidArgumentException
-     * @expectedExceptionMessage Could not resolve type "foo" to a service or class
-     */
     public function testInvalidDataTableTypeThrows()
     {
-        (new DataTableFactory([], $this->createMock(DataTableRendererInterface::class), new Instantiator(), $this->createMock(EventDispatcher::class)))
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Could not resolve type "foo" to a service or class');
+
+        (new DataTableFactory([], $this->createMock(DataTableRendererInterface::class), new Instantiator(), $this->createMock(EventDispatcher::class), $this->createMock(DataTableExporterManager::class)))
             ->createFromType('foo');
+    }
+
+    private function createMockDataTable(array $options = [])
+    {
+        return new DataTable($this->createMock(EventDispatcher::class), $this->createMock(DataTableExporterManager::class), $options);
     }
 }

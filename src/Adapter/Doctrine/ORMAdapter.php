@@ -12,10 +12,10 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle\Adapter\Doctrine;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use Omines\DataTablesBundle\Adapter\AbstractAdapter;
 use Omines\DataTablesBundle\Adapter\AdapterQuery;
 use Omines\DataTablesBundle\Adapter\Doctrine\Event\ORMAdapterQueryEvent;
@@ -41,10 +41,10 @@ class ORMAdapter extends AbstractAdapter
     private $registry;
 
     /** @var EntityManager */
-    private $manager;
+    protected $manager;
 
     /** @var \Doctrine\ORM\Mapping\ClassMetadata */
-    private $metadata;
+    protected $metadata;
 
     /** @var int */
     private $hydrationMode;
@@ -77,19 +77,7 @@ class ORMAdapter extends AbstractAdapter
         $this->configureOptions($resolver);
         $options = $resolver->resolve($options);
 
-        // Enable automated mode or just get the general default entity manager
-        if (null === ($this->manager = $this->registry->getManagerForClass($options['entity']))) {
-            throw new InvalidConfigurationException(sprintf('Doctrine has no manager for entity "%s", is it correctly imported and referenced?', $options['entity']));
-        }
-        $this->metadata = $this->manager->getClassMetadata($options['entity']);
-        if (empty($options['query'])) {
-            $options['query'] = [new AutomaticQueryBuilder($this->manager, $this->metadata)];
-        }
-
-        // Set options
-        $this->hydrationMode = $options['hydrate'];
-        $this->queryBuilderProcessors = $options['query'];
-        $this->criteriaProcessors = $options['criteria'];
+        $this->afterConfiguration($options);
     }
 
     /**
@@ -222,6 +210,7 @@ class ORMAdapter extends AbstractAdapter
 
     /**
      * @param $identifier
+     *
      * @return int
      */
     protected function getCount(QueryBuilder $queryBuilder, $identifier)
@@ -245,6 +234,7 @@ class ORMAdapter extends AbstractAdapter
     /**
      * @param $identifier
      * @param Query\Expr\GroupBy[] $gbList
+     *
      * @return bool
      */
     protected function hasGroupByPart($identifier, array $gbList)
@@ -260,9 +250,10 @@ class ORMAdapter extends AbstractAdapter
 
     /**
      * @param string $field
+     *
      * @return string
      */
-    private function mapFieldToPropertyPath($field, array $aliases = [])
+    protected function mapFieldToPropertyPath($field, array $aliases = [])
     {
         $parts = explode('.', $field);
         if (count($parts) < 2) {
@@ -313,8 +304,26 @@ class ORMAdapter extends AbstractAdapter
         ;
     }
 
+    protected function afterConfiguration(array $options): void
+    {
+        // Enable automated mode or just get the general default entity manager
+        if (null === ($this->manager = $this->registry->getManagerForClass($options['entity']))) {
+            throw new InvalidConfigurationException(sprintf('Doctrine has no manager for entity "%s", is it correctly imported and referenced?', $options['entity']));
+        }
+        $this->metadata = $this->manager->getClassMetadata($options['entity']);
+        if (empty($options['query'])) {
+            $options['query'] = [new AutomaticQueryBuilder($this->manager, $this->metadata)];
+        }
+
+        // Set options
+        $this->hydrationMode = $options['hydrate'];
+        $this->queryBuilderProcessors = $options['query'];
+        $this->criteriaProcessors = $options['criteria'];
+    }
+
     /**
      * @param callable|QueryBuilderProcessorInterface $provider
+     *
      * @return QueryBuilderProcessorInterface
      */
     private function normalizeProcessor($provider)

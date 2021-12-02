@@ -28,8 +28,18 @@ class DateTimeColumn extends AbstractColumn
     {
         if (null === $value) {
             return $this->options['nullValue'];
-        } elseif (!$value instanceof \DateTimeInterface) {
-            $value = new \DateTime((string) $value);
+        }
+
+        if (!$value instanceof \DateTimeInterface) {
+            if (!empty($this->options['createFromFormat'])) {
+                $value = \DateTime::createFromFormat($this->options['createFromFormat'], (string) $value);
+                if (false === $value) {
+                    $errors = \DateTime::getLastErrors();
+                    throw new \Exception(implode(', ', $errors['errors'] ?: $errors['warnings']));
+                }
+            } else {
+                $value = new \DateTime((string) $value);
+            }
         }
 
         return $value->format($this->options['format']);
@@ -44,9 +54,11 @@ class DateTimeColumn extends AbstractColumn
 
         $resolver
             ->setDefaults([
+                'createFromFormat' => '',
                 'format' => 'c',
                 'nullValue' => '',
             ])
+            ->setAllowedTypes('createFromFormat', 'string')
             ->setAllowedTypes('format', 'string')
             ->setAllowedTypes('nullValue', 'string')
         ;

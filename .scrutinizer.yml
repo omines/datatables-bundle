@@ -1,6 +1,15 @@
+build:
+    nodes:
+        analysis:
+            tests:
+                override:
+                    - php-scrutinizer-run
+        tests:
+            tests:
+                override:
+                    - vendor/bin/simple-phpunit
+
 tools:
     external_code_coverage:
         timeout: 600
         runs: 3
-    php_analyzer: true
-    php_code_coverage: false

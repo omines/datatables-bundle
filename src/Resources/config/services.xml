@@ -12,10 +12,34 @@
         <service id="Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter">
             <argument type="service" id="doctrine" on-invalid="null" />
         </service>
+        <service id="Omines\DataTablesBundle\Adapter\Doctrine\FetchJoinORMAdapter">
+            <argument type="service" id="doctrine" on-invalid="null" />
+        </service>
 
         <!-- Columns -->
         <service id="Omines\DataTablesBundle\Column\TwigColumn">
             <argument type="service" id="twig" on-invalid="null" />
+        </service>
+        <service id="Omines\DataTablesBundle\Column\TwigStringColumn">
+            <argument type="service" id="twig" on-invalid="null" />
+        </service>
+
+        <!-- Exporters -->
+        <service id="Omines\DataTablesBundle\Exporter\DataTableExporterCollection">
+            <argument type="tagged" tag="datatables.exporter"/>
+        </service>
+
+        <service id="Omines\DataTablesBundle\Exporter\DataTableExporterManager">
+            <argument type="service" id="Omines\DataTablesBundle\Exporter\DataTableExporterCollection"/>
+            <argument type="service" id="translator"/>
+        </service>
+
+        <service id="Omines\DataTablesBundle\Exporter\Excel\ExcelExporter">
+            <tag name="datatables.exporter"/>
+        </service>
+
+        <service id="Omines\DataTablesBundle\Exporter\Csv\CsvExporter">
+            <tag name="datatables.exporter"/>
         </service>
 
         <!-- Factory -->

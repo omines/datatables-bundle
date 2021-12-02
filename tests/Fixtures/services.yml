@@ -11,12 +11,13 @@ services:
         resource: 'AppBundle/Controller'
         tags: ['controller.service_arguments']
 
-    doctrine.result_cache_provider:
-        class: Symfony\Component\Cache\DoctrineProvider
-        arguments:
-            - '@doctrine.result_cache_pool'
+    twig.extension.string_loader:
+        class: Twig\Extension\StringLoaderExtension
+        tags:
+            - { name: twig.extension }
 
-    doctrine.system_cache_provider:
-        class: Symfony\Component\Cache\DoctrineProvider
-        arguments:
-            - '@doctrine.system_cache_pool'
+    test.Omines\DataTablesBundle\Exporter\DataTableExporterCollection: '@Omines\DataTablesBundle\Exporter\DataTableExporterCollection'
+
+    Tests\Fixtures\AppBundle\DataTable\Exporter\TxtExporter:
+        tags:
+            - datatables.exporter

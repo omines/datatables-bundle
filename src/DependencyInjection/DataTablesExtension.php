@@ -15,6 +15,7 @@ namespace Omines\DataTablesBundle\DependencyInjection;
 use Omines\DataTablesBundle\Adapter\AdapterInterface;
 use Omines\DataTablesBundle\Column\AbstractColumn;
 use Omines\DataTablesBundle\DataTableTypeInterface;
+use Omines\DataTablesBundle\Exporter\DataTableExporterInterface;
 use Omines\DataTablesBundle\Filter\AbstractFilter;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -55,6 +56,8 @@ class DataTablesExtension extends Extension
             ->setShared(false);
         $container->registerForAutoconfiguration(DataTableTypeInterface::class)
             ->addTag('datatables.type');
+        $container->registerForAutoconfiguration(DataTableExporterInterface::class)
+            ->addTag('datatables.exporter');
     }
 
     /**

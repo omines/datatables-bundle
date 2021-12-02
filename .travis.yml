@@ -1,10 +1,18 @@
 language: php
 
-sudo: false
+git:
+  depth: 2
 
 cache:
   directories:
     - $HOME/.composer/cache
+
+env:
+  global:
+    - COMPOSER_FLAGS=""
+    - ENABLE_CODE_COVERAGE="no"
+    - DEPENDENCIES=""
+    - SYMFONY_VERSION=""
 
 php:
   - 7.2
@@ -17,21 +25,29 @@ services:
 matrix:
     fast_finish: true
     include:
-     - php: 7.2
-       env: SYMFONY_VERSION=4.1.13
-     - php: 7.2
-       env: COMPOSER_FLAGS="--prefer-lowest"
-     - php: 7.3
-       env: SYMFONY_VERSION=^4.4
+     # no flag build with code coverage:
      - php: 7.4
-       env: SYMFONY_VERSION=^4.4
-     - php: 7.4
-       env: DEPENDENCIES=dev
+       env: ENABLE_CODE_COVERAGE="yes"
+     # --ignore-platform-reqs for ruflin/elastica:6 which doesn't support PHP8
+     - php: 8.0
+       env: COMPOSER_FLAGS="--ignore-platform-reqs"
      - php: nightly
        env: COMPOSER_FLAGS="--ignore-platform-reqs"
+     # normal build
+     - php: 7.2
+       env:
+         - COMPOSER_FLAGS="--prefer-lowest"
+         - SYMFONY_DEPRECATIONS_HELPER=weak
+     - php: 7.4
+       env:
+         - SYMFONY_VERSION=^4.4
+         - SYMFONY_DEPRECATIONS_HELPER=weak
+     - php: 8.0snapshot
+       env:
+         - DEPENDENCIES=dev
+         - COMPOSER_FLAGS="--ignore-platform-reqs"
     allow_failures:
-     - php: nightly
-     - env: DEPENDENCIES=dev
+     - php: 8.0snapshot
 
 before_install:
   - if [ "$DEPENDENCIES" != "" ]; then composer config minimum-stability ${DEPENDENCIES}; fi;
@@ -40,14 +56,17 @@ before_install:
 before_script:
   - set -eo pipefail
   - pecl install -f mongodb-stable
-  - composer update --no-interaction --no-progress $COMPOSER_FLAGS
+  - composer update --prefer-dist --no-interaction --optimize-autoloader --no-progress $COMPOSER_FLAGS
 
 script:
-  - ./vendor/bin/phpunit -v --coverage-text --coverage-clover=coverage.clover
+  - if [[ "$ENABLE_CODE_COVERAGE" == "yes" ]]; then XDEBUG_MODE=coverage vendor/bin/simple-phpunit -v --coverage-text --coverage-clover=coverage.clover; else vendor/bin/simple-phpunit; fi;
 
 after_script:
-  - wget https://scrutinizer-ci.com/ocular.phar
-  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+  - |
+    if [[ "$ENABLE_CODE_COVERAGE" == "yes" ]]; then
+      wget https://scrutinizer-ci.com/ocular.phar
+      php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+    fi
 
 #deploy:
 #    provider: script

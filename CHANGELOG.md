@@ -5,6 +5,45 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 Nothing yet.
 
+## [0.5.2] - 2021-01-07
+### Fixed
+ - Fix depreciations (#198)
+ - Fix spurious deprecation warnings in Symfony
+
+## [0.5.1] - 2020-08-25
+### Fixed
+ - Fix dependency issue
+
+## [0.5.0] - 2020-07-03
+### Added
+ - Support for server-side exports (#83)
+ - Support for per-column searches (#120)
+ - ORM adapter supporting fetch joins (#121)
+ - TwigStringColumn type for simple inline templating (#146)
+
+### Changed
+ - Drop Symfony <4.4 compatibility
+
+### Fixed
+ - Use trans() for proper locale fallback when using CDN languages (#141)
+
+## [0.4.2] - 2020-04-08
+### Added
+ - Update translations automatically with script (#130)
+ - Add support for closures in frontend JS code (#145)
+ 
+### Fixed
+ - Fixed deprecation warnings (#129)
+
+## [0.4.1] - 2020-02-21
+### Added
+ - Implement basic support for embeddables (#86)
+ - Option for custom datetime format for creating object (#127)
+
+### Fixed
+ - Fixed issue with unitialized datatable (#40)
+ - Fixed some autowiring issues surrounding contracts (#122)
+
 ## [0.4.0] - 2019-12-23
 ### Changed
  - Make compatible with Doctrine Bundle 2.0
@@ -98,7 +137,12 @@ Nothing yet.
 ### Added
  - Basic functionality
 
-[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.4.0...master
+[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.5.2...master
+[0.5.2]: https://github.com/omines/datatables-bundle/compare/0.5.1...0.5.2
+[0.5.1]: https://github.com/omines/datatables-bundle/compare/0.5.0...0.5.1
+[0.5.0]: https://github.com/omines/datatables-bundle/compare/0.4.2...0.5.0
+[0.4.2]: https://github.com/omines/datatables-bundle/compare/0.4.1...0.4.2
+[0.4.1]: https://github.com/omines/datatables-bundle/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/omines/datatables-bundle/compare/0.3.1...0.4.0
 [0.3.1]: https://github.com/omines/datatables-bundle/compare/0.3.0...0.3.1
 [0.3.0]: https://github.com/omines/datatables-bundle/compare/0.2.2...0.3.0

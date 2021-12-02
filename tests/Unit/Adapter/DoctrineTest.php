@@ -20,6 +20,8 @@ use Omines\DataTablesBundle\Adapter\Doctrine\ORM\SearchCriteriaProvider;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
+use Omines\DataTablesBundle\Exception\InvalidConfigurationException;
+use Omines\DataTablesBundle\Exporter\DataTableExporterManager;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,7 +35,7 @@ class DoctrineTest extends TestCase
 {
     public function testSearchCriteriaProvider()
     {
-        $table = new DataTable($this->createMock(EventDispatcher::class));
+        $table = new DataTable($this->createMock(EventDispatcher::class), $this->createMock(DataTableExporterManager::class));
         $table
             ->add('firstName', TextColumn::class)
             ->add('lastName', TextColumn::class)
@@ -58,21 +60,19 @@ class DoctrineTest extends TestCase
         $this->assertTrue(true);
     }
 
-    /**
-     * @expectedException \LogicException
-     * @expectedExceptionMessage doctrine/doctrine-bundle
-     */
     public function testORMAdapterRequiresDependency()
     {
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('doctrine/doctrine-bundle');
+
         (new ORMAdapter());
     }
 
-    /**
-     * @expectedException \Omines\DataTablesBundle\Exception\InvalidConfigurationException
-     * @expectedExceptionMessage Provider must be a callable or implement QueryBuilderProcessorInterface
-     */
     public function testInvalidQueryProcessorThrows()
     {
+        $this->expectException(InvalidConfigurationException::class);
+        $this->expectExceptionMessage('Provider must be a callable or implement QueryBuilderProcessorInterface');
+
         (new ORMAdapter($this->createMock(ManagerRegistry::class)))
             ->configure([
                 'entity' => 'bar',
@@ -80,12 +80,11 @@ class DoctrineTest extends TestCase
             ]);
     }
 
-    /**
-     * @expectedException \Omines\DataTablesBundle\Exception\InvalidConfigurationException
-     * @expectedExceptionMessage Field name 'invalid' must consist at least of an alias and a field
-     */
     public function testInvalidFieldThrows()
     {
+        $this->expectException(InvalidConfigurationException::class);
+        $this->expectExceptionMessage("Field name 'invalid' must consist at least of an alias and a field");
+
         $query = $this->createMock(AdapterQuery::class);
         $query->method('get')->willReturn([]);
         $column = new TextColumn();

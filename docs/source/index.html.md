@@ -13,7 +13,7 @@ search: true
 # Introduction
 
 This bundle provides convenient integration of the popular [DataTables](https://datatables.net/) jQuery library
-for realtime AJAX tables in your Symfony 3.3+ or 4.0+ application.
+for realtime AJAX tables in your Symfony 4.1+ application.
 
 Designed to be fully pluggable there are no limits to the data sources you can display through this library, nor
 are there any bounds on how they are displayed. In full *'batteries included but replaceable'* philosophy there are
@@ -25,7 +25,7 @@ Recommended way of installing this library is through [Composer](https://getcomp
 
 <code>composer require omines/datatables-bundle</code>
 
-Please ensure you are using Symfony 3.3 or later. If you are using Symfony Flex a recipe is included in the contrib
+Please ensure you are using Symfony 4.1 or later. If you are using Symfony Flex a recipe is included in the contrib
 repository, providing automatic installation and configuration.
 
 ```php?start_inline=true
@@ -279,7 +279,7 @@ interaction based on internal changes in this bundle and/or Doctrine ORM.
 ```php?start_inline=1
 $table->createAdapter(ORMAdapter::class, [
     'entity' => Employee::class,
-    'criteria' => [
+    'query' => [
         function (QueryBuilder $builder) {
             $builder->andWhere($builder->expr()->like('c.name', ':test'))->setParameter('test', '%ny 2%');
         },
@@ -379,7 +379,7 @@ $table
     ->add('lastName', TextColumn::class, ['render' => '<strong>%s</strong>', 'raw' => true])
     ->add('email', TextColumn::class, ['render' => function($value, $context) {
         return sprintf('<a href="%s">%s</a>', $value, $value);
-    })
+    }])
 ;
 ```
 
@@ -459,6 +459,7 @@ result. If data of other types is encountered automatic conversion is attempted 
 
 Option | Type | Description
 ------ | ---- | -----------
+createFromFormat | string | Custom format for creating DateTime objects from values. A format string accepted by [`DateTime::createFromFormat()`](https://www.php.net/manual/en/datetime.createfromformat.php) function.
 format | string | A date format string as accepted by the [`date()`](http://php.net/manual/en/function.date.php) function. Default `'c'`.
 nullValue | string | Raw string to display for null values. Defaults to the empty string.
 
@@ -503,6 +504,33 @@ level context respectively.
 Option | Type | Description
 ------ | ---- | -----------
 template | string | Template path resolvable by the Symfony templating component. Required without default.
+
+<aside class="warning">Keep in mind that for most simple use cases a decorated TextColumn will perform better than a full Twig template per row.</aside>
+
+## TwigStringColumn
+
+```php?start_inline=1
+$table->add('link', TwigStringColumn::class, [
+    'template' => '<a href="{{ url(\'employee.edit\', {id: row.id}) }}">{{ row.firstName }} {{ row.lastName }}</a>',
+])
+```
+
+This column type allows you to inline a Twig template as a string used to render the column's cells. The
+template is rendered using the main application context by injecting the main Twig service.
+Additionally, the `value` and `row` parameters are being filled by the cell value and the row
+level context respectively.
+
+This column type requires `StringLoaderExtension` to be [enabled in your Twig environment](https://symfony.com/doc/4.4/reference/dic_tags.html#twig-extension).
+
+```yaml
+services:
+    Twig\Extension\StringLoaderExtension:
+        tags: [twig.extension]
+```
+
+Option | Type | Description
+------ | ---- | -----------
+template | string | Template content resolvable by the Symfony templating component. Required without default.
 
 <aside class="warning">Keep in mind that for most simple use cases a decorated TextColumn will perform better than a full Twig template per row.</aside>
 
@@ -558,6 +586,71 @@ it also means this is where you can add Javascript events according to DataTable
 The function returns a [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
 which is fulfilled with the `DataTables` instance once initialization is completed. This allows you
 all the flexibility you could need to [invoke API functions](https://datatables.net/reference/api/).
+
+# Exporting Data
+
+DataTables natively supports exporting the current view as an Excel sheet, PDF, etc. The problem with this
+is that this is all generated on the client's end, meaning you'll be unable to export all data at once unless it
+happens to fit on a single screen. This is why this bundle supports exporting data from the server's end instead.
+
+## Prerequisites
+
+To make use of the exporting functionality in this bundle, there are some extra dependencies you may want to install.
+The server-side export feature requires the [Buttons extension](https://datatables.net/extensions/buttons/) offered by `DataTables`. Make sure to install it before using this feature.
+
+Currently included in the bundle there are a `DataTableExporter` for Excel spreadsheets and one for CSV. If you'd like
+to use the Excel exporter you will need to add [phpoffice/phpspreadsheet](https://packagist.org/packages/phpoffice/phpspreadsheet)
+to your dependencies.
+
+## Examples
+
+### Server Side Setup
+
+On the server side of things you don't need to do anything besides the setup mentioned above. You can however customize some
+things like the filename of the file that is being generated. To do this, all you will need to add is an event listener
+that will handle passing the resulting file back to the user.
+
+```php
+$table = $dataTableFactory->create()
+    ->add(...)
+    ->addEventListener(DataTableExporterEvents::PRE_RESPONSE, function (DataTableExporterResponseEvent $e) {
+        $response = $e->getResponse();
+        $response->deleteFileAfterSend(true);
+        $ext = $response->getFile()->getExtension();
+        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, 'custom_filename.' . $ext);
+    })
+    ->handleRequest($request);
+```
+
+### Client Side Setup
+
+On the client side of things you will need to actually show a button that will trigger the export action. Making use of
+the aforementioned Buttons extension the important bit of code involved is a call to `$.fn.initDataTables.exportBtnAction`
+which takes the name of the [DataTableExporter](https://github.com/omines/datatables-bundle/blob/master/src/Exporter/DataTableExporterInterface.php)
+you are using as its first parameter and the table's settings as the second. Currently this bundle natively supports
+`excel` and `csv` as valid options, but it is possible to make your own custom `DataTableExporter` as well.
+
+```javascript
+$(function() {
+    $('#table').initDataTables({{ datatable_settings(datatable) }}, {
+        dom:'<"html5buttons"B>lTfgitp',
+        buttons: [
+            {
+                text: 'Export to Excel',
+                action: $.fn.initDataTables.exportBtnAction('excel', {{ datatable_settings(datatable) }})
+            }
+        ]
+    });
+});
+```
+
+## Custom Exporters
+
+Excel and CSV are nice but there are other formats you may want to export to. You can support this by implementing
+the [Omines\DataTablesBundle\Exporter\DataTableExporterInterface](https://github.com/omines/datatables-bundle/blob/master/src/Exporter/DataTableExporterInterface.php)
+in a class of your own. You will need to register this class as service in Symfony as well and the service
+needs to be tagged with `datatables.exporter`. If you have [autoconfigure](https://symfony.com/doc/current/service_container.html#the-autoconfigure-option)
+turned on this should be done for you automatically.
 
 # Legal
 

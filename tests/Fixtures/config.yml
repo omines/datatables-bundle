@@ -2,13 +2,16 @@ imports:
     - { resource: services.yml }
 
 framework:
+    annotations:
+        enabled: true
     secret: '1234567890'
     router:
+        utf8: true
         resource: '%kernel.project_dir%/routing.yml'
         strict_requirements: ~
     default_locale: 'en'
     fragments: ~
-    translator: { fallbacks: [en] }
+    translator: { fallbacks: [] }
     http_method_override: true
     test: ~
     profiler:
@@ -29,19 +32,17 @@ doctrine:
         auto_generate_proxy_classes: '%kernel.debug%'
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         auto_mapping: true
-        metadata_cache_driver:
-            type: service
-            id: doctrine.system_cache_provider
         query_cache_driver:
-            type: service
-            id: doctrine.system_cache_provider
+            type: pool
+            pool: doctrine.system_cache_pool
         result_cache_driver:
-            type: service
-            id: doctrine.result_cache_provider
+            type: pool
+            pool: doctrine.result_cache_pool
 
 twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
+    exception_controller: null
 
 datatables:
     options:

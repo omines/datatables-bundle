@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>Test server-side export</title>
+    </head>
+    <body>
+        <div id="table"></div>
+
+        <script src="bundles/datatables/js/datatables.js"></script>
+        <script>
+          $(function() {
+            $('#table').initDataTables({{ datatable_settings(datatable) }}, {
+              dom:'Bfrtip',
+              buttons: [
+                {
+                  text: 'Excel',
+                  action: $.fn.initDataTables.exportBtnAction('excel', {{ datatable_settings(datatable) }})
+                },
+                {
+                    text: 'CSV',
+                    action: $.fn.initDataTables.exportBtnAction('csv', {{ datatable_settings(datatable) }})
+                },
+                {
+                  // Custom exporter
+                  text: 'Txt',
+                  action: $.fn.initDataTables.exportBtnAction('txt', {{ datatable_settings(datatable) }})
+                }
+              ]
+            });
+          });
+        </script>
+    </body>
+</html>
