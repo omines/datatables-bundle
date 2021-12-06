@@ -60,7 +60,7 @@
         "mongodb/mongodb": "For integration with MongoDB collections",
         "ruflin/elastica": "For integration with Elasticsearch indexes",
         "symfony/twig-bundle": "To use default Twig based rendering and TwigColumn",
-        "symfony/form": "To use application wide localized money formatting in MoneyColumn"
+        "symfony/form": "To use application wide localized money formatting in MoneyColumn",
         "phpoffice/phpspreadsheet": "To export the data from DataTables to Excel"
     },
     "autoload": {
