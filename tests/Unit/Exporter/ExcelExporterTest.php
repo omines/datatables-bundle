@@ -30,7 +30,9 @@ class ExcelExporterTest extends KernelTestCase
     {
         static::bootKernel();
 
-        $this->exporterCollection = static::$container->get('Omines\DataTablesBundle\Exporter\DataTableExporterCollection');
+        $container = is_callable([static::class, 'getContainer']) ? static::getContainer() : static::$container;
+
+        $this->exporterCollection = $container->get('Omines\DataTablesBundle\Exporter\DataTableExporterCollection');
     }
 
     public function testTag()

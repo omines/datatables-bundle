@@ -31,7 +31,7 @@ class DataTablesExtension extends \Twig\Extension\AbstractExtension
     /**
      * {@inheritdoc}
      */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new \Twig\TwigFunction('datatable_settings', function (DataTable $dataTable) {
@@ -47,10 +47,7 @@ class DataTablesExtension extends \Twig\Extension\AbstractExtension
         ];
     }
 
-    /**
-     * @return array
-     */
-    private function getLanguageSettings(DataTable $dataTable)
+    private function getLanguageSettings(DataTable $dataTable): array
     {
         if ($dataTable->isLanguageFromCDN() && null !== ($cdnFile = $this->getCDNLanguageFile())) {
             return ['url' => '//cdn.datatables.net/plug-ins/1.10.15/i18n/' . $cdnFile];
@@ -88,7 +85,7 @@ class DataTablesExtension extends \Twig\Extension\AbstractExtension
      *
      * @return string The extension name
      */
-    public function getName()
+    public function getName(): string
     {
         return 'DataTablesBundle';
     }
