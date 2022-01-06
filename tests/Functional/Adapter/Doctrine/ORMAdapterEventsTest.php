@@ -23,7 +23,7 @@ use Tests\Fixtures\AppBundle\Controller\ORMAdapterEventsController;
  */
 class ORMAdapterEventsTest extends WebTestCase
 {
-    public function testPreQueryEvent()
+    public function testPreQueryEvent(): void
     {
         $client = self::createClient();
 

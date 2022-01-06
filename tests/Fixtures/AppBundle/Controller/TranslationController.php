@@ -17,6 +17,7 @@ use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTableFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -24,7 +25,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class TranslationController extends AbstractController
 {
-    public function tableAction(Request $request, DataTableFactory $dataTableFactory, TranslatorInterface $translator)
+    public function tableAction(Request $request, DataTableFactory $dataTableFactory, TranslatorInterface $translator): Response
     {
         // override default "en" fallback locale
         $translator->setFallbackLocales([$request->getLocale()]);

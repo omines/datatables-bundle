@@ -15,6 +15,7 @@ namespace Tests\Fixtures\AppBundle\Controller;
 use Omines\DataTablesBundle\DataTableFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Tests\Fixtures\AppBundle\DataTable\Type\Grouped2TableType;
 use Tests\Fixtures\AppBundle\DataTable\Type\GroupedTableType;
 
@@ -25,7 +26,7 @@ use Tests\Fixtures\AppBundle\DataTable\Type\GroupedTableType;
  */
 class GroupedController extends AbstractController
 {
-    public function tableAction(Request $request, DataTableFactory $dataTableFactory)
+    public function tableAction(Request $request, DataTableFactory $dataTableFactory): Response
     {
         $datatable = $dataTableFactory->createFromType(GroupedTableType::class)
             ->setName('companies')
@@ -35,7 +36,7 @@ class GroupedController extends AbstractController
         return $datatable->handleRequest($request)->getResponse();
     }
 
-    public function table2Action(Request $request, DataTableFactory $dataTableFactory)
+    public function table2Action(Request $request, DataTableFactory $dataTableFactory): Response
     {
         $datatable = $dataTableFactory->createFromType(Grouped2TableType::class)
             ->setName('companies2')

@@ -22,6 +22,7 @@ use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Tests\Fixtures\AppBundle\Entity\Employee;
 
 /**
@@ -31,7 +32,7 @@ use Tests\Fixtures\AppBundle\Entity\Employee;
  */
 class PlainController extends AbstractController
 {
-    public function tableAction(Request $request, DataTableFactory $dataTableFactory)
+    public function tableAction(Request $request, DataTableFactory $dataTableFactory): Response
     {
         $datatable = $dataTableFactory->create()
             ->setName('persons')

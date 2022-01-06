@@ -33,7 +33,7 @@ use Twig\Environment as Twig;
  */
 class ColumnTest extends TestCase
 {
-    public function testDateTimeColumn()
+    public function testDateTimeColumn(): void
     {
         $column = new DateTimeColumn();
         $column->initialize('test', 1, [
@@ -45,7 +45,7 @@ class ColumnTest extends TestCase
         $this->assertSame('foo', $column->transform(null));
     }
 
-    public function testDateTimeColumnWithCreateFromFormat()
+    public function testDateTimeColumnWithCreateFromFormat(): void
     {
         $column = new DateTimeColumn();
         $column->initialize('test', 1, [
@@ -56,7 +56,7 @@ class ColumnTest extends TestCase
         $this->assertSame('19.02.2020 22:30:34', $column->transform('2020-02-19T22:30:34+00:00'));
     }
 
-    public function testTextColumn()
+    public function testTextColumn(): void
     {
         $column = new TextColumn();
         $column->initialize('test', 1, [
@@ -69,7 +69,7 @@ class ColumnTest extends TestCase
         $this->assertSame('foo', $column->getDataTable()->getName());
     }
 
-    public function testBoolColumn()
+    public function testBoolColumn(): void
     {
         $column = new BoolColumn();
         $column->initialize('test', 1, [
@@ -89,7 +89,7 @@ class ColumnTest extends TestCase
         $this->assertFalse($column->getRightExpr('true'));
     }
 
-    public function testMapColumn()
+    public function testMapColumn(): void
     {
         $column = new MapColumn();
         $column->initialize('test', 1, [
@@ -106,7 +106,7 @@ class ColumnTest extends TestCase
         $this->assertSame('foo', $column->transform(3));
     }
 
-    public function testNumberColumn()
+    public function testNumberColumn(): void
     {
         $column = new NumberColumn();
         $column->initialize('test', 1, [], $this->createDataTable());
@@ -120,7 +120,7 @@ class ColumnTest extends TestCase
         $this->assertFalse($column->isValidForSearch('foo.bar'));
     }
 
-    public function testColumnWithClosures()
+    public function testColumnWithClosures(): void
     {
         $column = new TextColumn();
         $column->initialize('test', 1, [
@@ -136,7 +136,7 @@ class ColumnTest extends TestCase
         $this->assertSame('BAR', $column->transform(null));
     }
 
-    public function testTwigDependencyDetection()
+    public function testTwigDependencyDetection(): void
     {
         $this->expectException(MissingDependencyException::class);
         $this->expectExceptionMessage('You must have TwigBundle installed to use');
@@ -144,7 +144,7 @@ class ColumnTest extends TestCase
         new TwigColumn();
     }
 
-    public function testTwigStringColumnExtensionDetection()
+    public function testTwigStringColumnExtensionDetection(): void
     {
         $this->expectException(MissingDependencyException::class);
         $this->expectExceptionMessage('You must have StringLoaderExtension enabled to use');

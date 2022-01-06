@@ -33,12 +33,12 @@ class ExcelExporterTest extends KernelTestCase
         $this->exporterCollection = static::$container->get('Omines\DataTablesBundle\Exporter\DataTableExporterCollection');
     }
 
-    public function testTag()
+    public function testTag(): void
     {
         static::assertInstanceOf(ExcelExporter::class, $this->exporterCollection->getByName('excel'));
     }
 
-    public function testName()
+    public function testName(): void
     {
         static::assertSame('excel', $this->exporterCollection->getByName('excel')->getName());
     }

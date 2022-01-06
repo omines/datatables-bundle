@@ -16,6 +16,7 @@ use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Tests\Fixtures\AppBundle\DataTable\Type\RegularPersonTableType;
 
 /**
@@ -25,7 +26,7 @@ use Tests\Fixtures\AppBundle\DataTable\Type\RegularPersonTableType;
  */
 class TypeController extends AbstractController
 {
-    public function tableAction(Request $request, DataTableFactory $dataTableFactory)
+    public function tableAction(Request $request, DataTableFactory $dataTableFactory): Response
     {
         $datatable = $dataTableFactory->createFromType(RegularPersonTableType::class)
             ->setName('persons')

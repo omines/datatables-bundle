@@ -21,7 +21,7 @@ class CustomORMAdapter extends ORMAdapter
 {
     protected $hydrationMode;
 
-    protected function prepareQuery(AdapterQuery $query)
+    protected function prepareQuery(AdapterQuery $query): void
     {
         parent::prepareQuery($query);
         $query->setIdentifierPropertyPath(null);

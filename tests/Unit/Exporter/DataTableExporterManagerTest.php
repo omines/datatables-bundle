@@ -27,7 +27,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class DataTableExporterManagerTest extends TestCase
 {
-    public function testTranslatorInjection()
+    public function testTranslatorInjection(): void
     {
         $exporterCollectionMock = $this->createMock(DataTableExporterCollection::class);
 

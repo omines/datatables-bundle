@@ -27,7 +27,7 @@ class DataTableExporterCollectionTest extends KernelTestCase
         static::bootKernel();
     }
 
-    public function testUnknownExporter()
+    public function testUnknownExporter(): void
     {
         static::expectException(UnknownDataTableExporterException::class);
         static::$container
