@@ -1,5 +1,15 @@
 <?php
 
+/*
+ * Symfony DataTables Bundle
+ * (c) Omines Internetbureau B.V. - https://omines.nl/
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
+
 $header = <<<EOF
 Symfony DataTables Bundle
 (c) Omines Internetbureau B.V. - https://omines.nl/
@@ -11,12 +21,13 @@ EOF;
 $finder = PhpCsFixer\Finder::create()
     ->files()
     ->name('*.php')
-    ->in(__DIR__.'/src')
-    ->in(__DIR__.'/tests')
+    ->in(__DIR__ . '/src')
+    ->in(__DIR__ . '/tests')
 ;
 
-return PhpCsFixer\Config::create()
-    ->setRiskyAllowed(true)
+$config = new PhpCsFixer\Config();
+
+return $config->setRiskyAllowed(true)
     ->setRules([
         '@Symfony' => true,
 
