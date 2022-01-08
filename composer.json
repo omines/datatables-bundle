@@ -34,7 +34,7 @@
         "ext-zip": "*",
         "doctrine/common": "^2.6|^3.0",
         "doctrine/doctrine-bundle": "^2.3|^3.0",
-        "doctrine/orm": "^2.6.3",
+        "doctrine/orm": "^2.6.3 <2.10",
         "doctrine/persistence": "^1.3.4|^2.0",
         "friendsofphp/php-cs-fixer": "^2.7",
         "mongodb/mongodb": "^1.2",
