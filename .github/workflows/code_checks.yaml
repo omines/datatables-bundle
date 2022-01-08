@@ -35,6 +35,8 @@ jobs:
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: Execute tests
-        run: vendor/bin/simple-phpunit --verbose
+        run: |
+          ./tests/cache-warmup.php
+          vendor/bin/simple-phpunit --verbose
         env:
           SYMFONY_DEPRECATIONS_HELPER: weak
