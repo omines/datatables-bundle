@@ -41,10 +41,11 @@ class TwigColumn extends AbstractColumn
      */
     protected function render($value, $context)
     {
-        return $this->twig->render($this->getTemplate(), [
-            'row' => $context,
-            'value' => $value,
-        ]);
+        $parameters = $this->getParameters();
+        $parameters['row'] = $context;
+        $parameters['value'] = $value;
+
+        return $this->twig->render($this->getTemplate(), $parameters);
     }
 
     /**
@@ -64,7 +65,12 @@ class TwigColumn extends AbstractColumn
 
         $resolver
             ->setRequired('template')
+            ->setDefault('parameters', [])
             ->setAllowedTypes('template', 'string')
+            ->setAllowedTypes('parameters', 'array')
+            ->setAllowedValues('parameters', static function (array $parameters) {
+                return !(array_key_exists('row', $parameters) || array_key_exists('value', $parameters));
+            })
         ;
 
         return $this;
@@ -73,5 +79,10 @@ class TwigColumn extends AbstractColumn
     public function getTemplate(): string
     {
         return $this->options['template'];
+    }
+
+    public function getParameters(): array
+    {
+        return $this->options['parameters'];
     }
 }

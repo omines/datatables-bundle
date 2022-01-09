@@ -51,6 +51,9 @@ class PlainController extends AbstractController
             ])
             ->add('buttons', TwigColumn::class, [
                 'template' => '@App/buttons.html.twig',
+                'parameters' => [
+                    'buttonParam' => 'Edit',
+                ],
                 'data' => '<button>Click me</button>',
             ])
             ->addOrderBy('lastName', DataTable::SORT_ASCENDING)

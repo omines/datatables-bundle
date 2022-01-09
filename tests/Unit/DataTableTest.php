@@ -13,7 +13,9 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use Omines\DataTablesBundle\Adapter\ArrayAdapter;
+use Omines\DataTablesBundle\Column\AbstractColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
+use Omines\DataTablesBundle\Column\TwigColumn;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableFactory;
 use Omines\DataTablesBundle\DataTableRendererInterface;
@@ -30,8 +32,10 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
 use Tests\Fixtures\AppBundle\DataTable\Type\RegularPersonTableType;
+use Twig\Environment;
 
 /**
  * DataTableTest.
@@ -216,8 +220,25 @@ class DataTableTest extends TestCase
             ->createFromType('foo');
     }
 
-    private function createMockDataTable(array $options = [])
+    public function testInvalidTwigColumnParameters()
     {
-        return new DataTable($this->createMock(EventDispatcher::class), $this->createMock(DataTableExporterManager::class), $options);
+        $this->expectException(InvalidOptionsException::class);
+        $this->expectExceptionMessage('The option "parameters" with value array is invalid.');
+        $mockLocator = $this->createMock(ServiceLocator::class);
+        $mockLocator->method('has')->willReturn(true);
+        $mockLocator->method('get')->willReturn(new TwigColumn($this->createMock(Environment::class)));
+
+        $this->createMockDataTable([], [AbstractColumn::class => $mockLocator])->add('foo', TwigColumn::class, [
+            'template' => 'bar.html.twig',
+            'parameters' => [
+                'row' => 'row',
+                'value' => 'value',
+            ],
+        ]);
+    }
+
+    private function createMockDataTable(array $options = [], array $locators = [])
+    {
+        return new DataTable($this->createMock(EventDispatcher::class), $this->createMock(DataTableExporterManager::class), $options, new Instantiator($locators));
     }
 }
