@@ -543,7 +543,9 @@ dynamically. When using Symfony's autoconfiguration the tag will be applied auto
 
 Of course you can modify the base type to fit the controller's specific needs before calling 
 `handleRequest`. Secondly, the `createDataTableFromType` function accepts an array as a second
-argument which is passed to the type class for parametrized instantiation.
+argument which is passed to the type class for parametrized instantiation. 
+
+In case you would like to use Symfony's OptionResolver you can simply let your type extend `Omines\DataTablesBundle\AbstractDataTableWithOptions`. This abstract class implements `Omines\DataTablesBundle\DataTableTypeWithOptionsInterface`. The `DataTableFactory` will resolve all options automatically of any types that implement said `DataTableTypeWithOptionsInterface`.  
 
 # Javascript
 
