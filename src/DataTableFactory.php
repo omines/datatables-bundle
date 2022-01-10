@@ -16,6 +16,8 @@ use Omines\DataTablesBundle\DependencyInjection\Instantiator;
 use Omines\DataTablesBundle\Exporter\DataTableExporterManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
 
 class DataTableFactory
 {
@@ -83,7 +85,16 @@ class DataTableFactory
             }
         }
 
-        $type->configure($dataTable, $typeOptions);
+        if ($type instanceof DataTableTypeWithOptionsInterface) {
+            $optionsResolver = new OptionsResolver();
+
+            $type->configureOptions($optionsResolver);
+
+            $type->configure($dataTable, $optionsResolver->resolve($options));
+
+        } else {
+            $type->configure($dataTable, $typeOptions);
+        }
 
         return $dataTable;
     }
