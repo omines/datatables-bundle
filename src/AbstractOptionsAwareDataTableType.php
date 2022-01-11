@@ -6,7 +6,7 @@ namespace Omines\DataTablesBundle;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 
-abstract class AbstractDataTableWithOptions implements DataTableTypeWithOptionsInterface
+abstract class AbstractOptionsAwareDataTableType implements OptionsAwareDataTableTypeInterface
 {
     /**
      * {@inheritdoc}

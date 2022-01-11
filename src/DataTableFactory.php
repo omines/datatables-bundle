@@ -85,7 +85,7 @@ class DataTableFactory
             }
         }
 
-        if ($type instanceof DataTableTypeWithOptionsInterface) {
+        if ($type instanceof OptionsAwareDataTableTypeInterface) {
             $optionsResolver = new OptionsResolver();
 
             $type->configureOptions($optionsResolver);
