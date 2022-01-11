@@ -18,7 +18,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-
 class DataTableFactory
 {
     /** @var Instantiator */
@@ -91,7 +90,6 @@ class DataTableFactory
             $type->configureOptions($optionsResolver);
 
             $type->configure($dataTable, $optionsResolver->resolve($options));
-
         } else {
             $type->configure($dataTable, $typeOptions);
         }

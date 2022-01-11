@@ -14,7 +14,6 @@ namespace Omines\DataTablesBundle;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-
 interface OptionsAwareDataTableTypeInterface extends DataTableTypeInterface
 {
     /**
