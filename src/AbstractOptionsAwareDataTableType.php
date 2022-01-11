@@ -19,7 +19,7 @@ abstract class AbstractOptionsAwareDataTableType implements OptionsAwareDataTabl
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
     }
 }

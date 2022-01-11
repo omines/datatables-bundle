@@ -19,5 +19,5 @@ interface OptionsAwareDataTableTypeInterface extends DataTableTypeInterface
     /**
      * Configures the options for this type.
      */
-    public function configureOptions(OptionsResolver $resolver);
+    public function configureOptions(OptionsResolver $resolver): void;
 }
