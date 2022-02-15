@@ -22,7 +22,7 @@ use Symfony\Component\HttpKernel\Kernel;
  */
 class AppKernel extends Kernel
 {
-    public function registerBundles()
+    public function registerBundles(): array
     {
         return [
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
@@ -38,12 +38,12 @@ class AppKernel extends Kernel
         $loader->load(__DIR__ . '/config.yml');
     }
 
-    public function getRootDir()
+    public function getRootDir(): string
     {
         return __DIR__ . '/../../tmp';
     }
 
-    public function getProjectDir()
+    public function getProjectDir(): string
     {
         return __DIR__;
     }
