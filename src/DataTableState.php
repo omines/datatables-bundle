@@ -146,9 +146,9 @@ class DataTableState
 
     public function setStart(int $start): self
     {
-        if ($start < 1) {
-            @trigger_error(sprintf('Calling the "%s::setStart()" method with a length less than 0 is deprecated since version 0.7 of this bundle. Passing a negative value makes no logical sense.', self::class), \E_USER_DEPRECATED);
-            $start = null;
+        if ($start < 0) {
+            @trigger_error(sprintf('Passing a negative value to the "%s::setStart()" method makes no logical sense, defaulting to 0 as the most sane default.', self::class), \E_USER_DEPRECATED);
+            $start = 0;
         }
 
         $this->start = $start;
