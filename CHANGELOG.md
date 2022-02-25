@@ -5,6 +5,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 Nothing yet.
 
+## [0.6.0] - 2022-02-15
+### Added
+ - Allow PHP 8 installation (#203)
+ - Enable Symfony 6 dependencies
+
+### Fixed
+ - Remove deprecations (#222, #230)
+
 ## [0.5.2] - 2021-01-07
 ### Fixed
  - Fix depreciations (#198)
@@ -137,7 +145,8 @@ Nothing yet.
 ### Added
  - Basic functionality
 
-[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.5.2...master
+[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.6.0...master
+[0.6.0]: https://github.com/omines/datatables-bundle/compare/0.5.2...0.6.0
 [0.5.2]: https://github.com/omines/datatables-bundle/compare/0.5.1...0.5.2
 [0.5.1]: https://github.com/omines/datatables-bundle/compare/0.5.0...0.5.1
 [0.5.0]: https://github.com/omines/datatables-bundle/compare/0.4.2...0.5.0
