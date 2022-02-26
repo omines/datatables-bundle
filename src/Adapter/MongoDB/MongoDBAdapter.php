@@ -120,7 +120,7 @@ class MongoDBAdapter extends AbstractAdapter
     {
         $options = [
             'limit' => $state->getLength() ?? 0,
-            'skip' => $state->getStart(),
+            'skip' => $state->getLength() ? $state->getStart() : 0,
             'sort' => [],
         ];
 
