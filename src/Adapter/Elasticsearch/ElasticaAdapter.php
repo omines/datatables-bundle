@@ -80,7 +80,7 @@ class ElasticaAdapter extends AbstractAdapter
         $search->addIndices($this->indices);
 
         $q = $this->buildQuery($state);
-        if ($state->getLength() > 0) {
+        if (null !== $state->getLength()) {
             $q->setFrom($state->getStart())->setSize($state->getLength());
         }
         $this->applyOrdering($q, $state);

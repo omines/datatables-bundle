@@ -31,8 +31,8 @@ class DataTableState
     /** @var int */
     private $start = 0;
 
-    /** @var int */
-    private $length = -1;
+    /** @var ?int */
+    private $length = null;
 
     /** @var string */
     private $globalSearch = '';
@@ -49,7 +49,7 @@ class DataTableState
     /** @var bool */
     private $isCallback = false;
 
-    /** @var string */
+    /** @var ?string */
     private $exporterName = null;
 
     /**
@@ -62,10 +62,8 @@ class DataTableState
 
     /**
      * Constructs a state based on the default options.
-     *
-     * @return DataTableState
      */
-    public static function fromDefaults(DataTable $dataTable)
+    public static function fromDefaults(DataTable $dataTable): self
     {
         $state = new self($dataTable);
         $state->start = (int) $dataTable->getOption('start');
@@ -81,7 +79,7 @@ class DataTableState
     /**
      * Loads datatables state from a parameter bag on top of any existing settings.
      */
-    public function applyParameters(ParameterBag $parameters)
+    public function applyParameters(ParameterBag $parameters): void
     {
         $this->draw = $parameters->getInt('draw');
         $this->isCallback = true;
@@ -98,7 +96,7 @@ class DataTableState
         $this->handleSearch($parameters);
     }
 
-    private function handleOrderBy(ParameterBag $parameters)
+    private function handleOrderBy(ParameterBag $parameters): void
     {
         if ($parameters->has('order')) {
             $this->orderBy = [];
@@ -109,7 +107,7 @@ class DataTableState
         }
     }
 
-    private function handleSearch(ParameterBag $parameters)
+    private function handleSearch(ParameterBag $parameters): void
     {
         foreach ($parameters->all()['columns'] ?? [] as $key => $search) {
             $column = $this->dataTable->getColumn((int) $key);
@@ -146,11 +144,13 @@ class DataTableState
         return $this->start;
     }
 
-    /**
-     * @return $this
-     */
-    public function setStart(int $start)
+    public function setStart(int $start): self
     {
+        if ($start < 0) {
+            @trigger_error(sprintf('Passing a negative value to the "%s::setStart()" method makes no logical sense, defaulting to 0 as the most sane default.', self::class), \E_USER_DEPRECATED);
+            $start = 0;
+        }
+
         $this->start = $start;
 
         return $this;
@@ -161,11 +161,13 @@ class DataTableState
         return $this->length;
     }
 
-    /**
-     * @return $this
-     */
-    public function setLength(int $length)
+    public function setLength(?int $length): self
     {
+        if ($length < 1) {
+            @trigger_error(sprintf('Calling the "%s::setLength()" method with a length less than 1 is deprecated since version 0.7 of this bundle. If you need to unrestrict the amount of records returned, pass null instead.', self::class), \E_USER_DEPRECATED);
+            $length = null;
+        }
+
         $this->length = $length;
 
         return $this;
@@ -176,20 +178,14 @@ class DataTableState
         return $this->globalSearch;
     }
 
-    /**
-     * @return $this
-     */
-    public function setGlobalSearch(string $globalSearch)
+    public function setGlobalSearch(string $globalSearch): self
     {
         $this->globalSearch = $globalSearch;
 
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function addOrderBy(AbstractColumn $column, string $direction = DataTable::SORT_ASCENDING)
+    public function addOrderBy(AbstractColumn $column, string $direction = DataTable::SORT_ASCENDING): self
     {
         $this->orderBy[] = [$column, $direction];
 
@@ -201,9 +197,6 @@ class DataTableState
         return $this->orderBy;
     }
 
-    /**
-     * @return $this
-     */
     public function setOrderBy(array $orderBy = []): self
     {
         $this->orderBy = $orderBy;
@@ -219,9 +212,6 @@ class DataTableState
         return $this->searchColumns;
     }
 
-    /**
-     * @return $this
-     */
     public function setColumnSearch(AbstractColumn $column, string $search, bool $isRegex = false): self
     {
         $this->searchColumns[$column->getName()] = ['column' => $column, 'search' => $search, 'regex' => $isRegex];
@@ -229,10 +219,7 @@ class DataTableState
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getExporterName()
+    public function getExporterName(): string
     {
         return $this->exporterName;
     }

@@ -118,7 +118,7 @@ class DataTableExporterManager
     {
         $data = $this->dataTable
             ->getAdapter()
-            ->getData($this->dataTable->getState()->setStart(0)->setLength(-1))
+            ->getData($this->dataTable->getState()->setStart(0)->setLength(null))
             ->getData();
 
         foreach ($data as $row) {
