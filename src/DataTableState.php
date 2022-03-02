@@ -156,7 +156,7 @@ class DataTableState
         return $this;
     }
 
-    public function getLength(): int
+    public function getLength(): ?int
     {
         return $this->length;
     }
@@ -219,7 +219,7 @@ class DataTableState
         return $this;
     }
 
-    public function getExporterName(): string
+    public function getExporterName(): ?string
     {
         return $this->exporterName;
     }
