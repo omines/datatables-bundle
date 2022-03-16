@@ -3,8 +3,11 @@ All notable changes to `omines\datatables-bundle` will be documented in this fil
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+Nothing yet.
+
+## [0.7.0] - 2022-03-16
 ### Breaking
- - Move logic to makes queries without limits to the relevant adapters (#257) 
+- Move logic to make queries without limits to the relevant adapters (#257)
 
 This release changes State semantics that `setLength` now officially supports `NULL`
 values to indicate no limit. This used to be `-1` before. It is unlikely to affect
@@ -150,7 +153,8 @@ or break any applications.
 ### Added
  - Basic functionality
 
-[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.6.0...master
+[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.7.0...master
+[0.7.0]: https://github.com/omines/datatables-bundle/compare/0.6.0...0.7.0
 [0.6.0]: https://github.com/omines/datatables-bundle/compare/0.5.2...0.6.0
 [0.5.2]: https://github.com/omines/datatables-bundle/compare/0.5.1...0.5.2
 [0.5.1]: https://github.com/omines/datatables-bundle/compare/0.5.0...0.5.1
