@@ -169,7 +169,7 @@ class ORMAdapter extends AbstractAdapter
                 $builder->addOrderBy($column->getOrderField(), $direction);
             }
         }
-        if ($state->getLength() > 0) {
+        if (null !== $state->getLength()) {
             $builder
                 ->setFirstResult($state->getStart())
                 ->setMaxResults($state->getLength())

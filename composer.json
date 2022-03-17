@@ -20,12 +20,12 @@
       "issues": "https://github.com/omines/datatables-bundle/issues"
     },
     "require": {
-        "php": ">=7.2",
-        "symfony/event-dispatcher": "^4.4|^5.0|^6.0",
-        "symfony/framework-bundle": "^4.4|^5.0|^6.0",
-        "symfony/options-resolver": "^4.4|^5.0|^6.0",
-        "symfony/property-access": "^4.4|^5.0|^6.0",
-        "symfony/translation": "^4.4|^5.0|^6.0"
+        "php": ">=8.0",
+        "symfony/event-dispatcher": "^5.4|^6.0",
+        "symfony/framework-bundle": "^5.4|^6.0",
+        "symfony/options-resolver": "^5.4|^6.0",
+        "symfony/property-access": "^5.4|^6.0",
+        "symfony/translation": "^5.4|^6.0"
     },
     "require-dev": {
         "ext-curl": "*",
@@ -41,15 +41,15 @@
         "ocramius/package-versions": "^1.4",
         "phpoffice/phpspreadsheet": "^1.6",
         "ruflin/elastica": "^6.0|^7.0",
-        "symfony/browser-kit": "^4.4|^5.0|^6.0",
-        "symfony/css-selector": "^4.4|^5.0|^6.0",
-        "symfony/dom-crawler": "^4.4|^5.0|^6.0",
-        "symfony/intl": "^4.4|^5.0|^6.0",
-        "symfony/mime": "^4.4|^5.0|^6.0",
-        "symfony/phpunit-bridge": "^4.4|^5.0|^6.0",
-        "symfony/twig-bundle": "^4.4|^5.0|^6.0",
-        "symfony/var-dumper": "^4.4|^5.0|^6.0",
-        "symfony/yaml": "^4.4|^5.0|^6.0"
+        "symfony/browser-kit": "^5.4|^6.0",
+        "symfony/css-selector": "^5.4|^6.0",
+        "symfony/dom-crawler": "^5.4|^6.0",
+        "symfony/intl": "^5.4|^6.0",
+        "symfony/mime": "^5.4|^6.0",
+        "symfony/phpunit-bridge": "^5.4|^6.0",
+        "symfony/twig-bundle": "^5.4|^6.0",
+        "symfony/var-dumper": "^5.4|^6.0",
+        "symfony/yaml": "^5.4|^6.0"
     },
     "suggest": {
         "doctrine/doctrine-bundle": "For integrated access to Doctrine object managers",
@@ -71,7 +71,7 @@
     },
     "extra": {
         "branch-alias": {
-          "dev-master": "0.5-dev"
+          "dev-master": "0.7-dev"
         }
     }
 }

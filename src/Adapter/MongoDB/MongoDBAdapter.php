@@ -119,8 +119,8 @@ class MongoDBAdapter extends AbstractAdapter
     private function buildOptions(DataTableState $state): array
     {
         $options = [
-            'limit' => $state->getLength(),
-            'skip' => $state->getStart(),
+            'limit' => $state->getLength() ?? 0,
+            'skip' => $state->getLength() ? $state->getStart() : 0,
             'sort' => [],
         ];
 
