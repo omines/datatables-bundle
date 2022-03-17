@@ -24,7 +24,7 @@ class NumberColumn extends AbstractColumn
     /**
      * {@inheritdoc}
      */
-    public function normalize($value): string
+    public function normalize(mixed $value): string
     {
         $value = (string) $value;
         if (is_numeric($value)) {
@@ -37,7 +37,7 @@ class NumberColumn extends AbstractColumn
     /**
      * {@inheritdoc}
      */
-    protected function configureOptions(OptionsResolver $resolver)
+    protected function configureOptions(OptionsResolver $resolver): static
     {
         parent::configureOptions($resolver);
 
@@ -54,11 +54,7 @@ class NumberColumn extends AbstractColumn
         return $this->options['raw'];
     }
 
-    /**
-     * @param string $value
-     * @return bool
-     */
-    public function isValidForSearch($value)
+    public function isValidForSearch(mixed $value): bool
     {
         return is_numeric($value);
     }

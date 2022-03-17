@@ -26,8 +26,7 @@ use Tests\Fixtures\AppKernel;
  */
 class FunctionalTest extends WebTestCase
 {
-    /** @var KernelBrowser */
-    private $client;
+    private KernelBrowser $client;
 
     protected function setUp(): void
     {
@@ -66,9 +65,7 @@ class FunctionalTest extends WebTestCase
         $this->assertSame('FirstName94 &lt;img src=&quot;https://symfony.com/images/v5/logos/sf-positive.svg&quot;&gt; LastName94', $sample->fullName);
         $this->assertSame('<a href="http://localhost/employee/95">FirstName94 LastName94</a>', $sample->link);
 
-        // Change when we drop old PHP versions and thus old PHPunit versions
-        $this->assertRegExp('#href="/employee/[0-9]+"#', $sample->buttons);
-        //$this->assertMatchesRegularExpression('#href="/employee/[0-9]+"#', $sample->buttons);
+        $this->assertMatchesRegularExpression('#href="/employee/[0-9]+"#', $sample->buttons);
         $this->assertSame('04-07-2016', $json->data[6]->employedSince);
     }
 

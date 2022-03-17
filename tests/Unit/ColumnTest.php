@@ -116,7 +116,7 @@ class ColumnTest extends TestCase
         $this->assertSame('684', $column->transform('684'));
 
         $this->assertFalse($column->isRaw());
-        $this->assertTrue($column->isValidForSearch(684));
+        $this->assertTrue($column->isValidForSearch("684"));
         $this->assertFalse($column->isValidForSearch('foo.bar'));
     }
 

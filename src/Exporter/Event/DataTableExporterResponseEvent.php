@@ -22,16 +22,11 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 class DataTableExporterResponseEvent extends Event
 {
-    /** @var BinaryFileResponse */
-    private $response;
-
     /**
      * DataTableExporterResponseEvent constructor.
      */
-    public function __construct(BinaryFileResponse $response)
-    {
-        $this->response = $response;
-    }
+    public function __construct(private BinaryFileResponse $response)
+    {}
 
     public function getResponse(): BinaryFileResponse
     {

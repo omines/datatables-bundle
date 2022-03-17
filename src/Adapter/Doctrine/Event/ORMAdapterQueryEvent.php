@@ -20,16 +20,8 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 class ORMAdapterQueryEvent extends Event
 {
-    /** @var Query */
-    protected $query;
-
-    /**
-     * ORMAdapterQueryEvent constructor.
-     */
-    public function __construct(Query $query)
-    {
-        $this->query = $query;
-    }
+    public function __construct(protected Query $query)
+    {}
 
     public function getQuery(): Query
     {

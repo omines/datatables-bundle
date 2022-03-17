@@ -13,12 +13,10 @@ declare(strict_types=1);
 namespace Omines\DataTablesBundle\Exporter;
 
 use Omines\DataTablesBundle\DataTable;
-use Omines\DataTablesBundle\Exception\InvalidArgumentException;
 use Omines\DataTablesBundle\Exporter\Event\DataTableExporterResponseEvent;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\Translation\TranslatorInterface as LegacyTranslatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -28,36 +26,16 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class DataTableExporterManager
 {
-    /** @var DataTable */
-    private $dataTable;
+    private DataTable $dataTable;
 
-    /** @var DataTableExporterCollection */
-    private $exporterCollection;
-
-    /** @var string */
-    private $exporterName;
-
-    /** @var TranslatorInterface|LegacyTranslatorInterface */
-    private $translator;
+    private string $exporterName;
 
     /**
      * DataTableExporterManager constructor.
-     *
-     * @param TranslatorInterface|LegacyTranslatorInterface $translator
      */
-    public function __construct(DataTableExporterCollection $exporterCollection, $translator)
-    {
-        if (!$translator instanceof TranslatorInterface && !$translator instanceof LegacyTranslatorInterface) {
-            throw new InvalidArgumentException(sprintf('Expected an instance of "Symfony\Contracts\Translation\TranslatorInterface" or "Symfony\Component\Translation\TranslatorInterface". Got "%s" instead.', is_object($translator) ? get_class($translator) : gettype($translator)));
-        }
+    public function __construct(private DataTableExporterCollection $exporterCollection, private TranslatorInterface $translator)
+    {}
 
-        $this->exporterCollection = $exporterCollection;
-        $this->translator = $translator;
-    }
-
-    /**
-     * @return DataTableExporterManager
-     */
     public function setExporterName(string $exporterName): self
     {
         $this->exporterName = $exporterName;
@@ -65,9 +43,6 @@ class DataTableExporterManager
         return $this;
     }
 
-    /**
-     * @return DataTableExporterManager
-     */
     public function setDataTable(DataTable $dataTable): self
     {
         $this->dataTable = $dataTable;

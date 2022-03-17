@@ -59,64 +59,47 @@ class DataTable
     const SORT_ASCENDING = 'asc';
     const SORT_DESCENDING = 'desc';
 
-    /** @var AdapterInterface */
-    protected $adapter;
+    protected ?AdapterInterface $adapter = null;
 
     /** @var AbstractColumn[] */
-    protected $columns = [];
+    protected array $columns = [];
 
     /** @var array<string, AbstractColumn> */
-    protected $columnsByName = [];
+    protected array $columnsByName = [];
 
-    /** @var EventDispatcherInterface */
-    protected $eventDispatcher;
+    protected string $method = Request::METHOD_POST;
 
-    /** @var DataTableExporterManager */
-    protected $exporterManager;
+    protected array $options;
 
-    /** @var string */
-    protected $method = Request::METHOD_POST;
+    protected bool $languageFromCDN = true;
 
-    /** @var array */
-    protected $options;
+    protected string $name = 'dt';
 
-    /** @var bool */
-    protected $languageFromCDN = true;
+    protected string $persistState = 'fragment';
 
-    /** @var string */
-    protected $name = 'dt';
+    protected string $template = self::DEFAULT_TEMPLATE;
 
-    /** @var string */
-    protected $persistState = 'fragment';
-
-    /** @var string */
-    protected $template = self::DEFAULT_TEMPLATE;
-
-    /** @var array */
-    protected $templateParams = [];
+    protected array $templateParams = [];
 
     /** @var callable */
     protected $transformer;
 
-    /** @var string */
-    protected $translationDomain = 'messages';
+    protected string $translationDomain = 'messages';
 
-    /** @var DataTableRendererInterface */
-    private $renderer;
+    private DataTableRendererInterface $renderer;
 
-    /** @var DataTableState */
-    private $state;
+    private ?DataTableState $state = null;
 
-    /** @var Instantiator */
-    private $instantiator;
+    private Instantiator $instantiator;
 
     /**
      * DataTable constructor.
      */
-    public function __construct(EventDispatcherInterface $eventDispatcher, DataTableExporterManager $exporterManager, array $options = [], Instantiator $instantiator = null)
+    public function __construct(protected EventDispatcherInterface $eventDispatcher,
+                                protected DataTableExporterManager $exporterManager,
+                                array                              $options = [],
+                                Instantiator                       $instantiator = null)
     {
-        $this->eventDispatcher = $eventDispatcher;
-        $this->exporterManager = $exporterManager;
 
         $this->instantiator = $instantiator ?? new Instantiator();
 
@@ -125,10 +108,7 @@ class DataTable
         $this->options = $resolver->resolve($options);
     }
 
-    /**
-     * @return $this
-     */
-    public function add(string $name, string $type, array $options = [])
+    public function add(string $name, string $type, array $options = []): static
     {
         // Ensure name is unique
         if (isset($this->columnsByName[$name])) {
@@ -162,11 +142,7 @@ class DataTable
         return $this;
     }
 
-    /**
-     * @param int|string|AbstractColumn $column
-     * @return $this
-     */
-    public function addOrderBy($column, string $direction = self::SORT_ASCENDING)
+    public function addOrderBy(int|string|AbstractColumn $column, string $direction = self::SORT_ASCENDING): static
     {
         if (!$column instanceof AbstractColumn) {
             $column = is_int($column) ? $this->getColumn($column) : $this->getColumnByName((string) $column);
@@ -176,9 +152,6 @@ class DataTable
         return $this;
     }
 
-    /**
-     * @return $this
-     */
     public function createAdapter(string $adapter, array $options = []): self
     {
         return $this->setAdapter($this->instantiator->getAdapter($adapter), $options);
@@ -240,10 +213,7 @@ class DataTable
         return $this->persistState;
     }
 
-    /**
-     * @return DataTableState|null
-     */
-    public function getState()
+    public function getState(): ?DataTableState
     {
         return $this->state;
     }
@@ -255,12 +225,9 @@ class DataTable
 
     public function isCallback(): bool
     {
-        return (null === $this->state) ? false : $this->state->isCallback();
+        return !(null === $this->state) && $this->state->isCallback();
     }
 
-    /**
-     * @return $this
-     */
     public function handleRequest(Request $request): self
     {
         switch ($this->getMethod()) {
@@ -338,10 +305,7 @@ class DataTable
         return $this->adapter->getData($this->state);
     }
 
-    /**
-     * @return callable|null
-     */
-    public function getTransformer()
+    public function getTransformer(): ?callable
     {
         return $this->transformer;
     }
@@ -351,18 +315,11 @@ class DataTable
         return $this->options;
     }
 
-    /**
-     * @param $name
-     * @return mixed|null
-     */
-    public function getOption($name)
+    public function getOption(string $name): mixed
     {
         return $this->options[$name] ?? null;
     }
 
-    /**
-     * @return DataTable
-     */
     public function setAdapter(AdapterInterface $adapter, array $options = null): self
     {
         if (null !== $options) {
@@ -373,9 +330,6 @@ class DataTable
         return $this;
     }
 
-    /**
-     * @return $this
-     */
     public function setLanguageFromCDN(bool $languageFromCDN): self
     {
         $this->languageFromCDN = $languageFromCDN;
@@ -383,9 +337,6 @@ class DataTable
         return $this;
     }
 
-    /**
-     * @return $this
-     */
     public function setMethod(string $method): self
     {
         $this->method = $method;
@@ -393,9 +344,6 @@ class DataTable
         return $this;
     }
 
-    /**
-     * @return $this
-     */
     public function setPersistState(string $persistState): self
     {
         $this->persistState = $persistState;
@@ -403,9 +351,6 @@ class DataTable
         return $this;
     }
 
-    /**
-     * @return $this
-     */
     public function setRenderer(DataTableRendererInterface $renderer): self
     {
         $this->renderer = $renderer;
@@ -413,9 +358,6 @@ class DataTable
         return $this;
     }
 
-    /**
-     * @return $this
-     */
     public function setName(string $name): self
     {
         if (empty($name)) {
@@ -426,9 +368,6 @@ class DataTable
         return $this;
     }
 
-    /**
-     * @return $this
-     */
     public function setTemplate(string $template, array $parameters = []): self
     {
         $this->template = $template;
@@ -437,9 +376,6 @@ class DataTable
         return $this;
     }
 
-    /**
-     * @return $this
-     */
     public function setTranslationDomain(string $translationDomain): self
     {
         $this->translationDomain = $translationDomain;
@@ -447,20 +383,14 @@ class DataTable
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function setTransformer(callable $formatter)
+    public function setTransformer(callable $formatter): self
     {
         $this->transformer = $formatter;
 
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    protected function configureOptions(OptionsResolver $resolver)
+    protected function configureOptions(OptionsResolver $resolver): self
     {
         $resolver->setDefaults(self::DEFAULT_OPTIONS);
 

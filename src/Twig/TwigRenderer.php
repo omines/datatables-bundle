@@ -24,17 +24,12 @@ use Twig\Environment;
  */
 class TwigRenderer implements DataTableRendererInterface
 {
-    /** @var Twig_Environment */
-    private $twig;
-
     /**
      * DataTableRenderer constructor.
-     *
-     * @param Environment $twig
      */
-    public function __construct(Environment $twig = null)
+    public function __construct(protected ?Environment $twig = null)
     {
-        if (null === ($this->twig = $twig)) {
+        if (null === $this->twig) {
             throw new MissingDependencyException('You must have symfony/twig-bundle installed to use the default Twig based DataTables rendering');
         }
     }

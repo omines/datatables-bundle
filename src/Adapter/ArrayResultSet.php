@@ -19,21 +19,15 @@ namespace Omines\DataTablesBundle\Adapter;
  */
 class ArrayResultSet implements ResultSetInterface
 {
-    /** @var array */
-    private $data;
+    private int $totalRows;
 
-    /** @var int */
-    private $totalRows;
-
-    /** @var int */
-    private $totalFilteredRows;
+    private int $totalFilteredRows;
 
     /**
      * ArrayResultSet constructor.
      */
-    public function __construct(array $data, int $totalRows = null, int $totalFilteredRows = null)
+    public function __construct(private array $data, int $totalRows = null, int $totalFilteredRows = null)
     {
-        $this->data = $data;
         $this->totalRows = $totalRows ?? count($data);
         $this->totalFilteredRows = $totalFilteredRows ?? $this->totalRows;
     }

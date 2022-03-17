@@ -29,8 +29,8 @@ class DataTableExporterCollectionTest extends KernelTestCase
 
     public function testUnknownExporter()
     {
-        static::expectException(UnknownDataTableExporterException::class);
-        static::$container
+        $this->expectException(UnknownDataTableExporterException::class);
+        static::getContainer()
             ->get('Omines\DataTablesBundle\Exporter\DataTableExporterCollection')
             ->getByName('unknown-exporter');
     }

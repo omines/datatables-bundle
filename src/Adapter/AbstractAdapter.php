@@ -24,8 +24,7 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
  */
 abstract class AbstractAdapter implements AdapterInterface
 {
-    /** @var PropertyAccessor */
-    protected $accessor;
+    protected PropertyAccessor $accessor;
 
     /**
      * AbstractAdapter constructor.
@@ -80,10 +79,7 @@ abstract class AbstractAdapter implements AdapterInterface
 
     abstract protected function prepareQuery(AdapterQuery $query);
 
-    /**
-     * @return string|null
-     */
-    abstract protected function mapPropertyPath(AdapterQuery $query, AbstractColumn $column);
+    abstract protected function mapPropertyPath(AdapterQuery $query, AbstractColumn $column): ?string;
 
     abstract protected function getResults(AdapterQuery $query): \Traversable;
 }

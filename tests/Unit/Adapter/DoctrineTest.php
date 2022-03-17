@@ -25,6 +25,7 @@ use Omines\DataTablesBundle\Exporter\DataTableExporterManager;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
+use TypeError;
 
 /**
  * DoctrineTest.
@@ -51,7 +52,9 @@ class DoctrineTest extends TestCase
         $qb = $this->createMock(QueryBuilder::class);
         $qb
             ->method('expr')
-            ->will($this->returnCallback(function () { return new Query\Expr(); }));
+            ->willReturnCallback(function () {
+                return new Query\Expr();
+            });
 
         /* @var QueryBuilder $qb */
         (new SearchCriteriaProvider())->process($qb, $state);
@@ -68,18 +71,6 @@ class DoctrineTest extends TestCase
         (new ORMAdapter());
     }
 
-    public function testInvalidQueryProcessorThrows()
-    {
-        $this->expectException(InvalidConfigurationException::class);
-        $this->expectExceptionMessage('Provider must be a callable or implement QueryBuilderProcessorInterface');
-
-        (new ORMAdapter($this->createMock(ManagerRegistry::class)))
-            ->configure([
-                'entity' => 'bar',
-                'query' => ['foo'],
-            ]);
-    }
-
     public function testInvalidFieldThrows()
     {
         $this->expectException(InvalidConfigurationException::class);
@@ -91,7 +82,7 @@ class DoctrineTest extends TestCase
         $column->initialize('foo', 0, ['field' => 'invalid'], $this->createMock(DataTable::class));
 
         $mock = new class($this->createMock(ManagerRegistry::class)) extends ORMAdapter {
-            public function foo($query, $column)
+            public function foo($query, $column): ?string
             {
                 return $this->mapPropertyPath($query, $column);
             }

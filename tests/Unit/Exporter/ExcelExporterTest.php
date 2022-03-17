@@ -23,14 +23,13 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class ExcelExporterTest extends KernelTestCase
 {
-    /** @var DataTableExporterCollection */
-    private $exporterCollection;
+    private ?DataTableExporterCollection $exporterCollection;
 
     protected function setUp(): void
     {
         static::bootKernel();
 
-        $this->exporterCollection = static::$container->get('Omines\DataTablesBundle\Exporter\DataTableExporterCollection');
+        $this->exporterCollection = static::getContainer()->get('Omines\DataTablesBundle\Exporter\DataTableExporterCollection');
     }
 
     public function testTag()

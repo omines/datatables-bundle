@@ -37,23 +37,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ORMAdapter extends AbstractAdapter
 {
-    /** @var ManagerRegistry */
-    private $registry;
+    private ManagerRegistry $registry;
 
-    /** @var EntityManager */
-    protected $manager;
+    protected ?EntityManager $manager;
 
-    /** @var \Doctrine\ORM\Mapping\ClassMetadata */
-    protected $metadata;
+    protected \Doctrine\ORM\Mapping\ClassMetadata $metadata;
 
-    /** @var int */
-    private $hydrationMode;
+    private int $hydrationMode;
 
     /** @var QueryBuilderProcessorInterface[] */
-    private $queryBuilderProcessors;
+    private array $queryBuilderProcessors;
 
     /** @var QueryBuilderProcessorInterface[] */
-    protected $criteriaProcessors;
+    protected array $criteriaProcessors;
 
     /**
      * DoctrineAdapter constructor.
@@ -71,7 +67,7 @@ class ORMAdapter extends AbstractAdapter
     /**
      * {@inheritdoc}
      */
-    public function configure(array $options)
+    public function configure(array $options): void
     {
         $resolver = new OptionsResolver();
         $this->configureOptions($resolver);
@@ -80,15 +76,17 @@ class ORMAdapter extends AbstractAdapter
         $this->afterConfiguration($options);
     }
 
-    /**
-     * @param mixed $processor
-     */
-    public function addCriteriaProcessor($processor)
+    public function addCriteriaProcessor(mixed $processor): void
     {
         $this->criteriaProcessors[] = $this->normalizeProcessor($processor);
     }
 
-    protected function prepareQuery(AdapterQuery $query)
+    /**
+     * @throws \Doctrine\ORM\Mapping\MappingException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Doctrine\ORM\NoResultException
+     */
+    protected function prepareQuery(AdapterQuery $query): void
     {
         $state = $query->getState();
         $query->set('qb', $builder = $this->createQueryBuilder($state));
@@ -117,9 +115,10 @@ class ORMAdapter extends AbstractAdapter
     }
 
     /**
-     * @return array
+     * @throws \ReflectionException
+     * @throws \Doctrine\Persistence\Mapping\MappingException
      */
-    protected function getAliases(AdapterQuery $query)
+    protected function getAliases(AdapterQuery $query): array
     {
         /** @var QueryBuilder $builder */
         $builder = $query->get('qb');
@@ -151,7 +150,7 @@ class ORMAdapter extends AbstractAdapter
     /**
      * {@inheritdoc}
      */
-    protected function mapPropertyPath(AdapterQuery $query, AbstractColumn $column)
+    protected function mapPropertyPath(AdapterQuery $query, AbstractColumn $column): ?string
     {
         return $this->mapFieldToPropertyPath($column->getField(), $query->get('aliases'));
     }
@@ -188,7 +187,7 @@ class ORMAdapter extends AbstractAdapter
         }
     }
 
-    protected function buildCriteria(QueryBuilder $queryBuilder, DataTableState $state)
+    protected function buildCriteria(QueryBuilder $queryBuilder, DataTableState $state): void
     {
         foreach ($this->criteriaProcessors as $provider) {
             $provider->process($queryBuilder, $state);
@@ -197,7 +196,6 @@ class ORMAdapter extends AbstractAdapter
 
     protected function createQueryBuilder(DataTableState $state): QueryBuilder
     {
-        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->manager->createQueryBuilder();
 
         // Run all query builder processors in order
@@ -209,11 +207,10 @@ class ORMAdapter extends AbstractAdapter
     }
 
     /**
-     * @param $identifier
-     *
-     * @return int
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Doctrine\ORM\NoResultException
      */
-    protected function getCount(QueryBuilder $queryBuilder, $identifier)
+    protected function getCount(QueryBuilder $queryBuilder, $identifier): int
     {
         $qb = clone $queryBuilder;
 
@@ -234,10 +231,8 @@ class ORMAdapter extends AbstractAdapter
     /**
      * @param $identifier
      * @param Query\Expr\GroupBy[] $gbList
-     *
-     * @return bool
      */
-    protected function hasGroupByPart($identifier, array $gbList)
+    protected function hasGroupByPart($identifier, array $gbList): bool
     {
         foreach ($gbList as $gb) {
             if (in_array($identifier, $gb->getParts(), true)) {
@@ -248,12 +243,7 @@ class ORMAdapter extends AbstractAdapter
         return false;
     }
 
-    /**
-     * @param string $field
-     *
-     * @return string
-     */
-    protected function mapFieldToPropertyPath($field, array $aliases = [])
+    protected function mapFieldToPropertyPath(string $field, array $aliases = []): string
     {
         $parts = explode('.', $field);
         if (count($parts) < 2) {
@@ -321,12 +311,7 @@ class ORMAdapter extends AbstractAdapter
         $this->criteriaProcessors = $options['criteria'];
     }
 
-    /**
-     * @param callable|QueryBuilderProcessorInterface $provider
-     *
-     * @return QueryBuilderProcessorInterface
-     */
-    private function normalizeProcessor($provider)
+    private function normalizeProcessor(callable|QueryBuilderProcessorInterface $provider): QueryBuilderProcessorInterface
     {
         if ($provider instanceof QueryBuilderProcessorInterface) {
             return $provider;

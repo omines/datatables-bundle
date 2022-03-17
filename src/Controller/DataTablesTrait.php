@@ -31,9 +31,8 @@ trait DataTablesTrait
      * Creates and returns a basic DataTable instance.
      *
      * @param array $options Options to be passed
-     * @return DataTable
      */
-    protected function createDataTable(array $options = [])
+    protected function createDataTable(array $options = []): DataTable
     {
         @trigger_error('Omines\DataTablesBundle\Controller\DataTablesTrait is deprecated. Use dependency injection to inject the Omines\DataTablesBundle\DataTableFactory service instead.', E_USER_DEPRECATED);
 
@@ -48,7 +47,7 @@ trait DataTablesTrait
      * @param array $options Options to be passed
      * @return DataTable
      */
-    protected function createDataTableFromType($type, array $typeOptions = [], array $options = [])
+    protected function createDataTableFromType(string $type, array $typeOptions = [], array $options = []): DataTable
     {
         @trigger_error('Omines\DataTablesBundle\Controller\DataTablesTrait is deprecated. Use dependency injection to inject the Omines\DataTablesBundle\DataTableFactory service instead.', E_USER_DEPRECATED);
 

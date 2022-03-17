@@ -64,7 +64,7 @@ class ExcelExporter implements DataTableExporterInterface
      *
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
-    private function autoSizeColumnWidth(Worksheet $sheet)
+    private function autoSizeColumnWidth(Worksheet $sheet): void
     {
         foreach (range(1, Coordinate::columnIndexFromString($sheet->getHighestColumn(1))) as $column) {
             $sheet->getColumnDimension(Coordinate::stringFromColumnIndex($column))->setAutoSize(true);

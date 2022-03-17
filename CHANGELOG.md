@@ -5,6 +5,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 Nothing yet.
 
+## [1.0.0] - 2022-03-xx
+### Breaking
+- Add strong php types
+- Add language features from php 8.0
+
 ## [0.7.0] - 2022-03-16
 ### Breaking
 - Move logic to make queries without limits to the relevant adapters (#257)

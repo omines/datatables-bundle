@@ -24,7 +24,7 @@ class DateTimeColumn extends AbstractColumn
     /**
      * {@inheritdoc}
      */
-    public function normalize($value)
+    public function normalize(mixed $value): mixed
     {
         if (null === $value) {
             return $this->options['nullValue'];
@@ -48,7 +48,7 @@ class DateTimeColumn extends AbstractColumn
     /**
      * {@inheritdoc}
      */
-    protected function configureOptions(OptionsResolver $resolver)
+    protected function configureOptions(OptionsResolver $resolver): static
     {
         parent::configureOptions($resolver);
 

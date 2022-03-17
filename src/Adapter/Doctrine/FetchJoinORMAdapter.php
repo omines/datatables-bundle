@@ -31,7 +31,7 @@ class FetchJoinORMAdapter extends ORMAdapter
 {
     protected $use_simple_total;
 
-    protected function configureOptions(OptionsResolver $resolver)
+    protected function configureOptions(OptionsResolver $resolver): OptionsResolver
     {
         parent::configureOptions($resolver);
 
@@ -54,7 +54,7 @@ class FetchJoinORMAdapter extends ORMAdapter
         $this->use_simple_total = $options['simple_total_query'];
     }
 
-    protected function prepareQuery(AdapterQuery $query)
+    protected function prepareQuery(AdapterQuery $query): void
     {
         $state = $query->getState();
         $query->set('qb', $builder = $this->createQueryBuilder($state));
@@ -119,14 +119,14 @@ class FetchJoinORMAdapter extends ORMAdapter
         }
     }
 
-    public function getCount(QueryBuilder $queryBuilder, $identifier)
+    public function getCount(QueryBuilder $queryBuilder, $identifier): int
     {
         $paginator = new Paginator($queryBuilder);
 
         return $paginator->count();
     }
 
-    protected function getSimpleTotalCount(QueryBuilder $queryBuilder)
+    protected function getSimpleTotalCount(QueryBuilder $queryBuilder): int
     {
         /** The paginator count queries can be rather slow, so when query for total count (100ms or longer),
          * just return the entity count.

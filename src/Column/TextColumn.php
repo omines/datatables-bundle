@@ -24,7 +24,7 @@ class TextColumn extends AbstractColumn
     /**
      * {@inheritdoc}
      */
-    public function normalize($value): string
+    public function normalize(mixed $value): string
     {
         $value = (string) $value;
 
@@ -34,7 +34,7 @@ class TextColumn extends AbstractColumn
     /**
      * {@inheritdoc}
      */
-    protected function configureOptions(OptionsResolver $resolver)
+    protected function configureOptions(OptionsResolver $resolver): static
     {
         parent::configureOptions($resolver);
 

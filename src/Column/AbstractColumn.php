@@ -24,21 +24,18 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 abstract class AbstractColumn
 {
     /** @var array<string, OptionsResolver> */
-    private static $resolversByClass = [];
+    private static array $resolversByClass = [];
 
-    /** @var string */
-    private $name;
+    private string $name;
 
-    /** @var int */
-    private $index;
+    private int $index;
 
-    /** @var DataTable */
-    private $dataTable;
+    private DataTable $dataTable;
 
     /** @var array<string, mixed> */
-    protected $options;
+    protected array $options;
 
-    public function initialize(string $name, int $index, array $options, DataTable $dataTable)
+    public function initialize(string $name, int $index, array $options, DataTable $dataTable): void
     {
         $this->name = $name;
         $this->index = $index;
@@ -57,9 +54,8 @@ abstract class AbstractColumn
      *
      * @param mixed|null $value The single value of the column, if mapping makes it possible to derive one
      * @param mixed|null $context All relevant data of the entire row
-     * @return mixed
      */
-    public function transform($value = null, $context = null)
+    public function transform(mixed $value = null, mixed $context = null): mixed
     {
         $data = $this->getData();
         if (is_callable($data)) {
@@ -74,11 +70,9 @@ abstract class AbstractColumn
     /**
      * Apply final modifications before rendering to result.
      *
-     * @param mixed $value
      * @param mixed $context All relevant data of the entire row
-     * @return mixed|string
      */
-    protected function render($value, $context)
+    protected function render(mixed $value, mixed $context): mixed
     {
         if (is_string($render = $this->options['render'])) {
             return sprintf($render, $value);
@@ -93,14 +87,10 @@ abstract class AbstractColumn
      * The normalize function is responsible for converting parsed and processed data to a datatables-appropriate type.
      *
      * @param mixed $value The single value of the column
-     * @return mixed
      */
-    abstract public function normalize($value);
+    abstract public function normalize(mixed $value): mixed;
 
-    /**
-     * @return $this
-     */
-    protected function configureOptions(OptionsResolver $resolver)
+    protected function configureOptions(OptionsResolver $resolver): static
     {
         $resolver
             ->setDefaults([
@@ -150,34 +140,22 @@ abstract class AbstractColumn
         return $this->name;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getLabel()
+    public function getLabel(): ?string
     {
         return $this->options['label'] ?? "{$this->dataTable->getName()}.columns.{$this->getName()}";
     }
 
-    /**
-     * @return string|null
-     */
-    public function getField()
+    public function getField(): ?string
     {
         return $this->options['field'];
     }
 
-    /**
-     * @return string|null
-     */
-    public function getPropertyPath()
+    public function getPropertyPath(): ?string
     {
         return $this->options['propertyPath'];
     }
 
-    /**
-     * @return callable|string|null
-     */
-    public function getData()
+    public function getData(): callable|string|null
     {
         return $this->options['data'];
     }
@@ -197,18 +175,12 @@ abstract class AbstractColumn
         return $this->options['orderable'] ?? !empty($this->getOrderField());
     }
 
-    /**
-     * @return AbstractFilter
-     */
-    public function getFilter()
+    public function getFilter(): ?AbstractFilter
     {
         return $this->options['filter'];
     }
 
-    /**
-     * @return string|null
-     */
-    public function getOrderField()
+    public function getOrderField(): ?string
     {
         return $this->options['orderField'] ?? $this->getField();
     }
@@ -218,10 +190,7 @@ abstract class AbstractColumn
         return $this->options['globalSearchable'] ?? $this->isSearchable();
     }
 
-    /**
-     * @return string
-     */
-    public function getLeftExpr()
+    public function getLeftExpr(): ?string
     {
         $leftExpr = $this->options['leftExpr'];
         if (null === $leftExpr) {
@@ -234,10 +203,7 @@ abstract class AbstractColumn
         return $leftExpr;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getRightExpr($value)
+    public function getRightExpr($value): mixed
     {
         $rightExpr = $this->options['rightExpr'];
         if (null === $rightExpr) {
@@ -250,18 +216,12 @@ abstract class AbstractColumn
         return $rightExpr;
     }
 
-    /**
-     * @return string
-     */
-    public function getOperator()
+    public function getOperator(): string
     {
         return $this->options['operator'];
     }
 
-    /**
-     * @return string
-     */
-    public function getClassName()
+    public function getClassName(): ?string
     {
         return $this->options['className'];
     }
@@ -271,22 +231,14 @@ abstract class AbstractColumn
         return $this->dataTable;
     }
 
-    /**
-     * @param mixed $value
-     * @return $this
-     */
-    public function setOption(string $name, $value): self
+    public function setOption(string $name, mixed $value): self
     {
         $this->options[$name] = $value;
 
         return $this;
     }
 
-    /**
-     * @param string $value
-     * @return bool
-     */
-    public function isValidForSearch($value)
+    public function isValidForSearch(mixed $value): bool
     {
         return true;
     }

@@ -23,16 +23,14 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
  */
 class ArrayAdapter implements AdapterInterface
 {
-    /** @var array */
-    private $data = [];
+    private array $data = [];
 
-    /** @var PropertyAccessor */
-    private $accessor;
+    private PropertyAccessor $accessor;
 
     /**
      * {@inheritdoc}
      */
-    public function configure(array $options)
+    public function configure(array $options): void
     {
         $this->data = $options;
         $this->accessor = PropertyAccess::createPropertyAccessor();
@@ -78,10 +76,7 @@ class ArrayAdapter implements AdapterInterface
         return new ArrayResultSet($page, count($this->data), count($data));
     }
 
-    /**
-     * @return \Generator
-     */
-    protected function processData(DataTableState $state, array $data, array $map)
+    protected function processData(DataTableState $state, array $data, array $map): \Generator
     {
         $transformer = $state->getDataTable()->getTransformer();
         $search = $state->getGlobalSearch() ?: '';
@@ -95,10 +90,7 @@ class ArrayAdapter implements AdapterInterface
         }
     }
 
-    /**
-     * @return array|null
-     */
-    protected function processRow(DataTableState $state, array $result, array $map, string $search)
+    protected function processRow(DataTableState $state, array $result, array $map, string $search): ?array
     {
         $row = [];
         $match = empty($search);

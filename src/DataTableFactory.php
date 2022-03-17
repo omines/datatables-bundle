@@ -19,40 +19,20 @@ use Symfony\Component\HttpFoundation\Request;
 
 class DataTableFactory
 {
-    /** @var Instantiator */
-    protected $instantiator;
-
-    /** @var DataTableRendererInterface */
-    protected $renderer;
-
     /** @var array<string, DataTableTypeInterface> */
-    protected $resolvedTypes = [];
-
-    /** @var array */
-    protected $config;
-
-    /** @var EventDispatcherInterface */
-    protected $eventDispatcher;
-
-    /** @var DataTableExporterManager */
-    protected $exporterManager;
+    protected array $resolvedTypes = [];
 
     /**
      * DataTableFactory constructor.
      */
-    public function __construct(array $config, DataTableRendererInterface $renderer, Instantiator $instantiator, EventDispatcherInterface $eventDispatcher, DataTableExporterManager $exporterManager)
-    {
-        $this->config = $config;
-        $this->renderer = $renderer;
-        $this->instantiator = $instantiator;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->exporterManager = $exporterManager;
-    }
+    public function __construct(protected array                      $config,
+                                protected DataTableRendererInterface $renderer,
+                                protected Instantiator               $instantiator,
+                                protected EventDispatcherInterface   $eventDispatcher,
+                                protected DataTableExporterManager   $exporterManager)
+    {}
 
-    /**
-     * @return DataTable
-     */
-    public function create(array $options = [])
+    public function create(array $options = []): DataTable
     {
         $config = $this->config;
 
@@ -66,11 +46,8 @@ class DataTableFactory
         ;
     }
 
-    /**
-     * @param string|DataTableTypeInterface $type
-     * @return DataTable
-     */
-    public function createFromType($type, array $typeOptions = [], array $options = [])
+
+    public function createFromType(DataTableTypeInterface|string $type, array $typeOptions = [], array $options = []): DataTable
     {
         $dataTable = $this->create($options);
 

@@ -17,21 +17,16 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DataTablesExtension extends \Twig\Extension\AbstractExtension
 {
-    /** @var TranslatorInterface */
-    protected $translator;
-
     /**
      * DataTablesExtension constructor.
      */
-    public function __construct(TranslatorInterface $translator)
-    {
-        $this->translator = $translator;
-    }
+    public function __construct(protected TranslatorInterface $translator)
+    {}
 
     /**
      * {@inheritdoc}
      */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new \Twig\TwigFunction('datatable_settings', function (DataTable $dataTable) {
@@ -47,10 +42,7 @@ class DataTablesExtension extends \Twig\Extension\AbstractExtension
         ];
     }
 
-    /**
-     * @return array
-     */
-    private function getLanguageSettings(DataTable $dataTable)
+    private function getLanguageSettings(DataTable $dataTable): array
     {
         if ($dataTable->isLanguageFromCDN() && null !== ($cdnFile = $this->getCDNLanguageFile())) {
             return ['url' => '//cdn.datatables.net/plug-ins/1.10.15/i18n/' . $cdnFile];
@@ -85,15 +77,13 @@ class DataTablesExtension extends \Twig\Extension\AbstractExtension
 
     /**
      * Returns the name of the extension.
-     *
-     * @return string The extension name
      */
-    public function getName()
+    public function getName(): string
     {
         return 'DataTablesBundle';
     }
 
-    private function getCDNLanguageFile()
+    private function getCDNLanguageFile(): ?string
     {
         $file = $this->translator->trans('file', [], 'DataTablesCDN');
 

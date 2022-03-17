@@ -22,43 +22,29 @@ use Symfony\Component\HttpFoundation\ParameterBag;
  */
 class DataTableState
 {
-    /** @var DataTable */
-    private $dataTable;
+    private int $draw = 0;
 
-    /** @var int */
-    private $draw = 0;
+    private int $start = 0;
 
-    /** @var int */
-    private $start = 0;
+    private ?int $length = null;
 
-    /** @var ?int */
-    private $length = null;
+    private string $globalSearch = '';
 
-    /** @var string */
-    private $globalSearch = '';
+    private array $searchColumns = [];
 
-    /** @var array */
-    private $searchColumns = [];
+    private array $orderBy = [];
 
-    /** @var array */
-    private $orderBy = [];
+    private bool $isInitial = false;
 
-    /** @var bool */
-    private $isInitial = false;
+    private bool $isCallback = false;
 
-    /** @var bool */
-    private $isCallback = false;
-
-    /** @var ?string */
-    private $exporterName = null;
+    private ?string $exporterName = null;
 
     /**
      * DataTableState constructor.
      */
-    public function __construct(DataTable $dataTable)
-    {
-        $this->dataTable = $dataTable;
-    }
+    public function __construct(private DataTable $dataTable)
+    {}
 
     /**
      * Constructs a state based on the default options.

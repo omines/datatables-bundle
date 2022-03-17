@@ -23,15 +23,12 @@ use Twig\Environment;
  */
 class TwigColumn extends AbstractColumn
 {
-    /** @var Environment */
-    protected $twig;
-
     /**
      * TwigColumn constructor.
      */
-    public function __construct(Environment $twig = null)
+    public function __construct(protected ?Environment $twig = null)
     {
-        if (null === ($this->twig = $twig)) {
+        if (null === $this->twig) {
             throw new MissingDependencyException('You must have TwigBundle installed to use ' . static::class);
         }
     }
@@ -39,7 +36,7 @@ class TwigColumn extends AbstractColumn
     /**
      * {@inheritdoc}
      */
-    protected function render($value, $context)
+    protected function render(mixed $value, mixed $context): mixed
     {
         return $this->twig->render($this->getTemplate(), [
             'row' => $context,
@@ -50,7 +47,7 @@ class TwigColumn extends AbstractColumn
     /**
      * {@inheritdoc}
      */
-    public function normalize($value)
+    public function normalize(mixed $value): mixed
     {
         return $value;
     }
@@ -58,7 +55,7 @@ class TwigColumn extends AbstractColumn
     /**
      * {@inheritdoc}
      */
-    protected function configureOptions(OptionsResolver $resolver)
+    protected function configureOptions(OptionsResolver $resolver): static
     {
         parent::configureOptions($resolver);
 
