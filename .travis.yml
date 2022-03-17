@@ -15,9 +15,9 @@ env:
     - SYMFONY_VERSION=""
 
 php:
-  - 7.2
-  - 7.3
   - 7.4
+  - 8.0
+  - 8.1
 
 services:
   - mongodb
@@ -26,7 +26,7 @@ matrix:
     fast_finish: true
     include:
      # no flag build with code coverage:
-     - php: 7.4
+     - php: 8.1
        env: ENABLE_CODE_COVERAGE="yes"
      # --ignore-platform-reqs for ruflin/elastica:6 which doesn't support PHP8
      - php: 8.0
@@ -34,20 +34,20 @@ matrix:
      - php: nightly
        env: COMPOSER_FLAGS="--ignore-platform-reqs"
      # normal build
-     - php: 7.2
+     - php: 7.4
        env:
          - COMPOSER_FLAGS="--prefer-lowest"
          - SYMFONY_DEPRECATIONS_HELPER=weak
      - php: 7.4
        env:
-         - SYMFONY_VERSION=^4.4
+         - SYMFONY_VERSION=^5.4
          - SYMFONY_DEPRECATIONS_HELPER=weak
-     - php: 8.0snapshot
+     - php: 8.2snapshot
        env:
          - DEPENDENCIES=dev
          - COMPOSER_FLAGS="--ignore-platform-reqs"
     allow_failures:
-     - php: 8.0snapshot
+     - php: 8.2snapshot
 
 before_install:
   - if [ "$DEPENDENCIES" != "" ]; then composer config minimum-stability ${DEPENDENCIES}; fi;
