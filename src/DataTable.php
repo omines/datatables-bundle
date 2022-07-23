@@ -319,6 +319,7 @@ class DataTable
                 function (AbstractColumn $column) {
                     return [
                         'data' => $column->getName(),
+                        'label' => $column->getLabel(),
                         'orderable' => $column->isOrderable(),
                         'searchable' => $column->isSearchable(),
                         'visible' => $column->isVisible(),
