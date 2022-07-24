@@ -1,23 +1,10 @@
 {
-    "name": "omines/datatables-bundle",
+    "name": "mons54/datatables-bundle",
     "type": "symfony-bundle",
     "description": "Symfony DataTables Bundle with native Doctrine ORM, Elastica and MongoDB support",
-    "keywords": ["symfony","jquery","datatable", "datatables", "bundle", "doctrine", "orm", "elastica", "mongodb"],
     "license": "MIT",
-    "authors": [
-        {
-            "name": "Robbert Beesems",
-            "email": "robbert.beesems@omines.com",
-            "homepage": "https://omines.nl/"
-        },
-        {
-            "name": "Niels Keurentjes",
-            "email": "niels.keurentjes@omines.com",
-            "homepage": "https://omines.nl/"
-        }
-    ],
     "support": {
-      "issues": "https://github.com/omines/datatables-bundle/issues"
+      "issues": "https://github.com/mons54/datatables-bundle/issues"
     },
     "require": {
         "php": ">=8.0",
