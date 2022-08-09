@@ -1,0 +1,27 @@
+name: "PHPStan"
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: debian-latest
+    strategy:
+      matrix:
+        php: ['8.1']
+
+    name: "PHPStan"
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: shivammathur/setup-php@v1
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: pcov
+      - run: composer install --no-progress
+      - run: vendor/bin/phpstan analyse src -l2
+      - run: vendor/bin/simple-phpunit
