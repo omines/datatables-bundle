@@ -12,7 +12,7 @@ $finder = PhpCsFixer\Finder::create()
     ->files()
     ->name('*.php')
     ->in(__DIR__.'/src')
-    ->in(__DIR__.'/tests')
+    ->in(__DIR__.'/tests')->exclude('Fixtures/var')
 ;
 
 $config = new PhpCsFixer\Config();

@@ -163,7 +163,7 @@ class DataTableState
 
     public function setLength(?int $length): self
     {
-        if ($length < 1) {
+        if (is_integer($length) && $length < 1) {
             @trigger_error(sprintf('Calling the "%s::setLength()" method with a length less than 1 is deprecated since version 0.7 of this bundle. If you need to unrestrict the amount of records returned, pass null instead.', self::class), \E_USER_DEPRECATED);
             $length = null;
         }

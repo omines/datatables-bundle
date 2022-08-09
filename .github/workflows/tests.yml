@@ -12,9 +12,9 @@ jobs:
     runs-on: debian-latest
     strategy:
       matrix:
-        php: ['8.1']
+        php: ['7.4', '8.0', '8.1']
 
-    name: "PHPStan"
+    name: "Tests"
 
     steps:
       - uses: actions/checkout@v3

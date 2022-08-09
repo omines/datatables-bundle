@@ -28,18 +28,18 @@ class ExcelExporterTest extends KernelTestCase
 
     protected function setUp(): void
     {
-        static::bootKernel();
+        $this->bootKernel();
 
-        $this->exporterCollection = static::$container->get('Omines\DataTablesBundle\Exporter\DataTableExporterCollection');
+        $this->exporterCollection = $this->getContainer()->get(DataTableExporterCollection::class);
     }
 
     public function testTag()
     {
-        static::assertInstanceOf(ExcelExporter::class, $this->exporterCollection->getByName('excel'));
+        $this->assertInstanceOf(ExcelExporter::class, $this->exporterCollection->getByName('excel'));
     }
 
     public function testName()
     {
-        static::assertSame('excel', $this->exporterCollection->getByName('excel')->getName());
+        $this->assertSame('excel', $this->exporterCollection->getByName('excel')->getName());
     }
 }

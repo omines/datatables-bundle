@@ -17,7 +17,6 @@ use Omines\DataTablesBundle\Exporter\DataTableExporterCollection;
 use Omines\DataTablesBundle\Exporter\DataTableExporterManager;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Translation\DataCollectorTranslator;
-use Symfony\Component\Translation\TranslatorInterface as LegacyTranslatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -31,13 +30,12 @@ class DataTableExporterManagerTest extends TestCase
     {
         $exporterCollectionMock = $this->createMock(DataTableExporterCollection::class);
 
-        static::expectException(InvalidArgumentException::class);
+        static::expectException(\TypeError::class);
         new DataTableExporterManager($exporterCollectionMock, null);
 
         static::expectException(InvalidArgumentException::class);
         new DataTableExporterManager($exporterCollectionMock, $this->createMock(DataCollectorTranslator::class));
 
         static::assertInstanceOf(DataTableExporterManager::class, new DataTableExporterManager($exporterCollectionMock, $this->createMock(TranslatorInterface::class)));
-        static::assertInstanceOf(DataTableExporterManager::class, new DataTableExporterManager($exporterCollectionMock, $this->createMock(LegacyTranslatorInterface::class)));
     }
 }
