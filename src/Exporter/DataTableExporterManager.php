@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Omines\DataTablesBundle\Exporter;
 
 use Omines\DataTablesBundle\DataTable;
-use Omines\DataTablesBundle\Exception\InvalidArgumentException;
 use Omines\DataTablesBundle\Exception\UnknownDataTableExporterException;
 use Omines\DataTablesBundle\Exporter\Event\DataTableExporterResponseEvent;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;

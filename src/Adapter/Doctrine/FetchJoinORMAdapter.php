@@ -35,7 +35,7 @@ class FetchJoinORMAdapter extends ORMAdapter
     {
         parent::configureOptions($resolver);
 
-        //Enforce object hydration mode (fetch join only works for objects)
+        // Enforce object hydration mode (fetch join only works for objects)
         $resolver->addAllowedValues('hydrate', Query::HYDRATE_OBJECT);
 
         /*
@@ -71,7 +71,7 @@ class FetchJoinORMAdapter extends ORMAdapter
         $fromClause = $builder->getDQLPart('from')[0];
         $identifier = "{$fromClause->getAlias()}.{$this->metadata->getSingleIdentifierFieldName()}";
 
-        //Use simpler (faster) total count query if the user wanted so...
+        // Use simpler (faster) total count query if the user wanted so...
         if ($this->use_simple_total) {
             $query->setTotalRows($this->getSimpleTotalCount($builder));
         } else {
@@ -110,7 +110,7 @@ class FetchJoinORMAdapter extends ORMAdapter
         $event = new ORMAdapterQueryEvent($query);
         $state->getDataTable()->getEventDispatcher()->dispatch($event, ORMAdapterEvents::PRE_QUERY);
 
-        //Use Doctrine paginator for result iteration
+        // Use Doctrine paginator for result iteration
         $paginator = new Paginator($query);
 
         foreach ($paginator->getIterator() as $result) {

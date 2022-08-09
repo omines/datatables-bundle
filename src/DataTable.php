@@ -33,7 +33,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class DataTable
 {
-    const DEFAULT_OPTIONS = [
+    public const DEFAULT_OPTIONS = [
         'jQueryUI' => false,
         'pagingType' => 'full_numbers',
         'lengthMenu' => [[10, 25, 50, -1], [10, 25, 50, 'All']],
@@ -55,9 +55,9 @@ class DataTable
         'fixedHeader' => false,
     ];
 
-    const DEFAULT_TEMPLATE = '@DataTables/datatable_html.html.twig';
-    const SORT_ASCENDING = 'asc';
-    const SORT_DESCENDING = 'desc';
+    public const DEFAULT_TEMPLATE = '@DataTables/datatable_html.html.twig';
+    public const SORT_ASCENDING = 'asc';
+    public const SORT_DESCENDING = 'desc';
 
     /** @var AdapterInterface */
     protected $adapter;

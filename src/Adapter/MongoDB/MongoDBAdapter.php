@@ -29,7 +29,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class MongoDBAdapter extends AbstractAdapter
 {
-    const SORT_MAP = [
+    public const SORT_MAP = [
         DataTable::SORT_ASCENDING => 1,
         DataTable::SORT_DESCENDING => -1,
     ];

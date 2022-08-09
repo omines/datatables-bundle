@@ -65,7 +65,7 @@ class DoctrineTest extends TestCase
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('doctrine/doctrine-bundle');
 
-        (new ORMAdapter());
+        new ORMAdapter();
     }
 
     public function testInvalidQueryProcessorThrows()

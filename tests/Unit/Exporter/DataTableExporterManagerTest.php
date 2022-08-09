@@ -32,12 +32,12 @@ class DataTableExporterManagerTest extends TestCase
         $exporterCollectionMock = $this->createMock(DataTableExporterCollection::class);
 
         static::expectException(InvalidArgumentException::class);
-        (new DataTableExporterManager($exporterCollectionMock, null));
+        new DataTableExporterManager($exporterCollectionMock, null);
 
         static::expectException(InvalidArgumentException::class);
-        (new DataTableExporterManager($exporterCollectionMock, $this->createMock(DataCollectorTranslator::class)));
+        new DataTableExporterManager($exporterCollectionMock, $this->createMock(DataCollectorTranslator::class));
 
-        static::assertInstanceOf(DataTableExporterManager::class, (new DataTableExporterManager($exporterCollectionMock, $this->createMock(TranslatorInterface::class))));
-        static::assertInstanceOf(DataTableExporterManager::class, (new DataTableExporterManager($exporterCollectionMock, $this->createMock(LegacyTranslatorInterface::class))));
+        static::assertInstanceOf(DataTableExporterManager::class, new DataTableExporterManager($exporterCollectionMock, $this->createMock(TranslatorInterface::class)));
+        static::assertInstanceOf(DataTableExporterManager::class, new DataTableExporterManager($exporterCollectionMock, $this->createMock(LegacyTranslatorInterface::class)));
     }
 }

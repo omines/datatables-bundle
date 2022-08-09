@@ -17,7 +17,6 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use Doctrine\Persistence\ObjectManager;
 use Omines\DataTablesBundle\Adapter\AbstractAdapter;
 use Omines\DataTablesBundle\Adapter\AdapterQuery;
 use Omines\DataTablesBundle\Adapter\Doctrine\Event\ORMAdapterQueryEvent;

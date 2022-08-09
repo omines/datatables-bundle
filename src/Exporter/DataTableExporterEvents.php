@@ -28,5 +28,5 @@ final class DataTableExporterEvents
      *
      * @Event("Omines\DataTablesBundle\Exporter\Event\DataTableExporterResponseEvent")
      */
-    const PRE_RESPONSE = 'omines_datatables.exporter.pre_response';
+    public const PRE_RESPONSE = 'omines_datatables.exporter.pre_response';
 }
