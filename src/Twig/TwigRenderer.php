@@ -24,14 +24,9 @@ use Twig\Environment;
  */
 class TwigRenderer implements DataTableRendererInterface
 {
-    /** @var Twig_Environment */
+    /** @var Environment */
     private $twig;
 
-    /**
-     * DataTableRenderer constructor.
-     *
-     * @param Environment $twig
-     */
     public function __construct(Environment $twig = null)
     {
         if (null === ($this->twig = $twig)) {

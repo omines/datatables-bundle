@@ -176,10 +176,7 @@ class DataTable
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function createAdapter(string $adapter, array $options = []): self
+    public function createAdapter(string $adapter, array $options = []): static
     {
         return $this->setAdapter($this->instantiator->getAdapter($adapter), $options);
     }
@@ -355,15 +352,12 @@ class DataTable
      * @param $name
      * @return mixed|null
      */
-    public function getOption($name)
+    public function getOption($name): mixed
     {
         return $this->options[$name] ?? null;
     }
 
-    /**
-     * @return DataTable
-     */
-    public function setAdapter(AdapterInterface $adapter, array $options = null): self
+    public function setAdapter(AdapterInterface $adapter, array $options = null): static
     {
         if (null !== $options) {
             $adapter->configure($options);

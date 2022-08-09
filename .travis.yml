@@ -15,7 +15,6 @@ env:
     - SYMFONY_VERSION=""
 
 php:
-  - 7.4
   - 8.0
   - 8.1
 
@@ -34,11 +33,11 @@ matrix:
      - php: nightly
        env: COMPOSER_FLAGS="--ignore-platform-reqs"
      # normal build
-     - php: 7.4
+     - php: 8.0
        env:
          - COMPOSER_FLAGS="--prefer-lowest"
          - SYMFONY_DEPRECATIONS_HELPER=weak
-     - php: 7.4
+     - php: 8.0
        env:
          - SYMFONY_VERSION=^5.4
          - SYMFONY_DEPRECATIONS_HELPER=weak
@@ -57,6 +56,7 @@ before_script:
   - set -eo pipefail
   - pecl install -f mongodb-stable
   - composer update --prefer-dist --no-interaction --optimize-autoloader --no-progress $COMPOSER_FLAGS
+  - vendor/bin/phpstan analyse src -l2
 
 script:
   - if [[ "$ENABLE_CODE_COVERAGE" == "yes" ]]; then XDEBUG_MODE=coverage vendor/bin/simple-phpunit -v --coverage-text --coverage-clover=coverage.clover; else vendor/bin/simple-phpunit; fi;

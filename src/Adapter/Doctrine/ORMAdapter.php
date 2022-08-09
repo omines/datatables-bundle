@@ -13,9 +13,11 @@ declare(strict_types=1);
 namespace Omines\DataTablesBundle\Adapter\Doctrine;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectManager;
 use Omines\DataTablesBundle\Adapter\AbstractAdapter;
 use Omines\DataTablesBundle\Adapter\AdapterQuery;
 use Omines\DataTablesBundle\Adapter\Doctrine\Event\ORMAdapterQueryEvent;
@@ -43,7 +45,7 @@ class ORMAdapter extends AbstractAdapter
     /** @var EntityManager */
     protected $manager;
 
-    /** @var \Doctrine\ORM\Mapping\ClassMetadata */
+    /** @var ClassMetadata */
     protected $metadata;
 
     /** @var int */
