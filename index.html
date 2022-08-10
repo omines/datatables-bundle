@@ -42,7 +42,7 @@
 .highlight .cs {
   color: #75715e;
 }
-.highlight .c, .highlight .cd {
+.highlight .c, .highlight .ch, .highlight .cd, .highlight .cpf {
   color: #75715e;
 }
 .highlight .err {
@@ -126,7 +126,7 @@
 .highlight .s1 {
   color: #e6db74;
 }
-.highlight .s {
+.highlight .s, .highlight .sa, .highlight .dl {
   color: #e6db74;
 }
 .highlight .na {
@@ -141,41 +141,52 @@
 .highlight .ne {
   color: #a6e22e;
 }
-.highlight .nf {
+.highlight .nf, .highlight .fm {
   color: #a6e22e;
 }
 .highlight .vc {
   color: #ffffff;
+  background-color: #272822;
 }
 .highlight .nn {
   color: #ffffff;
+  background-color: #272822;
 }
 .highlight .nl {
   color: #ffffff;
+  background-color: #272822;
 }
 .highlight .ni {
   color: #ffffff;
+  background-color: #272822;
 }
 .highlight .bp {
   color: #ffffff;
+  background-color: #272822;
 }
 .highlight .vg {
   color: #ffffff;
+  background-color: #272822;
 }
 .highlight .vi {
   color: #ffffff;
+  background-color: #272822;
 }
-.highlight .nv {
+.highlight .nv, .highlight .vm {
   color: #ffffff;
+  background-color: #272822;
 }
 .highlight .w {
   color: #ffffff;
+  background-color: #272822;
 }
 .highlight {
   color: #ffffff;
+  background-color: #272822;
 }
 .highlight .n, .highlight .py, .highlight .nx {
   color: #ffffff;
+  background-color: #272822;
 }
 .highlight .ow {
   color: #f92672;
@@ -196,8 +207,8 @@
   color: #f92672;
 }
     </style>
-    <link href="stylesheets/screen-a1ce949a.css" rel="stylesheet" media="screen" />
-    <link href="stylesheets/print-bccf8c07.css" rel="stylesheet" media="print" />
+    <link href="stylesheets/screen-bcd3675c.css" rel="stylesheet" media="screen" />
+    <link href="stylesheets/print-c427a123.css" rel="stylesheet" media="print" />
       <script src="javascripts/all-c5541673.js"></script>
   </head>
 
@@ -205,11 +216,11 @@
     <a href="#" id="nav-button">
       <span>
         NAV
-        <img src="images/navbar-cad8cdcb.png" alt="Navbar" />
+        <img src="images/navbar-cad8cdcb.png" alt="" />
       </span>
     </a>
     <div class="toc-wrapper">
-      <img src="images/logo-1e815a84.png" class="logo" alt="Logo" />
+      <img src="images/logo-1e815a84.png" class="logo" alt="" />
         <div class="search">
           <input type="text" class="search" id="input-search" placeholder="Search">
         </div>
@@ -287,6 +298,9 @@
                     <a href="#twigcolumn" class="toc-h2 toc-link" data-title="TwigColumn">TwigColumn</a>
                   </li>
                   <li>
+                    <a href="#twigstringcolumn" class="toc-h2 toc-link" data-title="TwigStringColumn">TwigStringColumn</a>
+                  </li>
+                  <li>
                     <a href="#implementing-custom-columns" class="toc-h2 toc-link" data-title="Implementing custom columns">Implementing custom columns</a>
                   </li>
               </ul>
@@ -296,6 +310,20 @@
           </li>
           <li>
             <a href="#javascript" class="toc-h1 toc-link" data-title="Javascript">Javascript</a>
+          </li>
+          <li>
+            <a href="#exporting-data" class="toc-h1 toc-link" data-title="Exporting Data">Exporting Data</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#prerequisites" class="toc-h2 toc-link" data-title="Prerequisites">Prerequisites</a>
+                  </li>
+                  <li>
+                    <a href="#examples" class="toc-h2 toc-link" data-title="Examples">Examples</a>
+                  </li>
+                  <li>
+                    <a href="#custom-exporters" class="toc-h2 toc-link" data-title="Custom Exporters">Custom Exporters</a>
+                  </li>
+              </ul>
           </li>
           <li>
             <a href="#legal" class="toc-h1 toc-link" data-title="Legal">Legal</a>
@@ -313,7 +341,7 @@
       <div class="content">
         <h1 id='introduction'>Introduction</h1>
 <p>This bundle provides convenient integration of the popular <a href="https://datatables.net/">DataTables</a> jQuery library
-for realtime AJAX tables in your Symfony 3.3+ or 4.0+ application.</p>
+for realtime AJAX tables in your Symfony 4.1+ application.</p>
 
 <p>Designed to be fully pluggable there are no limits to the data sources you can display through this library, nor
 are there any bounds on how they are displayed. In full <em>&#39;batteries included but replaceable&#39;</em> philosophy there are
@@ -323,15 +351,15 @@ ready made adapters for common use cases like Doctrine ORM, but they are trivial
 
 <p><code>composer require omines/datatables-bundle</code></p>
 
-<p>Please ensure you are using Symfony 3.3 or later. If you are using Symfony Flex a recipe is included in the contrib
+<p>Please ensure you are using Symfony 4.1 or later. If you are using Symfony Flex a recipe is included in the contrib
 repository, providing automatic installation and configuration.</p>
-<pre class="highlight php"><code><span class="k">public</span> <span class="k">function</span> <span class="nf">registerBundles</span><span class="p">()</span>
+<div class="highlight"><pre class="highlight php"><code><span class="k">public</span> <span class="k">function</span> <span class="n">registerBundles</span><span class="p">()</span>
 <span class="p">{</span>
-    <span class="c1">// After Symfony's own bundles 
-</span>    <span class="k">new</span> <span class="nx">\Omines\DataTablesBundle\DataTablesBundle</span><span class="p">(),</span>
-    <span class="c1">// Before your application bundles
-</span><span class="p">}</span>
-</code></pre>
+    <span class="c1">// After Symfony's own bundles </span>
+    <span class="k">new</span> <span class="err">\</span><span class="nf">Omines\DataTablesBundle\DataTablesBundle</span><span class="p">(),</span>
+    <span class="c1">// Before your application bundles</span>
+<span class="p">}</span>
+</code></pre></div>
 <p>After installation, if not using Flex, you should register the bundle to your kernel, commonly <code>AppKernel.php</code>,
 before your own bundles but after the required external bundles, such as <code>FrameworkBundle</code> and <code>TwigBundle</code>.</p>
 
@@ -340,43 +368,43 @@ before your own bundles but after the required external bundles, such as <code>F
 <p><code>bin/console assets:install</code></p>
 
 <p>That last step is optional, as you can also load it through Assetic or WebPack, but a good starting point.</p>
-<h2 id='clientside-dependencies'>Clientside dependencies</h2><pre class="highlight html tab-html"><code><span class="c">&lt;!-- in the &lt;head&gt; section --&gt;</span>
+<h2 id='clientside-dependencies'>Clientside dependencies</h2><div class="highlight"><pre class="highlight html tab-html"><code><span class="c">&lt;!-- in the &lt;head&gt; section --&gt;</span>
 <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">type=</span><span class="s">"text/css"</span> <span class="na">href=</span><span class="s">"https://cdn.datatables.net/v/dt/jq-3.2.1/dt-1.10.16/datatables.min.css"</span><span class="nt">/&gt;</span>
 
 <span class="c">&lt;!-- before the closing &lt;body&gt; tag --&gt;</span>
 <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"https://cdn.datatables.net/v/dt/jq-3.2.1/dt-1.10.16/datatables.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
-</code></pre>
+</code></pre></div>
 <p>All serverside dependencies are managed by Composer. Clientside dependencies are left up the implementer to decide
 how to include which DataTables dependencies. As long are you are using a fairly up to date version of DataTables you
 should be fine, as the bundle does not use exotic features or depend on plugins.</p>
 
 <p>The code snippets here should get you started quickly, including jQuery 3. For more extensive download options visit
 <a href="https://datatables.net/download/">https://datatables.net/download/</a>.</p>
-<h1 id='quickstart'>Quickstart</h1><pre class="highlight php"><code><span class="k">use</span> <span class="nx">Omines\DataTablesBundle\Adapter\ArrayAdapter</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Omines\DataTablesBundle\Column\TextColumn</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Omines\DataTablesBundle\DataTableFactory</span><span class="p">;</span>
+<h1 id='quickstart'>Quickstart</h1><div class="highlight"><pre class="highlight php"><code><span class="kn">use</span> <span class="nc">Omines\DataTablesBundle\Adapter\ArrayAdapter</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Omines\DataTablesBundle\Column\TextColumn</span><span class="p">;</span>
+<span class="kn">use</span> <span class="nc">Omines\DataTablesBundle\DataTableFactory</span><span class="p">;</span>
 
-<span class="k">class</span> <span class="nc">MyController</span> <span class="k">extends</span> <span class="nx">Controller</span>
+<span class="kd">class</span> <span class="nc">MyController</span> <span class="kd">extends</span> <span class="nc">Controller</span>
 <span class="p">{</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">showAction</span><span class="p">(</span><span class="nx">Request</span> <span class="nv">$request</span><span class="p">,</span> <span class="nx">DataTableFactory</span> <span class="nv">$dataTableFactory</span><span class="p">)</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="n">showAction</span><span class="p">(</span><span class="kt">Request</span> <span class="nv">$request</span><span class="p">,</span> <span class="kt">DataTableFactory</span> <span class="nv">$dataTableFactory</span><span class="p">)</span>
     <span class="p">{</span>
-        <span class="nv">$table</span> <span class="o">=</span> <span class="nv">$dataTableFactory</span><span class="o">-&gt;</span><span class="na">create</span><span class="p">()</span>
-            <span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">'firstName'</span><span class="p">,</span> <span class="nx">TextColumn</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
-            <span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">'lastName'</span><span class="p">,</span> <span class="nx">TextColumn</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
-            <span class="o">-&gt;</span><span class="na">createAdapter</span><span class="p">(</span><span class="nx">ArrayAdapter</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span>
+        <span class="nv">$table</span> <span class="o">=</span> <span class="nv">$dataTableFactory</span><span class="o">-&gt;</span><span class="nf">create</span><span class="p">()</span>
+            <span class="o">-&gt;</span><span class="nf">add</span><span class="p">(</span><span class="s1">'firstName'</span><span class="p">,</span> <span class="nc">TextColumn</span><span class="o">::</span><span class="n">class</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="nf">add</span><span class="p">(</span><span class="s1">'lastName'</span><span class="p">,</span> <span class="nc">TextColumn</span><span class="o">::</span><span class="n">class</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="nf">createAdapter</span><span class="p">(</span><span class="nc">ArrayAdapter</span><span class="o">::</span><span class="n">class</span><span class="p">,</span> <span class="p">[</span>
                 <span class="p">[</span><span class="s1">'firstName'</span> <span class="o">=&gt;</span> <span class="s1">'Donald'</span><span class="p">,</span> <span class="s1">'lastName'</span> <span class="o">=&gt;</span> <span class="s1">'Trump'</span><span class="p">],</span>
                 <span class="p">[</span><span class="s1">'firstName'</span> <span class="o">=&gt;</span> <span class="s1">'Barack'</span><span class="p">,</span> <span class="s1">'lastName'</span> <span class="o">=&gt;</span> <span class="s1">'Obama'</span><span class="p">],</span>
             <span class="p">])</span>
-            <span class="o">-&gt;</span><span class="na">handleRequest</span><span class="p">(</span><span class="nv">$request</span><span class="p">);</span>
+            <span class="o">-&gt;</span><span class="nf">handleRequest</span><span class="p">(</span><span class="nv">$request</span><span class="p">);</span>
 
-        <span class="k">if</span> <span class="p">(</span><span class="nv">$table</span><span class="o">-&gt;</span><span class="na">isCallback</span><span class="p">())</span> <span class="p">{</span>
-            <span class="k">return</span> <span class="nv">$table</span><span class="o">-&gt;</span><span class="na">getResponse</span><span class="p">();</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nv">$table</span><span class="o">-&gt;</span><span class="nf">isCallback</span><span class="p">())</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nv">$table</span><span class="o">-&gt;</span><span class="nf">getResponse</span><span class="p">();</span>
         <span class="p">}</span>
 
-        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">render</span><span class="p">(</span><span class="s1">'list.html.twig'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'datatable'</span> <span class="o">=&gt;</span> <span class="nv">$table</span><span class="p">]);</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">render</span><span class="p">(</span><span class="s1">'list.html.twig'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'datatable'</span> <span class="o">=&gt;</span> <span class="nv">$table</span><span class="p">]);</span>
     <span class="p">}</span>
 <span class="p">}</span>
-</code></pre>
+</code></pre></div>
 <p>This trivial bit of code in your controller prepares a fully functional DataTables instance for use.</p>
 
 <p>The <code>DataTableFactory</code> service is injected to expose convenience methods in your controller
@@ -393,17 +421,17 @@ otherwise we render a template with the table provided as a parameter.</p>
 <p>Previous versions of this bundle offered a <code>DataTablesTrait</code> which assumed that the
 <code>DataTableFactory</code> class was available in the controller&#39;s <code>$container</code>. As this
 is deprecated in current versions of Symfony you should use dependency injection instead.</p>
-<h2 id='frontend-code'>Frontend code</h2><pre class="highlight html tab-html"><code><span class="c">&lt;!-- Insert this where you want the table to appear --&gt;</span>
+<h2 id='frontend-code'>Frontend code</h2><div class="highlight"><pre class="highlight html tab-html"><code><span class="c">&lt;!-- Insert this where you want the table to appear --&gt;</span>
 <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"presidents"</span><span class="nt">&gt;</span>Loading...<span class="nt">&lt;/div&gt;</span>
 
 <span class="c">&lt;!-- Insert this at the end of your body element, but before the closing tag --&gt;</span>
 <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"{{ asset('bundles/datatables/js/datatables.js') }}"</span><span class="nt">&gt;&lt;/script&gt;</span>
 <span class="nt">&lt;script&gt;</span>
 <span class="nx">$</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">$</span><span class="p">(</span><span class="s1">'#presidents'</span><span class="p">).</span><span class="nx">initDataTables</span><span class="p">({{</span> <span class="nx">datatable_settings</span><span class="p">(</span><span class="nx">datatable</span><span class="p">)</span> <span class="p">}});</span>
+    <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">#presidents</span><span class="dl">'</span><span class="p">).</span><span class="nx">initDataTables</span><span class="p">({{</span> <span class="nx">datatable_settings</span><span class="p">(</span><span class="nx">datatable</span><span class="p">)</span> <span class="p">}});</span>
 <span class="p">});</span>
 <span class="nt">&lt;/script&gt;</span>
-</code></pre>
+</code></pre></div>
 <p>In your Twig template, <code>list.html.twig</code> in the example, we need to ensure the HTML has a container element
 ready to contain the table. During load its contents will be erased, so you can put a loading indicator in
 there like we did here.</p>
@@ -413,10 +441,10 @@ selection of the container element. The <code>datatable_settings</code> Twig fun
 string with the configured settings required for initialization.</p>
 
 <p>And that&#39;s it, the library will take it from here and your table will be shown on your webpage!</p>
-<h1 id='configuration'>Configuration</h1><pre class="highlight yaml tab-yaml"><code><span class="na">datatables</span><span class="pi">:</span>
+<h1 id='configuration'>Configuration</h1><div class="highlight"><pre class="highlight yaml tab-yaml"><code><span class="na">datatables</span><span class="pi">:</span>
 
     <span class="c1"># Load i18n data from DataTables CDN or locally</span>
-    <span class="na">language_from_cdn</span><span class="pi">:</span>    <span class="s">true</span>
+    <span class="na">language_from_cdn</span><span class="pi">:</span>    <span class="no">true</span>
 
     <span class="c1"># Default HTTP method to be used for callbacks</span>
     <span class="na">method</span><span class="pi">:</span>               <span class="s">POST</span> <span class="c1"># One of "GET"; "POST"</span>
@@ -441,11 +469,11 @@ string with the configured settings required for initialization.</p>
         <span class="na">className</span><span class="pi">:</span>        <span class="s1">'</span><span class="s">table</span><span class="nv"> </span><span class="s">table-bordered'</span>
 
         <span class="c1"># If and where to enable the DataTables Filter module</span>
-        <span class="na">columnFilter</span><span class="pi">:</span>     <span class="s">null</span> <span class="c1"># One of "thead"; "tfoot"; "both"; null</span>
+        <span class="na">columnFilter</span><span class="pi">:</span>     <span class="no">null</span> <span class="c1"># One of "thead"; "tfoot"; "both"; null</span>
 
     <span class="c1"># Default translation domain to be used</span>
     <span class="na">translation_domain</span><span class="pi">:</span>   <span class="s">messages</span>
-</code></pre>
+</code></pre></div>
 <p>Global configuration of the bundle is done in your Symfony config file. The default configuration is shown here,
 and should be fine in most cases. Most settings can be overridden per table, but for most applications
 you will want to make changes at the global level so they are applied everywhere, providing a uniform
@@ -504,10 +532,6 @@ ie. <code>setLanguageFromCDN(bool)</code>.</p>
 <a href="https://datatables.net/reference/option/">external documentation</a> below for details on individual
 options. Only options which are meaningful to be defined serverside can be set at this level, so
 setting callbacks and events is not possible. These are however easily set on the Javascript end.</p>
-
-<p> e.g: to enable search field in the datatables, you should add <code>dom: "<'row' <'col-sm-12' ftr>><'row' <'col-sm-6'l>
-    <'col-sm-6 text-right'pi>>"</code> to the <code>config/packages/datatables.yaml</code> file under <code>options</code> indentation, than add <code>{searching: true}</code> to the front side, to make it look like <code>$('#presidents').initDataTables({{ datatable_settings(datatable) }},{searching: true});</code></p>
-
 <h2 id='table-configuration'>Table configuration</h2>
 <p>Configuring a specific table is done mainly via the methods on <code>DataTable</code>. The most common call
 is <code>add</code> to add an extra column to the table as seen in all the examples. More utility methods
@@ -524,16 +548,16 @@ Popular implementations for common data sources are provided, and more are welco
 and sorting criteria, and returns a result set with metadata on record counts.</p>
 
 <p>Ready-made adapters are supplied for easy integration with various data sources.</p>
-<h2 id='doctrine-orm'>Doctrine ORM</h2><pre class="highlight php"><code><span class="k">use</span> <span class="nx">Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter</span><span class="p">;</span>
+<h2 id='doctrine-orm'>Doctrine ORM</h2><div class="highlight"><pre class="highlight php"><code><span class="kn">use</span> <span class="nc">Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter</span><span class="p">;</span>
 
-<span class="nv">$table</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">createDataTable</span><span class="p">()</span>
-    <span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">'firstName'</span><span class="p">,</span> <span class="nx">TextColumn</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
-    <span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">'lastName'</span><span class="p">,</span> <span class="nx">TextColumn</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
-    <span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">'company'</span><span class="p">,</span> <span class="nx">TextColumn</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span><span class="s1">'field'</span> <span class="o">=&gt;</span> <span class="s1">'company.name'</span><span class="p">])</span>
-    <span class="o">-&gt;</span><span class="na">createAdapter</span><span class="p">(</span><span class="nx">ORMAdapter</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span>
-        <span class="s1">'entity'</span> <span class="o">=&gt;</span> <span class="nx">Employee</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+<span class="nv">$table</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">createDataTable</span><span class="p">()</span>
+    <span class="o">-&gt;</span><span class="nf">add</span><span class="p">(</span><span class="s1">'firstName'</span><span class="p">,</span> <span class="nc">TextColumn</span><span class="o">::</span><span class="n">class</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="nf">add</span><span class="p">(</span><span class="s1">'lastName'</span><span class="p">,</span> <span class="nc">TextColumn</span><span class="o">::</span><span class="n">class</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="nf">add</span><span class="p">(</span><span class="s1">'company'</span><span class="p">,</span> <span class="nc">TextColumn</span><span class="o">::</span><span class="n">class</span><span class="p">,</span> <span class="p">[</span><span class="s1">'field'</span> <span class="o">=&gt;</span> <span class="s1">'company.name'</span><span class="p">])</span>
+    <span class="o">-&gt;</span><span class="nf">createAdapter</span><span class="p">(</span><span class="nc">ORMAdapter</span><span class="o">::</span><span class="n">class</span><span class="p">,</span> <span class="p">[</span>
+        <span class="s1">'entity'</span> <span class="o">=&gt;</span> <span class="nc">Employee</span><span class="o">::</span><span class="n">class</span><span class="p">,</span>
     <span class="p">]);</span>
-</code></pre>
+</code></pre></div>
 <p>If you have installed <code>doctrine/orm</code> and <code>doctrine/doctrine-bundle</code> you can use the provided <code>ORMAdapter</code>.
 Assume a simple <code>Employee</code> table with some basic fields and a ManyToOne relationship to <code>Company</code> for
 these examples.</p>
@@ -551,18 +575,18 @@ apply global search to all mapped fields.</p>
 <p>Of course, all of this is just convenient default. For more complex scenarios you can supply your own query
 builders and criteria providers, and even chain them together to easily implement multiple slightly different
 tables in your site.</p>
-<h3 id='customizing-queries'>Customizing queries</h3><pre class="highlight php"><code><span class="nv">$table</span><span class="o">-&gt;</span><span class="na">createAdapter</span><span class="p">(</span><span class="nx">ORMAdapter</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span>
-    <span class="s1">'entity'</span> <span class="o">=&gt;</span> <span class="nx">Employee</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
-    <span class="s1">'query'</span> <span class="o">=&gt;</span> <span class="k">function</span> <span class="p">(</span><span class="nx">QueryBuilder</span> <span class="nv">$builder</span><span class="p">)</span> <span class="p">{</span>
+<h3 id='customizing-queries'>Customizing queries</h3><div class="highlight"><pre class="highlight php"><code><span class="nv">$table</span><span class="o">-&gt;</span><span class="nf">createAdapter</span><span class="p">(</span><span class="nc">ORMAdapter</span><span class="o">::</span><span class="n">class</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">'entity'</span> <span class="o">=&gt;</span> <span class="nc">Employee</span><span class="o">::</span><span class="n">class</span><span class="p">,</span>
+    <span class="s1">'query'</span> <span class="o">=&gt;</span> <span class="k">function</span> <span class="p">(</span><span class="kt">QueryBuilder</span> <span class="nv">$builder</span><span class="p">)</span> <span class="p">{</span>
         <span class="nv">$builder</span>
-            <span class="o">-&gt;</span><span class="na">select</span><span class="p">(</span><span class="s1">'e'</span><span class="p">)</span>
-            <span class="o">-&gt;</span><span class="na">addSelect</span><span class="p">(</span><span class="s1">'c'</span><span class="p">)</span>
-            <span class="o">-&gt;</span><span class="na">from</span><span class="p">(</span><span class="nx">Employee</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="s1">'e'</span><span class="p">)</span>
-            <span class="o">-&gt;</span><span class="na">leftJoin</span><span class="p">(</span><span class="s1">'e.company'</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="nf">select</span><span class="p">(</span><span class="s1">'e'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="nf">addSelect</span><span class="p">(</span><span class="s1">'c'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="nf">from</span><span class="p">(</span><span class="nc">Employee</span><span class="o">::</span><span class="n">class</span><span class="p">,</span> <span class="s1">'e'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="nf">leftJoin</span><span class="p">(</span><span class="s1">'e.company'</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">)</span>
         <span class="p">;</span>
     <span class="p">},</span>
 <span class="p">]);</span>       
-</code></pre>
+</code></pre></div>
 <p>If you do not specify the <code>query</code> option the stock <code>AutomaticQueryBuilder</code> is used, which automatically
 joins the main entity to its relationships recursively to select <em>only</em> the fields defined by the columns.
 This works fine in many cases, in others you may need to customize the query.</p>
@@ -574,16 +598,16 @@ callables taking a single <code>QueryBuilder</code> as a parameter, or a (anonym
 <p>In general it is recommended to implement your own query processor completely when you need custom
 behavior. Chaining on the default <code>AutomaticQueryBuilder</code> is possible, but may cause unexpected
 interaction based on internal changes in this bundle and/or Doctrine ORM. </p>
-<h3 id='customizing-criteria'>Customizing criteria</h3><pre class="highlight php"><code><span class="nv">$table</span><span class="o">-&gt;</span><span class="na">createAdapter</span><span class="p">(</span><span class="nx">ORMAdapter</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span>
-    <span class="s1">'entity'</span> <span class="o">=&gt;</span> <span class="nx">Employee</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
-    <span class="s1">'criteria'</span> <span class="o">=&gt;</span> <span class="p">[</span>
-        <span class="k">function</span> <span class="p">(</span><span class="nx">QueryBuilder</span> <span class="nv">$builder</span><span class="p">)</span> <span class="p">{</span>
-            <span class="nv">$builder</span><span class="o">-&gt;</span><span class="na">andWhere</span><span class="p">(</span><span class="nv">$builder</span><span class="o">-&gt;</span><span class="na">expr</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">like</span><span class="p">(</span><span class="s1">'c.name'</span><span class="p">,</span> <span class="s1">':test'</span><span class="p">))</span><span class="o">-&gt;</span><span class="na">setParameter</span><span class="p">(</span><span class="s1">'test'</span><span class="p">,</span> <span class="s1">'%ny 2%'</span><span class="p">);</span>
+<h3 id='customizing-criteria'>Customizing criteria</h3><div class="highlight"><pre class="highlight php"><code><span class="nv">$table</span><span class="o">-&gt;</span><span class="nf">createAdapter</span><span class="p">(</span><span class="nc">ORMAdapter</span><span class="o">::</span><span class="n">class</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">'entity'</span> <span class="o">=&gt;</span> <span class="nc">Employee</span><span class="o">::</span><span class="n">class</span><span class="p">,</span>
+    <span class="s1">'query'</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="k">function</span> <span class="p">(</span><span class="kt">QueryBuilder</span> <span class="nv">$builder</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nv">$builder</span><span class="o">-&gt;</span><span class="nf">andWhere</span><span class="p">(</span><span class="nv">$builder</span><span class="o">-&gt;</span><span class="nf">expr</span><span class="p">()</span><span class="o">-&gt;</span><span class="nf">like</span><span class="p">(</span><span class="s1">'c.name'</span><span class="p">,</span> <span class="s1">':test'</span><span class="p">))</span><span class="o">-&gt;</span><span class="nf">setParameter</span><span class="p">(</span><span class="s1">'test'</span><span class="p">,</span> <span class="s1">'%ny 2%'</span><span class="p">);</span>
         <span class="p">},</span>
-        <span class="k">new</span> <span class="nx">SearchCriteriaProvider</span><span class="p">(),</span>
+        <span class="k">new</span> <span class="nc">SearchCriteriaProvider</span><span class="p">(),</span>
     <span class="p">],</span>
 <span class="p">]);</span>
-</code></pre>
+</code></pre></div>
 <p>Analogous to queries you can separately define the criteria processors applied to table queries. The
 <code>criteria</code> property also takes a single instance or an array, with the separate processors either
 implementing <code>QueryBuilderProcessorInterface</code>, or being a callback returning a <code>Criteria</code> object as
@@ -592,50 +616,50 @@ in this example.</p>
 <p>Note that implementing your own criteria overrides the default, meaning searching and sorting will no
 longer work automatically. Add the <code>SearchCriteriaProvider</code> manually to combine the default behavior
 with your own implementation.</p>
-<h3 id='events'>Events</h3><pre class="highlight php"><code><span class="nv">$table</span><span class="o">-&gt;</span><span class="na">createAdapter</span><span class="p">(</span><span class="nx">ORMAdapter</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span>
-    <span class="s1">'entity'</span> <span class="o">=&gt;</span> <span class="nx">Employee</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
-    <span class="s1">'query'</span> <span class="o">=&gt;</span> <span class="k">function</span> <span class="p">(</span><span class="nx">QueryBuilder</span> <span class="nv">$builder</span><span class="p">)</span> <span class="p">{</span>
+<h3 id='events'>Events</h3><div class="highlight"><pre class="highlight php"><code><span class="nv">$table</span><span class="o">-&gt;</span><span class="nf">createAdapter</span><span class="p">(</span><span class="nc">ORMAdapter</span><span class="o">::</span><span class="n">class</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">'entity'</span> <span class="o">=&gt;</span> <span class="nc">Employee</span><span class="o">::</span><span class="n">class</span><span class="p">,</span>
+    <span class="s1">'query'</span> <span class="o">=&gt;</span> <span class="k">function</span> <span class="p">(</span><span class="kt">QueryBuilder</span> <span class="nv">$builder</span><span class="p">)</span> <span class="p">{</span>
         <span class="nv">$builder</span>
-            <span class="o">-&gt;</span><span class="na">select</span><span class="p">(</span><span class="s1">'e'</span><span class="p">)</span>
-            <span class="o">-&gt;</span><span class="na">addSelect</span><span class="p">(</span><span class="s1">'c'</span><span class="p">)</span>
-            <span class="o">-&gt;</span><span class="na">from</span><span class="p">(</span><span class="nx">Employee</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="s1">'e'</span><span class="p">)</span>
-            <span class="o">-&gt;</span><span class="na">leftJoin</span><span class="p">(</span><span class="s1">'e.company'</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="nf">select</span><span class="p">(</span><span class="s1">'e'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="nf">addSelect</span><span class="p">(</span><span class="s1">'c'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="nf">from</span><span class="p">(</span><span class="nc">Employee</span><span class="o">::</span><span class="n">class</span><span class="p">,</span> <span class="s1">'e'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="nf">leftJoin</span><span class="p">(</span><span class="s1">'e.company'</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">)</span>
         <span class="p">;</span>
     <span class="p">},</span>
 <span class="p">]);</span>
 
-<span class="nv">$table</span><span class="o">-&gt;</span><span class="na">addEventListener</span><span class="p">(</span><span class="nx">ORMAdapterEvents</span><span class="o">::</span><span class="na">PRE_QUERY</span><span class="p">,</span> <span class="k">function</span><span class="p">(</span><span class="nx">ORMAdapterQueryEvent</span> <span class="nv">$event</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nv">$event</span><span class="o">-&gt;</span><span class="na">getQuery</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">useResultCache</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">useQueryCache</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="nv">$table</span><span class="o">-&gt;</span><span class="nf">addEventListener</span><span class="p">(</span><span class="nc">ORMAdapterEvents</span><span class="o">::</span><span class="no">PRE_QUERY</span><span class="p">,</span> <span class="k">function</span><span class="p">(</span><span class="kt">ORMAdapterQueryEvent</span> <span class="nv">$event</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nv">$event</span><span class="o">-&gt;</span><span class="nf">getQuery</span><span class="p">()</span><span class="o">-&gt;</span><span class="nf">useResultCache</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span><span class="o">-&gt;</span><span class="nf">useQueryCache</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
 <span class="p">});</span>
-</code></pre>
+</code></pre></div>
 <p>The <code>PRE_QUERY</code> event is dispatched after the QueryBuilder built the Query
 and before the iteration starts. It can be useful to configure the cache.</p>
-<h2 id='elastica'>Elastica</h2><pre class="highlight php"><code><span class="k">use</span> <span class="nx">Omines\DataTablesBundle\Adapter\Elasticsearch\ElasticaAdapter</span><span class="p">;</span>
+<h2 id='elastica'>Elastica</h2><div class="highlight"><pre class="highlight php"><code><span class="kn">use</span> <span class="nc">Omines\DataTablesBundle\Adapter\Elasticsearch\ElasticaAdapter</span><span class="p">;</span>
 
-<span class="nv">$table</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">createDataTable</span><span class="p">()</span>
-    <span class="o">-&gt;</span><span class="na">setName</span><span class="p">(</span><span class="s1">'log'</span><span class="p">)</span>
-    <span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">'timestamp'</span><span class="p">,</span> <span class="nx">DateTimeColumn</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span><span class="s1">'field'</span> <span class="o">=&gt;</span> <span class="s1">'@timestamp'</span><span class="p">,</span> <span class="s1">'format'</span> <span class="o">=&gt;</span> <span class="s1">'Y-m-d H:i:s'</span><span class="p">,</span> <span class="s1">'orderable'</span> <span class="o">=&gt;</span> <span class="kc">true</span><span class="p">])</span>
-    <span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">'level'</span><span class="p">,</span> <span class="nx">MapColumn</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span>
+<span class="nv">$table</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">createDataTable</span><span class="p">()</span>
+    <span class="o">-&gt;</span><span class="nf">setName</span><span class="p">(</span><span class="s1">'log'</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="nf">add</span><span class="p">(</span><span class="s1">'timestamp'</span><span class="p">,</span> <span class="nc">DateTimeColumn</span><span class="o">::</span><span class="n">class</span><span class="p">,</span> <span class="p">[</span><span class="s1">'field'</span> <span class="o">=&gt;</span> <span class="s1">'@timestamp'</span><span class="p">,</span> <span class="s1">'format'</span> <span class="o">=&gt;</span> <span class="s1">'Y-m-d H:i:s'</span><span class="p">,</span> <span class="s1">'orderable'</span> <span class="o">=&gt;</span> <span class="kc">true</span><span class="p">])</span>
+    <span class="o">-&gt;</span><span class="nf">add</span><span class="p">(</span><span class="s1">'level'</span><span class="p">,</span> <span class="nc">MapColumn</span><span class="o">::</span><span class="n">class</span><span class="p">,</span> <span class="p">[</span>
         <span class="s1">'default'</span> <span class="o">=&gt;</span> <span class="s1">'&lt;span class="label label-default"&gt;Unknown&lt;/span&gt;'</span><span class="p">,</span>
         <span class="s1">'map'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'Emergency'</span><span class="p">,</span> <span class="s1">'Alert'</span><span class="p">,</span> <span class="s1">'Critical'</span><span class="p">,</span> <span class="s1">'Error'</span><span class="p">,</span> <span class="s1">'Warning'</span><span class="p">,</span> <span class="s1">'Notice'</span><span class="p">,</span> <span class="s1">'Info'</span><span class="p">,</span> <span class="s1">'Debug'</span><span class="p">],</span>
     <span class="p">])</span>
-    <span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">'message'</span><span class="p">,</span> <span class="nx">TextColumn</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span><span class="s1">'globalSearchable'</span> <span class="o">=&gt;</span> <span class="kc">true</span><span class="p">])</span>
-    <span class="o">-&gt;</span><span class="na">createAdapter</span><span class="p">(</span><span class="nx">ElasticaAdapter</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span>
+    <span class="o">-&gt;</span><span class="nf">add</span><span class="p">(</span><span class="s1">'message'</span><span class="p">,</span> <span class="nc">TextColumn</span><span class="o">::</span><span class="n">class</span><span class="p">,</span> <span class="p">[</span><span class="s1">'globalSearchable'</span> <span class="o">=&gt;</span> <span class="kc">true</span><span class="p">])</span>
+    <span class="o">-&gt;</span><span class="nf">createAdapter</span><span class="p">(</span><span class="nc">ElasticaAdapter</span><span class="o">::</span><span class="n">class</span><span class="p">,</span> <span class="p">[</span>
         <span class="s1">'client'</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'host'</span> <span class="o">=&gt;</span> <span class="s1">'elasticsearch'</span><span class="p">],</span>
         <span class="s1">'index'</span> <span class="o">=&gt;</span> <span class="s1">'logstash-*'</span><span class="p">,</span>
     <span class="p">]);</span>
-</code></pre>
+</code></pre></div>
 <p>If you have installed <code>ruflin/elastica</code> you can use the provided <code>ElasticaAdapter</code> to use ElasticSearch
 indexes as the data source.</p>
-<h2 id='mongodb'>MongoDB</h2><pre class="highlight php"><code><span class="k">use</span> <span class="nx">Omines\DataTablesBundle\Adapter\MongoDB\MongoDBAdapter</span><span class="p">;</span>
+<h2 id='mongodb'>MongoDB</h2><div class="highlight"><pre class="highlight php"><code><span class="kn">use</span> <span class="nc">Omines\DataTablesBundle\Adapter\MongoDB\MongoDBAdapter</span><span class="p">;</span>
 
-<span class="nv">$table</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">createDataTable</span><span class="p">()</span>
-    <span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">'name'</span><span class="p">,</span> <span class="nx">TextColumn</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
-    <span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">'company'</span><span class="p">,</span> <span class="nx">TextColumn</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
-    <span class="o">-&gt;</span><span class="na">createAdapter</span><span class="p">(</span><span class="nx">MongoDBAdapter</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span>
+<span class="nv">$table</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">createDataTable</span><span class="p">()</span>
+    <span class="o">-&gt;</span><span class="nf">add</span><span class="p">(</span><span class="s1">'name'</span><span class="p">,</span> <span class="nc">TextColumn</span><span class="o">::</span><span class="n">class</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="nf">add</span><span class="p">(</span><span class="s1">'company'</span><span class="p">,</span> <span class="nc">TextColumn</span><span class="o">::</span><span class="n">class</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="nf">createAdapter</span><span class="p">(</span><span class="nc">MongoDBAdapter</span><span class="o">::</span><span class="n">class</span><span class="p">,</span> <span class="p">[</span>
         <span class="s1">'collection'</span> <span class="o">=&gt;</span> <span class="s1">'myCollection'</span><span class="p">,</span>
     <span class="p">]);</span>
-</code></pre>
+</code></pre></div>
 <p>If you have installed <code>mongodb/mongodb</code> you can use the provided <code>MongoDBAdapter</code> to use MongoDB
 collections as the data source.</p>
 <h2 id='arrays'>Arrays</h2>
@@ -648,15 +672,15 @@ raw data into output ready for rendering in a DataTable.</p>
 
 <p>A number of standard columns are provided for common use cases, but you can easily add your own column
 types for application specific purposes.</p>
-<h3 id='common-options'>Common options</h3><pre class="highlight php"><code><span class="c1"># Some example columns
-</span><span class="nv">$table</span>
-    <span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">'firstName'</span><span class="p">,</span> <span class="nx">TextColumn</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span><span class="s1">'label'</span> <span class="o">=&gt;</span> <span class="s1">'customer.name'</span><span class="p">,</span> <span class="s1">'className'</span> <span class="o">=&gt;</span> <span class="s1">'bold'</span><span class="p">])</span>
-    <span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">'lastName'</span><span class="p">,</span> <span class="nx">TextColumn</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span><span class="s1">'render'</span> <span class="o">=&gt;</span> <span class="s1">'&lt;strong&gt;%s&lt;/strong&gt;'</span><span class="p">,</span> <span class="s1">'raw'</span> <span class="o">=&gt;</span> <span class="kc">true</span><span class="p">])</span>
-    <span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">'email'</span><span class="p">,</span> <span class="nx">TextColumn</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span><span class="s1">'render'</span> <span class="o">=&gt;</span> <span class="k">function</span><span class="p">(</span><span class="nv">$value</span><span class="p">,</span> <span class="nv">$context</span><span class="p">)</span> <span class="p">{</span>
+<h3 id='common-options'>Common options</h3><div class="highlight"><pre class="highlight php"><code><span class="c1"># Some example columns</span>
+<span class="nv">$table</span>
+    <span class="o">-&gt;</span><span class="nf">add</span><span class="p">(</span><span class="s1">'firstName'</span><span class="p">,</span> <span class="nc">TextColumn</span><span class="o">::</span><span class="n">class</span><span class="p">,</span> <span class="p">[</span><span class="s1">'label'</span> <span class="o">=&gt;</span> <span class="s1">'customer.name'</span><span class="p">,</span> <span class="s1">'className'</span> <span class="o">=&gt;</span> <span class="s1">'bold'</span><span class="p">])</span>
+    <span class="o">-&gt;</span><span class="nf">add</span><span class="p">(</span><span class="s1">'lastName'</span><span class="p">,</span> <span class="nc">TextColumn</span><span class="o">::</span><span class="n">class</span><span class="p">,</span> <span class="p">[</span><span class="s1">'render'</span> <span class="o">=&gt;</span> <span class="s1">'&lt;strong&gt;%s&lt;/strong&gt;'</span><span class="p">,</span> <span class="s1">'raw'</span> <span class="o">=&gt;</span> <span class="kc">true</span><span class="p">])</span>
+    <span class="o">-&gt;</span><span class="nf">add</span><span class="p">(</span><span class="s1">'email'</span><span class="p">,</span> <span class="nc">TextColumn</span><span class="o">::</span><span class="n">class</span><span class="p">,</span> <span class="p">[</span><span class="s1">'render'</span> <span class="o">=&gt;</span> <span class="k">function</span><span class="p">(</span><span class="nv">$value</span><span class="p">,</span> <span class="nv">$context</span><span class="p">)</span> <span class="p">{</span>
         <span class="k">return</span> <span class="nb">sprintf</span><span class="p">(</span><span class="s1">'&lt;a href="%s"&gt;%s&lt;/a&gt;'</span><span class="p">,</span> <span class="nv">$value</span><span class="p">,</span> <span class="nv">$value</span><span class="p">);</span>
-    <span class="p">})</span>
+    <span class="p">}])</span>
 <span class="p">;</span>
-</code></pre>
+</code></pre></div>
 <p>All column types have the following options:</p>
 
 <table><thead>
@@ -722,8 +746,8 @@ types for application specific purposes.</p>
 <td>Either a <a href="http://php.net/manual/en/function.sprintf.php"><code>sprintf</code> compatible format string</a>, or a callable function providing rendering conversion, or default <code>null</code>.</td>
 </tr>
 </tbody></table>
-<h2 id='textcolumn'>TextColumn</h2><pre class="highlight php"><code><span class="nv">$table</span><span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">'customerName'</span><span class="p">,</span> <span class="nx">TextColumn</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span><span class="s1">'field'</span> <span class="o">=&gt;</span> <span class="s1">'customer.name'</span><span class="p">]);</span>
-</code></pre>
+<h2 id='textcolumn'>TextColumn</h2><div class="highlight"><pre class="highlight php"><code><span class="nv">$table</span><span class="o">-&gt;</span><span class="nf">add</span><span class="p">(</span><span class="s1">'customerName'</span><span class="p">,</span> <span class="nc">TextColumn</span><span class="o">::</span><span class="n">class</span><span class="p">,</span> <span class="p">[</span><span class="s1">'field'</span> <span class="o">=&gt;</span> <span class="s1">'customer.name'</span><span class="p">]);</span>
+</code></pre></div>
 <p>Text columns are the most frequently used column type, as they can be used to display any kind of data
 that is eventually rendered as plain text.</p>
 
@@ -742,12 +766,12 @@ that is eventually rendered as plain text.</p>
 <td>Do not escape cell content to be safe for use in HTML. Default <code>false</code>.</td>
 </tr>
 </tbody></table>
-<h2 id='boolcolumn'>BoolColumn</h2><pre class="highlight php"><code><span class="nv">$table</span><span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">'wantsNewsletter'</span><span class="p">,</span> <span class="nx">BoolColumn</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span>
+<h2 id='boolcolumn'>BoolColumn</h2><div class="highlight"><pre class="highlight php"><code><span class="nv">$table</span><span class="o">-&gt;</span><span class="nf">add</span><span class="p">(</span><span class="s1">'wantsNewsletter'</span><span class="p">,</span> <span class="nc">BoolColumn</span><span class="o">::</span><span class="n">class</span><span class="p">,</span> <span class="p">[</span>
     <span class="s1">'trueValue'</span> <span class="o">=&gt;</span> <span class="s1">'yes'</span><span class="p">,</span>
     <span class="s1">'falseValue'</span> <span class="o">=&gt;</span> <span class="s1">'no'</span><span class="p">,</span>
     <span class="s1">'nullValue'</span> <span class="o">=&gt;</span> <span class="s1">'unknown'</span><span class="p">,</span>
 <span class="p">]);</span>
-</code></pre>
+</code></pre></div>
 <p>Bool columns render a boolean value, which is allowed to be indeterminate (<code>null</code>). Three properties define
 how values are rendered:</p>
 
@@ -774,8 +798,8 @@ how values are rendered:</p>
 <td>Raw string to use for null values. Default <code>null</code>.</td>
 </tr>
 </tbody></table>
-<h2 id='datetimecolumn'>DateTimeColumn</h2><pre class="highlight php"><code><span class="nv">$table</span><span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">'registrationDate'</span><span class="p">,</span> <span class="nx">DateTimeColumn</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span><span class="s1">'format'</span> <span class="o">=&gt;</span> <span class="s1">'d-m-Y'</span><span class="p">]);</span>
-</code></pre>
+<h2 id='datetimecolumn'>DateTimeColumn</h2><div class="highlight"><pre class="highlight php"><code><span class="nv">$table</span><span class="o">-&gt;</span><span class="nf">add</span><span class="p">(</span><span class="s1">'registrationDate'</span><span class="p">,</span> <span class="nc">DateTimeColumn</span><span class="o">::</span><span class="n">class</span><span class="p">,</span> <span class="p">[</span><span class="s1">'format'</span> <span class="o">=&gt;</span> <span class="s1">'d-m-Y'</span><span class="p">]);</span>
+</code></pre></div>
 <p>DateTime columns render a <code>\DateTimeInterface</code> implementing class, such as <code>\DateTime</code>, to a string
 result. If data of other types is encountered automatic conversion is attempted following <a href="http://php.net/manual/en/datetime.formats.php">common PHP formats</a>.</p>
 
@@ -787,6 +811,11 @@ result. If data of other types is encountered automatic conversion is attempted 
 </tr>
 </thead><tbody>
 <tr>
+<td>createFromFormat</td>
+<td>string</td>
+<td>Custom format for creating DateTime objects from values. A format string accepted by <a href="https://www.php.net/manual/en/datetime.createfromformat.php"><code>DateTime::createFromFormat()</code></a> function.</td>
+</tr>
+<tr>
 <td>format</td>
 <td>string</td>
 <td>A date format string as accepted by the <a href="http://php.net/manual/en/function.date.php"><code>date()</code></a> function. Default <code>&#39;c&#39;</code>.</td>
@@ -797,14 +826,14 @@ result. If data of other types is encountered automatic conversion is attempted 
 <td>Raw string to display for null values. Defaults to the empty string.</td>
 </tr>
 </tbody></table>
-<h2 id='mapcolumn'>MapColumn</h2><pre class="highlight php"><code><span class="nv">$table</span><span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">'gender'</span><span class="p">,</span> <span class="nx">MapColumn</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span>
+<h2 id='mapcolumn'>MapColumn</h2><div class="highlight"><pre class="highlight php"><code><span class="nv">$table</span><span class="o">-&gt;</span><span class="nf">add</span><span class="p">(</span><span class="s1">'gender'</span><span class="p">,</span> <span class="nc">MapColumn</span><span class="o">::</span><span class="n">class</span><span class="p">,</span> <span class="p">[</span>
     <span class="s1">'default'</span> <span class="o">=&gt;</span> <span class="s1">'not provided'</span><span class="p">,</span>
     <span class="s1">'map'</span> <span class="o">=&gt;</span> <span class="p">[</span>
         <span class="s1">'f'</span> <span class="o">=&gt;</span> <span class="s1">'Female'</span><span class="p">,</span>
         <span class="s1">'m'</span> <span class="o">=&gt;</span> <span class="s1">'Male'</span><span class="p">,</span>
     <span class="p">],</span>
 <span class="p">]);</span>
-</code></pre>
+</code></pre></div>
 <p>Map columns used to transform a discrete collection of values into proper display counterparts. This
 can be useful to convert enumerated fields such as log severity levels, or genders as in the example.
 Fields which are not present in the column&#39;s map return the default value, if this is <code>null</code> the 
@@ -830,11 +859,11 @@ source value itself is shown unmodified.</p>
 <td>Associative array containing available mappings. Mandatory without default.</td>
 </tr>
 </tbody></table>
-<h2 id='twigcolumn'>TwigColumn</h2><pre class="highlight php"><code><span class="nv">$table</span><span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="s1">'buttons'</span><span class="p">,</span> <span class="nx">TwigColumn</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="p">[</span>
+<h2 id='twigcolumn'>TwigColumn</h2><div class="highlight"><pre class="highlight php"><code><span class="nv">$table</span><span class="o">-&gt;</span><span class="nf">add</span><span class="p">(</span><span class="s1">'buttons'</span><span class="p">,</span> <span class="nc">TwigColumn</span><span class="o">::</span><span class="n">class</span><span class="p">,</span> <span class="p">[</span>
     <span class="s1">'className'</span> <span class="o">=&gt;</span> <span class="s1">'buttons'</span><span class="p">,</span>
     <span class="s1">'template'</span> <span class="o">=&gt;</span> <span class="s1">'tables/buttonbar.html.twig'</span><span class="p">,</span>
 <span class="p">])</span>
-</code></pre>
+</code></pre></div>
 <p>This column type allows you to specify a Twig template used to render the column&#39;s cells. The
 template is rendered using the main application context by injecting the main Twig service.
 Additionally the <code>value</code> and <code>row</code> parameters are being filled by the cell value and the row
@@ -855,11 +884,40 @@ level context respectively.</p>
 </tbody></table>
 
 <aside class="warning">Keep in mind that for most simple use cases a decorated TextColumn will perform better than a full Twig template per row.</aside>
+<h2 id='twigstringcolumn'>TwigStringColumn</h2><div class="highlight"><pre class="highlight php"><code><span class="nv">$table</span><span class="o">-&gt;</span><span class="nf">add</span><span class="p">(</span><span class="s1">'link'</span><span class="p">,</span> <span class="nc">TwigStringColumn</span><span class="o">::</span><span class="n">class</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">'template'</span> <span class="o">=&gt;</span> <span class="s1">'&lt;a href="{{ url(\'employee.edit\', {id: row.id}) }}"&gt;{{ row.firstName }} {{ row.lastName }}&lt;/a&gt;'</span><span class="p">,</span>
+<span class="p">])</span>
+</code></pre></div>
+<p>This column type allows you to inline a Twig template as a string used to render the column&#39;s cells. The
+template is rendered using the main application context by injecting the main Twig service.
+Additionally, the <code>value</code> and <code>row</code> parameters are being filled by the cell value and the row
+level context respectively.</p>
+
+<p>This column type requires <code>StringLoaderExtension</code> to be <a href="https://symfony.com/doc/4.4/reference/dic_tags.html#twig-extension">enabled in your Twig environment</a>.</p>
+<div class="highlight"><pre class="highlight yaml tab-yaml"><code><span class="na">services</span><span class="pi">:</span>
+    <span class="na">Twig\Extension\StringLoaderExtension</span><span class="pi">:</span>
+        <span class="na">tags</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">twig.extension</span><span class="pi">]</span>
+</code></pre></div>
+<table><thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>template</td>
+<td>string</td>
+<td>Template content resolvable by the Symfony templating component. Required without default.</td>
+</tr>
+</tbody></table>
+
+<aside class="warning">Keep in mind that for most simple use cases a decorated TextColumn will perform better than a full Twig template per row.</aside>
 <h2 id='implementing-custom-columns'>Implementing custom columns</h2>
 <p>TBD.</p>
-<h1 id='datatable-types'>DataTable Types</h1><pre class="highlight php"><code><span class="nv">$table</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">createDataTableFromType</span><span class="p">(</span><span class="nx">PresidentsTableType</span><span class="o">::</span><span class="na">class</span><span class="p">)</span>
-    <span class="o">-&gt;</span><span class="na">handleRequest</span><span class="p">(</span><span class="nv">$request</span><span class="p">);</span>
-</code></pre>
+<h1 id='datatable-types'>DataTable Types</h1><div class="highlight"><pre class="highlight php"><code><span class="nv">$table</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">createDataTableFromType</span><span class="p">(</span><span class="nc">PresidentsTableType</span><span class="o">::</span><span class="n">class</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="nf">handleRequest</span><span class="p">(</span><span class="nv">$request</span><span class="p">);</span>
+</code></pre></div>
 <p>Having the table configuration in your controller is convenient, but not practical for reusable or
 extensible tables, or highly customized tables. In the example above we could also create a class
 <code>DataTable\Type\PresidentsTableType</code> in our app bundle, and make it implement 
@@ -874,21 +932,21 @@ dynamically. When using Symfony&#39;s autoconfiguration the tag will be applied 
 <p>Of course you can modify the base type to fit the controller&#39;s specific needs before calling 
 <code>handleRequest</code>. Secondly, the <code>createDataTableFromType</code> function accepts an array as a second
 argument which is passed to the type class for parametrized instantiation.</p>
-<h1 id='javascript'>Javascript</h1><pre class="highlight javascript tab-javascript"><code><span class="nx">$</span><span class="p">(</span><span class="s1">'#table1'</span><span class="p">).</span><span class="nx">initDataTables</span><span class="p">({{</span> <span class="nx">datatable_settings</span><span class="p">(</span><span class="nx">datatable1</span><span class="p">)</span> <span class="p">}},</span> <span class="p">{</span>
+<h1 id='javascript'>Javascript</h1><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">#table1</span><span class="dl">'</span><span class="p">).</span><span class="nx">initDataTables</span><span class="p">({{</span> <span class="nx">datatable_settings</span><span class="p">(</span><span class="nx">datatable1</span><span class="p">)</span> <span class="p">}},</span> <span class="p">{</span>
     <span class="na">searching</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-    <span class="na">dom</span><span class="p">:</span><span class="s1">'&lt;"html5buttons"B&gt;lTfgitp'</span><span class="p">,</span>
+    <span class="na">dom</span><span class="p">:</span><span class="dl">'</span><span class="s1">&lt;"html5buttons"B&gt;lTfgitp</span><span class="dl">'</span><span class="p">,</span>
     <span class="na">buttons</span><span class="p">:</span> <span class="p">[</span>
-        <span class="s1">'copy'</span><span class="p">,</span>
-        <span class="p">{</span> <span class="na">extend</span><span class="p">:</span> <span class="s1">'pdf'</span><span class="p">,</span> <span class="na">title</span><span class="p">:</span> <span class="s1">'domains'</span><span class="p">},</span>
-        <span class="p">{</span> <span class="na">extend</span><span class="p">:</span> <span class="s1">'print'</span> <span class="p">}</span>
+        <span class="dl">'</span><span class="s1">copy</span><span class="dl">'</span><span class="p">,</span>
+        <span class="p">{</span> <span class="na">extend</span><span class="p">:</span> <span class="dl">'</span><span class="s1">pdf</span><span class="dl">'</span><span class="p">,</span> <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">domains</span><span class="dl">'</span><span class="p">},</span>
+        <span class="p">{</span> <span class="na">extend</span><span class="p">:</span> <span class="dl">'</span><span class="s1">print</span><span class="dl">'</span> <span class="p">}</span>
     <span class="p">]</span>
 <span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">dt</span><span class="p">)</span> <span class="p">{</span>
     <span class="c1">// dt contains the initialized instance of DataTables</span>
-    <span class="nx">dt</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'draw'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-        <span class="nx">alert</span><span class="p">(</span><span class="s1">'Redrawing table'</span><span class="p">);</span>
+    <span class="nx">dt</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">draw</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">Redrawing table</span><span class="dl">'</span><span class="p">);</span>
     <span class="p">})</span>
 <span class="p">});</span>
-</code></pre>
+</code></pre></div>
 <p>During the quickstart we introduced the <code>initDataTables</code> Javascript function, taking the serverside
 settings as its argument. The function takes an optional second argument, which is merged into the
 serverside settings to override any template-specific changes, but as this is executed in the browser
@@ -897,6 +955,53 @@ it also means this is where you can add Javascript events according to DataTable
 <p>The function returns a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise"><code>Promise</code></a>
 which is fulfilled with the <code>DataTables</code> instance once initialization is completed. This allows you
 all the flexibility you could need to <a href="https://datatables.net/reference/api/">invoke API functions</a>.</p>
+<h1 id='exporting-data'>Exporting Data</h1>
+<p>DataTables natively supports exporting the current view as an Excel sheet, PDF, etc. The problem with this
+is that this is all generated on the client&#39;s end, meaning you&#39;ll be unable to export all data at once unless it
+happens to fit on a single screen. This is why this bundle supports exporting data from the server&#39;s end instead.</p>
+<h2 id='prerequisites'>Prerequisites</h2>
+<p>To make use of the exporting functionality in this bundle, there are some extra dependencies you may want to install.
+The server-side export feature requires the <a href="https://datatables.net/extensions/buttons/">Buttons extension</a> offered by <code>DataTables</code>. Make sure to install it before using this feature.</p>
+
+<p>Currently included in the bundle there are a <code>DataTableExporter</code> for Excel spreadsheets and one for CSV. If you&#39;d like
+to use the Excel exporter you will need to add <a href="https://packagist.org/packages/phpoffice/phpspreadsheet">phpoffice/phpspreadsheet</a>
+to your dependencies.</p>
+<h2 id='examples'>Examples</h2><h3 id='server-side-setup'>Server Side Setup</h3>
+<p>On the server side of things you don&#39;t need to do anything besides the setup mentioned above. You can however customize some
+things like the filename of the file that is being generated. To do this, all you will need to add is an event listener
+that will handle passing the resulting file back to the user.</p>
+<div class="highlight"><pre class="highlight php tab-php"><code><span class="nv">$table</span> <span class="o">=</span> <span class="nv">$dataTableFactory</span><span class="o">-&gt;</span><span class="nf">create</span><span class="p">()</span>
+    <span class="o">-&gt;</span><span class="nf">add</span><span class="p">(</span><span class="mf">...</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="nf">addEventListener</span><span class="p">(</span><span class="nc">DataTableExporterEvents</span><span class="o">::</span><span class="no">PRE_RESPONSE</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span><span class="kt">DataTableExporterResponseEvent</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nv">$response</span> <span class="o">=</span> <span class="nv">$e</span><span class="o">-&gt;</span><span class="nf">getResponse</span><span class="p">();</span>
+        <span class="nv">$response</span><span class="o">-&gt;</span><span class="nf">deleteFileAfterSend</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+        <span class="nv">$ext</span> <span class="o">=</span> <span class="nv">$response</span><span class="o">-&gt;</span><span class="nf">getFile</span><span class="p">()</span><span class="o">-&gt;</span><span class="nf">getExtension</span><span class="p">();</span>
+        <span class="nv">$response</span><span class="o">-&gt;</span><span class="nf">setContentDisposition</span><span class="p">(</span><span class="nc">ResponseHeaderBag</span><span class="o">::</span><span class="no">DISPOSITION_ATTACHMENT</span><span class="p">,</span> <span class="s1">'custom_filename.'</span> <span class="mf">.</span> <span class="nv">$ext</span><span class="p">);</span>
+    <span class="p">})</span>
+    <span class="o">-&gt;</span><span class="nf">handleRequest</span><span class="p">(</span><span class="nv">$request</span><span class="p">);</span>
+</code></pre></div><h3 id='client-side-setup'>Client Side Setup</h3>
+<p>On the client side of things you will need to actually show a button that will trigger the export action. Making use of
+the aforementioned Buttons extension the important bit of code involved is a call to <code>$.fn.initDataTables.exportBtnAction</code>
+which takes the name of the <a href="https://github.com/omines/datatables-bundle/blob/master/src/Exporter/DataTableExporterInterface.php">DataTableExporter</a>
+you are using as its first parameter and the table&#39;s settings as the second. Currently this bundle natively supports
+<code>excel</code> and <code>csv</code> as valid options, but it is possible to make your own custom <code>DataTableExporter</code> as well.</p>
+<div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">$</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">#table</span><span class="dl">'</span><span class="p">).</span><span class="nx">initDataTables</span><span class="p">({{</span> <span class="nx">datatable_settings</span><span class="p">(</span><span class="nx">datatable</span><span class="p">)</span> <span class="p">}},</span> <span class="p">{</span>
+        <span class="na">dom</span><span class="p">:</span><span class="dl">'</span><span class="s1">&lt;"html5buttons"B&gt;lTfgitp</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">buttons</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="na">text</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Export to Excel</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">action</span><span class="p">:</span> <span class="nx">$</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">initDataTables</span><span class="p">.</span><span class="nx">exportBtnAction</span><span class="p">(</span><span class="dl">'</span><span class="s1">excel</span><span class="dl">'</span><span class="p">,</span> <span class="p">{{</span> <span class="nx">datatable_settings</span><span class="p">(</span><span class="nx">datatable</span><span class="p">)</span> <span class="p">}})</span>
+            <span class="p">}</span>
+        <span class="p">]</span>
+    <span class="p">});</span>
+<span class="p">});</span>
+</code></pre></div><h2 id='custom-exporters'>Custom Exporters</h2>
+<p>Excel and CSV are nice but there are other formats you may want to export to. You can support this by implementing
+the <a href="https://github.com/omines/datatables-bundle/blob/master/src/Exporter/DataTableExporterInterface.php">Omines\DataTablesBundle\Exporter\DataTableExporterInterface</a>
+in a class of your own. You will need to register this class as service in Symfony as well and the service
+needs to be tagged with <code>datatables.exporter</code>. If you have <a href="https://symfony.com/doc/current/service_container.html#the-autoconfigure-option">autoconfigure</a>
+turned on this should be done for you automatically.</p>
 <h1 id='legal'>Legal</h1>
 <p>This software was developed for internal use at <a href="https://www.omines.nl/">Omines Full Service Internetbureau</a>
 in Eindhoven, the Netherlands. It is shared with the general public under the permissive MIT license, without
