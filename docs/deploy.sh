@@ -21,7 +21,7 @@ Options:
 
 
 run_build() {
-  bundle exec middleman build --clean
+  docker run --rm --name slate -v $(pwd)/build:/srv/slate/build -v $(pwd)/source:/srv/slate/source slatedocs/slate build
 }
 
 parse_args() {
