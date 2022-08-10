@@ -182,7 +182,7 @@ class ORMAdapter extends AbstractAdapter
         $event = new ORMAdapterQueryEvent($query);
         $state->getDataTable()->getEventDispatcher()->dispatch($event, ORMAdapterEvents::PRE_QUERY);
 
-        foreach ($query->toIterable([], $this->hydrationMode) as $result) {
+        foreach ($query->iterate([], $this->hydrationMode) as $result) {
             yield $entity = array_values($result)[0];
             if (Query::HYDRATE_OBJECT === $this->hydrationMode) {
                 $this->manager->detach($entity);
