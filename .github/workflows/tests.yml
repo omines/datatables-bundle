@@ -1,4 +1,4 @@
-name: "PHPStan"
+name: "Tests"
 
 on:
   push:
@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   tests:
-    runs-on: debian-latest
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         php: ['7.4', '8.0', '8.1']
