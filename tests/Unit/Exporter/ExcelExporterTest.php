@@ -33,12 +33,12 @@ class ExcelExporterTest extends KernelTestCase
         $this->exporterCollection = $this->getContainer()->get(DataTableExporterCollection::class);
     }
 
-    public function testTag()
+    public function testTag(): void
     {
         $this->assertInstanceOf(ExcelExporter::class, $this->exporterCollection->getByName('excel'));
     }
 
-    public function testName()
+    public function testName(): void
     {
         $this->assertSame('excel', $this->exporterCollection->getByName('excel')->getName());
     }

@@ -30,7 +30,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class ElasticaTest extends TestCase
 {
-    public function testElasticaAdapter()
+    public function testElasticaAdapter(): void
     {
         // Set up expectations
         $transport = $this->getMockBuilder(AbstractTransport::class)

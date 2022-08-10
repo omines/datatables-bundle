@@ -17,6 +17,7 @@ use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTableFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * HomeController.
@@ -25,7 +26,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class HomeController extends AbstractController
 {
-    public function showAction(Request $request, DataTableFactory $dataTableFactory)
+    public function showAction(Request $request, DataTableFactory $dataTableFactory): Response
     {
         $datatable1 = $dataTableFactory->create();
         $datatable1

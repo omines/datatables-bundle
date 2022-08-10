@@ -15,6 +15,7 @@ namespace Tests\Fixtures\AppBundle\Controller;
 use Omines\DataTablesBundle\DataTableFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Tests\Fixtures\AppBundle\DataTable\Type\ServicePersonTableType;
 
 /**
@@ -24,7 +25,7 @@ use Tests\Fixtures\AppBundle\DataTable\Type\ServicePersonTableType;
  */
 class ServiceController extends AbstractController
 {
-    public function tableAction(Request $request, DataTableFactory $dataTableFactory)
+    public function tableAction(Request $request, DataTableFactory $dataTableFactory): Response
     {
         $datatable = $dataTableFactory->createFromType(ServicePersonTableType::class, [], ['order' => [[1, 'asc']]])
             ->setName('persons')

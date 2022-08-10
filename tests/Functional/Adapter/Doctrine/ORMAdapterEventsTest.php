@@ -23,7 +23,7 @@ use Tests\Fixtures\AppBundle\Controller\ORMAdapterEventsController;
  */
 class ORMAdapterEventsTest extends WebTestCase
 {
-    public function testPreQueryEvent()
+    public function testPreQueryEvent(): void
     {
         $this->markTestSkipped('This test appears broken, likely due to Doctrine configuration');
 

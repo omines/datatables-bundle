@@ -25,7 +25,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  */
 class DependencyInjectionTest extends TestCase
 {
-    public function testConfiguration()
+    public function testConfiguration(): void
     {
         $config = new Configuration();
         $tree = $config->getConfigTreeBuilder()->buildTree();
@@ -33,7 +33,7 @@ class DependencyInjectionTest extends TestCase
         $this->assertInstanceOf(ArrayNode::class, $tree);
     }
 
-    public function testExtension()
+    public function testExtension(): void
     {
         $bundle = new DataTablesBundle();
         $extension = $bundle->getContainerExtension();

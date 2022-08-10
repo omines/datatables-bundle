@@ -40,13 +40,13 @@ use Tests\Fixtures\AppBundle\DataTable\Type\RegularPersonTableType;
  */
 class DataTableTest extends TestCase
 {
-    public function testBundle()
+    public function testBundle(): void
     {
         $bundle = new DataTablesBundle();
         $this->assertSame('DataTablesBundle', $bundle->getName());
     }
 
-    public function testFactory()
+    public function testFactory(): void
     {
         $factory = new DataTableFactory(['language_from_cdn' => false], $this->createMock(TwigRenderer::class), new Instantiator(), $this->createMock(EventDispatcher::class), $this->createMock(DataTableExporterManager::class));
 
@@ -60,7 +60,7 @@ class DataTableTest extends TestCase
         $this->assertInstanceOf(ArrayAdapter::class, $table->getAdapter());
     }
 
-    public function testFactoryRemembersInstances()
+    public function testFactoryRemembersInstances(): void
     {
         $factory = new DataTableFactory([], $this->createMock(TwigRenderer::class), new Instantiator(), $this->createMock(EventDispatcher::class), $this->createMock(DataTableExporterManager::class));
 
@@ -74,7 +74,7 @@ class DataTableTest extends TestCase
         $this->assertCount(1, $property->getValue($factory));
     }
 
-    public function testDataTableState()
+    public function testDataTableState(): void
     {
         $datatable = $this->createMockDataTable();
         $datatable->add('foo', TextColumn::class)->setMethod(Request::METHOD_GET);
@@ -100,7 +100,7 @@ class DataTableTest extends TestCase
         $this->assertSame('bar', $state->getSearchColumns()['foo']['search']);
     }
 
-    public function testPostMethod()
+    public function testPostMethod(): void
     {
         $datatable = $this->createMockDataTable();
         $datatable->handleRequest(Request::create('/foo', Request::METHOD_POST, ['_dt' => $datatable->getName(), 'draw' => 684]));
@@ -108,7 +108,7 @@ class DataTableTest extends TestCase
         $this->assertSame(684, $datatable->getState()->getDraw());
     }
 
-    public function testFactoryFailsOnInvalidType()
+    public function testFactoryFailsOnInvalidType(): void
     {
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('Could not resolve type');
@@ -121,28 +121,28 @@ class DataTableTest extends TestCase
         $factory->createFromType('foobar');
     }
 
-    public function testInvalidOption()
+    public function testInvalidOption(): void
     {
         $this->expectException(UndefinedOptionsException::class);
 
         $this->createMockDataTable(['option' => 'bar']);
     }
 
-    public function testDataTableInvalidColumn()
+    public function testDataTableInvalidColumn(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
         $this->createMockDataTable()->getColumn(5);
     }
 
-    public function testDataTableInvalidColumnByName()
+    public function testDataTableInvalidColumnByName(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
         $this->createMockDataTable()->getColumnByName('foo');
     }
 
-    public function testDuplicateColumnNameThrows()
+    public function testDuplicateColumnNameThrows(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('There already is a column with name');
@@ -153,7 +153,7 @@ class DataTableTest extends TestCase
         ;
     }
 
-    public function testInvalidAdapterThrows()
+    public function testInvalidAdapterThrows(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Could not resolve type "foo\\bar" to a service or class, are you missing a use statement? Or is it implemented but does it not correctly derive from "Omines\\DataTablesBundle\\Adapter\\AdapterInterface"?');
@@ -161,7 +161,7 @@ class DataTableTest extends TestCase
         $this->createMockDataTable()->createAdapter('foo\bar');
     }
 
-    public function testInvalidColumnThrows()
+    public function testInvalidColumnThrows(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Could not resolve type "bar" to a service or class, are you missing a use statement? Or is it implemented but does it not correctly derive from "Omines\\DataTablesBundle\\Column\\AbstractColumn"?');
@@ -169,7 +169,7 @@ class DataTableTest extends TestCase
         $this->createMockDataTable()->add('foo', 'bar');
     }
 
-    public function testMissingAdapterThrows()
+    public function testMissingAdapterThrows(): void
     {
         $this->expectException(InvalidStateException::class);
         $this->expectExceptionMessage('No adapter was configured yet to retrieve data with');
@@ -181,7 +181,7 @@ class DataTableTest extends TestCase
         ;
     }
 
-    public function testEmptyNameThrows()
+    public function testEmptyNameThrows(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('DataTable name cannot be empty');
@@ -189,7 +189,7 @@ class DataTableTest extends TestCase
         $this->createMockDataTable()->setName('');
     }
 
-    public function testStateWillNotProcessInvalidMethod()
+    public function testStateWillNotProcessInvalidMethod(): void
     {
         $this->expectException(InvalidConfigurationException::class);
         $this->expectExceptionMessage("Unknown request method 'OPTIONS'");
@@ -199,7 +199,7 @@ class DataTableTest extends TestCase
         $datatable->handleRequest(Request::create('/foo'));
     }
 
-    public function testMissingStateThrows()
+    public function testMissingStateThrows(): void
     {
         $this->expectException(InvalidStateException::class);
         $this->expectExceptionMessage('The DataTable does not know its state yet');
@@ -207,7 +207,7 @@ class DataTableTest extends TestCase
         $this->createMockDataTable()->getResponse();
     }
 
-    public function testInvalidDataTableTypeThrows()
+    public function testInvalidDataTableTypeThrows(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Could not resolve type "foo" to a service or class');
@@ -216,7 +216,7 @@ class DataTableTest extends TestCase
             ->createFromType('foo');
     }
 
-    private function createMockDataTable(array $options = [])
+    private function createMockDataTable(array $options = []): DataTable
     {
         return new DataTable($this->createMock(EventDispatcher::class), $this->createMock(DataTableExporterManager::class), $options);
     }
