@@ -74,8 +74,8 @@ class ColumnTest extends TestCase
     {
         $column = new BoolColumn();
         $column->initialize('test', 1, [
-             'trueValue' => 'yes',
-             'nullValue' => '<em>null</em>',
+            'trueValue' => 'yes',
+            'nullValue' => '<em>null</em>',
         ], $this->createDataTable());
 
         $this->assertSame('yes', $column->transform(5));
@@ -141,7 +141,7 @@ class ColumnTest extends TestCase
     {
         $column = new MoneyColumn();
         //Test with defaults
-        $column->initialize('test', 1, [], new DataTable($this->createMock(EventDispatcher::class)));
+        $column->initialize('test', 1, [], $this->createDataTable());
         $this->assertSame('5.00', $column->transform(5));
         $this->assertSame('1.00', $column->transform(true));
         $this->assertSame('340.00', $column->transform('340'));
