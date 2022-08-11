@@ -32,7 +32,7 @@ class CustomQueryTableType implements DataTableTypeInterface
     /**
      * {@inheritdoc}
      */
-    public function configure(DataTable $dataTable, array $options)
+    public function configure(DataTable $dataTable, array $options): void
     {
         $dataTable
             ->add('firstName', TextColumn::class)
@@ -51,7 +51,7 @@ class CustomQueryTableType implements DataTableTypeInterface
                 },
                 'criteria' => function (QueryBuilder $builder) {
                     $builder->andWhere($builder->expr()->like('c.name', ':test'))->setParameter('test', '%ny 2%');
-                //$builder->addCriteria(Criteria::create()->andWhere(new Comparison('c.name', Comparison::CONTAINS, 'ny 2')));
+                // $builder->addCriteria(Criteria::create()->andWhere(new Comparison('c.name', Comparison::CONTAINS, 'ny 2')));
                 },
             ])
         ;

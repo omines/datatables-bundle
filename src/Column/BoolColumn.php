@@ -46,7 +46,7 @@ class BoolColumn extends AbstractColumn
                 function ($value) {
                     return trim(mb_strtolower($value)) === $this->getTrueValue();
                 }
-        );
+            );
 
         $resolver
             ->setDefault('trueValue', 'true')

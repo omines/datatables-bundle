@@ -21,7 +21,7 @@ class CustomORMAdapter extends ORMAdapter
 {
     protected $hydrationMode;
 
-    protected function prepareQuery(AdapterQuery $query)
+    protected function prepareQuery(AdapterQuery $query): void
     {
         parent::prepareQuery($query);
         $query->setIdentifierPropertyPath(null);
@@ -40,7 +40,7 @@ class CustomORMAdapter extends ORMAdapter
                 $builder->addOrderBy($column->getOrderField(), $direction);
             }
         }
-        if ($state->getLength() > 0) {
+        if (null !== $state->getLength()) {
             $builder
                 ->setFirstResult($state->getStart())
                 ->setMaxResults($state->getLength());

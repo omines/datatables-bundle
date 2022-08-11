@@ -27,7 +27,7 @@ use Tests\Fixtures\AppBundle\Entity\Employee;
  */
 class ORMAdapterEventsController extends AbstractController
 {
-    const PRE_QUERY_RESULT_CACHE_ID = 'datatable_result_cache';
+    public const PRE_QUERY_RESULT_CACHE_ID = 'datatable_result_cache';
 
     public function preQueryAction(Request $request, DataTableFactory $dataTableFactory): Response
     {

@@ -12,7 +12,9 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle\Adapter\Doctrine;
 
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -43,10 +45,10 @@ class ORMAdapter extends AbstractAdapter
     /** @var EntityManager */
     protected $manager;
 
-    /** @var \Doctrine\ORM\Mapping\ClassMetadata */
+    /** @var ClassMetadata */
     protected $metadata;
 
-    /** @var int */
+    /** @var AbstractQuery::HYDRATE_*|string|null */
     private $hydrationMode;
 
     /** @var QueryBuilderProcessorInterface[] */
@@ -169,7 +171,7 @@ class ORMAdapter extends AbstractAdapter
                 $builder->addOrderBy($column->getOrderField(), $direction);
             }
         }
-        if ($state->getLength() > 0) {
+        if (null !== $state->getLength()) {
             $builder
                 ->setFirstResult($state->getStart())
                 ->setMaxResults($state->getLength())
@@ -307,9 +309,11 @@ class ORMAdapter extends AbstractAdapter
     protected function afterConfiguration(array $options): void
     {
         // Enable automated mode or just get the general default entity manager
-        if (null === ($this->manager = $this->registry->getManagerForClass($options['entity']))) {
-            throw new InvalidConfigurationException(sprintf('Doctrine has no manager for entity "%s", is it correctly imported and referenced?', $options['entity']));
+        $manager = $this->registry->getManagerForClass($options['entity']);
+        if (!$manager instanceof EntityManager) {
+            throw new InvalidConfigurationException(sprintf('Doctrine has no valid entity manager for entity "%s", is it correctly imported and referenced?', $options['entity']));
         }
+        $this->manager = $manager;
         $this->metadata = $this->manager->getClassMetadata($options['entity']);
         if (empty($options['query'])) {
             $options['query'] = [new AutomaticQueryBuilder($this->manager, $this->metadata)];

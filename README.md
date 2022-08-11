@@ -3,12 +3,9 @@
 [![Total Downloads](https://poser.pugx.org/omines/datatables-bundle/downloads)](https://packagist.org/packages/omines/datatables-bundle)
 [![Latest Unstable Version](https://poser.pugx.org/omines/datatables-bundle/v/unstable)](//packagist.org/packages/omines/datatables-bundle)
 [![License](https://poser.pugx.org/omines/datatables-bundle/license)](https://packagist.org/packages/omines/datatables-bundle)
-[![Build Status](https://travis-ci.org/omines/datatables-bundle.svg?branch=master)](https://travis-ci.org/omines/datatables-bundle)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/omines/datatables-bundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/omines/datatables-bundle/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/omines/datatables-bundle/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/omines/datatables-bundle/?branch=master)
 
 This bundle provides convenient integration of the popular [DataTables](https://datatables.net/) jQuery library
-for realtime Ajax tables in your [Symfony](https://symfony.com/) 4.4+ or 5.0+ application.
+for realtime Ajax tables in your [Symfony](https://symfony.com/) 5.4+ or 6.0+ application.
 
 Unlike other bundles providing similar functionality we decoupled the implementation of the DataTables logic
 completely from the source of the data. Therefore it is possible to implement your own custom adapters for

@@ -30,7 +30,7 @@ class Grouped2TableType implements DataTableTypeInterface
     /**
      * {@inheritdoc}
      */
-    public function configure(DataTable $dataTable, array $options)
+    public function configure(DataTable $dataTable, array $options): void
     {
         $dataTable
             ->add('company', TextColumn::class, ['propertyPath' => '[0][name]'])

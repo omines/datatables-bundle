@@ -24,10 +24,10 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class AdapterTest extends KernelTestCase
 {
-    public function testInvalidEntity()
+    public function testInvalidEntity(): void
     {
         $this->expectException(InvalidConfigurationException::class);
-        $this->expectExceptionMessage('Doctrine has no manager for entity "foobar"');
+        $this->expectExceptionMessage('Doctrine has no valid entity manager for entity "foobar"');
 
         /** @var Registry $registryMock */
         $registryMock = $this->createMock(Registry::class);

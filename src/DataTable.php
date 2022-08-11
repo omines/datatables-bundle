@@ -33,7 +33,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class DataTable
 {
-    const DEFAULT_OPTIONS = [
+    public const DEFAULT_OPTIONS = [
         'jQueryUI' => false,
         'pagingType' => 'full_numbers',
         'lengthMenu' => [[10, 25, 50, -1], [10, 25, 50, 'All']],
@@ -55,9 +55,9 @@ class DataTable
         'fixedHeader' => false,
     ];
 
-    const DEFAULT_TEMPLATE = '@DataTables/datatable_html.html.twig';
-    const SORT_ASCENDING = 'asc';
-    const SORT_DESCENDING = 'desc';
+    public const DEFAULT_TEMPLATE = '@DataTables/datatable_html.html.twig';
+    public const SORT_ASCENDING = 'asc';
+    public const SORT_DESCENDING = 'desc';
 
     /** @var AdapterInterface */
     protected $adapter;
@@ -176,10 +176,7 @@ class DataTable
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function createAdapter(string $adapter, array $options = []): self
+    public function createAdapter(string $adapter, array $options = []): static
     {
         return $this->setAdapter($this->instantiator->getAdapter($adapter), $options);
     }
@@ -355,15 +352,12 @@ class DataTable
      * @param $name
      * @return mixed|null
      */
-    public function getOption($name)
+    public function getOption($name): mixed
     {
         return $this->options[$name] ?? null;
     }
 
-    /**
-     * @return DataTable
-     */
-    public function setAdapter(AdapterInterface $adapter, array $options = null): self
+    public function setAdapter(AdapterInterface $adapter, array $options = null): static
     {
         if (null !== $options) {
             $adapter->configure($options);

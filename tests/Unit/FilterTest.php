@@ -23,7 +23,7 @@ use PHPUnit\Framework\TestCase;
  */
 class FilterTest extends TestCase
 {
-    public function testChoiceFilter()
+    public function testChoiceFilter(): void
     {
         $filter = new ChoiceFilter();
 
@@ -47,7 +47,7 @@ class FilterTest extends TestCase
         $this->assertSame('bar', $filter->getOperator());
     }
 
-    public function testTextFilter()
+    public function testTextFilter(): void
     {
         $filter = new TextFilter();
 

@@ -26,7 +26,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class TwigTest extends TestCase
 {
-    public function testExtensionName()
+    public function testExtensionName(): void
     {
         /** @var TranslatorInterface $translator */
         $translator = $this->createMock(Translator::class);
@@ -35,7 +35,7 @@ class TwigTest extends TestCase
         $this->assertSame('DataTablesBundle', $twig->getName());
     }
 
-    public function testMissingTwigBundleThrows()
+    public function testMissingTwigBundleThrows(): void
     {
         $this->expectException(MissingDependencyException::class);
         $this->expectExceptionMessage('You must have symfony/twig-bundle installed');

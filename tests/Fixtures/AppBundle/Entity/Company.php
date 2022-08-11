@@ -77,7 +77,7 @@ class Company
     /**
      * @return $this
      */
-    public function setName(string $name)
+    public function setName(string $name): Company
     {
         $this->name = $name;
 

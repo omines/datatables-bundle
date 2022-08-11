@@ -13,12 +13,11 @@ declare(strict_types=1);
 namespace Omines\DataTablesBundle\Exporter;
 
 use Omines\DataTablesBundle\DataTable;
-use Omines\DataTablesBundle\Exception\InvalidArgumentException;
+use Omines\DataTablesBundle\Exception\UnknownDataTableExporterException;
 use Omines\DataTablesBundle\Exporter\Event\DataTableExporterResponseEvent;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\Translation\TranslatorInterface as LegacyTranslatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -37,38 +36,23 @@ class DataTableExporterManager
     /** @var string */
     private $exporterName;
 
-    /** @var TranslatorInterface|LegacyTranslatorInterface */
+    /** @var TranslatorInterface */
     private $translator;
 
-    /**
-     * DataTableExporterManager constructor.
-     *
-     * @param TranslatorInterface|LegacyTranslatorInterface $translator
-     */
-    public function __construct(DataTableExporterCollection $exporterCollection, $translator)
+    public function __construct(DataTableExporterCollection $exporterCollection, TranslatorInterface $translator)
     {
-        if (!$translator instanceof TranslatorInterface && !$translator instanceof LegacyTranslatorInterface) {
-            throw new InvalidArgumentException(sprintf('Expected an instance of "Symfony\Contracts\Translation\TranslatorInterface" or "Symfony\Component\Translation\TranslatorInterface". Got "%s" instead.', is_object($translator) ? get_class($translator) : gettype($translator)));
-        }
-
         $this->exporterCollection = $exporterCollection;
         $this->translator = $translator;
     }
 
-    /**
-     * @return DataTableExporterManager
-     */
-    public function setExporterName(string $exporterName): self
+    public function setExporterName(string $exporterName): static
     {
         $this->exporterName = $exporterName;
 
         return $this;
     }
 
-    /**
-     * @return DataTableExporterManager
-     */
-    public function setDataTable(DataTable $dataTable): self
+    public function setDataTable(DataTable $dataTable): static
     {
         $this->dataTable = $dataTable;
 
@@ -76,7 +60,7 @@ class DataTableExporterManager
     }
 
     /**
-     * @throws \Omines\DataTablesBundle\Exception\UnknownDataTableExporterException
+     * @throws UnknownDataTableExporterException
      */
     public function getResponse(): Response
     {
@@ -118,7 +102,7 @@ class DataTableExporterManager
     {
         $data = $this->dataTable
             ->getAdapter()
-            ->getData($this->dataTable->getState()->setStart(0)->setLength(-1))
+            ->getData($this->dataTable->getState()->setStart(0)->setLength(null))
             ->getData();
 
         foreach ($data as $row) {

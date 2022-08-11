@@ -33,7 +33,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class DoctrineTest extends TestCase
 {
-    public function testSearchCriteriaProvider()
+    public function testSearchCriteriaProvider(): void
     {
         $table = new DataTable($this->createMock(EventDispatcher::class), $this->createMock(DataTableExporterManager::class));
         $table
@@ -60,15 +60,15 @@ class DoctrineTest extends TestCase
         $this->assertTrue(true);
     }
 
-    public function testORMAdapterRequiresDependency()
+    public function testORMAdapterRequiresDependency(): void
     {
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('doctrine/doctrine-bundle');
 
-        (new ORMAdapter());
+        new ORMAdapter();
     }
 
-    public function testInvalidQueryProcessorThrows()
+    public function testInvalidQueryProcessorThrows(): void
     {
         $this->expectException(InvalidConfigurationException::class);
         $this->expectExceptionMessage('Provider must be a callable or implement QueryBuilderProcessorInterface');
@@ -80,7 +80,7 @@ class DoctrineTest extends TestCase
             ]);
     }
 
-    public function testInvalidFieldThrows()
+    public function testInvalidFieldThrows(): void
     {
         $this->expectException(InvalidConfigurationException::class);
         $this->expectExceptionMessage("Field name 'invalid' must consist at least of an alias and a field");

@@ -45,7 +45,7 @@ class TextColumn extends AbstractColumn
                 function ($value) {
                     return '%' . $value . '%';
                 }
-        );
+            );
 
         $resolver
             ->setDefault('raw', false)
