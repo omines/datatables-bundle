@@ -89,6 +89,11 @@ class DataTableState
         $this->start = (int) $parameters->get('start', $this->start);
         $this->length = (int) $parameters->get('length', $this->length);
 
+        // DataTables insists on using -1 for infinity
+        if ($this->length < 1) {
+            $this->length = null;
+        }
+
         $search = $parameters->all()['search'] ?? [];
         $this->setGlobalSearch($search['value'] ?? $this->globalSearch);
 
