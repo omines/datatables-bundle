@@ -279,7 +279,7 @@ interaction based on internal changes in this bundle and/or Doctrine ORM.
 ```php?start_inline=1
 $table->createAdapter(ORMAdapter::class, [
     'entity' => Employee::class,
-    'query' => [
+    'criteria' => [
         function (QueryBuilder $builder) {
             $builder->andWhere($builder->expr()->like('c.name', ':test'))->setParameter('test', '%ny 2%');
         },
