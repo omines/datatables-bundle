@@ -5,6 +5,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 Nothing yet.
 
+## [0.7.1] - 2022-12-01
+### Fixed
+ - Handle inconsistency in infinite page lengths
+
+### Changed
+ - Drop support for PHP 7
+
 ## [0.7.0] - 2022-03-16
 ### Breaking
 - Move logic to make queries without limits to the relevant adapters (#257)
@@ -153,7 +160,8 @@ or break any applications.
 ### Added
  - Basic functionality
 
-[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.7.0...master
+[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.7.1...master
+[0.7.1]: https://github.com/omines/datatables-bundle/compare/0.7.0...0.7.1
 [0.7.0]: https://github.com/omines/datatables-bundle/compare/0.6.0...0.7.0
 [0.6.0]: https://github.com/omines/datatables-bundle/compare/0.5.2...0.6.0
 [0.5.2]: https://github.com/omines/datatables-bundle/compare/0.5.1...0.5.2
