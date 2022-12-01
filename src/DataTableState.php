@@ -228,4 +228,9 @@ class DataTableState
     {
         return $this->exporterName;
     }
+
+    public function isExport(): bool
+    {
+        return null !== $this->exporterName;
+    }
 }

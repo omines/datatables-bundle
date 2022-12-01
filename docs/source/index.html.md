@@ -484,7 +484,7 @@ $table->add('buttons', TwigColumn::class, [
 This column type allows you to specify a Twig template used to render the column's cells. The
 template is rendered using the main application context by injecting the main Twig service.
 Additionally the `value` and `row` parameters are being filled by the cell value and the row
-level context respectively.
+level context respectively, and the `column` parameter contains the column class itself.
 
 Option | Type | Description
 ------ | ---- | -----------
@@ -503,7 +503,7 @@ $table->add('link', TwigStringColumn::class, [
 This column type allows you to inline a Twig template as a string used to render the column's cells. The
 template is rendered using the main application context by injecting the main Twig service.
 Additionally, the `value` and `row` parameters are being filled by the cell value and the row
-level context respectively.
+level context respectively, and the `column` parameter contains the column class itself.
 
 This column type requires `StringLoaderExtension` to be [enabled in your Twig environment](https://symfony.com/doc/4.4/reference/dic_tags.html#twig-extension).
 
