@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Omines\DataTablesBundle\Adapter\Doctrine;
 
@@ -13,13 +11,10 @@ use Omines\DataTablesBundle\Adapter\AdapterQuery;
 use Omines\DataTablesBundle\Column\AbstractColumn;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class QueryBuilderAdapter extends AbstractAdapter
+class DBALAdapter extends AbstractAdapter
 {
     private QueryBuilder $queryBuilder;
 
-    /**
-     * {@inheritdoc}
-     */
     public function configure(array $options)
     {
         $resolver = new OptionsResolver();
@@ -56,7 +51,6 @@ class QueryBuilderAdapter extends AbstractAdapter
 
     protected function getResults(AdapterQuery $query): \Traversable
     {
-
         $totalsQueryBuilder = (clone $this->queryBuilder)->select('COUNT(*)');
         $totalRows = (int)$totalsQueryBuilder->executeQuery()->fetchOne();
         $query->setTotalRows($totalRows);

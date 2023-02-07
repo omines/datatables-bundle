@@ -4,3 +4,4 @@
 /vendor
 /tests/Fixtures/var/
 *~
+/.idea
