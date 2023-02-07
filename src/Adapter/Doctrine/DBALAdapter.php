@@ -83,24 +83,7 @@ class DBALAdapter extends AbstractAdapter
             $this->queryBuilder->andWhere($this->queryBuilder->expr()->orX(...$globalSearchCriteria));
         }
 
-        // Code below is not working, but its a start. Column filters are not implemented yet
-//        foreach ($query->getState()->getSearchColumns() as $searchInfo) {
-//            /** @var AbstractColumn $column */
-//            $column = $searchInfo['column'];
-//            $search = $searchInfo['search'];
-//
-//            $columnSearchCriteria = [];
-//            if ('' !== trim($search)) {
-//                if ((null !== ($filter = $column->getFilter())) && !$filter->isValidValue($search)) {
-//                    continue;
-//                }
-//                $wheres[] = new Comparison($column->getField(), $column->getOperator(), $search);
-//            }
-//
-//            if (!empty($wheres)) {
-//                $this->queryBuilder->andWhere($this->queryBuilder->expr()->or(Expr::::));
-//            }
-//        }
+        // @todo Implement column filtering
 
         $result = $this->queryBuilder->executeQuery();
 
