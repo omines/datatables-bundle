@@ -22,6 +22,10 @@ Unless you are highly confident your issue stems from a shortcoming of this bund
 to look at it, please [ask all questions on Stack Overflow](https://stackoverflow.com/search?q=datatables+omines). We
 simply don't have a lot of time to spare, so your questions will be answered faster and better over there.
 
+## FAQ
+
+- [Why is there no `DBALAdapter` bundled out of the box](https://github.com/omines/datatables-bundle/pull/275#issuecomment-1420600416)?
+
 ## Contributing
 
 Please see [CONTRIBUTING.md](https://github.com/omines/datatables-bundle/blob/master/CONTRIBUTING.md) for details.
