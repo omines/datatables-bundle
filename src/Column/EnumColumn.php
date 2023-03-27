@@ -23,33 +23,40 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  *       'class' => FooEnum::class,
  * ])
  *
- * Optional: implement label() in your enum.
+ * Optional: implement label() in your enum. Or use custom function name.
  */
 class EnumColumn extends AbstractColumn
 {
     protected function configureOptions(OptionsResolver $resolver): static
     {
         parent::configureOptions($resolver);
-       
+
         $resolver->setDefault('searchable', true);
         $resolver->setDefault('visible', true);
 
         $resolver->setDefault('class', null);
-        $resolver->setAllowedTypes('class', ['string', 'object', 'mixed']);
+        $resolver->setAllowedTypes('class', 'string');
         $resolver->setRequired('class');
 
+        $resolver->setDefault('classFunctionRender', 'label');
+        $resolver->setAllowedTypes('classFunctionRender', ['string', null]);
+
+        $resolver->setDefault('classFunctionSearch', 'label');
+        $resolver->setAllowedTypes('classFunctionSearch', ['string', null]);
+
         $resolver->setDefault('searchIn', function (string $value) {
-            return self::search($this->options["class"], $value);
+            return self::search($this->options["class"], $this->options["classFunctionSearch"], $value);
         });
 
         return $this;
     }
 
     /**
+     * Case-Insensitive Search
      * @param class-string $enum
      * @return int[]|string[]
      */
-    public static function search(string $enum, string $search): array
+    public static function search(string $enum, string $classFunctionSearch, string $search): array
     {
         if(!enum_exists($enum))
         {
@@ -60,15 +67,15 @@ class EnumColumn extends AbstractColumn
         $items = [];
         foreach($enum::cases() as $case) {
 
-            if(method_exists($enum, 'label'))
+            if($classFunctionSearch && method_exists($enum, $classFunctionSearch))
             {
-                if(str_contains($case->label(), $search)) {
+                if(str_contains(mb_strtolower($case->{$classFunctionSearch}()), mb_strtolower($search))) {
                     $items[] = $case->value;
                 }
             }
             else
             {
-                if(str_contains($case->name, $search)) {
+                if(str_contains(mb_strtolower($case->name), mb_strtolower($search))) {
                     $items[] = $case->value;
                 }
             }
@@ -82,9 +89,9 @@ class EnumColumn extends AbstractColumn
         if(!$value)
         {return null;}
 
-        if(method_exists($this->options["class"], 'label'))
+        if(method_exists($this->options["class"], $this->options["classFunctionRender"]))
         {
-            return $value->label();
+            return $value->{$this->options["classFunctionRender"]}();
         }
 
         return $value->name;
@@ -92,6 +99,6 @@ class EnumColumn extends AbstractColumn
 
     public function isValidForSearch(mixed $value): bool
     {
-        return count(self::search($this->options["class"], $value)) > 0;
+        return count(self::search($this->options["class"], $this->options["classFunctionSearch"], $value)) > 0;
     }
 }
