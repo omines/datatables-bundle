@@ -256,11 +256,13 @@ abstract class AbstractColumn
     public function getSearchIn($value): mixed
     {
         $searchIn = $this->options['searchIn'];
+
         if (null === $searchIn) {
             return null;
         }
+
         if (is_callable($searchIn)) {
-            return call_user_func($searchIn, $value);
+            return call_user_func($searchIn, $this->options, $value);
         }
 
         return $searchIn;

@@ -30,7 +30,7 @@ class EnumColumn extends AbstractColumn
     protected function configureOptions(OptionsResolver $resolver): static
     {
         parent::configureOptions($resolver);
-
+       
         $resolver->setDefault('searchable', true);
         $resolver->setDefault('visible', true);
 
@@ -44,8 +44,8 @@ class EnumColumn extends AbstractColumn
         $resolver->setDefault('classFunctionSearch', 'label');
         $resolver->setAllowedTypes('classFunctionSearch', ['string', null]);
 
-        $resolver->setDefault('searchIn', function (string $value) {
-            return self::search($this->options["class"], $this->options["classFunctionSearch"], $value);
+        $resolver->setDefault('searchIn', function ($options, string $value) {
+            return $this->search($options["class"], $options["classFunctionSearch"], $value);
         });
 
         return $this;
@@ -56,7 +56,7 @@ class EnumColumn extends AbstractColumn
      * @param class-string $enum
      * @return int[]|string[]
      */
-    public static function search(string $enum, string $classFunctionSearch, string $search): array
+    public function search(string $enum, string $classFunctionSearch, string $search): array
     {
         if(!enum_exists($enum))
         {
@@ -99,6 +99,6 @@ class EnumColumn extends AbstractColumn
 
     public function isValidForSearch(mixed $value): bool
     {
-        return count(self::search($this->options["class"], $this->options["classFunctionSearch"], $value)) > 0;
+        return count($this->search($this->options["class"], $this->options["classFunctionSearch"], $value)) > 0;
     }
 }

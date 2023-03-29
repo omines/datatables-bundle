@@ -62,7 +62,7 @@ class SearchCriteriaProvider implements QueryBuilderProcessorInterface
 
                     if($searchIn = $column->getSearchIn($globalSearch))
                     {
-                        $comparisons->add($queryBuilder->expr()->in($column->getLeftExpr(), $searchIn));
+                        $comparisons->add($expr->in($column->getLeftExpr(), $searchIn));
                     }
                     else
                     {
