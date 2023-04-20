@@ -60,8 +60,7 @@
                             data = null;
                             if (Object.keys(state).length) {
                                 var api = new $.fn.dataTable.Api( settings );
-                                var merged = $.extend(true, {}, api.state(), state);
-
+                                var merged = Object.assign({}, api.state(), state)
                                 api
                                     .order(merged.order)
                                     .search(merged.search.search)
