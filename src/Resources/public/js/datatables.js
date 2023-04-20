@@ -23,16 +23,33 @@
         ;
 
         // Load page state if needed
+        var stateDuration = null
+        // Load page state if needed
         switch (config.state) {
             case 'fragment':
                 state = window.location.hash;
+                state = (state.length > 1 ? deparam(state.substr(1)) : {});
                 break;
             case 'query':
                 state = window.location.search;
+                state = (state.length > 1 ? deparam(state.substr(1)) : {});
+                break;
+            case 'local':
+                stateDuration = 0
+                if (localStorage.getItem('DataTables_' + config.name + '_' + window.location.pathname) !== null) {
+                    state = JSON.parse(localStorage.getItem('DataTables_' + config.name + '_' + window.location.pathname))
+                }
+                break;
+            case 'session':
+                stateDuration = -1
+                if (sessionStorage.getItem('DataTables_' + config.name + '_' + window.location.pathname) !== null) {
+                    state = JSON.parse(sessionStorage.getItem('DataTables_' + config.name + '_' + window.location.pathname))
+                }
                 break;
         }
-        state = (state.length > 1 ? deparam(state.substr(1)) : {});
+
         var persistOptions = config.state === 'none' ? {} : {
+            stateDuration: stateDuration,
             stateSave: true,
             stateLoadCallback: function(s, cb) {
                 // Only need stateSave to expose state() function as loading lazily is not possible otherwise
@@ -62,7 +79,7 @@
                                 var api = new $.fn.dataTable.Api( settings );
                                 var merged = Object.assign({}, api.state(), state)
                                 api
-                                    .order(merged.order)
+                                    .order(Array.isArray(merged.order) && merged.order.length > 0 ? merged.order : api.state().order)
                                     .search(merged.search.search)
                                     .page.len(merged.length)
                                     .page(merged.start / merged.length)
@@ -89,7 +106,6 @@
                 if (config.state !== 'none') {
                     dt.on('draw.dt', function(e) {
                         var data = $.param(dt.state()).split('&');
-
                         // First draw establishes state, subsequent draws run diff on the first
                         if (!baseState) {
                             baseState = data;
@@ -101,8 +117,13 @@
                                         + '#' + decodeURIComponent(diff.join('&')));
                                     break;
                                 case 'query':
+                                    var windowLocationSearch = deparam(decodeURIComponent(diff.join('&')))
+                                    if(window.location.search !== null) {
+                                        windowLocationSearch = deparam(window.location.search.substr(1))
+                                        Object.assign(windowLocationSearch, deparam(decodeURIComponent(diff.join('&'))))
+                                    }
                                     history.replaceState(null, null, window.location.origin + window.location.pathname
-                                        + '?' + decodeURIComponent(diff.join('&') + window.location.hash));
+                                        + '?' + decodeURIComponent($.param(windowLocationSearch) + window.location.hash));
                                     break;
                             }
                         }

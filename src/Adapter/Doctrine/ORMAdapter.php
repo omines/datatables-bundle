@@ -350,6 +350,7 @@ class ORMAdapter extends AbstractAdapter
             };
         }
 
+        // @phpstan-ignore-next-line
         throw new InvalidConfigurationException('Provider must be a callable or implement QueryBuilderProcessorInterface');
     }
 }
