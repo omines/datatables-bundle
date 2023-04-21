@@ -77,10 +77,9 @@
                             data = null;
                             if (Object.keys(state).length) {
                                 var api = new $.fn.dataTable.Api( settings );
-                                var merged = $.extend(true, {}, api.state(), state);
-
+                                var merged = Object.assign({}, api.state(), state)
                                 api
-                                    .order(state.order ?? api.state().order)
+                                    .order(Array.isArray(merged.order) && merged.order.length > 0 ? merged.order : api.state().order)
                                     .search(merged.search.search)
                                     .page.len(merged.length)
                                     .page(merged.start / merged.length)
