@@ -5,6 +5,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 Nothing yet.
 
+## [0.7.2] - 2023-04-24
+### Fixed
+ - #299 Fix merging of api-state and persisted state (#300)
+ - #179 Add savestate for session and storage, also keep additional GET url-parameter (#297)
+
 ## [0.7.1] - 2022-12-01
 ### Fixed
  - Handle inconsistency in infinite page lengths
@@ -160,7 +165,8 @@ or break any applications.
 ### Added
  - Basic functionality
 
-[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.7.1...master
+[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.7.2...master
+[0.7.2]: https://github.com/omines/datatables-bundle/compare/0.7.1...0.7.2
 [0.7.1]: https://github.com/omines/datatables-bundle/compare/0.7.0...0.7.1
 [0.7.0]: https://github.com/omines/datatables-bundle/compare/0.6.0...0.7.0
 [0.6.0]: https://github.com/omines/datatables-bundle/compare/0.5.2...0.6.0
