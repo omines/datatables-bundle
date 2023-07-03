@@ -50,17 +50,11 @@ class ChoiceFilter extends AbstractFilter
         return $this->placeholder;
     }
 
-    /**
-     * @return mixed
-     */
     public function getChoices()
     {
         return $this->choices;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isValidValue($value): bool
     {
         return array_key_exists($value, $this->choices);

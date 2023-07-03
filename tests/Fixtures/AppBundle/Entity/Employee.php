@@ -48,9 +48,6 @@ class Employee extends Person
         $this->employedSince = $employedSince;
     }
 
-    /**
-     * @return mixed
-     */
     public function getEmployedSince()
     {
         return $this->employedSince;

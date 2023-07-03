@@ -349,7 +349,6 @@ class DataTable
     }
 
     /**
-     * @param $name
      * @return mixed|null
      */
     public function getOption($name): mixed

@@ -32,7 +32,7 @@ class DataTableState
     private $start = 0;
 
     /** @var ?int */
-    private $length = null;
+    private $length;
 
     /** @var string */
     private $globalSearch = '';
@@ -50,7 +50,7 @@ class DataTableState
     private $isCallback = false;
 
     /** @var ?string */
-    private $exporterName = null;
+    private $exporterName;
 
     /**
      * DataTableState constructor.

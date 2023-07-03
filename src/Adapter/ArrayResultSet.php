@@ -38,25 +38,16 @@ class ArrayResultSet implements ResultSetInterface
         $this->totalFilteredRows = $totalFilteredRows ?? $this->totalRows;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getTotalRecords(): int
     {
         return $this->totalRows;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getTotalDisplayRecords(): int
     {
         return $this->totalFilteredRows;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getData(): \Iterator
     {
         return new \ArrayIterator($this->data);

@@ -27,8 +27,6 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 class ExcelExporter implements DataTableExporterInterface
 {
     /**
-     * {@inheritdoc}
-     *
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     public function export(array $columnNames, \Iterator $data): \SplFileInfo
@@ -71,9 +69,6 @@ class ExcelExporter implements DataTableExporterInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getName(): string
     {
         return 'excel';

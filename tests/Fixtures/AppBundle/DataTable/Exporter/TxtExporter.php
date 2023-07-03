@@ -19,9 +19,6 @@ use Omines\DataTablesBundle\Exporter\DataTableExporterInterface;
  */
 class TxtExporter implements DataTableExporterInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function export(array $columnNames, \Iterator $data): \SplFileInfo
     {
         $filename = sys_get_temp_dir() . '/dt.txt';
@@ -38,9 +35,6 @@ class TxtExporter implements DataTableExporterInterface
         return new \SplFileInfo($filename);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getName(): string
     {
         return 'txt';

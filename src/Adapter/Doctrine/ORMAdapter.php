@@ -70,9 +70,6 @@ class ORMAdapter extends AbstractAdapter
         $this->registry = $registry;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function configure(array $options)
     {
         $resolver = new OptionsResolver();
@@ -82,9 +79,6 @@ class ORMAdapter extends AbstractAdapter
         $this->afterConfiguration($options);
     }
 
-    /**
-     * @param mixed $processor
-     */
     public function addCriteriaProcessor($processor)
     {
         $this->criteriaProcessors[] = $this->normalizeProcessor($processor);
@@ -150,9 +144,6 @@ class ORMAdapter extends AbstractAdapter
         return $aliases;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function mapPropertyPath(AdapterQuery $query, AbstractColumn $column)
     {
         return $this->mapFieldToPropertyPath($column->getField(), $query->get('aliases'));
@@ -211,8 +202,6 @@ class ORMAdapter extends AbstractAdapter
     }
 
     /**
-     * @param $identifier
-     *
      * @return int
      */
     protected function getCount(QueryBuilder $queryBuilder, $identifier)
@@ -234,7 +223,6 @@ class ORMAdapter extends AbstractAdapter
     }
 
     /**
-     * @param $identifier
      * @param Query\Expr\GroupBy[] $gbList
      *
      * @return bool

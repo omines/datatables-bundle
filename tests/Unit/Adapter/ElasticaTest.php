@@ -94,9 +94,9 @@ class ElasticaTest extends TestCase
 
         $this->assertTrue($table->handleRequest($request)->isCallback());
         $response = json_decode($table->getResponse()->getContent());
-//        $this->assertEquals(2, $response->recordsTotal);
-//        $this->assertEquals(2, $response->recordsFiltered);
-//        $this->assertCount(2, $response->data);
+        //        $this->assertEquals(2, $response->recordsTotal);
+        //        $this->assertEquals(2, $response->recordsFiltered);
+        //        $this->assertCount(2, $response->data);
     }
 
     /*
@@ -105,18 +105,18 @@ class ElasticaTest extends TestCase
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
-//    public function testMissingDependencyThrows()
-//    {
-//        foreach ($loaders = spl_autoload_functions() as $loader) {
-//            spl_autoload_unregister($loader);
-//        }
-//        spl_autoload_register(function($class) use ($loaders) {
-//            if ($class !== \Elastica\Client::class) {
-//                foreach ($loaders as $loader) {
-//                    call_user_func($loader, $class);
-//                }
-//            }
-//        }, true, true);
-//        (new ElasticaAdapter())->getData(new DataTableState(new DataTable()));
-//    }
+    //    public function testMissingDependencyThrows()
+    //    {
+    //        foreach ($loaders = spl_autoload_functions() as $loader) {
+    //            spl_autoload_unregister($loader);
+    //        }
+    //        spl_autoload_register(function($class) use ($loaders) {
+    //            if ($class !== \Elastica\Client::class) {
+    //                foreach ($loaders as $loader) {
+    //                    call_user_func($loader, $class);
+    //                }
+    //            }
+    //        }, true, true);
+    //        (new ElasticaAdapter())->getData(new DataTableState(new DataTable()));
+    //    }
 }

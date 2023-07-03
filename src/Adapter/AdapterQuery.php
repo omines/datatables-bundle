@@ -108,7 +108,6 @@ class AdapterQuery
     }
 
     /**
-     * @param mixed $default
      * @return mixed|null
      */
     public function get(string $key, $default = null)
@@ -116,9 +115,6 @@ class AdapterQuery
         return $this->data[$key] ?? $default;
     }
 
-    /**
-     * @param $value
-     */
     public function set(string $key, $value)
     {
         $this->data[$key] = $value;

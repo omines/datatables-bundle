@@ -58,7 +58,6 @@ abstract class AbstractColumn
      *
      * @param mixed|null $value The single value of the column, if mapping makes it possible to derive one
      * @param mixed|null $context All relevant data of the entire row
-     * @return mixed
      */
     public function transform($value = null, $context = null)
     {
@@ -75,7 +74,6 @@ abstract class AbstractColumn
     /**
      * Apply final modifications before rendering to result.
      *
-     * @param mixed $value
      * @param mixed $context All relevant data of the entire row
      * @return mixed|string
      */
@@ -94,7 +92,6 @@ abstract class AbstractColumn
      * The normalize function is responsible for converting parsed and processed data to a datatables-appropriate type.
      *
      * @param mixed $value The single value of the column
-     * @return mixed
      */
     abstract public function normalize($value);
 
@@ -235,9 +232,6 @@ abstract class AbstractColumn
         return $leftExpr;
     }
 
-    /**
-     * @return mixed
-     */
     public function getRightExpr($value)
     {
         $rightExpr = $this->options['rightExpr'];
@@ -278,7 +272,6 @@ abstract class AbstractColumn
     }
 
     /**
-     * @param mixed $value
      * @return $this
      */
     public function setOption(string $name, $value): self

@@ -42,9 +42,6 @@ class TextFilter extends AbstractFilter
         return $this->placeholder;
     }
 
-    /**
-     * @param $value
-     */
     public function isValidValue($value): bool
     {
         return true;

@@ -36,9 +36,6 @@ class TwigColumn extends AbstractColumn
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function render($value, $context)
     {
         return $this->twig->render($this->getTemplate(), [
@@ -48,17 +45,11 @@ class TwigColumn extends AbstractColumn
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function normalize($value)
     {
         return $value;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function configureOptions(OptionsResolver $resolver)
     {
         parent::configureOptions($resolver);

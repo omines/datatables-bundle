@@ -73,8 +73,5 @@ abstract class AbstractFilter
         return $this->operator;
     }
 
-    /**
-     * @param mixed $value
-     */
     abstract public function isValidValue($value): bool;
 }

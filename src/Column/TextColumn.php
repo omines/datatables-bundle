@@ -21,9 +21,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class TextColumn extends AbstractColumn
 {
-    /**
-     * {@inheritdoc}
-     */
     public function normalize($value): string
     {
         $value = (string) $value;
@@ -31,9 +28,6 @@ class TextColumn extends AbstractColumn
         return $this->isRaw() ? $value : htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function configureOptions(OptionsResolver $resolver)
     {
         parent::configureOptions($resolver);

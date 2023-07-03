@@ -21,9 +21,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class DateTimeColumn extends AbstractColumn
 {
-    /**
-     * {@inheritdoc}
-     */
     public function normalize($value)
     {
         if (null === $value) {
@@ -45,9 +42,6 @@ class DateTimeColumn extends AbstractColumn
         return $value->format($this->options['format']);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function configureOptions(OptionsResolver $resolver)
     {
         parent::configureOptions($resolver);

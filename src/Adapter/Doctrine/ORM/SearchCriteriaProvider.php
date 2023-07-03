@@ -24,9 +24,6 @@ use Omines\DataTablesBundle\DataTableState;
  */
 class SearchCriteriaProvider implements QueryBuilderProcessorInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function process(QueryBuilder $queryBuilder, DataTableState $state)
     {
         $this->processSearchColumns($queryBuilder, $state);

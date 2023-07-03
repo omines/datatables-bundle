@@ -29,18 +29,12 @@ class ArrayAdapter implements AdapterInterface
     /** @var PropertyAccessor */
     private $accessor;
 
-    /**
-     * {@inheritdoc}
-     */
     public function configure(array $options)
     {
         $this->data = $options;
         $this->accessor = PropertyAccess::createPropertyAccessor();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getData(DataTableState $state): ResultSetInterface
     {
         // very basic implementation of sorting

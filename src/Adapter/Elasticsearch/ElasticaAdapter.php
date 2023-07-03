@@ -32,9 +32,6 @@ class ElasticaAdapter extends AbstractAdapter
     /** @var array */
     private $indices = [];
 
-    /**
-     * {@inheritdoc}
-     */
     public function configure(array $options)
     {
         $resolver = new OptionsResolver();
@@ -45,9 +42,6 @@ class ElasticaAdapter extends AbstractAdapter
         $this->indices = (array) $options['index'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function prepareQuery(AdapterQuery $query)
     {
         if (!class_exists(\Elastica\Client::class)) {
@@ -62,17 +56,11 @@ class ElasticaAdapter extends AbstractAdapter
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function mapPropertyPath(AdapterQuery $query, AbstractColumn $column)
     {
         return "[{$column->getField()}]";
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getResults(AdapterQuery $query): \Traversable
     {
         $state = $query->getState();

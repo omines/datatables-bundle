@@ -55,9 +55,6 @@ class AutomaticQueryBuilder implements QueryBuilderProcessorInterface
         $this->entityShortName = mb_strtolower($this->metadata->getReflectionClass()->getShortName());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(QueryBuilder $builder, DataTableState $state)
     {
         if (empty($this->selectColumns) && empty($this->joins)) {

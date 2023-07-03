@@ -35,9 +35,6 @@ abstract class AbstractAdapter implements AdapterInterface
         $this->accessor = PropertyAccess::createPropertyAccessor();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     final public function getData(DataTableState $state): ResultSetInterface
     {
         $query = new AdapterQuery($state);

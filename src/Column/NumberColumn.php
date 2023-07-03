@@ -21,9 +21,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class NumberColumn extends AbstractColumn
 {
-    /**
-     * {@inheritdoc}
-     */
     public function normalize($value): string
     {
         $value = (string) $value;
@@ -34,9 +31,6 @@ class NumberColumn extends AbstractColumn
         return $this->isRaw() ? $value : (string) floatval($value);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function configureOptions(OptionsResolver $resolver)
     {
         parent::configureOptions($resolver);

@@ -53,9 +53,6 @@ class Instantiator
         return $this->getInstance($type, DataTableTypeInterface::class);
     }
 
-    /**
-     * @return mixed
-     */
     private function getInstance(string $type, string $baseType)
     {
         if (isset($this->locators[$baseType]) && $this->locators[$baseType]->has($type)) {
@@ -63,6 +60,6 @@ class Instantiator
         } elseif (class_exists($type) && is_subclass_of($type, $baseType)) {
             return new $type();
         }
-        throw new InvalidArgumentException(sprintf('Could not resolve type "%s" to a service or class, are you missing ' . 'a use statement? Or is it implemented but does it not correctly derive from "%s"?', $type, $baseType));
+        throw new InvalidArgumentException(sprintf('Could not resolve type "%s" to a service or class, are you missing a use statement? Or is it implemented but does it not correctly derive from "%s"?', $type, $baseType));
     }
 }
