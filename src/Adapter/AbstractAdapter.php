@@ -24,12 +24,8 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
  */
 abstract class AbstractAdapter implements AdapterInterface
 {
-    /** @var PropertyAccessor */
-    protected $accessor;
+    protected readonly PropertyAccessor $accessor;
 
-    /**
-     * AbstractAdapter constructor.
-     */
     public function __construct()
     {
         $this->accessor = PropertyAccess::createPropertyAccessor();
@@ -65,6 +61,9 @@ abstract class AbstractAdapter implements AdapterInterface
         return new ArrayResultSet($rows, $query->getTotalRows(), $query->getFilteredRows());
     }
 
+    /**
+     * @return array{AbstractColumn, string}[]
+     */
     protected function getPropertyMap(AdapterQuery $query): array
     {
         $propertyMap = [];
@@ -75,12 +74,9 @@ abstract class AbstractAdapter implements AdapterInterface
         return $propertyMap;
     }
 
-    abstract protected function prepareQuery(AdapterQuery $query);
+    abstract protected function prepareQuery(AdapterQuery $query): void;
 
-    /**
-     * @return string|null
-     */
-    abstract protected function mapPropertyPath(AdapterQuery $query, AbstractColumn $column);
+    abstract protected function mapPropertyPath(AdapterQuery $query, AbstractColumn $column): ?string;
 
     abstract protected function getResults(AdapterQuery $query): \Traversable;
 }

@@ -84,7 +84,7 @@ class ORMAdapter extends AbstractAdapter
         $this->criteriaProcessors[] = $this->normalizeProcessor($processor);
     }
 
-    protected function prepareQuery(AdapterQuery $query)
+    protected function prepareQuery(AdapterQuery $query): void
     {
         $state = $query->getState();
         $query->set('qb', $builder = $this->createQueryBuilder($state));
@@ -144,7 +144,7 @@ class ORMAdapter extends AbstractAdapter
         return $aliases;
     }
 
-    protected function mapPropertyPath(AdapterQuery $query, AbstractColumn $column)
+    protected function mapPropertyPath(AdapterQuery $query, AbstractColumn $column): ?string
     {
         return $this->mapFieldToPropertyPath($column->getField(), $query->get('aliases'));
     }
@@ -201,10 +201,7 @@ class ORMAdapter extends AbstractAdapter
         return $queryBuilder;
     }
 
-    /**
-     * @return int
-     */
-    protected function getCount(QueryBuilder $queryBuilder, $identifier)
+    protected function getCount(QueryBuilder $queryBuilder, $identifier): int
     {
         $qb = clone $queryBuilder;
 

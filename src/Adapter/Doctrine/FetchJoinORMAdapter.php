@@ -31,7 +31,7 @@ class FetchJoinORMAdapter extends ORMAdapter
 {
     protected $use_simple_total;
 
-    protected function configureOptions(OptionsResolver $resolver)
+    protected function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
 
@@ -43,8 +43,6 @@ class FetchJoinORMAdapter extends ORMAdapter
          * You can only use this option, if you did not apply any criteria to your total count.
          */
         $resolver->setDefault('simple_total_query', false);
-
-        return $resolver;
     }
 
     protected function afterConfiguration(array $options): void
@@ -54,7 +52,7 @@ class FetchJoinORMAdapter extends ORMAdapter
         $this->use_simple_total = $options['simple_total_query'];
     }
 
-    protected function prepareQuery(AdapterQuery $query)
+    protected function prepareQuery(AdapterQuery $query): void
     {
         $state = $query->getState();
         $query->set('qb', $builder = $this->createQueryBuilder($state));
@@ -119,7 +117,7 @@ class FetchJoinORMAdapter extends ORMAdapter
         }
     }
 
-    public function getCount(QueryBuilder $queryBuilder, $identifier)
+    public function getCount(QueryBuilder $queryBuilder, $identifier): int
     {
         $paginator = new Paginator($queryBuilder);
 

@@ -50,7 +50,7 @@ class DataTablesExtension extends AbstractExtension
     }
 
     /**
-     * @return array
+     * @return array<string, string>
      */
     private function getLanguageSettings(DataTable $dataTable)
     {

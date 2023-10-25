@@ -19,5 +19,5 @@ namespace Omines\DataTablesBundle;
  */
 interface DataTableTypeInterface
 {
-    public function configure(DataTable $dataTable, array $options);
+    public function configure(DataTable $dataTable, array $options): void;
 }

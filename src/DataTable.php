@@ -59,56 +59,35 @@ class DataTable
     public const SORT_ASCENDING = 'asc';
     public const SORT_DESCENDING = 'desc';
 
-    /** @var AdapterInterface */
-    protected $adapter;
+    protected ?AdapterInterface $adapter = null;
 
     /** @var AbstractColumn[] */
-    protected $columns = [];
+    protected array $columns = [];
 
     /** @var array<string, AbstractColumn> */
-    protected $columnsByName = [];
+    protected array $columnsByName = [];
+    protected EventDispatcherInterface $eventDispatcher;
+    protected DataTableExporterManager $exporterManager;
+    protected string $method = Request::METHOD_POST;
 
-    /** @var EventDispatcherInterface */
-    protected $eventDispatcher;
+    /** @var array<string, mixed> */
+    protected array $options;
+    protected bool $languageFromCDN = true;
+    protected string $name = 'dt';
+    protected string $persistState = 'fragment';
+    protected string $template = self::DEFAULT_TEMPLATE;
 
-    /** @var DataTableExporterManager */
-    protected $exporterManager;
-
-    /** @var string */
-    protected $method = Request::METHOD_POST;
-
-    /** @var array */
-    protected $options;
-
-    /** @var bool */
-    protected $languageFromCDN = true;
-
-    /** @var string */
-    protected $name = 'dt';
-
-    /** @var string */
-    protected $persistState = 'fragment';
-
-    /** @var string */
-    protected $template = self::DEFAULT_TEMPLATE;
-
-    /** @var array */
-    protected $templateParams = [];
+    /** @var array<string, mixed> */
+    protected array $templateParams = [];
 
     /** @var callable */
     protected $transformer;
 
-    /** @var string */
-    protected $translationDomain = 'messages';
+    protected string $translationDomain = 'messages';
 
-    /** @var DataTableRendererInterface */
-    private $renderer;
-
-    /** @var DataTableState */
-    private $state;
-
-    /** @var Instantiator */
-    private $instantiator;
+    private DataTableRendererInterface $renderer;
+    private ?DataTableState $state = null;
+    private Instantiator $instantiator;
 
     /**
      * DataTable constructor.
