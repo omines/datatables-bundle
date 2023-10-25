@@ -27,7 +27,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 class ExcelExporter implements DataTableExporterInterface
 {
     /**
-     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @param mixed[] $columnNames
      */
     public function export(array $columnNames, \Iterator $data): \SplFileInfo
     {
@@ -59,10 +59,8 @@ class ExcelExporter implements DataTableExporterInterface
 
     /**
      * Sets the columns width to automatically fit the contents.
-     *
-     * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
-    private function autoSizeColumnWidth(Worksheet $sheet)
+    private function autoSizeColumnWidth(Worksheet $sheet): void
     {
         foreach (range(1, Coordinate::columnIndexFromString($sheet->getHighestColumn(1))) as $column) {
             $sheet->getColumnDimension(Coordinate::stringFromColumnIndex($column))->setAutoSize(true);

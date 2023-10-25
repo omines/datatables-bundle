@@ -7,6 +7,9 @@
 This bundle provides convenient integration of the popular [DataTables](https://datatables.net/) jQuery library
 for realtime Ajax tables in your [Symfony](https://symfony.com/) 5.4+ or 6.0+ application.
 
+Already on Symfony 7.0 pre-release versions? Try out `dev-master` and 
+[help us out](https://github.com/omines/datatables-bundle/blob/master/CONTRIBUTING.md) if you run into problems.
+
 Unlike other bundles providing similar functionality we decoupled the implementation of the DataTables logic
 completely from the source of the data. Therefore it is possible to implement your own custom adapters for
 every possible data source. [Doctrine ORM](https://github.com/doctrine/DoctrineBundle), [MongoDB](https://github.com/mongodb/mongo-php-library) and [Elastica](https://github.com/ruflin/Elastica) come bundled. Handling other popular

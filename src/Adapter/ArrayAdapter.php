@@ -23,13 +23,11 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
  */
 class ArrayAdapter implements AdapterInterface
 {
-    /** @var array */
-    private $data = [];
+    /** @var mixed[] */
+    private array $data = [];
+    private PropertyAccessor $accessor;
 
-    /** @var PropertyAccessor */
-    private $accessor;
-
-    public function configure(array $options)
+    public function configure(array $options): void
     {
         $this->data = $options;
         $this->accessor = PropertyAccess::createPropertyAccessor();

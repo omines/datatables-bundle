@@ -4,3 +4,5 @@ parameters:
     - src
     excludePaths:
     - tests/Fixtures
+
+    checkGenericClassInNonGenericObjectType: false

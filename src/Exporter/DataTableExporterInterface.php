@@ -21,6 +21,8 @@ interface DataTableExporterInterface
 {
     /**
      * Exports the data from the DataTable to a file.
+     *
+     * @param mixed[] $columnNames
      */
     public function export(array $columnNames, \Iterator $data): \SplFileInfo;
 

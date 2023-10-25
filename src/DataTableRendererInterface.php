@@ -21,6 +21,8 @@ interface DataTableRendererInterface
 {
     /**
      * Provides the HTML layout of the configured datatable.
+     *
+     * @param array<string, mixed> $parameters
      */
     public function renderDataTable(DataTable $dataTable, string $template, array $parameters): string;
 }

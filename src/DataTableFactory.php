@@ -19,40 +19,29 @@ use Symfony\Component\HttpFoundation\Request;
 
 class DataTableFactory
 {
-    /** @var Instantiator */
-    protected $instantiator;
-
-    /** @var DataTableRendererInterface */
-    protected $renderer;
-
     /** @var array<string, DataTableTypeInterface> */
-    protected $resolvedTypes = [];
+    protected array $resolvedTypes = [];
 
-    /** @var array */
-    protected $config;
-
-    /** @var EventDispatcherInterface */
-    protected $eventDispatcher;
-
-    /** @var DataTableExporterManager */
-    protected $exporterManager;
+    /** @var array<string, mixed> */
+    protected array $config;
 
     /**
-     * DataTableFactory constructor.
+     * @param array<string, mixed> $config
      */
-    public function __construct(array $config, DataTableRendererInterface $renderer, Instantiator $instantiator, EventDispatcherInterface $eventDispatcher, DataTableExporterManager $exporterManager)
-    {
+    public function __construct(
+        array $config,
+        protected readonly DataTableRendererInterface $renderer,
+        protected readonly Instantiator $instantiator,
+        protected readonly EventDispatcherInterface $eventDispatcher,
+        protected readonly DataTableExporterManager $exporterManager,
+    ) {
         $this->config = $config;
-        $this->renderer = $renderer;
-        $this->instantiator = $instantiator;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->exporterManager = $exporterManager;
     }
 
     /**
-     * @return DataTable
+     * @param array<string, mixed> $options
      */
-    public function create(array $options = [])
+    public function create(array $options = []): DataTable
     {
         $config = $this->config;
 
@@ -67,10 +56,10 @@ class DataTableFactory
     }
 
     /**
-     * @param string|DataTableTypeInterface $type
-     * @return DataTable
+     * @param array<string, mixed> $typeOptions
+     * @param array<string, mixed> $options
      */
-    public function createFromType($type, array $typeOptions = [], array $options = [])
+    public function createFromType(DataTableTypeInterface|string $type, array $typeOptions = [], array $options = []): DataTable
     {
         $dataTable = $this->create($options);
 

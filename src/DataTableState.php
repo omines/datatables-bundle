@@ -31,6 +31,8 @@ class DataTableState
 
     /** @var array{column: AbstractColumn, search: string, isRegex: bool}[] */
     private array $searchColumns = [];
+
+    /** @var array{AbstractColumn, string}[] */
     private array $orderBy = [];
 
     private bool $isInitial = false;
@@ -182,11 +184,17 @@ class DataTableState
         return $this;
     }
 
+    /**
+     * @return array{AbstractColumn, string}[]
+     */
     public function getOrderBy(): array
     {
         return $this->orderBy;
     }
 
+    /**
+     * @param array{AbstractColumn, string}[] $orderBy
+     */
     public function setOrderBy(array $orderBy = []): self
     {
         $this->orderBy = $orderBy;
@@ -196,6 +204,8 @@ class DataTableState
 
     /**
      * Returns an array of column-level searches.
+     *
+     * @return array{column: AbstractColumn, search: string, isRegex: bool}[]
      */
     public function getSearchColumns(): array
     {

@@ -90,7 +90,7 @@ class DataTable
     private Instantiator $instantiator;
 
     /**
-     * DataTable constructor.
+     * @param array<string, mixed> $options
      */
     public function __construct(EventDispatcherInterface $eventDispatcher, DataTableExporterManager $exporterManager, array $options = [], Instantiator $instantiator = null)
     {
@@ -105,9 +105,9 @@ class DataTable
     }
 
     /**
-     * @return $this
+     * @param array<string, mixed> $options
      */
-    public function add(string $name, string $type, array $options = [])
+    public function add(string $name, string $type, array $options = []): static
     {
         // Ensure name is unique
         if (isset($this->columnsByName[$name])) {
@@ -155,6 +155,9 @@ class DataTable
         return $this;
     }
 
+    /**
+     * @param array<string, mixed> $options
+     */
     public function createAdapter(string $adapter, array $options = []): static
     {
         return $this->setAdapter($this->instantiator->getAdapter($adapter), $options);
@@ -216,10 +219,7 @@ class DataTable
         return $this->persistState;
     }
 
-    /**
-     * @return DataTableState|null
-     */
-    public function getState()
+    public function getState(): ?DataTableState
     {
         return $this->state;
     }
@@ -234,9 +234,6 @@ class DataTable
         return (null === $this->state) ? false : $this->state->isCallback();
     }
 
-    /**
-     * @return $this
-     */
     public function handleRequest(Request $request): self
     {
         switch ($this->getMethod()) {

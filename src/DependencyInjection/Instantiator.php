@@ -26,7 +26,7 @@ use Symfony\Component\DependencyInjection\ServiceLocator;
 class Instantiator
 {
     /** @var ServiceLocator[] */
-    private $locators;
+    private array $locators;
 
     /**
      * Instantiator constructor.
@@ -53,7 +53,7 @@ class Instantiator
         return $this->getInstance($type, DataTableTypeInterface::class);
     }
 
-    private function getInstance(string $type, string $baseType)
+    private function getInstance(string $type, string $baseType): AdapterInterface|AbstractColumn|DataTableTypeInterface
     {
         if (isset($this->locators[$baseType]) && $this->locators[$baseType]->has($type)) {
             return $this->locators[$baseType]->get($type);
