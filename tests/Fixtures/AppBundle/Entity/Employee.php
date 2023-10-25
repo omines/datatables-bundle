@@ -12,35 +12,21 @@ declare(strict_types=1);
 
 namespace Tests\Fixtures\AppBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\ManyToOne;
 
-/**
- * Employee.
- *
- * @author Niels Keurentjes <niels.keurentjes@omines.com>
- *
- * @ORM\Entity
- */
+#[Entity]
 class Employee extends Person
 {
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $employedSince;
+    #[Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTime $employedSince;
 
-    /**
-     * @var Company
-     *
-     * @ORM\ManyToOne(targetEntity="Company", inversedBy="employees")
-     */
-    private $company;
+    #[ManyToOne(targetEntity: Company::class, inversedBy: 'employees')]
+    private Company $company;
 
-    /**
-     * Person constructor.
-     */
-    public function __construct(string $firstName, string $lastName, \DateTime $employedSince = null, Company $company)
+    public function __construct(string $firstName, string $lastName, ?\DateTime $employedSince, Company $company)
     {
         parent::__construct($firstName, $lastName);
 
@@ -48,7 +34,7 @@ class Employee extends Person
         $this->employedSince = $employedSince;
     }
 
-    public function getEmployedSince()
+    public function getEmployedSince(): \DateTime
     {
         return $this->employedSince;
     }

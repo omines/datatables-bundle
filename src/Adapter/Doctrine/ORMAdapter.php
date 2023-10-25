@@ -173,8 +173,8 @@ class ORMAdapter extends AbstractAdapter
         $event = new ORMAdapterQueryEvent($query);
         $state->getDataTable()->getEventDispatcher()->dispatch($event, ORMAdapterEvents::PRE_QUERY);
 
-        foreach ($query->iterate([], $this->hydrationMode) as $result) {
-            yield $entity = array_values($result)[0];
+        foreach ($query->toIterable([], $this->hydrationMode) as $entity) {
+            yield $entity;
             if (Query::HYDRATE_OBJECT === $this->hydrationMode) {
                 $this->manager->detach($entity);
             }
@@ -190,7 +190,6 @@ class ORMAdapter extends AbstractAdapter
 
     protected function createQueryBuilder(DataTableState $state): QueryBuilder
     {
-        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->manager->createQueryBuilder();
 
         // Run all query builder processors in order

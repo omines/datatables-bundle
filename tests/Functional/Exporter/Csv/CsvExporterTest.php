@@ -23,8 +23,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
  */
 class CsvExporterTest extends WebTestCase
 {
-    /** @var KernelBrowser */
-    private $client;
+    private KernelBrowser $client;
 
     protected function setUp(): void
     {

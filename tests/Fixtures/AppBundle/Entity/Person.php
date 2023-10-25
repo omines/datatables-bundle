@@ -12,44 +12,24 @@ declare(strict_types=1);
 
 namespace Tests\Fixtures\AppBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\GeneratedValue;
+use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\InheritanceType;
 
-/**
- * Person.
- *
- * @author Niels Keurentjes <niels.keurentjes@omines.com>
- *
- * @ORM\Entity
- * @ORM\InheritanceType("JOINED")
- */
+#[Entity, InheritanceType('JOINED')]
 class Person
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    private $id;
+    #[Id, GeneratedValue(strategy: 'IDENTITY'), Column]
+    private int $id;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", nullable=false)
-     */
-    private $firstName;
+    #[Column]
+    private string $firstName;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", nullable=false)
-     */
-    private $lastName;
+    #[Column]
+    private string $lastName;
 
-    /**
-     * Person constructor.
-     */
     public function __construct(string $firstName, string $lastName)
     {
         $this->firstName = $firstName;

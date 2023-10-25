@@ -2,8 +2,10 @@ imports:
     - { resource: services.yml }
 
 framework:
-    annotations:
-        enabled: true
+    php_errors:
+        log: true
+    handle_all_throwables: true
+
     secret: '1234567890'
     router:
         utf8: true
@@ -32,12 +34,17 @@ doctrine:
         auto_generate_proxy_classes: '%kernel.debug%'
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         auto_mapping: true
+        report_fields_where_declared: true
         query_cache_driver:
             type: pool
             pool: doctrine.system_cache_pool
         result_cache_driver:
             type: pool
             pool: doctrine.result_cache_pool
+
+        mappings:
+            AppBundle:
+                type: attribute
 
 twig:
     debug: '%kernel.debug%'

@@ -13,43 +13,26 @@ declare(strict_types=1);
 namespace Tests\Fixtures\AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\GeneratedValue;
+use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\OneToMany;
 
-/**
- * Company.
- *
- * @author Niels Keurentjes <niels.keurentjes@omines.com>
- *
- * @ORM\Entity
- */
+#[Entity]
 class Company
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    private $id;
+    #[Id, GeneratedValue(strategy: 'IDENTITY'), Column]
+    private int $id;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", nullable=false)
-     */
-    private $name;
+    #[Column]
+    private string $name;
 
-    /**
-     * @var ArrayCollection|array
-     *
-     * @ORM\OneToMany(targetEntity="Employee", mappedBy="company")
-     */
-    private $employees;
+    /** @var Collection<Employee> */
+    #[OneToMany(mappedBy: 'company', targetEntity: Employee::class)]
+    private Collection $employees;
 
-    /**
-     * Company constructor.
-     */
     public function __construct(string $name)
     {
         $this->name = $name;
@@ -67,17 +50,14 @@ class Company
     }
 
     /**
-     * @return Person[]|ArrayCollection
+     * @return Collection<Employee>
      */
-    public function getEmployees()
+    public function getEmployees(): Collection
     {
         return $this->employees;
     }
 
-    /**
-     * @return $this
-     */
-    public function setName(string $name): Company
+    public function setName(string $name): static
     {
         $this->name = $name;
 
