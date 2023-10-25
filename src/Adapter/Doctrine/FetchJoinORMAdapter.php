@@ -28,7 +28,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * @author Jan Böhmer
  *
  * @phpstan-import-type ORMOptions from ORMAdapter
- * @phpstan-type FetchJoinORMOptions array{simple_total_query: bool}
+ * @phpstan-type FetchJoinORMOptions ORMOptions&array{simple_total_query: bool}
+ *
+ * The above doesn't work yet in PHPstan, see tracker issue at https://github.com/phpstan/phpstan/issues/4703
  */
 class FetchJoinORMAdapter extends ORMAdapter
 {
@@ -55,6 +57,7 @@ class FetchJoinORMAdapter extends ORMAdapter
     {
         parent::afterConfiguration($options);
 
+        /* @phpstan-ignore-next-line See comment at top of class */
         $this->useSimpleTotal = $options['simple_total_query'];
     }
 

@@ -22,16 +22,18 @@ use Symfony\Component\DependencyInjection\ServiceLocator;
  * The instantiator service handles lazy instantiation of services and/or ad hoc instantiation of objects.
  *
  * @author Niels Keurentjes <niels.keurentjes@omines.com>
+ *
+ * @phpstan-type SupportedTypes AdapterInterface|AbstractColumn|DataTableTypeInterface
  */
 class Instantiator
 {
-    /** @var ServiceLocator[] */
+    /** @var ServiceLocator<SupportedTypes>[] */
     private array $locators;
 
     /**
      * Instantiator constructor.
      *
-     * @param ServiceLocator[] $locators
+     * @param ServiceLocator<SupportedTypes>[] $locators
      */
     public function __construct(array $locators = [])
     {
@@ -61,15 +63,16 @@ class Instantiator
     private function getInstance(string $type, string $baseType)
     {
         if (isset($this->locators[$baseType]) && $this->locators[$baseType]->has($type)) {
-            return $this->locators[$baseType]->get($type);
-        } elseif (class_exists($type) && is_subclass_of($type, $baseType)) {
+            $instance = $this->locators[$baseType]->get($type);
+        } elseif (class_exists($type)) {
             $instance = new $type();
-            if (!$instance instanceof $baseType) {
-                throw new InvalidArgumentException(sprintf('Class "%s" must implement/extend %s', $type, $baseType));
-            }
-
-            return $instance;
+        } else {
+            throw new InvalidArgumentException(sprintf('Could not resolve type "%s" to a service or class, are you missing a use statement? Or is it implemented but does it not correctly derive from "%s"?', $type, $baseType));
         }
-        throw new InvalidArgumentException(sprintf('Could not resolve type "%s" to a service or class, are you missing a use statement? Or is it implemented but does it not correctly derive from "%s"?', $type, $baseType));
+        if (!$instance instanceof $baseType) {
+            throw new InvalidArgumentException(sprintf('Class "%s" must implement/extend %s', $type, $baseType));
+        }
+
+        return $instance;
     }
 }

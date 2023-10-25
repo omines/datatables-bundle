@@ -45,8 +45,7 @@ interface_exists(QueryBuilderProcessorInterface::class);
  * @author Robbert Beesems <robbert.beesems@omines.com>
  *
  * @phpstan-type HydrationMode AbstractQuery::HYDRATE_*
- * @phpstan-type Processor QueryBuilderProcessorInterface|QueryBuilderProcessorInterface[]|callable
- * @phpstan-type ORMOptions array{entity: class-string, hydrate: HydrationMode, query: Processor, criteria: Processor}
+ * @phpstan-type ORMOptions array{entity: class-string, hydrate: HydrationMode, query: QueryBuilderProcessorInterface[], criteria: QueryBuilderProcessorInterface[]}
  */
 class ORMAdapter extends AbstractAdapter
 {
@@ -73,10 +72,15 @@ class ORMAdapter extends AbstractAdapter
         $this->registry = $registry;
     }
 
+    /**
+     * @param array<string, mixed> $options
+     */
     public function configure(array $options): void
     {
         $resolver = new OptionsResolver();
         $this->configureOptions($resolver);
+
+        /** @var ORMOptions $options */
         $options = $resolver->resolve($options);
 
         $this->afterConfiguration($options);
@@ -126,6 +130,7 @@ class ORMAdapter extends AbstractAdapter
 
         /** @var Query\Expr\From $from */
         foreach ($builder->getDQLPart('from') as $from) {
+            /* @phpstan-ignore-next-line */
             $aliases[$from->getAlias()] = [null, $this->manager->getMetadataFactory()->getMetadataFor($from->getFrom())];
         }
 

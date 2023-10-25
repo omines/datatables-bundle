@@ -1,5 +1,5 @@
 parameters:
-    level: 6
+    level: 7
     paths:
         - src
     excludePaths:
@@ -7,7 +7,3 @@ parameters:
         - src/Adapter/Elasticsearch
         - src/Adapter/MongoDB
 
-        # Fixture is messy
-        - tests/Fixtures
-
-    checkGenericClassInNonGenericObjectType: false

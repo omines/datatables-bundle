@@ -62,7 +62,7 @@ abstract class AbstractAdapter implements AdapterInterface
     }
 
     /**
-     * @return array{AbstractColumn, string}[]
+     * @return array{AbstractColumn, ?string}[]
      */
     protected function getPropertyMap(AdapterQuery $query): array
     {
