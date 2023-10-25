@@ -3,7 +3,16 @@ All notable changes to `omines\datatables-bundle` will be documented in this fil
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
-Nothing yet.
+### Added
+ - Support Symfony 7.0 in dependencies
+
+### Changed
+ - Fix deprecations
+ - Add parameter and return types all over for static analysis purposes
+
+### Breaking
+ - EOL: Drop PHP <8.1 support
+ - EOL: Drop Symfony <6.3 support
 
 ## [0.7.2] - 2023-04-24
 ### Fixed
