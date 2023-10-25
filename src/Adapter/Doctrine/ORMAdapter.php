@@ -31,6 +31,9 @@ use Omines\DataTablesBundle\Exception\MissingDependencyException;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+// Help opcache.preload discover always-needed symbols
+interface_exists(QueryBuilderProcessorInterface::class);
+
 /**
  * ORMAdapter.
  *
