@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\ParameterBag;
  *
  * @author Robbert Beesems <robbert.beesems@omines.com>
  */
-class DataTableState
+final class DataTableState
 {
     private DataTable $dataTable;
 
@@ -29,7 +29,7 @@ class DataTableState
     private ?int $length = null;
     private string $globalSearch = '';
 
-    /** @var array{column: AbstractColumn, search: string, isRegex: bool}[] */
+    /** @var array{column: AbstractColumn, search: string, regex: bool}[] */
     private array $searchColumns = [];
 
     /** @var array{AbstractColumn, string}[] */
@@ -50,9 +50,9 @@ class DataTableState
     /**
      * Constructs a state based on the default options.
      */
-    public static function fromDefaults(DataTable $dataTable): self
+    public static function fromDefaults(DataTable $dataTable): static
     {
-        $state = new self($dataTable);
+        $state = new static($dataTable);
         $state->start = (int) $dataTable->getOption('start');
         $state->length = (int) $dataTable->getOption('pageLength');
 
@@ -136,7 +136,7 @@ class DataTableState
         return $this->start;
     }
 
-    public function setStart(int $start): self
+    public function setStart(int $start): static
     {
         if ($start < 0) {
             @trigger_error(sprintf('Passing a negative value to the "%s::setStart()" method makes no logical sense, defaulting to 0 as the most sane default.', self::class), \E_USER_DEPRECATED);
@@ -153,7 +153,7 @@ class DataTableState
         return $this->length;
     }
 
-    public function setLength(?int $length): self
+    public function setLength(?int $length): static
     {
         if (is_integer($length) && $length < 1) {
             @trigger_error(sprintf('Calling the "%s::setLength()" method with a length less than 1 is deprecated since version 0.7 of this bundle. If you need to unrestrict the amount of records returned, pass null instead.', self::class), \E_USER_DEPRECATED);
@@ -170,14 +170,14 @@ class DataTableState
         return $this->globalSearch;
     }
 
-    public function setGlobalSearch(string $globalSearch): self
+    public function setGlobalSearch(string $globalSearch): static
     {
         $this->globalSearch = $globalSearch;
 
         return $this;
     }
 
-    public function addOrderBy(AbstractColumn $column, string $direction = DataTable::SORT_ASCENDING): self
+    public function addOrderBy(AbstractColumn $column, string $direction = DataTable::SORT_ASCENDING): static
     {
         $this->orderBy[] = [$column, $direction];
 
@@ -195,7 +195,7 @@ class DataTableState
     /**
      * @param array{AbstractColumn, string}[] $orderBy
      */
-    public function setOrderBy(array $orderBy = []): self
+    public function setOrderBy(array $orderBy = []): static
     {
         $this->orderBy = $orderBy;
 
@@ -205,14 +205,14 @@ class DataTableState
     /**
      * Returns an array of column-level searches.
      *
-     * @return array{column: AbstractColumn, search: string, isRegex: bool}[]
+     * @return array{column: AbstractColumn, search: string, regex: bool}[]
      */
     public function getSearchColumns(): array
     {
         return $this->searchColumns;
     }
 
-    public function setColumnSearch(AbstractColumn $column, string $search, bool $isRegex = false): self
+    public function setColumnSearch(AbstractColumn $column, string $search, bool $isRegex = false): static
     {
         $this->searchColumns[$column->getName()] = ['column' => $column, 'search' => $search, 'regex' => $isRegex];
 

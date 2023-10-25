@@ -53,12 +53,22 @@ class Instantiator
         return $this->getInstance($type, DataTableTypeInterface::class);
     }
 
-    private function getInstance(string $type, string $baseType): AdapterInterface|AbstractColumn|DataTableTypeInterface
+    /**
+     * @template T
+     * @param class-string<T> $baseType
+     * @return T
+     */
+    private function getInstance(string $type, string $baseType)
     {
         if (isset($this->locators[$baseType]) && $this->locators[$baseType]->has($type)) {
             return $this->locators[$baseType]->get($type);
         } elseif (class_exists($type) && is_subclass_of($type, $baseType)) {
-            return new $type();
+            $instance = new $type();
+            if (!$instance instanceof $baseType) {
+                throw new InvalidArgumentException(sprintf('Class "%s" must implement/extend %s', $type, $baseType));
+            }
+
+            return $instance;
         }
         throw new InvalidArgumentException(sprintf('Could not resolve type "%s" to a service or class, are you missing a use statement? Or is it implemented but does it not correctly derive from "%s"?', $type, $baseType));
     }

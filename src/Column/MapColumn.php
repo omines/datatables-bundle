@@ -21,12 +21,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class MapColumn extends TextColumn
 {
-    public function normalize($value): string
+    public function normalize(mixed $value): string
     {
         return parent::normalize($this->options['map'][$value] ?? $this->options['default'] ?? $value);
     }
 
-    protected function configureOptions(OptionsResolver $resolver)
+    protected function configureOptions(OptionsResolver $resolver): static
     {
         parent::configureOptions($resolver);
 

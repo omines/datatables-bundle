@@ -25,7 +25,9 @@ class CsvExporter implements DataTableExporterInterface
     {
         $filePath = sys_get_temp_dir() . '/' . uniqid('dt') . '.csv';
 
-        $file = fopen($filePath, 'w');
+        if (false === ($file = fopen($filePath, 'w'))) {
+            throw new \RuntimeException('Failed to create temporary file at ' . $filePath);
+        }
 
         fputcsv($file, $columnNames);
 

@@ -21,7 +21,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class BoolColumn extends AbstractColumn
 {
-    public function normalize($value): string
+    public function normalize(mixed $value): string
     {
         if (null === $value) {
             return $this->getNullValue();
@@ -30,7 +30,7 @@ class BoolColumn extends AbstractColumn
         return ((bool) $value) ? $this->getTrueValue() : $this->getFalseValue();
     }
 
-    protected function configureOptions(OptionsResolver $resolver)
+    protected function configureOptions(OptionsResolver $resolver): static
     {
         parent::configureOptions($resolver);
 
@@ -69,11 +69,7 @@ class BoolColumn extends AbstractColumn
         return $this->options['nullValue'];
     }
 
-    /**
-     * @param string $value
-     * @return bool
-     */
-    public function isValidForSearch($value)
+    public function isValidForSearch(string $value): bool
     {
         $value = trim(mb_strtolower($value));
 

@@ -134,7 +134,7 @@ class DataTable
      *
      * @return $this
      */
-    public function addEventListener(string $eventName, callable $listener, int $priority = 0): self
+    public function addEventListener(string $eventName, callable $listener, int $priority = 0): static
     {
         $this->eventDispatcher->addListener($eventName, $listener, $priority);
 
@@ -234,7 +234,7 @@ class DataTable
         return (null === $this->state) ? false : $this->state->isCallback();
     }
 
-    public function handleRequest(Request $request): self
+    public function handleRequest(Request $request): static
     {
         switch ($this->getMethod()) {
             case Request::METHOD_GET:
@@ -285,6 +285,9 @@ class DataTable
         return new JsonResponse($response);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getInitialResponse(): array
     {
         return array_merge($this->getOptions(), [
@@ -311,27 +314,27 @@ class DataTable
         return $this->adapter->getData($this->state);
     }
 
-    /**
-     * @return callable|null
-     */
-    public function getTransformer()
+    public function getTransformer(): ?callable
     {
         return $this->transformer;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getOptions(): array
     {
         return $this->options;
     }
 
-    /**
-     * @return mixed|null
-     */
-    public function getOption($name): mixed
+    public function getOption(string $name): mixed
     {
         return $this->options[$name] ?? null;
     }
 
+    /**
+     * @param ?array<string, mixed> $options
+     */
     public function setAdapter(AdapterInterface $adapter, array $options = null): static
     {
         if (null !== $options) {
@@ -342,50 +345,35 @@ class DataTable
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function setLanguageFromCDN(bool $languageFromCDN): self
+    public function setLanguageFromCDN(bool $languageFromCDN): static
     {
         $this->languageFromCDN = $languageFromCDN;
 
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function setMethod(string $method): self
+    public function setMethod(string $method): static
     {
         $this->method = $method;
 
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function setPersistState(string $persistState): self
+    public function setPersistState(string $persistState): static
     {
         $this->persistState = $persistState;
 
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function setRenderer(DataTableRendererInterface $renderer): self
+    public function setRenderer(DataTableRendererInterface $renderer): static
     {
         $this->renderer = $renderer;
 
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function setName(string $name): self
+    public function setName(string $name): static
     {
         if (empty($name)) {
             throw new InvalidArgumentException('DataTable name cannot be empty');
@@ -396,9 +384,9 @@ class DataTable
     }
 
     /**
-     * @return $this
+     * @param array<string, mixed> $parameters
      */
-    public function setTemplate(string $template, array $parameters = []): self
+    public function setTemplate(string $template, array $parameters = []): static
     {
         $this->template = $template;
         $this->templateParams = $parameters;
@@ -406,10 +394,7 @@ class DataTable
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function setTranslationDomain(string $translationDomain): self
+    public function setTranslationDomain(string $translationDomain): static
     {
         $this->translationDomain = $translationDomain;
 

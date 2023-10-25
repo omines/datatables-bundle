@@ -23,12 +23,8 @@ use Twig\Environment;
  */
 class TwigColumn extends AbstractColumn
 {
-    /** @var Environment */
-    protected $twig;
+    protected Environment $twig;
 
-    /**
-     * TwigColumn constructor.
-     */
     public function __construct(Environment $twig = null)
     {
         if (null === ($this->twig = $twig)) {
@@ -36,7 +32,7 @@ class TwigColumn extends AbstractColumn
         }
     }
 
-    protected function render($value, $context)
+    protected function render($value, $context): mixed
     {
         return $this->twig->render($this->getTemplate(), [
             'row' => $context,
@@ -45,12 +41,12 @@ class TwigColumn extends AbstractColumn
         ]);
     }
 
-    public function normalize($value)
+    public function normalize(mixed $value): mixed
     {
         return $value;
     }
 
-    protected function configureOptions(OptionsResolver $resolver)
+    protected function configureOptions(OptionsResolver $resolver): static
     {
         parent::configureOptions($resolver);
 

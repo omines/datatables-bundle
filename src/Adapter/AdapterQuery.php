@@ -62,7 +62,7 @@ class AdapterQuery
      * @param int|null $totalRows
      * @return $this
      */
-    public function setTotalRows($totalRows): self
+    public function setTotalRows($totalRows): static
     {
         $this->totalRows = $totalRows;
 
@@ -81,7 +81,7 @@ class AdapterQuery
      * @param int|null $filteredRows
      * @return $this
      */
-    public function setFilteredRows($filteredRows): self
+    public function setFilteredRows($filteredRows): static
     {
         $this->filteredRows = $filteredRows;
 
@@ -100,7 +100,7 @@ class AdapterQuery
      * @param string|null $identifierPropertyPath
      * @return $this
      */
-    public function setIdentifierPropertyPath($identifierPropertyPath): self
+    public function setIdentifierPropertyPath($identifierPropertyPath): static
     {
         $this->identifierPropertyPath = $identifierPropertyPath;
 
