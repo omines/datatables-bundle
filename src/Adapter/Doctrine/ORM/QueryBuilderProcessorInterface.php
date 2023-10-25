@@ -22,5 +22,5 @@ use Omines\DataTablesBundle\DataTableState;
  */
 interface QueryBuilderProcessorInterface
 {
-    public function process(QueryBuilder $queryBuilder, DataTableState $state);
+    public function process(QueryBuilder $queryBuilder, DataTableState $state): void;
 }

@@ -78,5 +78,8 @@ abstract class AbstractAdapter implements AdapterInterface
 
     abstract protected function mapPropertyPath(AdapterQuery $query, AbstractColumn $column): ?string;
 
+    /**
+     * @return \Traversable<mixed[]>
+     */
     abstract protected function getResults(AdapterQuery $query): \Traversable;
 }

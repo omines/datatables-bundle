@@ -71,9 +71,11 @@ class ArrayAdapter implements AdapterInterface
     }
 
     /**
-     * @return \Generator
+     * @param mixed[][] $data
+     * @param array<string, string> $map
+     * @return \Generator<mixed[]>
      */
-    protected function processData(DataTableState $state, array $data, array $map)
+    protected function processData(DataTableState $state, array $data, array $map): \Generator
     {
         $transformer = $state->getDataTable()->getTransformer();
         $search = $state->getGlobalSearch() ?: '';
@@ -88,9 +90,11 @@ class ArrayAdapter implements AdapterInterface
     }
 
     /**
-     * @return array|null
+     * @param mixed[] $result
+     * @param array<string, string> $map
+     * @return mixed[]|null
      */
-    protected function processRow(DataTableState $state, array $result, array $map, string $search)
+    protected function processRow(DataTableState $state, array $result, array $map, string $search): ?array
     {
         $row = [];
         $match = empty($search);

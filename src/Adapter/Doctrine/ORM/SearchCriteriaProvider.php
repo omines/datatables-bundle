@@ -24,13 +24,13 @@ use Omines\DataTablesBundle\DataTableState;
  */
 class SearchCriteriaProvider implements QueryBuilderProcessorInterface
 {
-    public function process(QueryBuilder $queryBuilder, DataTableState $state)
+    public function process(QueryBuilder $queryBuilder, DataTableState $state): void
     {
         $this->processSearchColumns($queryBuilder, $state);
         $this->processGlobalSearch($queryBuilder, $state);
     }
 
-    private function processSearchColumns(QueryBuilder $queryBuilder, DataTableState $state)
+    private function processSearchColumns(QueryBuilder $queryBuilder, DataTableState $state): void
     {
         foreach ($state->getSearchColumns() as $searchInfo) {
             /** @var AbstractColumn $column */
@@ -49,7 +49,7 @@ class SearchCriteriaProvider implements QueryBuilderProcessorInterface
         }
     }
 
-    private function processGlobalSearch(QueryBuilder $queryBuilder, DataTableState $state)
+    private function processGlobalSearch(QueryBuilder $queryBuilder, DataTableState $state): void
     {
         if (!empty($globalSearch = $state->getGlobalSearch())) {
             $expr = $queryBuilder->expr();

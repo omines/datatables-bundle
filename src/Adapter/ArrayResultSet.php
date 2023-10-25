@@ -16,20 +16,18 @@ namespace Omines\DataTablesBundle\Adapter;
  * ArrayResultSet.
  *
  * @author Niels Keurentjes <niels.keurentjes@omines.com>
+ *
+ * @phpstan-type Row array<string, mixed>
  */
 class ArrayResultSet implements ResultSetInterface
 {
-    /** @var array */
-    private $data;
-
-    /** @var int */
-    private $totalRows;
-
-    /** @var int */
-    private $totalFilteredRows;
+    /** @var Row[] */
+    private array $data;
+    private int $totalRows;
+    private int $totalFilteredRows;
 
     /**
-     * ArrayResultSet constructor.
+     * @param Row[] $data
      */
     public function __construct(array $data, int $totalRows = null, int $totalFilteredRows = null)
     {

@@ -1,8 +1,13 @@
 parameters:
-    level: 5
+    level: 6
     paths:
-    - src
+        - src
     excludePaths:
-    - tests/Fixtures
+        # We're not really testing these 2 barely supported adapters
+        - src/Adapter/Elasticsearch
+        - src/Adapter/MongoDB
+
+        # Fixture is messy
+        - tests/Fixtures
 
     checkGenericClassInNonGenericObjectType: false

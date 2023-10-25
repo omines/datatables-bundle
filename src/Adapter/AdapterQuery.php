@@ -22,27 +22,15 @@ use Omines\DataTablesBundle\DataTableState;
  */
 class AdapterQuery
 {
-    /** @var DataTableState */
-    private $state;
-
-    /** @var int|null */
-    private $totalRows;
-
-    /** @var int|null */
-    private $filteredRows;
-
-    /** @var string|null */
-    private $identifierPropertyPath;
+    private ?int $totalRows;
+    private ?int $filteredRows;
+    private ?string $identifierPropertyPath = null;
 
     /** @var array<string, mixed> */
-    private $data;
+    private array $data;
 
-    /**
-     * AdapterQuery constructor.
-     */
-    public function __construct(DataTableState $state)
+    public function __construct(private readonly DataTableState $state)
     {
-        $this->state = $state;
     }
 
     public function getState(): DataTableState
@@ -50,57 +38,36 @@ class AdapterQuery
         return $this->state;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getTotalRows()
+    public function getTotalRows(): ?int
     {
         return $this->totalRows;
     }
 
-    /**
-     * @param int|null $totalRows
-     * @return $this
-     */
-    public function setTotalRows($totalRows): static
+    public function setTotalRows(?int $totalRows): static
     {
         $this->totalRows = $totalRows;
 
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getFilteredRows()
+    public function getFilteredRows(): ?int
     {
         return $this->filteredRows;
     }
 
-    /**
-     * @param int|null $filteredRows
-     * @return $this
-     */
-    public function setFilteredRows($filteredRows): static
+    public function setFilteredRows(?int $filteredRows): static
     {
         $this->filteredRows = $filteredRows;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getIdentifierPropertyPath()
+    public function getIdentifierPropertyPath(): ?string
     {
         return $this->identifierPropertyPath;
     }
 
-    /**
-     * @param string|null $identifierPropertyPath
-     * @return $this
-     */
-    public function setIdentifierPropertyPath($identifierPropertyPath): static
+    public function setIdentifierPropertyPath(?string $identifierPropertyPath): static
     {
         $this->identifierPropertyPath = $identifierPropertyPath;
 
@@ -108,14 +75,16 @@ class AdapterQuery
     }
 
     /**
-     * @return mixed|null
+     * @template T
+     * @param T $default
+     * @return T|mixed
      */
-    public function get(string $key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         return $this->data[$key] ?? $default;
     }
 
-    public function set(string $key, $value)
+    public function set(string $key, mixed $value): void
     {
         $this->data[$key] = $value;
     }

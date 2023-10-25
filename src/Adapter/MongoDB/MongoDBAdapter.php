@@ -34,11 +34,9 @@ class MongoDBAdapter extends AbstractAdapter
         DataTable::SORT_DESCENDING => -1,
     ];
 
-    /** @var Collection */
-    private $collection;
+    private Collection $collection;
 
-    /** @var array */
-    private $filters;
+    private array $filters;
 
     public function configure(array $options): void
     {
@@ -66,6 +64,9 @@ class MongoDBAdapter extends AbstractAdapter
         return '[' . implode('][', explode('.', $column->getField())) . ']';
     }
 
+    /**
+     * @return \Traversable<BSONDocument>
+     */
     protected function getResults(AdapterQuery $query): \Traversable
     {
         $state = $query->getState();

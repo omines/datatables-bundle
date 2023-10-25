@@ -30,6 +30,7 @@
     "require-dev": {
         "ext-curl": "*",
         "ext-json": "*",
+        "ext-mongodb": "*",
         "ext-pdo_sqlite": "*",
         "ext-zip": "*",
         "doctrine/common": "^2.6|^3.3",
