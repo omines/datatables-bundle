@@ -23,13 +23,14 @@ use Twig\Environment;
  */
 class TwigColumn extends AbstractColumn
 {
-    protected Environment $twig;
+    protected readonly Environment $twig;
 
     public function __construct(Environment $twig = null)
     {
-        if (null === ($this->twig = $twig)) {
+        if (null === $twig) {
             throw new MissingDependencyException('You must have TwigBundle installed to use ' . static::class);
         }
+        $this->twig = $twig;
     }
 
     protected function render($value, $context): mixed

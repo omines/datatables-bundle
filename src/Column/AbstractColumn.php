@@ -138,7 +138,7 @@ abstract class AbstractColumn
         return $this->name;
     }
 
-    public function getLabel(): ?string
+    public function getLabel(): string
     {
         return $this->options['label'] ?? "{$this->dataTable->getName()}.columns.{$this->getName()}";
     }
@@ -173,9 +173,9 @@ abstract class AbstractColumn
         return $this->options['orderable'] ?? !empty($this->getOrderField());
     }
 
-    public function getFilter(): AbstractFilter
+    public function getFilter(): ?AbstractFilter
     {
-        return $this->options['filter'];
+        return $this->options['filter'] ?? null;
     }
 
     public function getOrderField(): ?string
@@ -188,7 +188,7 @@ abstract class AbstractColumn
         return $this->options['globalSearchable'] ?? $this->isSearchable();
     }
 
-    public function getLeftExpr(): string
+    public function getLeftExpr(): mixed
     {
         $leftExpr = $this->options['leftExpr'];
         if (null === $leftExpr) {
@@ -201,7 +201,7 @@ abstract class AbstractColumn
         return $leftExpr;
     }
 
-    public function getRightExpr(mixed $value): string
+    public function getRightExpr(mixed $value): mixed
     {
         $rightExpr = $this->options['rightExpr'];
         if (null === $rightExpr) {
@@ -219,9 +219,9 @@ abstract class AbstractColumn
         return $this->options['operator'];
     }
 
-    public function getClassName(): string
+    public function getClassName(): ?string
     {
-        return $this->options['className'];
+        return $this->options['className'] ?? null;
     }
 
     public function getDataTable(): DataTable
@@ -241,7 +241,7 @@ abstract class AbstractColumn
         return $this;
     }
 
-    public function isValidForSearch(string $value): bool
+    public function isValidForSearch(mixed $value): bool
     {
         return true;
     }

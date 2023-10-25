@@ -69,7 +69,7 @@ class BoolColumn extends AbstractColumn
         return $this->options['nullValue'];
     }
 
-    public function isValidForSearch(string $value): bool
+    public function isValidForSearch(mixed $value): bool
     {
         $value = trim(mb_strtolower($value));
 

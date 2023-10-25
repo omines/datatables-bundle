@@ -32,7 +32,7 @@ class ElasticaAdapter extends AbstractAdapter
     /** @var array<string, mixed> */
     private array $indices = [];
 
-    public function configure(array $options)
+    public function configure(array $options): void
     {
         $resolver = new OptionsResolver();
         $this->configureOptions($resolver);

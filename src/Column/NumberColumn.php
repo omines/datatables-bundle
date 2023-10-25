@@ -48,7 +48,7 @@ class NumberColumn extends AbstractColumn
         return $this->options['raw'];
     }
 
-    public function isValidForSearch(string $value): bool
+    public function isValidForSearch(mixed $value): bool
     {
         return is_numeric($value);
     }

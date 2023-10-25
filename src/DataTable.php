@@ -219,9 +219,14 @@ class DataTable
         return $this->persistState;
     }
 
-    public function getState(): ?DataTableState
+    public function getState(): DataTableState
     {
-        return $this->state;
+        return $this->state ?? throw new InvalidStateException('The DataTable does not know its state yet, did you call handleRequest?');
+    }
+
+    public function hasState(): bool
+    {
+        return null !== $this->state;
     }
 
     public function getTranslationDomain(): string
@@ -258,9 +263,7 @@ class DataTable
 
     public function getResponse(): Response
     {
-        if (null === $this->state) {
-            throw new InvalidStateException('The DataTable does not know its state yet, did you call handleRequest?');
-        }
+        $state = $this->getState();
 
         // Server side export
         if (null !== $this->state->getExporterName()) {

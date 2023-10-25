@@ -73,7 +73,7 @@ class ORMAdapter extends AbstractAdapter
         $this->registry = $registry;
     }
 
-    public function configure(array $options)
+    public function configure(array $options): void
     {
         $resolver = new OptionsResolver();
         $this->configureOptions($resolver);

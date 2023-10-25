@@ -23,8 +23,10 @@ interface AdapterInterface
 {
     /**
      * Provides initial configuration to the adapter.
+     *
+     * @param array<string, mixed> $options Adapter specific options array
      */
-    public function configure(array $options);
+    public function configure(array $options): void;
 
     /**
      * Processes a datatable's state into a result set fit for further processing.
