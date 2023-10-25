@@ -154,7 +154,11 @@ class ORMAdapter extends AbstractAdapter
 
     protected function mapPropertyPath(AdapterQuery $query, AbstractColumn $column): ?string
     {
-        return $this->mapFieldToPropertyPath($column->getField(), $query->get('aliases'));
+        if (null === ($field = $column->getField())) {
+            throw new InvalidConfigurationException(sprintf('Could not automatically map a field for column "%s"', $column->getName()));
+        }
+
+        return $this->mapFieldToPropertyPath($field, $query->get('aliases'));
     }
 
     /**
@@ -169,8 +173,8 @@ class ORMAdapter extends AbstractAdapter
         // Apply definitive view state for current 'page' of the table
         foreach ($state->getOrderBy() as list($column, $direction)) {
             /** @var AbstractColumn $column */
-            if ($column->isOrderable()) {
-                $builder->addOrderBy($column->getOrderField(), $direction);
+            if ($column->isOrderable() && null !== ($order = $column->getOrderField())) {
+                $builder->addOrderBy($order, $direction);
             }
         }
         if (null !== $state->getLength()) {

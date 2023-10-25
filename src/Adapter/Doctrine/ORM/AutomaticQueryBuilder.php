@@ -118,7 +118,7 @@ class AutomaticQueryBuilder implements QueryBuilderProcessorInterface
     {
         $identifiers = $metadata->getIdentifierFieldNames();
 
-        return array_shift($identifiers);
+        return array_shift($identifiers) ?? throw new \LogicException(sprintf('Class %s has no identifiers', $metadata->getName()));
     }
 
     private function setIdentifierFromAssociation(string $association, string $key, ClassMetadata $metadata): ClassMetadata

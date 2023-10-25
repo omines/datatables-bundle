@@ -165,7 +165,7 @@ class DataTable
 
     public function getAdapter(): AdapterInterface
     {
-        return $this->adapter;
+        return $this->adapter ?? throw new InvalidConfigurationException('DataTable has no adapter');
     }
 
     public function getColumn(int $index): AbstractColumn
@@ -266,21 +266,21 @@ class DataTable
         $state = $this->getState();
 
         // Server side export
-        if (null !== $this->state->getExporterName()) {
+        if (null !== $state->getExporterName()) {
             return $this->exporterManager
                 ->setDataTable($this)
-                ->setExporterName($this->state->getExporterName())
+                ->setExporterName($state->getExporterName())
                 ->getResponse();
         }
 
         $resultSet = $this->getResultSet();
         $response = [
-            'draw' => $this->state->getDraw(),
+            'draw' => $state->getDraw(),
             'recordsTotal' => $resultSet->getTotalRecords(),
             'recordsFiltered' => $resultSet->getTotalDisplayRecords(),
             'data' => iterator_to_array($resultSet->getData()),
         ];
-        if ($this->state->isInitial()) {
+        if ($state->isInitial()) {
             $response['options'] = $this->getInitialResponse();
             $response['template'] = $this->renderer->renderDataTable($this, $this->template, $this->templateParams);
         }
@@ -314,7 +314,7 @@ class DataTable
             throw new InvalidStateException('No adapter was configured yet to retrieve data with. Call "createAdapter" or "setAdapter" before attempting to return data');
         }
 
-        return $this->adapter->getData($this->state);
+        return $this->adapter->getData($this->getState());
     }
 
     public function getTransformer(): ?callable
