@@ -40,6 +40,11 @@ class CsvExporter implements DataTableExporterInterface
         return new \SplFileInfo($filePath);
     }
 
+    public function getMimeType(): string
+    {
+        return 'text/csv';
+    }
+
     public function getName(): string
     {
         return 'csv';

@@ -35,6 +35,11 @@ class TxtExporter implements DataTableExporterInterface
         return new \SplFileInfo($filename);
     }
 
+    public function getMimeType(): string
+    {
+        return 'text/plain';
+    }
+
     public function getName(): string
     {
         return 'txt';
