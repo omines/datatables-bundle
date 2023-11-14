@@ -67,6 +67,11 @@ class ExcelExporter implements DataTableExporterInterface
         }
     }
 
+    public function getMimeType(): string
+    {
+        return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    }
+
     public function getName(): string
     {
         return 'excel';
