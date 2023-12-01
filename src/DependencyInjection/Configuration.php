@@ -20,9 +20,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class Configuration implements ConfigurationInterface
 {
-    /**
-     * @return TreeBuilder
-     */
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('datatables');
