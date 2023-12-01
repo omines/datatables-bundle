@@ -22,6 +22,6 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           coverage: pcov
-      - run: composer install --no-progress
+      - run: composer update --no-progress
       - run: vendor/bin/phpstan analyse
       - run: vendor/bin/simple-phpunit
