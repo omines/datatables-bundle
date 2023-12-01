@@ -54,7 +54,7 @@
         "symfony/dom-crawler": "^6.1.3|^7.0",
         "symfony/intl": "^6.1|^7.0",
         "symfony/mime": "^6.1.3|^7.0",
-        "symfony/phpunit-bridge": "^6.1.3|^7.0",
+        "symfony/phpunit-bridge": "^6.3|^7.0",
         "symfony/twig-bundle": "^6.1.1|^7.0",
         "symfony/var-dumper": "^6.1.3|^7.0",
         "symfony/yaml": "^6.1.3|^7.0"

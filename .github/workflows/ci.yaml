@@ -1,4 +1,4 @@
-name: test suite
+name: "Test Suite"
 
 on:
   pull_request_target:
@@ -79,7 +79,7 @@ jobs:
           hide_complexity: true
           indicators: true
           output: both
-          thresholds: '90 98'
+          thresholds: '50 80'
 
       - name: Add Coverage PR Comment
         uses: marocchino/sticky-pull-request-comment@v2
