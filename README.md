@@ -31,7 +31,7 @@ simply don't have a lot of time to spare, so your questions will be answered fas
 
 ## Contributing
 
-Please see [CONTRIBUTING.md](https://github.com/omines/datatables-bundle/blob/master/CONTRIBUTING.md) for details.
+Please see [CONTRIBUTING.md](https://github.com/omines/datatables-bundle/blob/master/.github/CONTRIBUTING.md) for details.
 
 ## Legal
 
