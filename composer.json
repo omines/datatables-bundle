@@ -80,10 +80,9 @@
             "phpstan/extension-installer": true
         }
     },
-    "minimum-stability": "stable",
     "extra": {
         "branch-alias": {
-          "dev-master": "0.8-dev"
+            "dev-master": "0.8-dev"
         }
     }
 }

@@ -29,7 +29,7 @@ simply don't have a lot of time to spare, so your questions will be answered fas
 
 ## FAQ
 
-- [Why is there no `DBALAdapter` bundled out of the box](https://github.com/omines/datatables-bundle/pull/275#issuecomment-1420600416)?
+- [Why is there no `DBALAdapter` bundled out of the box?](https://github.com/omines/datatables-bundle/pull/275#issuecomment-1420600416)
 
 ## Contributing
 
