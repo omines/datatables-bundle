@@ -16,9 +16,8 @@ use Omines\DataTablesBundle\Column\AbstractColumn;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 /**
- * DataTableState.
- *
- * @author Robbert Beesems <robbert.beesems@omines.com>
+ * @phpstan-type SearchColumn array{column: AbstractColumn, search: string, regex: bool}
+ * @phpstan-type OrderColumn array{AbstractColumn, string}
  */
 final class DataTableState
 {
@@ -29,10 +28,10 @@ final class DataTableState
     private ?int $length = null;
     private string $globalSearch = '';
 
-    /** @var array{column: AbstractColumn, search: string, regex: bool}[] */
+    /** @var SearchColumn[] */
     private array $searchColumns = [];
 
-    /** @var array{AbstractColumn, string}[] */
+    /** @var OrderColumn[] */
     private array $orderBy = [];
 
     private bool $isInitial = false;
@@ -185,7 +184,7 @@ final class DataTableState
     }
 
     /**
-     * @return array{AbstractColumn, string}[]
+     * @return OrderColumn[]
      */
     public function getOrderBy(): array
     {
@@ -193,7 +192,7 @@ final class DataTableState
     }
 
     /**
-     * @param array{AbstractColumn, string}[] $orderBy
+     * @param OrderColumn[] $orderBy
      */
     public function setOrderBy(array $orderBy = []): static
     {
@@ -205,7 +204,7 @@ final class DataTableState
     /**
      * Returns an array of column-level searches.
      *
-     * @return array{column: AbstractColumn, search: string, regex: bool}[]
+     * @return SearchColumn[]
      */
     public function getSearchColumns(): array
     {

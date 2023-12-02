@@ -4,6 +4,10 @@
     <include>
       <directory>./src/</directory>
     </include>
+    <exclude>
+      <directory>./src/Adapter/MongoDB</directory>
+      <directory>./src/Adapter/Elasticsearch</directory>
+    </exclude>
   </coverage>
   <php>
     <ini name="date.timezone" value="UTC"/>
@@ -12,7 +16,7 @@
     <ini name="intl.error_level" value="0"/>
     <ini name="memory_limit" value="-1"/>
     <env name="SHELL_VERBOSITY" value="-1"/>
-    <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[self]=0"/>
+    <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[direct]=0&amp;verbose=0&amp;ignoreFile=./tests/known-deprecations"/>
     <env name="KERNEL_CLASS" value="\Tests\Fixtures\AppKernel"/>
   </php>
   <testsuites>

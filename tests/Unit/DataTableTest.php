@@ -86,6 +86,7 @@ class DataTableTest extends TestCase
         $this->assertSame(10, $state->getLength());
         $this->assertSame(0, $state->getDraw());
         $this->assertSame('', $state->getGlobalSearch());
+        $this->assertFalse($state->isExport());
 
         $state->setStart(5);
         $state->setLength(10);
@@ -98,6 +99,13 @@ class DataTableTest extends TestCase
         $this->assertSame('foo', $state->getGlobalSearch());
         $this->assertCount(2, $state->getOrderBy());
         $this->assertSame('bar', $state->getSearchColumns()['foo']['search']);
+
+        // Test boundaries
+        $state->setStart(-1);
+        $state->setLength(0);
+
+        $this->assertSame(0, $state->getStart());
+        $this->assertNull($state->getLength());
     }
 
     public function testPostMethod(): void
