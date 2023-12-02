@@ -2,6 +2,8 @@
 [![Latest Stable Version](https://poser.pugx.org/omines/datatables-bundle/version)](https://packagist.org/packages/omines/datatables-bundle)
 [![Total Downloads](https://poser.pugx.org/omines/datatables-bundle/downloads)](https://packagist.org/packages/omines/datatables-bundle)
 [![Latest Unstable Version](https://poser.pugx.org/omines/datatables-bundle/v/unstable)](//packagist.org/packages/omines/datatables-bundle)
+[![automated-testing](https://github.com/omines/datatables-bundle/actions/workflows/ci.yaml/badge.svg?branch=master&event=push)](https://github.com/omines/datatables-bundle/actions/workflows/ci.yaml)
+[![codecov](https://codecov.io/gh/omines/datatables-bundle/graph/badge.svg?token=so9Qzps6jl)](https://codecov.io/gh/omines/datatables-bundle)
 [![License](https://poser.pugx.org/omines/datatables-bundle/license)](https://packagist.org/packages/omines/datatables-bundle)
 
 This bundle provides convenient integration of the popular [DataTables](https://datatables.net/) jQuery library
