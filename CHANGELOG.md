@@ -8,6 +8,7 @@ Nothing yet.
 ## 0.8.0 - in RC
 ### Breaking
  - All interfaces and classes are now fully typed, this will likely require modifications in any custom extensions
+ - Removed `DataTablesTrait` for use in controllers
  - EOL: Drop PHP <8.1 support
  - EOL: Drop Symfony <6.3 support
 
