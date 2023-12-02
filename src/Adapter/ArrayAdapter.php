@@ -35,18 +35,20 @@ class ArrayAdapter implements AdapterInterface
 
     public function getData(DataTableState $state): ResultSetInterface
     {
-        // very basic implementation of sorting
+        // Very basic implementation of sorting
         try {
-            $oc = $state->getOrderBy()[0][0]->getName();
-            $oo = \mb_strtolower($state->getOrderBy()[0][1]);
+            if (!empty($ob = $state->getOrderBy())) {
+                $oc = $ob[0][0]->getName();
+                $oo = \mb_strtolower($state->getOrderBy()[0][1]);
 
-            \usort($this->data, function ($a, $b) use ($oc, $oo) {
-                if ('desc' === $oo) {
-                    return $b[$oc] <=> $a[$oc];
-                }
+                \usort($this->data, function ($a, $b) use ($oc, $oo) {
+                    if ('desc' === $oo) {
+                        return $b[$oc] <=> $a[$oc];
+                    }
 
-                return $a[$oc] <=> $b[$oc];
-            });
+                    return $a[$oc] <=> $b[$oc];
+                });
+            }
         } catch (\Throwable $exception) {
             // ignore exception
         }

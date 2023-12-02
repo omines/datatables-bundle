@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Tests\Functional\Exporter\Event;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -30,9 +31,7 @@ class DataTableExporterResponseEventTest extends WebTestCase
         $this->client = self::createClient();
     }
 
-    /**
-     * @dataProvider exporterNameProvider
-     */
+    #[DataProvider('exporterNameProvider')]
     public function testPreResponseEvent(string $exporterName, string $ext): void
     {
         $this->client->request('POST', '/exporter', ['_dt' => 'dt', '_exporter' => $exporterName]);
@@ -43,7 +42,7 @@ class DataTableExporterResponseEventTest extends WebTestCase
         static::assertStringContainsString($response->headers->get('content-disposition'), sprintf('attachment; filename=custom_filename.%s', $ext));
     }
 
-    public function exporterNameProvider(): array
+    public static function exporterNameProvider(): array
     {
         return [
             ['excel', 'xlsx'],
