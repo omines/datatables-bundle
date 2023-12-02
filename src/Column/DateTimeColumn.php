@@ -34,7 +34,7 @@ class DateTimeColumn extends AbstractColumn
                     if (false === ($errors = \DateTime::getLastErrors())) {
                         throw new \LogicException('DateTime conversion failed for unknown reasons');
                     }
-                    throw new \Exception(implode(', ', $errors['errors'] ?: $errors['warnings']));
+                    throw new \RuntimeException(implode(', ', $errors['errors'] ?: $errors['warnings']));
                 }
             } else {
                 $value = new \DateTime((string) $value);

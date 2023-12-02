@@ -43,6 +43,14 @@ class ColumnTest extends TestCase
 
         $this->assertSame('03-04-2015', $column->transform('2015-04-03'));
         $this->assertSame('foo', $column->transform(null));
+
+        $column->initialize('test', 1, [
+            'createFromFormat' => 'foo',
+        ], $this->createDataTable()->setName('foo'));
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('format separator does not match');
+        $column->transform('2015-04-03');
     }
 
     public function testDateTimeColumnWithCreateFromFormat(): void
@@ -118,6 +126,9 @@ class ColumnTest extends TestCase
         $this->assertFalse($column->isRaw());
         $this->assertTrue($column->isValidForSearch(684));
         $this->assertFalse($column->isValidForSearch('foo.bar'));
+
+        // Forced conversion failure
+        $this->assertSame('0', $column->normalize('foo'));
     }
 
     public function testColumnWithClosures(): void
@@ -134,6 +145,33 @@ class ColumnTest extends TestCase
 
         $this->assertFalse($column->isRaw());
         $this->assertSame('BAR', $column->transform(null));
+    }
+
+    public function testLeftRightExprColumns(): void
+    {
+        $column = new TextColumn();
+        $column->initialize('test', 1, [
+            'leftExpr' => 'foo',
+            'rightExpr' => 'bar',
+        ], $this->createDataTable());
+
+        $this->assertSame('foo', $column->getLeftExpr());
+        $this->assertSame('bar', $column->getRightExpr('fud'));
+
+        $column->initialize('test', 1, [
+            'field' => 'foo',
+            'leftExpr' => fn (string $field) => $field . 'bar',
+            'rightExpr' => fn (string $field) => $field . 'baz',
+        ], $this->createDataTable());
+
+        $this->assertSame('foobar', $column->getLeftExpr());
+        $this->assertSame('fudbaz', $column->getRightExpr('fud'));
+
+        $column->initialize('test', 1, [
+            'rightExpr' => null,
+        ], $this->createDataTable());
+
+        $this->assertSame('foo', $column->getRightExpr('foo'));
     }
 
     public function testTwigDependencyDetection(): void

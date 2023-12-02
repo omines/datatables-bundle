@@ -106,6 +106,9 @@ class DataTableTest extends TestCase
 
         $this->assertSame(0, $state->getStart());
         $this->assertNull($state->getLength());
+
+        $column = $datatable->getColumn(0);
+        $this->assertSame($state, $column->getState());
     }
 
     public function testPostMethod(): void
