@@ -31,10 +31,8 @@ class DateTimeColumn extends AbstractColumn
             if (!empty($this->options['createFromFormat'])) {
                 $value = \DateTime::createFromFormat($this->options['createFromFormat'], (string) $value);
                 if (false === $value) {
-                    if (false === ($errors = \DateTime::getLastErrors())) {
-                        throw new \LogicException('DateTime conversion failed for unknown reasons');
-                    }
-                    throw new \RuntimeException(implode(', ', $errors['errors'] ?: $errors['warnings']));
+                    $errors = \DateTime::getLastErrors();
+                    throw new \RuntimeException($errors ? implode(', ', $errors['errors'] ?: $errors['warnings']) : 'DateTime conversion failed for unknown reasons');
                 }
             } else {
                 $value = new \DateTime((string) $value);

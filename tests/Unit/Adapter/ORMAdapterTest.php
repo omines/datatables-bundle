@@ -12,7 +12,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Adapter;
 
+use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\QueryException;
+use Omines\DataTablesBundle\Adapter\Doctrine\Event\ORMAdapterQueryEvent;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\DataTableFactory;
 use Omines\DataTablesBundle\DataTableState;
@@ -39,5 +41,12 @@ class ORMAdapterTest extends KernelTestCase
         /** @var ORMAdapter $adapter */
         $adapter = $datatable->getAdapter();
         $data = $adapter->getData(new DataTableState($datatable));
+    }
+
+    public function testORMAdapterQueryEvent(): void
+    {
+        $query = $this->createMock(Query::class);
+        $event = new ORMAdapterQueryEvent($query);
+        $this->assertSame($query, $event->getQuery());
     }
 }

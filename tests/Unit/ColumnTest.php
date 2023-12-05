@@ -62,6 +62,9 @@ class ColumnTest extends TestCase
         ], $this->createDataTable()->setName('foo'));
 
         $this->assertSame('19.02.2020 22:30:34', $column->transform('2020-02-19T22:30:34+00:00'));
+
+        $this->expectExceptionMessage('four digit year');
+        $column->transform('foo.bar');
     }
 
     public function testTextColumn(): void

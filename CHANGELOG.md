@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 Nothing yet.
 
-## 0.8.0 - in RC
+## [0.8.0] - 2023-12-05
 ### Breaking
  - All interfaces and classes are now fully typed, this will likely require modifications in any custom extensions
  - Removed `DataTablesTrait` for use in controllers
@@ -17,7 +17,7 @@ Nothing yet.
 
 ### Changed
  - Fix deprecations
- - Add parameter and return types all over for static analysis purposes
+ - Add parameter and return types to all code
  - Codebase is now at PHPstan level 8
 
 ## [0.7.2] - 2023-04-24
@@ -180,7 +180,8 @@ or break any applications.
 ### Added
  - Basic functionality
 
-[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.7.2...master
+[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.8.0...master
+[0.8.0]: https://github.com/omines/datatables-bundle/compare/0.7.2...0.8.0
 [0.7.2]: https://github.com/omines/datatables-bundle/compare/0.7.1...0.7.2
 [0.7.1]: https://github.com/omines/datatables-bundle/compare/0.7.0...0.7.1
 [0.7.0]: https://github.com/omines/datatables-bundle/compare/0.6.0...0.7.0
