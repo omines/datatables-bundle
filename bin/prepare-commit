@@ -9,13 +9,9 @@ export XDEBUG_MODE=coverage
 vendor/bin/php-cs-fixer fix
 vendor/bin/phpstan
 
-# Clear cache and quarantine manually to avoid locking up with corrupted container
+# Clear cache manually to avoid locking up with corrupted container
 rm -rf tests/Fixtures/var/cache/test
 php -d "zend.assertions=1" vendor/bin/phpunit --testdox --coverage-text \
     --coverage-xml=build/coverage/coverage-xml --log-junit=build/coverage/junit.xml
-
-# Run with lower MSI in diff-filter mode as it doesn't include coverage from other tests
-#vendor/bin/infection --threads=max --git-diff-filter=AM --min-msi=80 --min-covered-msi=80 \
-#    --coverage=build/coverage
 
 echo "All good, ready for commit!"
