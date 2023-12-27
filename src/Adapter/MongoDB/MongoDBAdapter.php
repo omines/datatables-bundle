@@ -130,7 +130,7 @@ class MongoDBAdapter extends AbstractAdapter
                 'filters' => [],
             ])
             ->setRequired(['collection'])
-            ->setAllowedTypes('collection', \MongoDB\Collection::class)
+            ->setAllowedTypes('collection', Collection::class)
             ->setAllowedTypes('filters', 'array')
         ;
     }
