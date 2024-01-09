@@ -37,9 +37,9 @@ for ($i = 0; 5 !== $i; ++$i) {
     $companies[] = $company = new Company('Company ' . $i);
     $em->persist($company);
 }
-$date = new \DateTime('2017-05-03 12:34:56');
+$date = new DateTime('2017-05-03 12:34:56');
 for ($i = 0; 125 !== $i; ++$i) {
-    $date->sub(new \DateInterval('P3DT5H27M'));
+    $date->sub(new DateInterval('P3DT5H27M'));
     $em->persist(new Employee('FirstName' . $i, 'LastName' . $i, $i % 2 ? clone $date : null, $companies[$i % count($companies)]));
 }
 $em->flush();

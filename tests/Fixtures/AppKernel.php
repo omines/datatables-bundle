@@ -29,7 +29,7 @@ class AppKernel extends Kernel
             new \Symfony\Bundle\TwigBundle\TwigBundle(),
             new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new \Omines\DataTablesBundle\DataTablesBundle(),
-            new \Tests\Fixtures\AppBundle\AppBundle(),
+            new AppBundle\AppBundle(),
         ];
     }
 
