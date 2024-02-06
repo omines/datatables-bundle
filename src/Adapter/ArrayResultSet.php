@@ -29,7 +29,7 @@ class ArrayResultSet implements ResultSetInterface
     /**
      * @param Row[] $data
      */
-    public function __construct(array $data, int $totalRows = null, int $totalFilteredRows = null)
+    public function __construct(array $data, ?int $totalRows = null, ?int $totalFilteredRows = null)
     {
         $this->data = $data;
         $this->totalRows = $totalRows ?? count($data);

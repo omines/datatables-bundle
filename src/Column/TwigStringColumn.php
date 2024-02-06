@@ -23,7 +23,7 @@ use Twig\Extension\StringLoaderExtension;
  */
 class TwigStringColumn extends TwigColumn
 {
-    public function __construct(Environment $twig = null)
+    public function __construct(?Environment $twig = null)
     {
         parent::__construct($twig);
 

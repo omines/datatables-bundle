@@ -26,7 +26,7 @@ class TwigRenderer implements DataTableRendererInterface
 {
     private readonly Environment $twig;
 
-    public function __construct(Environment $twig = null)
+    public function __construct(?Environment $twig = null)
     {
         if (null === $twig) {
             throw new MissingDependencyException('You must have symfony/twig-bundle installed to use the default Twig based DataTables rendering');

@@ -25,7 +25,7 @@ class TwigColumn extends AbstractColumn
 {
     protected readonly Environment $twig;
 
-    public function __construct(Environment $twig = null)
+    public function __construct(?Environment $twig = null)
     {
         if (null === $twig) {
             throw new MissingDependencyException('You must have TwigBundle installed to use ' . static::class);

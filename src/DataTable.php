@@ -92,7 +92,7 @@ class DataTable
     /**
      * @param array<string, mixed> $options
      */
-    public function __construct(EventDispatcherInterface $eventDispatcher, DataTableExporterManager $exporterManager, array $options = [], Instantiator $instantiator = null)
+    public function __construct(EventDispatcherInterface $eventDispatcher, DataTableExporterManager $exporterManager, array $options = [], ?Instantiator $instantiator = null)
     {
         $this->eventDispatcher = $eventDispatcher;
         $this->exporterManager = $exporterManager;
@@ -338,7 +338,7 @@ class DataTable
     /**
      * @param ?array<string, mixed> $options
      */
-    public function setAdapter(AdapterInterface $adapter, array $options = null): static
+    public function setAdapter(AdapterInterface $adapter, ?array $options = null): static
     {
         if (null !== $options) {
             $adapter->configure($options);
