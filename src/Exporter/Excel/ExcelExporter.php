@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Omines\DataTablesBundle\Exporter\Excel;
 
 use Omines\DataTablesBundle\Exporter\DataTableExporterInterface;
+use PhpOffice\PhpSpreadsheet\Cell\CellAddress;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Helper;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -42,7 +43,7 @@ class ExcelExporter implements DataTableExporterInterface
         foreach ($data as $row) {
             $colIndex = 1;
             foreach ($row as $value) {
-                $sheet->setCellValueByColumnAndRow($colIndex++, $rowIndex, $htmlHelper->toRichTextObject($value));
+                $sheet->getCell(CellAddress::fromColumnAndRow($colIndex++, $rowIndex))->setValue($htmlHelper->toRichTextObject($value ?? ''));
             }
             ++$rowIndex;
         }
