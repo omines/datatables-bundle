@@ -5,6 +5,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 Nothing yet.
 
+## [0.8.1] - 2024-02-24
+### Added
+ - Support PHPoffice v2 (#330)
+
+### Changed
+ - Adding empty string as a value and making column search parameter optional in request body (#323)
+ - Upgrade to PHPunit v11
+ - Fix deprecations in test suite
+
 ## [0.8.0] - 2023-12-05
 ### Breaking
  - All interfaces and classes are now fully typed, this will likely require modifications in any custom extensions
@@ -180,7 +189,8 @@ or break any applications.
 ### Added
  - Basic functionality
 
-[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.8.0...master
+[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.8.1...master
+[0.8.1]: https://github.com/omines/datatables-bundle/compare/0.8.0...0.8.1
 [0.8.0]: https://github.com/omines/datatables-bundle/compare/0.7.2...0.8.0
 [0.7.2]: https://github.com/omines/datatables-bundle/compare/0.7.1...0.7.2
 [0.7.1]: https://github.com/omines/datatables-bundle/compare/0.7.0...0.7.1

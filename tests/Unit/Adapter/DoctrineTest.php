@@ -51,7 +51,7 @@ class DoctrineTest extends TestCase
         $qb = $this->createMock(QueryBuilder::class);
         $qb
             ->method('expr')
-            ->will($this->returnCallback(function () { return new Query\Expr(); }));
+            ->willReturnCallback(function () { return new Query\Expr(); });
 
         /* @var QueryBuilder $qb */
         (new SearchCriteriaProvider())->process($qb, $state);
