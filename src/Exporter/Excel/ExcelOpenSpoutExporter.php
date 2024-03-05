@@ -1,4 +1,13 @@
 <?php
+
+/*
+ * Symfony DataTables Bundle
+ * (c) Omines Internetbureau B.V. - https://omines.nl/
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 declare(strict_types=1);
 
 namespace Omines\DataTablesBundle\Exporter\Excel;
@@ -9,7 +18,7 @@ use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Writer\XLSX\Writer;
 
 /**
- * Excel exporter using OpenShout.
+ * Excel exporter using OpenSpout.
  */
 class ExcelOpenSpoutExporter implements DataTableExporterInterface
 {

@@ -1,4 +1,13 @@
 <?php
+
+/*
+ * Symfony DataTables Bundle
+ * (c) Omines Internetbureau B.V. - https://omines.nl/
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 declare(strict_types=1);
 
 namespace Tests\Functional\Exporter\Excel;
@@ -56,6 +65,7 @@ class ExcelOpenSpoutExporterTest extends WebTestCase
 
         static::assertTrue($response->isSuccessful());
 
+        // Using PhpSpreadsheet for tests
         $sheet = IOFactory::load($response->getFile()->getPathname())->getActiveSheet();
 
         static::assertSame('dt.columns.firstName', $sheet->getCell('A1')->getFormattedValue());
@@ -65,10 +75,6 @@ class ExcelOpenSpoutExporterTest extends WebTestCase
         static::assertEmpty($sheet->getCell('B2')->getFormattedValue());
     }
 
-    /**
-     * @throws \PhpOffice\PhpSpreadsheet\Exception
-     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
-     */
     public function testWithSearch(): void
     {
         $this->client->request('POST', '/exporter', [
@@ -80,6 +86,7 @@ class ExcelOpenSpoutExporterTest extends WebTestCase
         /** @var BinaryFileResponse $response */
         $response = $this->client->getResponse();
 
+        // Using PhpSpreadsheet for tests
         $sheet = IOFactory::load($response->getFile()->getPathname())->getActiveSheet();
 
         static::assertSame('dt.columns.firstName', $sheet->getCell('A1')->getFormattedValue());
