@@ -38,6 +38,10 @@
             <tag name="datatables.exporter"/>
         </service>
 
+        <service id="Omines\DataTablesBundle\Exporter\Excel\ExcelOpenSpoutExporter">
+            <tag name="datatables.exporter"/>
+        </service>
+
         <service id="Omines\DataTablesBundle\Exporter\Csv\CsvExporter">
             <tag name="datatables.exporter"/>
         </service>
