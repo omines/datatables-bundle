@@ -45,7 +45,7 @@
             {% if column.filter != null %}
                 $(function() {
                     $('#{{ datatable.name }}-column-{{ column.index }}').on(
-                        "keyup", 
+                        "keyup change", 
                         function() { 
                             const table = $(this).closest("table").DataTable();
                             const column = table.columns({{ column.index }});
