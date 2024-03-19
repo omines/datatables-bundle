@@ -35,9 +35,29 @@
 {% if datatable.option('searching') %}
   <script>
     $('#{{ datatable.name }}').on('stateLoaded.dt', function (e, settings, data) {
-      console.log("init!");
         {% for column in datatable.columns %}
         {% if column.filter != null %}{% include column.filter.templateJs %}{% endif %}
+        {% endfor %}
+    });
+
+    $('#{{ datatable.name }}').on('init.dt', function (e, settings, data) {
+        {% for column in datatable.columns %}
+            {% if column.filter != null %}
+                $(function() {
+                    $('#{{ datatable.name }}-column-{{ column.index }}').on(
+                        "keyup", 
+                        function() { 
+                            const table = $(this).closest("table").DataTable();
+                            const column = table.columns({{ column.index }});
+                            const newValue = $(this).val();
+
+                            if (column.search() !== newValue) {
+                                column.search(newValue).draw();
+                            }
+                        }
+                    )
+                });
+            {% endif %}
         {% endfor %}
     });
 </script>
