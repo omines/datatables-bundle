@@ -1,29 +1,44 @@
 {% trans_default_domain datatable.translationDomain %}
 
 <table id="{{ datatable.name }}" class="{% if className is defined and className is not empty %}{{ className }}{% endif %}">
-    <thead>
+  <thead class="table-light">
     <tr>
-        {% for column in datatable.columns %}
-            <th>{{ column.label|trans }}</th>
-        {% endfor %}
+      {% for column in datatable.columns %}
+        <th>{{ column.label|trans }}</th>
+      {% endfor %}
     </tr>
-    {#% if datatable.option('searching') and datatable.setting('column_filter') in ['both', 'thead'] %}
-        <tr class="datatable-filters">
-            {% for column in datatable.columns %}
-                <td>{% if column.filter != null %}{% include column.filter.templateHtml %}{% endif %}</td>
-            {% endfor %}
-        </tr>
-    {% endif %#}
-    </thead>
-    {#% if datatable.option('searching') and datatable.setting('column_filter') in ['both', 'tfoot'] %}
-        <tfoot>
-        <tr class="datatable-filters">
-            {% for column in datatable.columns %}
-                <td>{% if column.filter != null %}{% include column.filter.templateHtml %}{% endif %}</td>
-            {% endfor %}
-        </tr>
-        </tfoot>
-    {% endif %#}
-    <tbody>
-    </tbody>
+    {% if datatable.option('searching') and columnFilter ?? '' in ['both', 'thead'] %}
+      <tr class="datatable-filters">
+        {% for column in datatable.columns %}
+          <td>
+            {% if column.filter != null %}{% include column.filter.templateHtml %}{% endif %}
+          </td>
+        {% endfor %}
+      </tr>
+    {% endif %}
+  </thead>
+  <tbody></tbody>
+
+  {% if datatable.option('searching') and columnFilter ?? '' in ['both', 'tfoot'] %}
+    <tfoot>
+      <tr class="datatable-filters">
+        {% for column in datatable.columns %}
+          <td>
+            {% if column.filter != null %}{% include column.filter.templateHtml %}{% endif %}
+          </td>
+        {% endfor %}
+      </tr>
+    </tfoot>
+  {% endif %}
 </table>
+
+{% if datatable.option('searching') %}
+  <script>
+    $('#{{ datatable.name }}').on('stateLoaded.dt', function (e, settings, data) {
+      console.log("init!");
+        {% for column in datatable.columns %}
+        {% if column.filter != null %}{% include column.filter.templateJs %}{% endif %}
+        {% endfor %}
+    });
+</script>
+{% endif %}

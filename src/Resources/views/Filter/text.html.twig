@@ -1,13 +1,8 @@
 <label>
-    <input id="{{ datatable.setting('name') }}-column-{{ column.index }}"
-           data-search-column-index="{{ column.index }}"
-            {% if column.filter.placeholder != null %}
-                placeholder="{{ column.filter.placeholder|trans }}"
-            {% endif %}
-           value="{{ column.searchValue }}">
-    <script>
-        document.getElementById('domains').addEventListener('restore', function (e, data) {
-            console.log(data);
-        });
-    </script>
+    <input class="form-control" 
+        id="{{ datatable.name }}-column-{{ column.index }}" 
+        data-search-column-index="{{ column.index }}" 
+        placeholder="{{ column.filter.placeholder ?? '' }}" 
+        value="{{ searchValue ?? '' }}" 
+    />
 </label>
