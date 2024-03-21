@@ -15,6 +15,8 @@ namespace Omines\DataTablesBundle\Exporter\Excel;
 use Omines\DataTablesBundle\Exporter\DataTableExporterInterface;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\Style;
+use OpenSpout\Writer\AutoFilter;
+use OpenSpout\Writer\XLSX\Entity\SheetView;
 use OpenSpout\Writer\XLSX\Writer;
 
 /**
@@ -26,20 +28,27 @@ class ExcelOpenSpoutExporter implements DataTableExporterInterface
     {
         $filePath = sys_get_temp_dir() . '/' . uniqid('dt') . '.xlsx';
 
-        $writer = new Writer();
-        $writer->openToFile($filePath);
+        // Header
+        $rows = [Row::fromValues($columnNames, (new Style())->setFontBold())];
 
-        // Write header
-        $boldStyle = (new Style())->setFontBold();
-        $writer->addRow(Row::fromValues($columnNames, $boldStyle));
-
-        // Write data
+        // Data
         foreach ($data as $row) {
             // Remove HTML tags
             $values = array_map('strip_tags', $row);
-
-            $writer->addRow(Row::fromValues($values));
+            $rows[] = Row::fromValues($values);
         }
+
+        // Write rows
+        $writer = new Writer();
+        $writer->openToFile($filePath);
+        $writer->addRows($rows);
+
+        // Sheet configuration (AutoFilter, freeze row, better column width)
+        $sheet = $writer->getCurrentSheet();
+        $sheet->setAutoFilter(new AutoFilter(0, 1,
+            max(count($columnNames) - 1, 0), max(count($rows), 1)));
+        $sheet->setSheetView((new SheetView())->setFreezeRow(2));
+        $sheet->setColumnWidthForRange(24, 1, max(count($columnNames), 1));
 
         $writer->close();
 
