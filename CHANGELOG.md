@@ -5,6 +5,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 Nothing yet.
 
+## [0.8.2] - 2024-03-24
+### Added
+ - Add Excel OpenSpout exporter (#332)
+
+### Fixed
+ - Make Twig columns searchable by default
+
 ## [0.8.1] - 2024-02-24
 ### Added
  - Support PHPoffice v2 (#330)
@@ -189,7 +196,8 @@ or break any applications.
 ### Added
  - Basic functionality
 
-[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.8.1...master
+[Unreleased]: https://github.com/omines/datatables-bundle/compare/0.8.2...master
+[0.8.2]: https://github.com/omines/datatables-bundle/compare/0.8.1...0.8.2
 [0.8.1]: https://github.com/omines/datatables-bundle/compare/0.8.0...0.8.1
 [0.8.0]: https://github.com/omines/datatables-bundle/compare/0.7.2...0.8.0
 [0.7.2]: https://github.com/omines/datatables-bundle/compare/0.7.1...0.7.2
