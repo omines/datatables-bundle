@@ -54,7 +54,13 @@ class TwigColumn extends AbstractColumn
         $resolver
             ->setRequired('template')
             ->setAllowedTypes('template', 'string')
-        ;
+            ->setDefault('operator', 'LIKE')
+            ->setDefault(
+                'rightExpr',
+                function ($value) {
+                    return '%' . $value . '%';
+                }
+            );
 
         return $this;
     }
