@@ -62,8 +62,8 @@ class ExporterController extends AbstractController
         }
 
         return $this->render('@App/exporter.html.twig', [
-           'datatable' => $table,
-       ]);
+            'datatable' => $table,
+        ]);
     }
 
     public function exportEmptyDataTableAction(Request $request, DataTableFactory $dataTableFactory): Response

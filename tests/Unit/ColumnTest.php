@@ -84,8 +84,8 @@ class ColumnTest extends TestCase
     {
         $column = new BoolColumn();
         $column->initialize('test', 1, [
-             'trueValue' => 'yes',
-             'nullValue' => '<em>null</em>',
+            'trueValue' => 'yes',
+            'nullValue' => '<em>null</em>',
         ], $this->createDataTable());
 
         $this->assertSame('yes', $column->transform(5));
