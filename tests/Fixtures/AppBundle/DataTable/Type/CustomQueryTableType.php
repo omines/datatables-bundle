@@ -17,6 +17,7 @@ use Doctrine\Common\Collections\Expr\Comparison;
 use Doctrine\ORM\QueryBuilder;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
+use Omines\DataTablesBundle\Column\TwigColumn;
 use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableTypeInterface;
 use Tests\Fixtures\AppBundle\Entity\Employee;
@@ -33,7 +34,7 @@ class CustomQueryTableType implements DataTableTypeInterface
     {
         $dataTable
             ->add('firstName', TextColumn::class)
-            ->add('lastName', TextColumn::class)
+            ->add('lastName', TwigColumn::class, ['template' => '@App/lastname_cell.html.twig'])
             ->add('fullName', TextColumn::class)
             ->add('company', TextColumn::class, ['field' => 'c.name'])
             ->createAdapter(ORMAdapter::class, [

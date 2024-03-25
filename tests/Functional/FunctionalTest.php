@@ -132,13 +132,16 @@ class FunctionalTest extends WebTestCase
         $this->client->request('GET', sprintf('/%s/translation', $locale));
         $this->assertSuccessful($response = $this->client->getResponse());
 
-        $content = $response->getContent();
+        $content = $response->getContent() ?: 'Empty content';
         $this->assertStringContainsString('"name":"noCDN"', $content);
         $this->assertStringNotContainsString('"options":{"language":{"url"', $content);
         $this->assertStringContainsString(sprintf('"processing":"%s"', $languageProcessing), $content);
         $this->assertStringContainsString(sprintf('"infoFiltered":"%s"', $languageInfoFiltered), $content);
     }
 
+    /**
+     * @return string[][]
+     */
     public static function translationProvider(): array
     {
         return [
