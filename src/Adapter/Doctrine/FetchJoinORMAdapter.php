@@ -142,7 +142,6 @@ class FetchJoinORMAdapter extends ORMAdapter
         /** @var Query\Expr\From $from_expr */
         $from_expr = $queryBuilder->getDQLPart('from')[0];
 
-        /* @phpstan-ignore-next-line Unable to determine repository type */
         return $this->manager->getRepository($from_expr->getFrom())->count([]);
     }
 }

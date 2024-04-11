@@ -25,6 +25,8 @@ use Omines\DataTablesBundle\DataTableState;
  */
 class AutomaticQueryBuilder implements QueryBuilderProcessorInterface
 {
+    private const DEFAULT_ALIAS = 'entity';
+
     private EntityManagerInterface $em;
     private ClassMetadata $metadata;
     private string $entityShortName;
@@ -44,7 +46,7 @@ class AutomaticQueryBuilder implements QueryBuilderProcessorInterface
         $this->metadata = $metadata;
 
         $this->entityName = $this->metadata->getName();
-        $this->entityShortName = mb_strtolower($this->metadata->getReflectionClass()->getShortName());
+        $this->entityShortName = mb_strtolower($this->metadata->getReflectionClass()?->getShortName() ?? self::DEFAULT_ALIAS);
     }
 
     public function process(QueryBuilder $builder, DataTableState $state): void
@@ -135,11 +137,7 @@ class AutomaticQueryBuilder implements QueryBuilderProcessorInterface
     private function setSelectFrom(QueryBuilder $qb): void
     {
         foreach ($this->selectColumns as $key => $value) {
-            if (false === empty($key)) {
-                $qb->addSelect('partial ' . $key . '.{' . implode(',', $value) . '}');
-            } else {
-                $qb->addSelect($value);
-            }
+            $qb->addSelect($key ?: $value);
         }
     }
 

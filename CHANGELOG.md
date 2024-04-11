@@ -3,7 +3,11 @@ All notable changes to `omines\datatables-bundle` will be documented in this fil
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
-Nothing yet.
+### Added
+ - Support Doctrine ORM 3 and DBAL 4
+
+### Breaking
+ - Remove support for partial DQL queries in `AutomaticQueryBuilder`
 
 ## [0.8.2] - 2024-03-24
 ### Added
