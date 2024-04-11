@@ -60,11 +60,6 @@
         "symfony/var-dumper": "^6.3|^7.0.4",
         "symfony/yaml": "^6.3|^7.0.3"
     },
-    "conflict": {
-        "doctrine/dbal": "<3 >=5",
-        "doctrine/orm": "<2.8 >=4",
-        "elasticsearch/elasticsearch": ">=9"
-    },
     "suggest": {
         "doctrine/doctrine-bundle": "For integrated access to Doctrine object managers",
         "doctrine/orm": "For full automated integration with Doctrine entities",
