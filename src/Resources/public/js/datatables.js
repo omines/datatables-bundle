@@ -28,11 +28,11 @@
         switch (config.state) {
             case 'fragment':
                 state = window.location.hash;
-                state = (state.length > 1 ? deparam(state.substr(1)) : {});
+                state = (state.length > 1 ? deparam(state.substring(1)) : {});
                 break;
             case 'query':
                 state = window.location.search;
-                state = (state.length > 1 ? deparam(state.substr(1)) : {});
+                state = (state.length > 1 ? deparam(state.substring(1)) : {});
                 break;
             case 'local':
                 stateDuration = 0
@@ -102,7 +102,7 @@
                 }
 
                 root.html(data.template);
-                dt = $('table', root).DataTable(dtOpts);
+                var dt = $('table', root).DataTable(dtOpts);
                 if (config.state !== 'none') {
                     dt.on('draw.dt', function(e) {
                         var data = $.param(dt.state()).split('&');
@@ -119,7 +119,7 @@
                                 case 'query':
                                     var windowLocationSearch = deparam(decodeURIComponent(diff.join('&')))
                                     if(window.location.search !== null) {
-                                        windowLocationSearch = deparam(window.location.search.substr(1))
+                                        windowLocationSearch = deparam(window.location.search.substring(1))
                                         Object.assign(windowLocationSearch, deparam(decodeURIComponent(diff.join('&'))))
                                     }
                                     history.replaceState(null, null, window.location.origin + window.location.pathname
@@ -185,34 +185,28 @@
                         blob = new Blob([this.response], { type: type });
                     }
 
-                    if (typeof window.navigator.msSaveBlob !== 'undefined') {
-                        // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created. These URLs will no longer resolve as the data backing the URL has been freed."
-                        window.navigator.msSaveBlob(blob, filename);
-                    }
-                    else {
-                        const URL = window.URL || window.webkitURL;
-                        const downloadUrl = URL.createObjectURL(blob);
+                    const URL = window.URL || window.webkitURL;
+                    const downloadUrl = URL.createObjectURL(blob);
 
-                        if (filename) {
-                            // use HTML5 a[download] attribute to specify filename
-                            const a = document.createElement("a");
-                            // safari doesn't support this yet
-                            if (typeof a.download === 'undefined') {
-                                window.location = downloadUrl;
-                            }
-                            else {
-                                a.href = downloadUrl;
-                                a.download = filename;
-                                document.body.appendChild(a);
-                                a.click();
-                            }
-                        }
-                        else {
+                    if (filename) {
+                        // use HTML5 a[download] attribute to specify filename
+                        const a = document.createElement("a");
+                        // safari doesn't support this yet
+                        if (typeof a.download === 'undefined') {
                             window.location = downloadUrl;
                         }
-
-                        setTimeout(function() { URL.revokeObjectURL(downloadUrl); }, 100); // cleanup
+                        else {
+                            a.href = downloadUrl;
+                            a.download = filename;
+                            document.body.appendChild(a);
+                            a.click();
+                        }
                     }
+                    else {
+                        window.location = downloadUrl;
+                    }
+
+                    setTimeout(function() { URL.revokeObjectURL(downloadUrl); }, 100); // cleanup
                 }
             };
 
@@ -236,8 +230,8 @@
                 keys = key.split(']['),
                 keys_last = keys.length - 1;
 
-            if (/\[/.test(keys[0]) && /\]$/.test(keys[keys_last])) {
-                keys[keys_last] = keys[keys_last].replace(/\]$/, '');
+            if (/\[/.test(keys[0]) && /]$/.test(keys[keys_last])) {
+                keys[keys_last] = keys[keys_last].replace(/]$/, '');
                 keys = keys.shift().split('[').concat(keys);
                 keys_last = keys.length - 1;
             } else {
