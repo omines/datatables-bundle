@@ -296,6 +296,25 @@ Note that implementing your own criteria overrides the default, meaning searchin
 longer work automatically. Add the `SearchCriteriaProvider` manually to combine the default behavior
 with your own implementation.
 
+### SearchBuilder criteria
+```  
+    'criteria' => [
+        new SearchBuilderCriteriaProvider($request),
+        new SearchCriteriaProvider(),
+    ],
+```      
+Doctrine extension are needed: https://github.com/beberlei/DoctrineExtensions/tree/master
+
+To enable extensions : config/packages/doctrines.yaml
+```  
+    orm:
+        dql:
+            datetime_functions:
+                date: DoctrineExtensions\Query\Mysql\Date
+                year: DoctrineExtensions\Query\Mysql\Year
+                yearmonth: DoctrineExtensions\Query\Mysql\YearMonth    
+```
+
 ### Events
 
 ```php?start_inline=1
