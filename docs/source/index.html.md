@@ -297,7 +297,9 @@ longer work automatically. Add the `SearchCriteriaProvider` manually to combine 
 with your own implementation.
 
 ### SearchBuilder criteria
-```  
+```
+use App\Datatable\SearchBuilderCriteriaProvider;
+
     'criteria' => [
         new SearchBuilderCriteriaProvider($request),
         new SearchCriteriaProvider(),
