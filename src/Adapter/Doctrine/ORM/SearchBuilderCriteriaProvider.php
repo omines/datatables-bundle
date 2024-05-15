@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Datatable;
+namespace Omines\DataTablesBundle\Adapter\Doctrine\ORM;
 
 use Doctrine\ORM\Query\Expr\Comparison;
 use Doctrine\ORM\QueryBuilder;
