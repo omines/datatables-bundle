@@ -298,7 +298,7 @@ with your own implementation.
 
 ### SearchBuilder criteria
 ```
-use App\Datatable\SearchBuilderCriteriaProvider;
+use Omines\DataTablesBundle\Adapter\Doctrine\ORM\SearchBuilderCriteriaProvider;
 
     'criteria' => [
         new SearchBuilderCriteriaProvider($request),
