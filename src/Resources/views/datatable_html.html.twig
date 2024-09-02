@@ -11,7 +11,7 @@
         <tr class="datatable-filters">
             {% for column in datatable.columns %}
                 <td>
-                    {% if column.filter != null %}{% include column.filter.templateHtml %}{% endif %}
+                    {% if column.filter is not same as(null) %}{% include column.filter.templateHtml %}{% endif %}
                 </td>
             {% endfor %}
         </tr>
@@ -25,7 +25,7 @@
         <tr class="datatable-filters">
             {% for column in datatable.columns %}
                 <td>
-                    {% if column.filter != null %}{% include column.filter.templateHtml %}{% endif %}
+                    {% if column.filter is not same as(null) %}{% include column.filter.templateHtml %}{% endif %}
                 </td>
             {% endfor %}
         </tr>
@@ -39,7 +39,7 @@
             const table = $('#{{ datatable.name }}').DataTable();
 
             {% for column in datatable.columns %}
-                {% if column.filter != null %}
+                {% if column.filter is not same as(null) %}
                     {% include column.filter.templateJs %}
 
                     $(function () {
