@@ -44,3 +44,11 @@ exporter:
 exporter_empty_datatable:
     path: /exporter-empty-datatable
     controller: Tests\Fixtures\AppBundle\Controller\ExporterController::exportEmptyDataTableAction
+
+exporter_long_text:
+    path: /exporter-long-text
+    controller: Tests\Fixtures\AppBundle\Controller\ExporterController::exportLongText
+
+exporter_special_chars:
+    path: /exporter-special-chars
+    controller: Tests\Fixtures\AppBundle\Controller\ExporterController::exportSpecialChars

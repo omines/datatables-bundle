@@ -98,4 +98,36 @@ class ExcelOpenSpoutExporterTest extends WebTestCase
         static::assertEmpty($sheet->getCell('A3')->getFormattedValue());
         static::assertEmpty($sheet->getCell('B3')->getFormattedValue());
     }
+
+    public function testMaxCellLength(): void
+    {
+        $this->client->request('POST', '/exporter-long-text', [
+            '_dt' => 'dt',
+            '_exporter' => 'excel-openspout',
+        ]);
+
+        /** @var BinaryFileResponse $response */
+        $response = $this->client->getResponse();
+
+        $sheet = IOFactory::load($response->getFile()->getPathname())->getActiveSheet();
+
+        // Value should be truncated to 32767 characters
+        static::assertSame(str_repeat('a', 32767), $sheet->getCell('A2')->getFormattedValue());
+    }
+
+    public function testSpecialChars(): void
+    {
+        $this->client->request('POST', '/exporter-special-chars', [
+            '_dt' => 'dt',
+            '_exporter' => 'excel-openspout',
+        ]);
+
+        /** @var BinaryFileResponse $response */
+        $response = $this->client->getResponse();
+
+        $sheet = IOFactory::load($response->getFile()->getPathname())->getActiveSheet();
+
+        // Value should not contain HTML encoded characters
+        static::assertSame('<?xml version="1.0" encoding="UTF-8"?><hello>World</hello>', $sheet->getCell('A2')->getFormattedValue());
+    }
 }
