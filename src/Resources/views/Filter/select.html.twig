@@ -1,9 +1,6 @@
 <label>
-    <select
-            id="{{ datatable.setting('name') }}-column-{{ column.index }}"
-            data-search-column-index="{{ column.index }}"
-    >
-        {% if column.filter.placeholder != null %}
+    <select class="form-control" id="{{ datatable.name }}-column-{{ column.index }}" data-search-column-index="{{ column.index }}">
+        {% if column.filter.placeholder is not same as(null) %}
             <option class="placeholder">{{ column.filter.placeholder|trans }}</option>
         {% endif %}
         {% for key, choice in column.filter.choices %}

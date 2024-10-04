@@ -1,29 +1,75 @@
 {% trans_default_domain datatable.translationDomain %}
 
-<table id="{{ datatable.name }}" class="{% if className is defined and className is not empty %}{{ className }}{% endif %}">
+<table id="{{ datatable.name }}"  class="{% if className is defined and className is not empty %}{{ className }}{% endif %}">
     <thead>
     <tr>
         {% for column in datatable.columns %}
             <th>{{ column.label|trans }}</th>
         {% endfor %}
     </tr>
-    {#% if datatable.option('searching') and datatable.setting('column_filter') in ['both', 'thead'] %}
+    {% if datatable.option('searching') and columnFilter ?? '' in ['both', 'thead'] %}
         <tr class="datatable-filters">
             {% for column in datatable.columns %}
-                <td>{% if column.filter != null %}{% include column.filter.templateHtml %}{% endif %}</td>
+                <td>
+                    {% if column.filter is not same as(null) %}{% include column.filter.templateHtml %}{% endif %}
+                </td>
             {% endfor %}
         </tr>
-    {% endif %#}
+    {% endif %}
     </thead>
-    {#% if datatable.option('searching') and datatable.setting('column_filter') in ['both', 'tfoot'] %}
+    <tbody>
+    </tbody>
+
+    {% if datatable.option('searching') and columnFilter ?? '' in ['both', 'tfoot'] %}
         <tfoot>
         <tr class="datatable-filters">
             {% for column in datatable.columns %}
-                <td>{% if column.filter != null %}{% include column.filter.templateHtml %}{% endif %}</td>
+                <td>
+                    {% if column.filter is not same as(null) %}{% include column.filter.templateHtml %}{% endif %}
+                </td>
             {% endfor %}
         </tr>
         </tfoot>
-    {% endif %#}
-    <tbody>
-    </tbody>
+    {% endif %}
 </table>
+
+{% if datatable.option('searching') %}
+    <script>
+        $('#{{ datatable.name }}').on('init.dt', function (e, settings, json) {
+            const table = $('#{{ datatable.name }}').DataTable();
+
+            {% for column in datatable.columns %}
+                {% if column.filter is not same as(null) %}
+                    {% include column.filter.templateJs %}
+
+                    $(function () {
+                        $('#{{ datatable.name }}-column-{{ column.index }}').on(
+                            "keyup change",
+                            delay(function () {
+                                    const column = table.columns({{ column.index }});
+                                    const newValue = $(this).val();
+
+                                    if (column.search() !== newValue) {
+                                        column.search(newValue).draw();
+                                    }
+                                }
+                                , {{ datatable.option('searchDelay') }}
+                            )
+                        )
+                    });
+                {% endif %}
+            {% endfor %}
+        });
+
+        function delay(callback, ms) {
+            let timer = 0;
+            return function () {
+                let context = this, args = arguments;
+                clearTimeout(timer);
+                timer = setTimeout(function () {
+                    callback.apply(context, args);
+                }, ms || 0);
+            };
+        }
+    </script>
+{% endif %}
