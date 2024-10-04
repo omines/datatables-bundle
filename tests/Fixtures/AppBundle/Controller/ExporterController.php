@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Tests\Fixtures\AppBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use Omines\DataTablesBundle\Adapter\ArrayAdapter;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTableFactory;
@@ -89,6 +90,64 @@ class ExporterController extends AbstractController
             ])
             ->addEventListener(DataTableExporterEvents::PRE_RESPONSE, function (DataTableExporterResponseEvent $e) {
                 $e->getResponse()->deleteFileAfterSend(false);
+            })
+            ->handleRequest($request);
+
+        if ($table->isCallback()) {
+            return $table->getResponse();
+        }
+
+        return $this->render('@App/exporter.html.twig', [
+            'datatable' => $table,
+        ]);
+    }
+
+    /**
+     * This route returns data which does not fit in an Excel cell (cells have a character limit of 32767).
+     */
+    public function exportLongText(Request $request, DataTableFactory $dataTableFactory): Response
+    {
+        $longText = str_repeat('a', 40000);
+
+        $table = $dataTableFactory
+            ->create()
+            ->add('longText', TextColumn::class)
+            ->createAdapter(ArrayAdapter::class, [
+                ['longText' => $longText],
+            ])
+            ->addEventListener(DataTableExporterEvents::PRE_RESPONSE, function (DataTableExporterResponseEvent $e) {
+                $response = $e->getResponse();
+                $response->deleteFileAfterSend(false);
+                $ext = $response->getFile()->getExtension();
+                $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, 'custom_filename.' . $ext);
+            })
+            ->handleRequest($request);
+
+        if ($table->isCallback()) {
+            return $table->getResponse();
+        }
+
+        return $this->render('@App/exporter.html.twig', [
+            'datatable' => $table,
+        ]);
+    }
+
+    /**
+     * This route returns data with HTML special characters.
+     */
+    public function exportSpecialChars(Request $request, DataTableFactory $dataTableFactory): Response
+    {
+        $table = $dataTableFactory
+            ->create()
+            ->add('specialChars', TextColumn::class)
+            ->createAdapter(ArrayAdapter::class, [
+                ['specialChars' => '<?xml version="1.0" encoding="UTF-8"?><hello>World</hello>'],
+            ])
+            ->addEventListener(DataTableExporterEvents::PRE_RESPONSE, function (DataTableExporterResponseEvent $e) {
+                $response = $e->getResponse();
+                $response->deleteFileAfterSend(false);
+                $ext = $response->getFile()->getExtension();
+                $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, 'custom_filename.' . $ext);
             })
             ->handleRequest($request);
 
