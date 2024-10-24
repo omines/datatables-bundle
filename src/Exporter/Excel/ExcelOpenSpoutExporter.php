@@ -46,16 +46,16 @@ class ExcelOpenSpoutExporter implements DataTableExporterInterface
         foreach ($data as $rowValues) {
             $row = new Row([]);
             foreach ($rowValues as $value) {
-                // I assume that $value is always a string
+                if (is_string($value)) {
+                    // The data that we get may contain rich HTML. But OpenSpout does not support this.
+                    // We just strip all HTML tags and unescape the remaining text.
+                    $value = htmlspecialchars_decode(strip_tags($value), ENT_QUOTES | ENT_SUBSTITUTE);
 
-                // The data that we get may contain rich HTML. But OpenSpout does not support this.
-                // We just strip all HTML tags and unescape the remaining text.
-                $value = htmlspecialchars_decode(strip_tags($value), ENT_QUOTES | ENT_SUBSTITUTE);
-
-                // Excel has a limit of 32,767 characters per cell
-                if (mb_strlen($value) > $maxCharactersPerCell) {
-                    $truncated = true;
-                    $value = mb_substr($value, 0, $maxCharactersPerCell);
+                    // Excel has a limit of 32,767 characters per cell
+                    if (mb_strlen($value) > $maxCharactersPerCell) {
+                        $truncated = true;
+                        $value = mb_substr($value, 0, $maxCharactersPerCell);
+                    }
                 }
 
                 // Do not wrap text
