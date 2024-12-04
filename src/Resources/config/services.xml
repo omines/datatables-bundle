@@ -26,7 +26,7 @@
 
         <!-- Exporters -->
         <service id="Omines\DataTablesBundle\Exporter\DataTableExporterCollection">
-            <argument type="tagged" tag="datatables.exporter"/>
+            <argument type="tagged_iterator" tag="datatables.exporter"/>
         </service>
 
         <service id="Omines\DataTablesBundle\Exporter\DataTableExporterManager">

@@ -1,6 +1,3 @@
 # Internal deprecations
 %Passing a negative value to the.*setStart%
 %with a length less than 1 is deprecated%
-
-# Symfony 7.2
-%Type "tagged" is deprecated for tag <argument>%
