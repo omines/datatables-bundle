@@ -16,10 +16,14 @@ jobs:
       fail-fast: false
       matrix:
         php:
+          - '8.1
           - '8.2'
           - '8.3'
           - '8.4'
-        dependencies: [ stable, beta, lowest ]
+        dependencies:
+          - stable
+          - beta
+          - lowest
         experimental: [ false ]
         include:
           - description: 'stable dependencies'
@@ -68,8 +72,15 @@ jobs:
         run: vendor/bin/phpstan
         if: ${{ matrix.dependencies != 'lowest' && !matrix.experimental }}
 
-      - name: Run automated tests
+      - name: Run automated tests for stable
         run: vendor/bin/phpunit --coverage-text --coverage-xml build/coverage-xml --coverage-cobertura build/cobertura.xml
+        if: ${{ matrix.dependencies == 'stable' && !matrix.experimental }}
+
+      - name: Run automated tests without deprecation testing
+        run: vendor/bin/phpunit --coverage-text --coverage-xml build/coverage-xml --coverage-cobertura build/cobertura.xml
+        if: ${{ matrix.dependencies != 'stable' || matrix.experimental }}
+        env:
+          SYMFONY_DEPRECATIONS_HELPER: ''
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4
