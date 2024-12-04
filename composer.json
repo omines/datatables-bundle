@@ -30,6 +30,7 @@
     "require-dev": {
         "ext-curl": "*",
         "ext-json": "*",
+        "ext-mbstring": "*",
         "ext-mongodb": "*",
         "ext-pdo_sqlite": "*",
         "ext-zip": "*",
@@ -61,7 +62,13 @@
         "symfony/yaml": "^6.3|^7.0.3"
     },
     "conflict": {
-        "doctrine/orm": "^3.0 <3.3"
+        "doctrine/orm": "^3.0 <3.3",
+        "symfony/polyfill-mbstring": "<1.31"
+    },
+    "replace": {
+        "symfony/polyfill-php73": "*",
+        "symfony/polyfill-php80": "*",
+        "symfony/polyfill-php81": "*"
     },
     "suggest": {
         "doctrine/doctrine-bundle": "For integrated access to Doctrine object managers",
