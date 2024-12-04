@@ -7,7 +7,7 @@
             <th>{{ column.label|trans }}</th>
         {% endfor %}
     </tr>
-    {% if datatable.option('searching') and columnFilter ?? '' in ['both', 'thead'] %}
+    {% if datatable.option('searching') and (columnFilter ?? '') in ['both', 'thead'] %}
         <tr class="datatable-filters">
             {% for column in datatable.columns %}
                 <td>
@@ -20,7 +20,7 @@
     <tbody>
     </tbody>
 
-    {% if datatable.option('searching') and columnFilter ?? '' in ['both', 'tfoot'] %}
+    {% if datatable.option('searching') and (columnFilter ?? '') in ['both', 'tfoot'] %}
         <tfoot>
         <tr class="datatable-filters">
             {% for column in datatable.columns %}
