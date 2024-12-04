@@ -2,6 +2,5 @@
 %Passing a negative value to the.*setStart%
 %with a length less than 1 is deprecated%
 
-# Elastica
-%Passing a array of strings as 1st argument%
-
+# Symfony 7.2
+%Type "tagged" is deprecated for tag <argument>%
