@@ -37,7 +37,7 @@ class SearchCriteriaProvider implements QueryBuilderProcessorInterface
             $column = $searchInfo['column'];
             $search = $searchInfo['search'];
 
-            if ('' !== trim($search)) {
+            if ('' !== mb_trim($search)) {
                 if (null !== ($filter = $column->getFilter())) {
                     if (!$filter->isValidValue($search)) {
                         continue;

@@ -40,10 +40,10 @@ class CsvExporterTest extends WebTestCase
 
         $csvFile = fopen($response->getFile()->getPathname(), 'r');
 
-        self::assertEquals(['dt.columns.firstName', 'dt.columns.lastName'], fgetcsv($csvFile));
+        self::assertEquals(['dt.columns.firstName', 'dt.columns.lastName'], fgetcsv($csvFile, escape: '\\'));
 
         $i = 0;
-        while (false !== ($row = fgetcsv($csvFile))) {
+        while (false !== ($row = fgetcsv($csvFile, escape: '\\'))) {
             self::assertEquals(['FirstName' . $i, 'LastName' . $i], $row);
             ++$i;
         }

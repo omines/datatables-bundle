@@ -29,10 +29,10 @@ class CsvExporter implements DataTableExporterInterface
             throw new \RuntimeException('Failed to create temporary file at ' . $filePath); // @codeCoverageIgnore
         }
 
-        fputcsv($file, $columnNames);
+        fputcsv($file, $columnNames, escape: '\\');
 
         foreach ($data as $row) {
-            fputcsv($file, array_map('strip_tags', $row));
+            fputcsv($file, array_map('strip_tags', $row), escape: '\\');
         }
 
         fclose($file);
