@@ -1,8 +1,11 @@
 # Changelog
-All notable changes to `omines\datatables-bundle` will be documented in this file.
+All notable changes to `omines\datatables-bundle` were documented in this file up to 0.9.0
+
+For more recent changelogs refer to Github releases page at https://github.com/omines/datatables-bundle/releases
+
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 0.9.0
 ### Added
  - Support Doctrine ORM 3 and DBAL 4
 
