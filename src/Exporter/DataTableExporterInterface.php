@@ -35,4 +35,16 @@ interface DataTableExporterInterface
      * A unique name to identify the exporter.
      */
     public function getName(): string;
+
+    /**
+     * Returns whether the exporter supports non-string data.
+     *
+     * The exporter should convert input types to the appropriate output types (e.g. an
+     * int becomes a number type in Excel). Non-supported types should be cast to a
+     * string.
+     *
+     * When this is true, `AbstractColumn::normalize()` and `AbstractColumn::render()`
+     * will not be called.
+     */
+    public function supportsRawData(): bool;
 }

@@ -33,7 +33,7 @@ class ArrayAdapter implements AdapterInterface
         $this->accessor = PropertyAccess::createPropertyAccessor();
     }
 
-    public function getData(DataTableState $state): ResultSetInterface
+    public function getData(DataTableState $state, bool $raw = false): ResultSetInterface
     {
         // Very basic implementation of sorting
         try {
@@ -64,7 +64,7 @@ class ArrayAdapter implements AdapterInterface
             }
         }
 
-        $data = iterator_to_array($this->processData($state, $this->data, $map));
+        $data = iterator_to_array($this->processData($state, $this->data, $map, $raw));
 
         $length = $state->getLength() ?? 0;
         $page = $length > 0 ? array_slice($data, $state->getStart(), $state->getLength()) : $data;
@@ -77,12 +77,12 @@ class ArrayAdapter implements AdapterInterface
      * @param array<string, string> $map
      * @return \Generator<mixed[]>
      */
-    protected function processData(DataTableState $state, array $data, array $map): \Generator
+    protected function processData(DataTableState $state, array $data, array $map, bool $raw): \Generator
     {
         $transformer = $state->getDataTable()->getTransformer();
         $search = $state->getGlobalSearch() ?: '';
         foreach ($data as $result) {
-            if ($row = $this->processRow($state, $result, $map, $search)) {
+            if ($row = $this->processRow($state, $result, $map, $search, $raw)) {
                 if (null !== $transformer) {
                     $row = call_user_func($transformer, $row, $result);
                 }
@@ -96,13 +96,13 @@ class ArrayAdapter implements AdapterInterface
      * @param array<string, string> $map
      * @return mixed[]|null
      */
-    protected function processRow(DataTableState $state, array $result, array $map, string $search): ?array
+    protected function processRow(DataTableState $state, array $result, array $map, string $search, bool $raw): ?array
     {
         $row = [];
         $match = empty($search);
         foreach ($state->getDataTable()->getColumns() as $column) {
             $value = (!empty($propertyPath = $map[$column->getName()]) && $this->accessor->isReadable($result, $propertyPath)) ? $this->accessor->getValue($result, $propertyPath) : null;
-            $value = $column->transform($value, $result);
+            $value = $column->transform($value, $result, raw: $raw);
             if (!$match) {
                 $match = (false !== mb_stripos($value, $search));
             }

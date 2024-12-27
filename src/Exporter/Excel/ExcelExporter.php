@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle\Exporter\Excel;
 
-use Omines\DataTablesBundle\Exporter\DataTableExporterInterface;
+use Omines\DataTablesBundle\Exporter\AbstractDataTableExporter;
 use PhpOffice\PhpSpreadsheet\Cell\CellAddress;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Helper;
@@ -25,7 +25,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
  *
  * @author Maxime Pinot <contact@maximepinot.com>
  */
-class ExcelExporter implements DataTableExporterInterface
+class ExcelExporter extends AbstractDataTableExporter
 {
     /**
      * @param mixed[] $columnNames
