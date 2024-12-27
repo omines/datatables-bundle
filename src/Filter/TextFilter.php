@@ -16,8 +16,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TextFilter extends AbstractFilter
 {
-    protected ?string $placeholder = null;
-
     protected function configureOptions(OptionsResolver $resolver): static
     {
         parent::configureOptions($resolver);
@@ -35,7 +33,7 @@ class TextFilter extends AbstractFilter
 
     public function getPlaceholder(): ?string
     {
-        return $this->placeholder;
+        return $this->options['placeholder'];
     }
 
     public function isValidValue(mixed $value): bool
