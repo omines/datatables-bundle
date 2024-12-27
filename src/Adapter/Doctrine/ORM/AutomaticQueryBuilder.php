@@ -46,6 +46,7 @@ class AutomaticQueryBuilder implements QueryBuilderProcessorInterface
         $this->metadata = $metadata;
 
         $this->entityName = $this->metadata->getName();
+        /* @phpstan-ignore nullCoalesce.expr, nullsafe.neverNull (the return type may be null in \Doctrine\ORM\Mapping\GetReflectionClassImplementation) */
         $this->entityShortName = mb_strtolower($this->metadata->getReflectionClass()?->getShortName() ?? self::DEFAULT_ALIAS);
     }
 
