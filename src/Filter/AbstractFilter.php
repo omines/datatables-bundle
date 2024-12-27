@@ -18,7 +18,6 @@ abstract class AbstractFilter
 {
     protected string $template_html;
     protected string $template_js;
-    protected string $operator;
 
     /**
      * @param array<string, mixed> $options
@@ -38,7 +37,6 @@ abstract class AbstractFilter
         $resolver->setDefaults([
             'template_html' => null,
             'template_js' => null,
-            'operator' => 'CONTAINS',
         ]);
 
         return $this;
@@ -52,11 +50,6 @@ abstract class AbstractFilter
     public function getTemplateJs(): string
     {
         return $this->template_js;
-    }
-
-    public function getOperator(): string
-    {
-        return $this->operator;
     }
 
     abstract public function isValidValue(mixed $value): bool;
