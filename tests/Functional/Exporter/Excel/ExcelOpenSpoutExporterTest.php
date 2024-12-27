@@ -54,6 +54,19 @@ class ExcelOpenSpoutExporterTest extends WebTestCase
 
         static::assertSame('FirstName4', $sheet->getCell('A6')->getFormattedValue());
         static::assertSame('LastName4', $sheet->getCell('B6')->getFormattedValue());
+
+        // Test exporter options
+
+        // - First column should be italic
+        static::assertTrue($sheet->getCell('A2')->getAppliedStyle()->getFont()->getItalic());
+        static::assertFalse($sheet->getCell('A2')->getAppliedStyle()->getFont()->getBold());
+        // - Second column should be bold
+        static::assertFalse($sheet->getCell('B2')->getAppliedStyle()->getFont()->getItalic());
+        static::assertTrue($sheet->getCell('B2')->getAppliedStyle()->getFont()->getBold());
+        // - First column should have a width of 20
+        static::assertSame(20.0, $sheet->getColumnDimension('A')->getWidth());
+        // - Second column should have a width of 30
+        static::assertSame(30.0, $sheet->getColumnDimension('B')->getWidth());
     }
 
     public function testEmptyDataTable(): void

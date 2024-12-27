@@ -19,6 +19,7 @@ use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTableFactory;
 use Omines\DataTablesBundle\Exporter\DataTableExporterEvents;
 use Omines\DataTablesBundle\Exporter\Event\DataTableExporterResponseEvent;
+use OpenSpout\Common\Entity\Style\Style;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,8 +39,22 @@ class ExporterController extends AbstractController
                 'render' => function (string $value, Person $context) {
                     return '<a href="http://example.org">' . $value . '</a>';
                 },
+                // We also test the exporter specific options
+                'exporterOptions' => [
+                    'excel-openspout' => [
+                        'style' => (new Style())->setFontItalic(),
+                        'columnWidth' => 20,
+                    ],
+                ],
             ])
-            ->add('lastName', TextColumn::class)
+            ->add('lastName', TextColumn::class, [
+                'exporterOptions' => [
+                    'excel-openspout' => [
+                        'style' => fn (mixed $value) => (new Style())->setFontBold(),  // We can also use a callable
+                        'columnWidth' => 30,
+                    ],
+                ],
+            ])
             ->createAdapter(ORMAdapter::class, [
                 'entity' => Person::class,
                 'query' => function (QueryBuilder $builder) {

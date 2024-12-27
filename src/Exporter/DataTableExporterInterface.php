@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle\Exporter;
 
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
 /**
  * Defines a DataTable exporter.
  *
@@ -22,9 +24,10 @@ interface DataTableExporterInterface
     /**
      * Exports the data from the DataTable to a file.
      *
-     * @param mixed[] $columnNames
+     * @param list<string> $columnNames
+     * @param list<array<string, mixed>> $columnOptions the parsed options for each column
      */
-    public function export(array $columnNames, \Iterator $data): \SplFileInfo;
+    public function export(array $columnNames, \Iterator $data, array $columnOptions): \SplFileInfo;
 
     /**
      * The MIME type of the exported file.
@@ -35,4 +38,12 @@ interface DataTableExporterInterface
      * A unique name to identify the exporter.
      */
     public function getName(): string;
+
+    /**
+     * Configures the per-column options available for the exporter.
+     *
+     * The manager will resolve the options using the options array set in
+     * `exporterOptions` of AbstractColumn.
+     */
+    public function configureColumnOptions(OptionsResolver $resolver): void;
 }
