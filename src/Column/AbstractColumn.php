@@ -107,6 +107,7 @@ abstract class AbstractColumn
                 'leftExpr' => null,
                 'operator' => '=',
                 'rightExpr' => null,
+                'exporterOptions' => [],
             ])
             ->setAllowedTypes('label', ['null', 'string'])
             ->setAllowedTypes('data', ['null', 'string', 'callable'])
@@ -123,6 +124,8 @@ abstract class AbstractColumn
             ->setAllowedTypes('operator', ['string'])
             ->setAllowedTypes('leftExpr', ['null', 'string', 'callable'])
             ->setAllowedTypes('rightExpr', ['null', 'string', 'callable'])
+            ->setAllowedTypes('exporterOptions', ['array'])
+            ->setInfo('exporterOptions', 'Specific exporter options can be specified here, where the key is the exporter name and the value is an array of options.')
         ;
 
         return $this;
@@ -244,5 +247,14 @@ abstract class AbstractColumn
     public function isValidForSearch(mixed $value): bool
     {
         return true;
+    }
+
+    /**
+     * @param string $exporterName one of the exporter names as returned by DataTableExporterInterface::getName()
+     * @return array<string, mixed>
+     */
+    public function getExporterOptions(string $exporterName): array
+    {
+        return $this->options['exporterOptions'][$exporterName] ?? [];
     }
 }
