@@ -90,7 +90,9 @@ class DataTableExporterManager
      */
     public function getExport(): \SplFileInfo
     {
-        return $this->getExporter()->export($this->getColumnNames(), $this->getAllData(), $this->getColumnOptions());
+        $exporter = $this->getExporter();
+
+        return $exporter->export($this->getColumnNames(), $this->getAllData($exporter->supportsRawData()), $this->getColumnOptions());
     }
 
     /**
@@ -133,11 +135,11 @@ class DataTableExporterManager
      * A Generator is created in order to remove the 'DT_RowId' key
      * which is created by some adapters (e.g. ORMAdapter).
      */
-    private function getAllData(): \Iterator
+    private function getAllData(bool $raw): \Iterator
     {
         $data = $this->dataTable
             ->getAdapter()
-            ->getData($this->dataTable->getState()->setStart(0)->setLength(null))
+            ->getData($this->dataTable->getState()->setStart(0)->setLength(null), raw: $raw)
             ->getData();
 
         foreach ($data as $row) {

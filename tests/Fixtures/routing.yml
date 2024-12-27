@@ -52,3 +52,7 @@ exporter_long_text:
 exporter_special_chars:
     path: /exporter-special-chars
     controller: Tests\Fixtures\AppBundle\Controller\ExporterController::exportSpecialChars
+
+exporter_with_types:
+    path: /exporter-with-types
+    controller: Tests\Fixtures\AppBundle\Controller\ExporterController::exportWithTypes
