@@ -37,7 +37,7 @@
         "doctrine/common": "^3.4.5",
         "doctrine/doctrine-bundle": "^2.13.1",
         "doctrine/orm": "^2.19.3|^3.3.0",
-        "doctrine/persistence": "^3.4.0",
+        "doctrine/persistence": "^4.0.0",
         "friendsofphp/php-cs-fixer": "^3.65.0",
         "mongodb/mongodb": "^1.20.0",
         "ocramius/package-versions": "^2.9",
