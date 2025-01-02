@@ -12,14 +12,15 @@ declare(strict_types=1);
 
 namespace Tests\Fixtures\AppBundle\DataTable\Exporter;
 
-use Omines\DataTablesBundle\Exporter\DataTableExporterInterface;
+use Omines\DataTablesBundle\Exporter\AbstractDataTableExporter;
 
 /**
  * @author Maxime Pinot <contact@maximepinot.com>
  */
-class TxtExporter implements DataTableExporterInterface
+class TxtExporter extends AbstractDataTableExporter
 {
-    public function export(array $columnNames, \Iterator $data): \SplFileInfo
+    #[\Override]
+    public function export(array $columnNames, \Iterator $data, array $columnOptions): \SplFileInfo
     {
         $filename = sys_get_temp_dir() . '/dt.txt';
         $handle = fopen($filename, 'w');

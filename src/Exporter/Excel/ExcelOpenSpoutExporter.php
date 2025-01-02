@@ -12,57 +12,64 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle\Exporter\Excel;
 
-use Omines\DataTablesBundle\Exporter\DataTableExporterInterface;
+use Omines\DataTablesBundle\Exporter\AbstractDataTableExporter;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Writer\AutoFilter;
 use OpenSpout\Writer\XLSX\Entity\SheetView;
 use OpenSpout\Writer\XLSX\Writer;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Excel exporter using OpenSpout.
  */
-class ExcelOpenSpoutExporter implements DataTableExporterInterface
+class ExcelOpenSpoutExporter extends AbstractDataTableExporter
 {
     /**
-     * @param list<scalar> $columnNames
+     * This is an Excel limitation. See: https://support.microsoft.com/en-us/office/excel-specifications-and-limits-1672b34d-7043-467e-8e27-269d656771c3.
      */
-    public function export(array $columnNames, \Iterator $data): \SplFileInfo
+    public const MAX_CHARACTERS_PER_CELL = 32767;
+
+    #[\Override]
+    public function export(array $columnNames, \Iterator $data, array $columnOptions): \SplFileInfo
     {
         $filePath = sys_get_temp_dir() . '/' . uniqid('dt') . '.xlsx';
-
-        // Style definitions
-        $noWrapTextStyle = (new Style())->setShouldWrapText(false);
-        $boldStyle = (new Style())->setFontBold();
 
         $writer = new Writer();
         $writer->openToFile($filePath);
 
-        // Add header
-        $writer->addRow(Row::fromValues($columnNames, $boldStyle));
+        // Header
+        $writer->addRow(Row::fromValues($columnNames, (new Style())->setFontBold()));
 
         $truncated = false;
-        $maxCharactersPerCell = 32767;  // E.g. https://support.microsoft.com/en-us/office/excel-specifications-and-limits-1672b34d-7043-467e-8e27-269d656771c3
         $rowCount = 0;
 
         foreach ($data as $rowValues) {
+            reset($columnOptions);
             $row = new Row([]);
             foreach ($rowValues as $value) {
+                $options = current($columnOptions);
+                if (false === $options) {
+                    throw new \LogicException('Mismatch in number of row values and number of column options');
+                }
+
                 if (is_string($value)) {
                     // The data that we get may contain rich HTML. But OpenSpout does not support this.
                     // We just strip all HTML tags and unescape the remaining text.
                     $value = htmlspecialchars_decode(strip_tags($value), ENT_QUOTES | ENT_SUBSTITUTE);
 
                     // Excel has a limit of 32,767 characters per cell
-                    if (mb_strlen($value) > $maxCharactersPerCell) {
+                    if (mb_strlen($value) > static::MAX_CHARACTERS_PER_CELL) {
                         $truncated = true;
-                        $value = mb_substr($value, 0, $maxCharactersPerCell);
+                        $value = mb_substr($value, 0, static::MAX_CHARACTERS_PER_CELL);
                     }
                 }
 
                 // Do not wrap text
-                $row->addCell(Cell::fromValue($value, $noWrapTextStyle));
+                $row->addCell(Cell::fromValue($value, $this->resolveStyleOption($options['style'], $value)));
+
+                next($columnOptions);
             }
             $writer->addRow($row);
             ++$rowCount;
@@ -73,7 +80,11 @@ class ExcelOpenSpoutExporter implements DataTableExporterInterface
         $sheet->setAutoFilter(new AutoFilter(0, 1,
             max(count($columnNames) - 1, 0), $rowCount + 1));
         $sheet->setSheetView((new SheetView())->setFreezeRow(2));
-        $sheet->setColumnWidthForRange(24, 1, max(count($columnNames), 1));
+
+        // Column widths
+        foreach ($columnOptions as $index => $options) {
+            $sheet->setColumnWidth($options['columnWidth'], $index + 1);
+        }
 
         if ($truncated) {
             // Add a notice to the sheet if there is truncated data.
@@ -84,12 +95,17 @@ class ExcelOpenSpoutExporter implements DataTableExporterInterface
             $writer
                 ->addNewSheetAndMakeItCurrent()
                 ->setName('Notice');
-            $writer->addRow(Row::fromValues(['Some cell values were too long! They were truncated to fit the 32,767 character limit.'], $boldStyle));
+            $writer->addRow(Row::fromValues(['Some cell values were too long! They were truncated to fit the 32,767 character limit.'], (new Style())->setFontBold()));
         }
 
         $writer->close();
 
         return new \SplFileInfo($filePath);
+    }
+
+    private function resolveStyleOption(Style|callable $style, mixed $value): Style
+    {
+        return $style instanceof Style ? $style : $style($value);
     }
 
     public function getMimeType(): string
@@ -100,5 +116,18 @@ class ExcelOpenSpoutExporter implements DataTableExporterInterface
     public function getName(): string
     {
         return 'excel-openspout';
+    }
+
+    #[\Override]
+    public function configureColumnOptions(OptionsResolver $resolver): void
+    {
+        $resolver
+            ->setDefaults([
+                'style' => (new Style())->setShouldWrapText(false),
+                'columnWidth' => 24,
+            ])
+            ->setAllowedTypes('style', [Style::class, 'callable'])
+            ->setAllowedTypes('columnWidth', ['int', 'float'])
+        ;
     }
 }

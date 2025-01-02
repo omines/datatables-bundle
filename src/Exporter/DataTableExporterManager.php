@@ -18,6 +18,7 @@ use Omines\DataTablesBundle\Exporter\Event\DataTableExporterResponseEvent;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -60,16 +61,15 @@ class DataTableExporterManager
     }
 
     /**
-     * @throws UnknownDataTableExporterException
+     * @throws UnknownDataTableExporterException when the exporter cannot be found
      */
     public function getResponse(): Response
     {
-        $exporter = $this->exporterCollection->getByName($this->exporterName);
-        $file = $exporter->export($this->getColumnNames(), $this->getAllData());
+        $file = $this->getExport();
 
         $response = new BinaryFileResponse($file);
         $response->deleteFileAfterSend(true);
-        $response->headers->set('Content-Type', $exporter->getMimeType());
+        $response->headers->set('Content-Type', $this->getExporter()->getMimeType());
         $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $response->getFile()->getFilename());
 
         $this->dataTable->getEventDispatcher()->dispatch(new DataTableExporterResponseEvent($response), DataTableExporterEvents::PRE_RESPONSE);
@@ -78,9 +78,43 @@ class DataTableExporterManager
     }
 
     /**
+     * @throws UnknownDataTableExporterException when the exporter cannot be found
+     */
+    public function getExporter(): DataTableExporterInterface
+    {
+        return $this->exporterCollection->getByName($this->exporterName);
+    }
+
+    /**
+     * @throws UnknownDataTableExporterException when the exporter cannot be found
+     */
+    public function getExport(): \SplFileInfo
+    {
+        return $this->getExporter()->export($this->getColumnNames(), $this->getAllData(), $this->getColumnOptions());
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     * @throws UnknownDataTableExporterException when the exporter cannot be found
+     */
+    private function getColumnOptions(): array
+    {
+        $resolver = new OptionsResolver();
+        $this->getExporter()->configureColumnOptions($resolver);
+
+        $options = [];
+        foreach ($this->dataTable->getColumns() as $column) {
+            // For each column, resolve the exporter options set on that column
+            $options[] = $resolver->resolve($column->getExporterOptions($this->exporterName));
+        }
+
+        return $options;
+    }
+
+    /**
      * The translated column names.
      *
-     * @return string[]
+     * @return list<string>
      */
     private function getColumnNames(): array
     {
