@@ -69,7 +69,7 @@ class ArrayAdapter implements AdapterInterface
         $length = $state->getLength() ?? 0;
         $page = $length > 0 ? array_slice($data, $state->getStart(), $state->getLength()) : $data;
 
-        return new ArrayResultSet($page, count($this->data), count($data));
+        return new ResultSet(new \ArrayIterator($page), count($this->data), count($data));
     }
 
     /**
