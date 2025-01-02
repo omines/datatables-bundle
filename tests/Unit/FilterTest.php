@@ -33,7 +33,6 @@ class FilterTest extends TestCase
 
         $filter->set([
             'choices' => ['foo' => 'bar', 'bar' => 'baz'],
-            'operator' => 'bar',
             'placeholder' => 'foobar',
             'template_html' => 'foobar.html',
         ]);
@@ -44,7 +43,6 @@ class FilterTest extends TestCase
         $this->assertSame('foobar', $filter->getPlaceholder());
         $this->assertSame('foobar.html', $filter->getTemplateHtml());
         $this->assertSame('@DataTables/Filter/select.js.twig', $filter->getTemplateJs());
-        $this->assertSame('bar', $filter->getOperator());
     }
 
     public function testTextFilter(): void
@@ -57,12 +55,10 @@ class FilterTest extends TestCase
 
         $filter->set([
             'template_js' => 'foobar.js',
-            'operator' => 'foo',
             'placeholder' => 'baz',
         ]);
         $this->assertSame('@DataTables/Filter/text.html.twig', $filter->getTemplateHtml());
         $this->assertSame('foobar.js', $filter->getTemplateJs());
-        $this->assertSame('foo', $filter->getOperator());
         $this->assertSame('baz', $filter->getPlaceholder());
     }
 }

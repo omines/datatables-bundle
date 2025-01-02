@@ -98,7 +98,7 @@ class DataTableTest extends TestCase
         $this->assertSame(10, $state->getLength());
         $this->assertSame('foo', $state->getGlobalSearch());
         $this->assertCount(2, $state->getOrderBy());
-        $this->assertSame('bar', $state->getSearchColumns()['foo']['search']);
+        $this->assertSame('bar', $state->getSearchColumns(onlySearchable: false)['foo']['search']);
 
         // Test boundaries
         $state->setStart(-1);
@@ -109,6 +109,28 @@ class DataTableTest extends TestCase
 
         $column = $datatable->getColumn(0);
         $this->assertSame($state, $column->getState());
+    }
+
+    /**
+     * Tests that getSearchColumns only returns columns for which `isSearchable()` is true.
+     */
+    public function testDataTableStateSearchColumns(): void
+    {
+        $datatable = $this
+            ->createMockDataTable()
+            ->add('foo', TextColumn::class, ['searchable' => true])
+            ->add('bar', TextColumn::class, ['searchable' => false])
+            ->setMethod(Request::METHOD_GET)
+        ;
+        $datatable->handleRequest(Request::create('/?_dt=' . $datatable->getName()));
+
+        $state = $datatable->getState();
+        $state->setColumnSearch($datatable->getColumn(0), 'foo');
+        $state->setColumnSearch($datatable->getColumn(1), 'bar');
+
+        $searchColumns = $state->getSearchColumns();
+        $this->assertCount(1, $searchColumns);
+        $this->assertSame('foo', $searchColumns['foo']['search']);
     }
 
     public function testPostMethod(): void
