@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle\Exporter\Excel;
 
-use Omines\DataTablesBundle\Exporter\DataTableExporterInterface;
+use Omines\DataTablesBundle\Exporter\AbstractDataTableExporter;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\Style;
@@ -23,7 +23,7 @@ use OpenSpout\Writer\XLSX\Writer;
 /**
  * Excel exporter using OpenSpout.
  */
-class ExcelOpenSpoutExporter implements DataTableExporterInterface
+class ExcelOpenSpoutExporter extends AbstractDataTableExporter
 {
     /**
      * @param list<scalar> $columnNames
@@ -50,9 +50,12 @@ class ExcelOpenSpoutExporter implements DataTableExporterInterface
             $row = new Row([]);
             foreach ($rowValues as $value) {
                 if (is_string($value)) {
-                    // The data that we get may contain rich HTML. But OpenSpout does not support this.
-                    // We just strip all HTML tags and unescape the remaining text.
-                    $value = htmlspecialchars_decode(strip_tags($value), ENT_QUOTES | ENT_SUBSTITUTE);
+                    // Previously, we stripped HTML tags and unescaped the value, because the value was passed through
+                    // AbstractColumn::render() which would have escaped special chars and could have added HTML tags.
+                    //
+                    // Now that we have raw data, we don't need to do that anymore.
+                    //
+                    // $value = htmlspecialchars_decode(strip_tags($value), ENT_QUOTES | ENT_SUBSTITUTE);
 
                     // Excel has a limit of 32,767 characters per cell
                     if (mb_strlen($value) > $maxCharactersPerCell) {
@@ -61,8 +64,8 @@ class ExcelOpenSpoutExporter implements DataTableExporterInterface
                     }
                 }
 
-                // Do not wrap text
-                $row->addCell(Cell::fromValue($value, $noWrapTextStyle));
+                // Do not wrap text to mimic the default Excel behavior
+                $row->addCell($this->normalizeToCell($value, $noWrapTextStyle));
             }
             $writer->addRow($row);
             ++$rowCount;
@@ -92,6 +95,25 @@ class ExcelOpenSpoutExporter implements DataTableExporterInterface
         return new \SplFileInfo($filePath);
     }
 
+    private function normalizeToCell(mixed $value, ?Style $style = null): Cell
+    {
+        if (
+            is_scalar($value)  // (bool, int, float, string)
+            || null === $value
+            || $value instanceof \DateTimeInterface
+            || $value instanceof \DateInterval
+        ) {
+            return Cell::fromValue($value, $style);
+        } else {
+            // Try casting to string, else put an error message in the cell
+            try {
+                return Cell::fromValue((string) $value, $style);
+            } catch (\Throwable $e) {
+                return Cell::fromValue($e->getMessage(), (new Style())->setFontItalic());
+            }
+        }
+    }
+
     public function getMimeType(): string
     {
         return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
@@ -100,5 +122,11 @@ class ExcelOpenSpoutExporter implements DataTableExporterInterface
     public function getName(): string
     {
         return 'excel-openspout';
+    }
+
+    #[\Override]
+    public function supportsRawData(): bool
+    {
+        return true;
     }
 }

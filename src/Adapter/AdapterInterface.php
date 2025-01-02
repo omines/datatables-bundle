@@ -31,5 +31,5 @@ interface AdapterInterface
     /**
      * Processes a datatable's state into a result set fit for further processing.
      */
-    public function getData(DataTableState $state): ResultSetInterface;
+    public function getData(DataTableState $state, bool $raw = false): ResultSetInterface;
 }
