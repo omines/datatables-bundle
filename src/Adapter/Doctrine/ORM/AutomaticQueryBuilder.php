@@ -46,7 +46,7 @@ class AutomaticQueryBuilder implements QueryBuilderProcessorInterface
         $this->metadata = $metadata;
 
         $this->entityName = $this->metadata->getName();
-        $this->entityShortName = mb_strtolower($this->metadata->getReflectionClass()?->getShortName() ?? self::DEFAULT_ALIAS);
+        $this->entityShortName = mb_strtolower($metadata->reflClass?->getShortName() ?? self::DEFAULT_ALIAS);
     }
 
     public function process(QueryBuilder $builder, DataTableState $state): void
