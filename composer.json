@@ -24,7 +24,7 @@
         "symfony/event-dispatcher": "^6.4|^7.1",
         "symfony/framework-bundle": "^6.4|^7.1",
         "symfony/options-resolver": "^6.4|^7.1",
-        "symfony/polyfill-mbstring": "~1.0",
+        "symfony/polyfill-mbstring": "^1.31.0",
         "symfony/property-access": "^6.4|^7.1",
         "symfony/translation": "^6.4|^7.1"
     },
