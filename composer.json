@@ -24,6 +24,7 @@
         "symfony/event-dispatcher": "^6.4|^7.1",
         "symfony/framework-bundle": "^6.4|^7.1",
         "symfony/options-resolver": "^6.4|^7.1",
+        "symfony/polyfill-mbstring": "~1.0",
         "symfony/property-access": "^6.4|^7.1",
         "symfony/translation": "^6.4|^7.1"
     },
@@ -57,7 +58,6 @@
         "symfony/intl": "^6.4.13|^7.1",
         "symfony/mime": "^6.4.13|^7.1",
         "symfony/phpunit-bridge": "^7.2",
-        "symfony/polyfill-mbstring":"^1.31.0",
         "symfony/twig-bundle": "^6.4|^7.1",
         "symfony/var-dumper": "^6.4.13|^7.1",
         "symfony/yaml": "^6.4.13|^7.1"
