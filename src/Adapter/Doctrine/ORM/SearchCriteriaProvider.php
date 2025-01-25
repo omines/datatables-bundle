@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Omines\DataTablesBundle\Adapter\Doctrine\ORM;
 
+use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\Expr\Comparison;
 use Doctrine\ORM\QueryBuilder;
 use Omines\DataTablesBundle\Column\AbstractColumn;
@@ -43,8 +44,7 @@ class SearchCriteriaProvider implements QueryBuilderProcessorInterface
                         continue;
                     }
                 }
-                $search = $queryBuilder->expr()->literal($search);
-                $queryBuilder->andWhere(new Comparison($column->getField(), $column->getOperator(), $search));
+                $queryBuilder->andWhere($this->getSearchComparison($column, $search));
             }
         }
     }
@@ -56,11 +56,19 @@ class SearchCriteriaProvider implements QueryBuilderProcessorInterface
             $comparisons = $expr->orX();
             foreach ($state->getDataTable()->getColumns() as $column) {
                 if ($column->isGlobalSearchable() && !empty($column->getField()) && $column->isValidForSearch($globalSearch)) {
-                    $comparisons->add(new Comparison($column->getLeftExpr(), $column->getOperator(),
-                        $expr->literal($column->getRightExpr($globalSearch))));
+                    $comparisons->add($this->getSearchComparison($column, $globalSearch));
                 }
             }
             $queryBuilder->andWhere($comparisons);
         }
+    }
+
+    private function getSearchComparison(AbstractColumn $column, string $search): Comparison
+    {
+        return new Comparison(
+            $column->getLeftExpr(),
+            $column->getOperator(),
+            (new Expr())->literal($column->getRightExpr($search)),
+        );
     }
 }
