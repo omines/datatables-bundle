@@ -545,6 +545,39 @@ Of course you can modify the base type to fit the controller's specific needs be
 `handleRequest`. Secondly, the `createDataTableFromType` function accepts an array as a second
 argument which is passed to the type class for parametrized instantiation.
 
+# Events
+
+A few events are available that allow you to hook into the DataTables lifecycle. These are dispatched
+by the `DataTable` instance, and can be listened to by adding event listeners to the table.
+
+## DataTableEvents::PRE_RESPONSE
+
+This event is dispatched just before the response is created, allowing you to modify the table
+one last time while the table state is already known. This could, for instance, be useful for
+adding or removing columns when in the server-side exporting context.
+
+```php?start_inline=1
+$table->addEventListener(DataTableEvents::PRE_RESPONSE, function (DataTablePreResponseEvent $event) {
+    $table = $event->getTable();
+
+    $table
+        ->add('extraColumn', TextColumn::class)
+        ->remove('obsoleteColumn')
+    ;
+});
+```
+
+## DataTableEvents::POST_RESPONSE
+
+This event is dispatched just after the response is created but before it is returned to the client.
+This is useful for logging, or other post-processing tasks.
+
+```php?start_inline=1
+$table->addEventListener(DataTableEvents::POST_RESPONSE, function (DataTablePreResponseEvent $event) use ($logger) {
+    $logger->info('Table rendered', ['table' => $event->getTable()]);
+});
+```
+
 # Javascript
 
 ```javascript
