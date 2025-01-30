@@ -81,6 +81,8 @@ class FunctionalTest extends WebTestCase
         $this->assertSame('George W.', $json->data[0]->firstName);
         $this->assertSame('BUSH', $json->data[0]->lastName);
         $this->assertSame('01-01-2017', $json->data[0]->lastActivity);
+        $this->assertSame('bush@example.org', $json->data[0]->email);
+        $this->assertObjectNotHasProperty('dummy', $json->data[0]);
 
         $json = $this->callDataTableUrl('/type?_dt=persons&draw=1&search[value]=Bush');
 
