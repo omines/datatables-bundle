@@ -41,6 +41,7 @@ class ORMAdapterTest extends KernelTestCase
         /** @var ORMAdapter $adapter */
         $adapter = $datatable->getAdapter();
         $data = $adapter->getData(new DataTableState($datatable));
+        iterator_to_array($data->getData());  // Evaluate the iterator to trigger the exception
     }
 
     public function testORMAdapterQueryEvent(): void

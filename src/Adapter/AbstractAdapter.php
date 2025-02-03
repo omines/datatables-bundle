@@ -38,27 +38,33 @@ abstract class AbstractAdapter implements AdapterInterface
         $this->prepareQuery($query);
         $propertyMap = $this->getPropertyMap($query);
 
-        $rows = [];
         $transformer = $state->getDataTable()->getTransformer();
         $identifier = $query->getIdentifierPropertyPath();
-        foreach ($this->getResults($query) as $result) {
-            $row = [];
-            if (!empty($identifier)) {
-                $row['DT_RowId'] = $this->accessor->getValue($result, $identifier);
-            }
 
-            /** @var AbstractColumn $column */
-            foreach ($propertyMap as list($column, $mapping)) {
-                $value = ($mapping && $this->accessor->isReadable($result, $mapping)) ? $this->accessor->getValue($result, $mapping) : null;
-                $row[$column->getName()] = $column->transform($value, $result);
+        $data = (function () use ($query, $identifier, $transformer, $propertyMap) {
+            foreach ($this->getResults($query) as $result) {
+                $row = [];
+                if (!empty($identifier)) {
+                    $row['DT_RowId'] = $this->accessor->getValue($result, $identifier);
+                }
+
+                /** @var AbstractColumn $column */
+                foreach ($propertyMap as list($column, $mapping)) {
+                    $value = ($mapping && $this->accessor->isReadable($result, $mapping)) ? $this->accessor->getValue($result, $mapping) : null;
+                    $row[$column->getName()] = $column->transform($value, $result);
+                }
+                if (null !== $transformer) {
+                    $row = call_user_func($transformer, $row, $result);
+                }
+                yield $row;
             }
-            if (null !== $transformer) {
-                $row = call_user_func($transformer, $row, $result);
-            }
-            $rows[] = $row;
+        })();
+
+        if (null === $query->getTotalRows() || null === $query->getFilteredRows()) {
+            throw new \LogicException('Adapter did not set row counts');
         }
 
-        return new ArrayResultSet($rows, $query->getTotalRows(), $query->getFilteredRows());
+        return new ResultSet($data, $query->getTotalRows(), $query->getFilteredRows());
     }
 
     /**
