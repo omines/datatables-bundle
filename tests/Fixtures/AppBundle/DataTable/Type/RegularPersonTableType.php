@@ -16,7 +16,9 @@ use Omines\DataTablesBundle\Adapter\ArrayAdapter;
 use Omines\DataTablesBundle\Column\DateTimeColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTable;
+use Omines\DataTablesBundle\DataTableEvents;
 use Omines\DataTablesBundle\DataTableTypeInterface;
+use Omines\DataTablesBundle\Event\DataTablePreResponseEvent;
 
 /**
  * RegularPersonTableType.
@@ -36,6 +38,7 @@ class RegularPersonTableType implements DataTableTypeInterface
                 },
                 'format' => 'd-m-Y',
             ])
+            ->add('dummy', TextColumn::class, ['data' => fn () => ''])
             ->createAdapter(ArrayAdapter::class, [
                 ['firstName' => 'Donald', 'lastName' => 'Trump'],
                 ['firstName' => 'Barack', 'lastName' => 'Obama'],
@@ -48,6 +51,16 @@ class RegularPersonTableType implements DataTableTypeInterface
                 $row['lastName'] = mb_strtoupper($row['lastName']);
 
                 return $row;
+            })
+            ->addEventListener(DataTableEvents::PRE_RESPONSE, function (DataTablePreResponseEvent $event) {
+                $table = $event->getTable();
+
+                $table
+                    ->add('email', TextColumn::class, [
+                        'data' => fn ($context) => mb_strtolower($context['lastName']) . '@example.org',
+                    ])
+                    ->remove('dummy')
+                ;
             })
         ;
     }
