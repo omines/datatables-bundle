@@ -35,6 +35,8 @@ class DataTableExporterCollection
 
     /**
      * Finds a DataTable exporter that matches the given name.
+     *
+     * @throws UnknownDataTableExporterException when the exporter with the given name cannot be found
      */
     public function getByName(string $name): DataTableExporterInterface
     {
