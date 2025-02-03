@@ -102,6 +102,17 @@ class FunctionalTest extends WebTestCase
         $this->assertCount(2, $json->data);
         $this->assertStringStartsWith('Company ', $json->data[0]->company);
         $this->assertSame('LastName24 (Company 4)', $json->data[0]->fullName);
+
+        // A column search should be based on substring matching by default (same as global
+        // search). Not on exact matching.
+        $json = $this->callDataTableUrl('/service?_dt=persons&draw=2&order[0][column]=2&order[0][dir]=desc&columns[1][search][value]=name24');
+        $this->assertCount(1, $json->data);
+        $this->assertSame('LastName24 (Company 4)', $json->data[0]->fullName);
+
+        // Search for `LastName1` in the first name column should return no results. This
+        // tests that the column search only applies to the specified column.
+        $json = $this->callDataTableUrl('/service?_dt=persons&draw=2&order[0][column]=2&order[0][dir]=desc&columns[1][search][value]=LastName1');
+        $this->assertCount(0, $json->data);
     }
 
     public function testCustomDataTable(): void

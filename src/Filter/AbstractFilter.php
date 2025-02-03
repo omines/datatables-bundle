@@ -16,29 +16,34 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 abstract class AbstractFilter
 {
-    protected string $template_html;
-    protected string $template_js;
-    protected string $operator;
+    /**
+     * @var array<string, mixed>
+     */
+    protected array $options = [];
+
+    public function __construct()
+    {
+        // Initialize the options with the default values set on the OptionsResolver
+        $this->set([]);
+    }
 
     /**
      * @param array<string, mixed> $options
      */
-    public function set(array $options): void
+    public function set(array $options): static
     {
         $resolver = new OptionsResolver();
         $this->configureOptions($resolver);
+        $this->options = $resolver->resolve($options);
 
-        foreach ($resolver->resolve($options) as $key => $value) {
-            $this->$key = $value;
-        }
+        return $this;
     }
 
     protected function configureOptions(OptionsResolver $resolver): static
     {
-        $resolver->setDefaults([
-            'template_html' => null,
-            'template_js' => null,
-            'operator' => 'CONTAINS',
+        $resolver->setRequired([
+            'template_html',
+            'template_js',
         ]);
 
         return $this;
@@ -46,17 +51,12 @@ abstract class AbstractFilter
 
     public function getTemplateHtml(): string
     {
-        return $this->template_html;
+        return $this->options['template_html'];
     }
 
     public function getTemplateJs(): string
     {
-        return $this->template_js;
-    }
-
-    public function getOperator(): string
-    {
-        return $this->operator;
+        return $this->options['template_js'];
     }
 
     abstract public function isValidValue(mixed $value): bool;

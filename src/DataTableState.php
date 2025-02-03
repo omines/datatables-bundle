@@ -104,7 +104,10 @@ final class DataTableState
             $column = $this->dataTable->getColumn((int) $key);
             $value = $this->isInitial ? $search : $search['search']['value'] ?? '';
 
-            if ($column->isSearchable() && ('' !== mb_trim($value))) {
+            // We do not check for $column->isSearchable() here, because at this point the
+            // field option may not have been set yet. This makes the check for isSearchable()
+            // unreliable.
+            if ('' !== mb_trim($value)) {
                 $this->setColumnSearch($column, $value);
             }
         }
@@ -204,11 +207,13 @@ final class DataTableState
     /**
      * Returns an array of column-level searches.
      *
+     * @param bool $onlySearchable if true, only returns columns for which isSearchable() is true
      * @return SearchColumn[]
      */
-    public function getSearchColumns(): array
+    public function getSearchColumns(bool $onlySearchable = true): array
     {
-        return $this->searchColumns;
+        // `searchColumns` may include columns that are not searchable, so we filter them out here.
+        return array_filter($this->searchColumns, fn ($searchInfo) => !$onlySearchable || $searchInfo['column']->isSearchable());
     }
 
     public function setColumnSearch(AbstractColumn $column, string $search, bool $isRegex = false): static
