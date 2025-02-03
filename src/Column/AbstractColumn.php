@@ -24,9 +24,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 abstract class AbstractColumn
 {
-    /** @var array<string, OptionsResolver> */
-    private static array $resolversByClass = [];
-
     private string $name;
     private int $index;
     private DataTable $dataTable;
@@ -43,12 +40,9 @@ abstract class AbstractColumn
         $this->index = $index;
         $this->dataTable = $dataTable;
 
-        $class = get_class($this);
-        if (!isset(self::$resolversByClass[$class])) {
-            self::$resolversByClass[$class] = new OptionsResolver();
-            $this->configureOptions(self::$resolversByClass[$class]);
-        }
-        $this->options = self::$resolversByClass[$class]->resolve($options);
+        $resolver = new OptionsResolver();
+        $this->configureOptions($resolver);
+        $this->options = $resolver->resolve($options);
     }
 
     /**
