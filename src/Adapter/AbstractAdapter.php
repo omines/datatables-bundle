@@ -31,7 +31,7 @@ abstract class AbstractAdapter implements AdapterInterface
         $this->accessor = PropertyAccess::createPropertyAccessor();
     }
 
-    final public function getData(DataTableState $state): ResultSetInterface
+    final public function getData(DataTableState $state, bool $raw = false): ResultSetInterface
     {
         $query = new AdapterQuery($state);
 
@@ -41,7 +41,7 @@ abstract class AbstractAdapter implements AdapterInterface
         $transformer = $state->getDataTable()->getTransformer();
         $identifier = $query->getIdentifierPropertyPath();
 
-        $data = (function () use ($query, $identifier, $transformer, $propertyMap) {
+        $data = (function () use ($query, $identifier, $transformer, $propertyMap, $raw) {
             foreach ($this->getResults($query) as $result) {
                 $row = [];
                 if (!empty($identifier)) {
@@ -51,7 +51,7 @@ abstract class AbstractAdapter implements AdapterInterface
                 /** @var AbstractColumn $column */
                 foreach ($propertyMap as list($column, $mapping)) {
                     $value = ($mapping && $this->accessor->isReadable($result, $mapping)) ? $this->accessor->getValue($result, $mapping) : null;
-                    $row[$column->getName()] = $column->transform($value, $result);
+                    $row[$column->getName()] = $column->transform($value, $result, raw: $raw);
                 }
                 if (null !== $transformer) {
                     $row = call_user_func($transformer, $row, $result);

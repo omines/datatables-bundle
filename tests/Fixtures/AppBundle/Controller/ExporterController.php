@@ -15,7 +15,11 @@ namespace Tests\Fixtures\AppBundle\Controller;
 use Doctrine\ORM\QueryBuilder;
 use Omines\DataTablesBundle\Adapter\ArrayAdapter;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
+use Omines\DataTablesBundle\Column\BoolColumn;
+use Omines\DataTablesBundle\Column\DateTimeColumn;
+use Omines\DataTablesBundle\Column\NumberColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
+use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableFactory;
 use Omines\DataTablesBundle\Exporter\DataTableExporterEvents;
 use Omines\DataTablesBundle\Exporter\Event\DataTableExporterResponseEvent;
@@ -64,22 +68,11 @@ class ExporterController extends AbstractController
                         ->setMaxResults(5)
                         ->orderBy('p.id', 'ASC');
                 },
-            ])
-            ->addEventListener(DataTableExporterEvents::PRE_RESPONSE, function (DataTableExporterResponseEvent $e) {
-                $response = $e->getResponse();
-                $response->deleteFileAfterSend(false);
-                $ext = $response->getFile()->getExtension();
-                $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, 'custom_filename.' . $ext);
-            })
-            ->handleRequest($request);
+            ]);
 
-        if ($table->isCallback()) {
-            return $table->getResponse();
-        }
+        $this->setExportFileNameAndDeleteFileAfterSend($table);
 
-        return $this->render('@App/exporter.html.twig', [
-            'datatable' => $table,
-        ]);
+        return $this->handleRequestAndGetResponse($table, $request);
     }
 
     public function exportEmptyDataTableAction(Request $request, DataTableFactory $dataTableFactory): Response
@@ -102,19 +95,11 @@ class ExporterController extends AbstractController
                         ->setParameter('firstName', 'This user does not exist.')
                     ;
                 },
-            ])
-            ->addEventListener(DataTableExporterEvents::PRE_RESPONSE, function (DataTableExporterResponseEvent $e) {
-                $e->getResponse()->deleteFileAfterSend(false);
-            })
-            ->handleRequest($request);
+            ]);
 
-        if ($table->isCallback()) {
-            return $table->getResponse();
-        }
+        $this->setExportFileNameAndDeleteFileAfterSend($table);
 
-        return $this->render('@App/exporter.html.twig', [
-            'datatable' => $table,
-        ]);
+        return $this->handleRequestAndGetResponse($table, $request);
     }
 
     /**
@@ -129,22 +114,11 @@ class ExporterController extends AbstractController
             ->add('longText', TextColumn::class)
             ->createAdapter(ArrayAdapter::class, [
                 ['longText' => $longText],
-            ])
-            ->addEventListener(DataTableExporterEvents::PRE_RESPONSE, function (DataTableExporterResponseEvent $e) {
-                $response = $e->getResponse();
-                $response->deleteFileAfterSend(false);
-                $ext = $response->getFile()->getExtension();
-                $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, 'custom_filename.' . $ext);
-            })
-            ->handleRequest($request);
+            ]);
 
-        if ($table->isCallback()) {
-            return $table->getResponse();
-        }
+        $this->setExportFileNameAndDeleteFileAfterSend($table);
 
-        return $this->render('@App/exporter.html.twig', [
-            'datatable' => $table,
-        ]);
+        return $this->handleRequestAndGetResponse($table, $request);
     }
 
     /**
@@ -157,20 +131,64 @@ class ExporterController extends AbstractController
             ->add('specialChars', TextColumn::class)
             ->createAdapter(ArrayAdapter::class, [
                 ['specialChars' => '<?xml version="1.0" encoding="UTF-8"?><hello>World</hello>'],
+            ]);
+
+        $this->setExportFileNameAndDeleteFileAfterSend($table);
+
+        return $this->handleRequestAndGetResponse($table, $request);
+    }
+
+    public function exportWithTypes(Request $request, DataTableFactory $factory): Response
+    {
+        $table = $factory
+            ->create()
+            ->add('stringColumn', TextColumn::class)
+            ->add('integerColumn', NumberColumn::class)
+            ->add('floatColumn', NumberColumn::class)
+            ->add('boolColumn', BoolColumn::class)
+            ->add('dateTimeColumn', DateTimeColumn::class)
+            ->add('nullColumn', TextColumn::class)
+            ->add('typeWithToStringColumn', TextColumn::class)
+            ->add('typeWithoutToStringColumn', TextColumn::class)
+            ->createAdapter(ArrayAdapter::class, [
+                [
+                    'stringColumn' => 'stringValue',
+                    'integerColumn' => 1,
+                    'floatColumn' => 1.1,
+                    'boolColumn' => true,
+                    'dateTimeColumn' => new \DateTimeImmutable('2021-01-01 00:00:00'),
+                    'nullColumn' => null,
+                    'typeWithToStringColumn' => new class {
+                        public function __toString(): string
+                        {
+                            return 'toStringValue';
+                        }
+                    },
+                    'typeWithoutToStringColumn' => new class {},
+                ],
             ])
-            ->addEventListener(DataTableExporterEvents::PRE_RESPONSE, function (DataTableExporterResponseEvent $e) {
-                $response = $e->getResponse();
-                $response->deleteFileAfterSend(false);
-                $ext = $response->getFile()->getExtension();
-                $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, 'custom_filename.' . $ext);
-            })
-            ->handleRequest($request);
+        ;
 
-        if ($table->isCallback()) {
-            return $table->getResponse();
-        }
+        $this->setExportFileNameAndDeleteFileAfterSend($table);
 
-        return $this->render('@App/exporter.html.twig', [
+        return $this->handleRequestAndGetResponse($table, $request);
+    }
+
+    private function setExportFileNameAndDeleteFileAfterSend(DataTable $table): void
+    {
+        $table->addEventListener(DataTableExporterEvents::PRE_RESPONSE, function (DataTableExporterResponseEvent $e) {
+            $response = $e->getResponse();
+            $response->deleteFileAfterSend(false);
+            $ext = $response->getFile()->getExtension();
+            $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, 'custom_filename.' . $ext);
+        });
+    }
+
+    private function handleRequestAndGetResponse(DataTable $table, Request $request): Response
+    {
+        $table->handleRequest($request);
+
+        return $table->isCallback() ? $table->getResponse() : $this->render('@App/exporter.html.twig', [
             'datatable' => $table,
         ]);
     }

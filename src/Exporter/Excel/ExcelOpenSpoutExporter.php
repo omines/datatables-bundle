@@ -55,9 +55,12 @@ class ExcelOpenSpoutExporter extends AbstractDataTableExporter
                 }
 
                 if (is_string($value)) {
-                    // The data that we get may contain rich HTML. But OpenSpout does not support this.
-                    // We just strip all HTML tags and unescape the remaining text.
-                    $value = htmlspecialchars_decode(strip_tags($value), ENT_QUOTES | ENT_SUBSTITUTE);
+                    // Previously, we stripped HTML tags and unescaped the value, because the value was passed through
+                    // AbstractColumn::render() which would have escaped special chars and could have added HTML tags.
+                    //
+                    // Now that we have raw data, we don't need to do that anymore.
+                    //
+                    // $value = htmlspecialchars_decode(strip_tags($value), ENT_QUOTES | ENT_SUBSTITUTE);
 
                     // Excel has a limit of 32,767 characters per cell
                     if (mb_strlen($value) > static::MAX_CHARACTERS_PER_CELL) {
@@ -67,7 +70,8 @@ class ExcelOpenSpoutExporter extends AbstractDataTableExporter
                 }
 
                 // Do not wrap text
-                $row->addCell(Cell::fromValue($value, $this->resolveStyleOption($options['style'], $value)));
+                $style = $this->resolveStyleOption($options['style'], $value);
+                $row->addCell($this->normalizeToCell($value, $style));
 
                 next($columnOptions);
             }
@@ -108,6 +112,25 @@ class ExcelOpenSpoutExporter extends AbstractDataTableExporter
         return $style instanceof Style ? $style : $style($value);
     }
 
+    private function normalizeToCell(mixed $value, ?Style $style = null): Cell
+    {
+        if (
+            is_scalar($value)  // (bool, int, float, string)
+            || null === $value
+            || $value instanceof \DateTimeInterface
+            || $value instanceof \DateInterval
+        ) {
+            return Cell::fromValue($value, $style);
+        } else {
+            // Try casting to string, else put an error message in the cell
+            try {
+                return Cell::fromValue((string) $value, $style);
+            } catch (\Throwable $e) {
+                return Cell::fromValue($e->getMessage(), (new Style())->setFontItalic());
+            }
+        }
+    }
+
     public function getMimeType(): string
     {
         return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
@@ -129,5 +152,11 @@ class ExcelOpenSpoutExporter extends AbstractDataTableExporter
             ->setAllowedTypes('style', [Style::class, 'callable'])
             ->setAllowedTypes('columnWidth', ['int', 'float'])
         ;
+    }
+
+    #[\Override]
+    public function supportsRawData(): bool
+    {
+        return true;
     }
 }
