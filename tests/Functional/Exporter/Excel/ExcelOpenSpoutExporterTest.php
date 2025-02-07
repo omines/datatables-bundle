@@ -158,17 +158,20 @@ class ExcelOpenSpoutExporterTest extends WebTestCase
 
         // Test columns
         static::assertEquals('stringValue', $sheet->getCell('A2')->getValue()->getPlainText());
-        static::assertSame(1, $sheet->getCell('B2')->getValue());
-        static::assertSame(1.1, $sheet->getCell('C2')->getValue());
-        static::assertTrue($sheet->getCell('D2')->getValue());
+        static::assertEquals('link with special character <', $sheet->getCell('B2')->getValue()->getPlainText());
+        static::assertSame(1, $sheet->getCell('C2')->getValue());
+        static::assertSame(1.1, $sheet->getCell('D2')->getValue());
+        static::assertTrue($sheet->getCell('E2')->getValue());
 
         // Excel stores dates as a float where the integer part is the number of days since 1900-01-01 and the decimal part is the fraction of the day
         $expectedDateValue = (new \DateTimeImmutable('2021-01-01 00:00:00'))->diff(new \DateTimeImmutable('1900-01-01 00:00:00'))->days + 2;  // (Have to add 2 due to boundaries)
-        static::assertSame($expectedDateValue, $sheet->getCell('E2')->getValue());
-        static::assertSame(null, $sheet->getCell('F2')->getValue());
-        static::assertSame('toStringValue', $sheet->getCell('G2')->getValue()->getPlainText());
+        static::assertSame($expectedDateValue, $sheet->getCell('F2')->getValue());
+        static::assertSame(null, $sheet->getCell('G2')->getValue());
+        static::assertSame('toStringValue', $sheet->getCell('H2')->getValue()->getPlainText());
 
         // This cell contains the exception message thrown when trying to cast an object without a __toString method to a string
-        static::assertSame('Object of class class@anonymous could not be converted to string', $sheet->getCell('H2')->getValue()->getPlainText());
+        static::assertSame('Object of class class@anonymous could not be converted to string', $sheet->getCell('I2')->getValue()->getPlainText());
+
+        static::assertEquals('&lt;a href=&quot;https://example.org&quot;&gt;link with special character &amp;lt;&lt;/a&gt;', $sheet->getCell('J2')->getValue()->getPlainText());
     }
 }
