@@ -51,16 +51,15 @@ class ExcelOpenSpoutExporter extends AbstractDataTableExporter
             foreach ($rowValues as $value) {
                 $options = current($columnOptions);
                 if (false === $options) {
-                    throw new \LogicException('Mismatch in number of row values and number of column options');
+                    throw new \LogicException('Mismatch in number of row values and number of column options');  // (This prevents PHPStan complaining)
                 }
 
                 if (is_string($value)) {
-                    // Previously, we stripped HTML tags and unescaped the value, because the value was passed through
-                    // AbstractColumn::render() which would have escaped special chars and could have added HTML tags.
-                    //
-                    // Now that we have raw data, we don't need to do that anymore.
-                    //
-                    // $value = htmlspecialchars_decode(strip_tags($value), ENT_QUOTES | ENT_SUBSTITUTE);
+                    // We strip HTML tags and unescape the value by default, because
+                    // TextColumn::normalize() will encode HTML special characters (unless `raw` is set).
+                    if ($options['stripTags']) {
+                        $value = htmlspecialchars_decode(strip_tags($value), ENT_QUOTES | ENT_SUBSTITUTE);
+                    }
 
                     // Excel has a limit of 32,767 characters per cell
                     if (mb_strlen($value) > static::MAX_CHARACTERS_PER_CELL) {
@@ -148,9 +147,12 @@ class ExcelOpenSpoutExporter extends AbstractDataTableExporter
             ->setDefaults([
                 'style' => (new Style())->setShouldWrapText(false),
                 'columnWidth' => 24,
+                'stripTags' => true,
             ])
             ->setAllowedTypes('style', [Style::class, 'callable'])
             ->setAllowedTypes('columnWidth', ['int', 'float'])
+            ->setAllowedTypes('stripTags', 'bool')
+            ->setInfo('stripTags', 'When true, will strip HTML tags and unescape special characters from string data.')
         ;
     }
 
