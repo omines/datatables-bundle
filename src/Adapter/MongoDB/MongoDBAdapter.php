@@ -14,6 +14,7 @@ namespace Omines\DataTablesBundle\Adapter\MongoDB;
 
 use MongoDB\BSON\UTCDateTime;
 use MongoDB\Collection;
+use MongoDB\Driver\CursorInterface;
 use MongoDB\Model\BSONDocument;
 use Omines\DataTablesBundle\Adapter\AbstractAdapter;
 use Omines\DataTablesBundle\Adapter\AdapterQuery;
@@ -56,7 +57,17 @@ class MongoDBAdapter extends AbstractAdapter
             }
         }
 
+        $state = $query->getState();
+
+        $filter = $this->buildFilter($state);
+        $options = $this->buildOptions($state);
+
         $query->setTotalRows($this->collection->count());
+        $query->setFilteredRows($this->collection->count($filter));
+        $cursor = $this->collection->find($filter, $options);
+        $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
+
+        $query->set('cursor', $cursor);
     }
 
     protected function mapPropertyPath(AdapterQuery $query, AbstractColumn $column): ?string
@@ -69,14 +80,8 @@ class MongoDBAdapter extends AbstractAdapter
      */
     protected function getResults(AdapterQuery $query): \Traversable
     {
-        $state = $query->getState();
-
-        $filter = $this->buildFilter($state);
-        $options = $this->buildOptions($state);
-
-        $query->setFilteredRows($this->collection->count($filter));
-        $cursor = $this->collection->find($filter, $options);
-        $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
+        /** @var CursorInterface $cursor */
+        $cursor = $query->get('cursor');
 
         /** @var BSONDocument $result */
         foreach ($cursor as $result) {
