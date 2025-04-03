@@ -61,7 +61,7 @@ abstract class AbstractColumn
             $value = $data;
         }
 
-        return ($raw) ? $value : $this->render($this->normalize($value), $context);
+        return ($raw && $this->options['enableRawExport']) ? $value : $this->render($this->normalize($value), $context);
     }
 
     /**
@@ -102,6 +102,7 @@ abstract class AbstractColumn
                 'leftExpr' => null,
                 'operator' => '=',
                 'rightExpr' => null,
+                'enableRawExport' => false,
                 'exporterOptions' => [],
             ])
             ->setAllowedTypes('label', ['null', 'string'])
@@ -119,7 +120,9 @@ abstract class AbstractColumn
             ->setAllowedTypes('operator', ['string'])
             ->setAllowedTypes('leftExpr', ['null', 'string', 'callable'])
             ->setAllowedTypes('rightExpr', ['null', 'string', 'callable'])
+            ->setAllowedTypes('enableRawExport', ['bool'])
             ->setAllowedTypes('exporterOptions', ['array'])
+            ->setInfo('enableRawExport', 'When true, skips normalize() and render() during raw transforms.')
             ->setInfo('exporterOptions', 'Specific exporter options can be specified here, where the key is the exporter name and the value is an array of options.')
         ;
 

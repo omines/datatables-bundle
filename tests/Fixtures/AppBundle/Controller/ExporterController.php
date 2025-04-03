@@ -140,19 +140,29 @@ class ExporterController extends AbstractController
 
     public function exportWithTypes(Request $request, DataTableFactory $factory): Response
     {
+        $enableRawExport = ['enableRawExport' => true];
         $table = $factory
             ->create()
             ->add('stringColumn', TextColumn::class)
-            ->add('integerColumn', NumberColumn::class)
-            ->add('floatColumn', NumberColumn::class)
-            ->add('boolColumn', BoolColumn::class)
-            ->add('dateTimeColumn', DateTimeColumn::class)
-            ->add('nullColumn', TextColumn::class)
-            ->add('typeWithToStringColumn', TextColumn::class)
-            ->add('typeWithoutToStringColumn', TextColumn::class)
+            ->add('stringColumnWithTags', TextColumn::class, ['raw' => true])
+            ->add('integerColumn', NumberColumn::class, $enableRawExport)
+            ->add('floatColumn', NumberColumn::class, $enableRawExport)
+            ->add('boolColumn', BoolColumn::class, $enableRawExport)
+            ->add('dateTimeColumn', DateTimeColumn::class, $enableRawExport)
+            ->add('nullColumn', TextColumn::class, $enableRawExport)
+            ->add('typeWithToStringColumn', TextColumn::class, $enableRawExport)
+            ->add('typeWithoutToStringColumn', TextColumn::class, $enableRawExport)
+            ->add('stringColumnWithoutStripTags', TextColumn::class, [
+                'exporterOptions' => [
+                    'excel-openspout' => [
+                        'stripTags' => false,
+                    ],
+                ],
+            ])
             ->createAdapter(ArrayAdapter::class, [
                 [
                     'stringColumn' => 'stringValue',
+                    'stringColumnWithTags' => '<a href="https://example.org">link with special character &lt;</a>',
                     'integerColumn' => 1,
                     'floatColumn' => 1.1,
                     'boolColumn' => true,
@@ -165,6 +175,7 @@ class ExporterController extends AbstractController
                         }
                     },
                     'typeWithoutToStringColumn' => new class {},
+                    'stringColumnWithoutStripTags' => '<a href="https://example.org">link with special character &lt;</a>',
                 ],
             ])
         ;
