@@ -44,7 +44,8 @@ class DateTimeColumn extends AbstractColumn
         }
 
         if ($this->options['modelTimezone'] !== $this->options['viewTimezone']) {
-            $value = $value->setTimezone($this->options['viewTimezone']);       // Assignment is required, without it the timezone changes but the times stay the same
+            // Assign a new value because just changing the timezone does not change the visual representation of the time
+            $value = \DateTime::createFromInterface($value)->setTimezone($this->options['viewTimezone']);
         }
 
         return $value->format($this->options['format']);
