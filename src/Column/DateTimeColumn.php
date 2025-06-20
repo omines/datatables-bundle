@@ -27,9 +27,13 @@ class DateTimeColumn extends AbstractColumn
             return $this->options['nullValue'];
         }
 
+        $this->normalizeTimezones();
+        assert($this->options['modelTimezone'] instanceof \DateTimeZone);
+        assert($this->options['viewTimezone'] instanceof \DateTimeZone);
+
         if (!$value instanceof \DateTimeInterface) {
             if (!empty($this->options['createFromFormat'])) {
-                $value = \DateTime::createFromFormat($this->options['createFromFormat'], (string) $value);
+                $value = \DateTime::createFromFormat($this->options['createFromFormat'], (string) $value, $this->options['modelTimezone']);
                 if (false === $value) {
                     $errors = \DateTime::getLastErrors();
                     throw new \RuntimeException($errors ? implode(', ', $errors['errors'] ?: $errors['warnings']) : 'DateTime conversion failed for unknown reasons');
@@ -37,6 +41,10 @@ class DateTimeColumn extends AbstractColumn
             } else {
                 $value = new \DateTime((string) $value);
             }
+        }
+
+        if ($this->options['modelTimezone'] !== $this->options['viewTimezone']) {
+            $value = $value->setTimezone($this->options['viewTimezone']);       // Assignment is required, without it the timezone changes but the times stay the same
         }
 
         return $value->format($this->options['format']);
@@ -51,12 +59,33 @@ class DateTimeColumn extends AbstractColumn
                 'createFromFormat' => '',
                 'format' => 'c',
                 'nullValue' => '',
+                'modelTimezone' => null,
+                'viewTimezone' => null,
             ])
             ->setAllowedTypes('createFromFormat', 'string')
             ->setAllowedTypes('format', 'string')
             ->setAllowedTypes('nullValue', 'string')
+            ->setAllowedTypes('modelTimezone', ['null', 'string', \DateTimeZone::class])
+            ->setAllowedTypes('viewTimezone', ['null', 'string', \DateTimeZone::class])
         ;
 
         return $this;
+    }
+
+    protected function normalizeTimezones(): void
+    {
+        if (null === $this->options['modelTimezone']) {
+            $this->options['modelTimezone'] = date_default_timezone_get();
+        }
+        if (null === $this->options['viewTimezone']) {
+            $this->options['viewTimezone'] = date_default_timezone_get();
+        }
+
+        if (is_string($this->options['modelTimezone'])) {
+            $this->options['modelTimezone'] = new \DateTimeZone($this->options['modelTimezone']);
+        }
+        if (is_string($this->options['viewTimezone'])) {
+            $this->options['viewTimezone'] = new \DateTimeZone($this->options['viewTimezone']);
+        }
     }
 }
