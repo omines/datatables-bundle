@@ -41,7 +41,7 @@
         "doctrine/persistence": "^3.4.0|^4.0.0",
         "friendsofphp/php-cs-fixer": "^3.75.0",
         "mongodb/mongodb": "^1.20.0|^2.1.0",
-        "ocramius/package-versions": "^2.10",
+        "ocramius/package-versions": "^2.9",
         "openspout/openspout": "^4.23",
         "phpoffice/phpspreadsheet": "^2.3.3|^3.9.2|^4.4.0",
         "phpstan/extension-installer": "^1.4.3",
