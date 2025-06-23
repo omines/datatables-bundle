@@ -43,7 +43,7 @@
         "mongodb/mongodb": "^1.20.0",
         "ocramius/package-versions": "^2.9",
         "openspout/openspout": "^4.23",
-        "phpoffice/phpspreadsheet": "^2.3.3|^3.5",
+        "phpoffice/phpspreadsheet": "4.4.0",
         "phpstan/extension-installer": "^1.4.3",
         "phpstan/phpstan": "^2.0.3",
         "phpstan/phpstan-doctrine": "^2.0.1",
