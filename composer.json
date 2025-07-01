@@ -50,7 +50,7 @@
         "phpstan/phpstan-phpunit": "^2.0.6",
         "phpstan/phpstan-symfony": "^2.0.6",
         "phpunit/phpunit": "^10.5.38|^11.5.24",
-        "ruflin/elastica": "^7.3.2",
+        "ruflin/elastica": "^8.0.0",
         "symfony/browser-kit": "^6.4.13|^7.3",
         "symfony/css-selector": "^6.4.13|^7.3",
         "symfony/doctrine-bridge": "^6.4.13|^7.3",
