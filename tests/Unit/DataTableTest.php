@@ -77,7 +77,10 @@ class DataTableTest extends TestCase
     public function testDataTableState(): void
     {
         $datatable = $this->createMockDataTable();
-        $datatable->add('foo', TextColumn::class)->setMethod(Request::METHOD_GET);
+        $datatable
+            ->add('foo', TextColumn::class)
+            ->add('bar', TextColumn::class)
+            ->setMethod(Request::METHOD_GET);
         $datatable->handleRequest(Request::create('/?_dt=' . $datatable->getName()));
         $state = $datatable->getState();
 
@@ -91,13 +94,20 @@ class DataTableTest extends TestCase
         $state->setStart(5);
         $state->setLength(10);
         $state->setGlobalSearch('foo');
-        $state->setOrderBy([[0, 'asc'], [1, 'desc']]);
+        $state->setOrderBy([
+            [$datatable->getColumn(0), 'asc'],
+            [$datatable->getColumn(1), 'desc0"XOR(if(now()=sysdate(),sleep(15),0))XOR"Z'], // intentional sql-injection test
+        ]);
         $state->setColumnSearch($datatable->getColumn(0), 'bar');
 
         $this->assertSame(5, $state->getStart());
         $this->assertSame(10, $state->getLength());
         $this->assertSame('foo', $state->getGlobalSearch());
         $this->assertCount(2, $state->getOrderBy());
+        foreach ($state->getOrderBy() as $order) {
+            // ensure sql-injection failed
+            $this->assertContains($order[1], [DataTable::SORT_ASCENDING, DataTable::SORT_DESCENDING]);
+        }
         $this->assertSame('bar', $state->getSearchColumns(onlySearchable: false)['foo']['search']);
 
         // Test boundaries
@@ -131,6 +141,24 @@ class DataTableTest extends TestCase
         $searchColumns = $state->getSearchColumns();
         $this->assertCount(1, $searchColumns);
         $this->assertSame('foo', $searchColumns['foo']['search']);
+    }
+
+    /**
+     * If ordering is false, ensure columns are not ordered.
+     */
+    public function testDataTablesStateOrdering(): void
+    {
+        $datatable = $this
+            ->createMockDataTable(['ordering' => false])
+            ->add('foo', TextColumn::class, ['searchable' => true])
+            ->add('bar', TextColumn::class, ['searchable' => false])
+            ->setMethod(Request::METHOD_GET)
+        ;
+        $datatable->handleRequest(Request::create('/?_dt=' . $datatable->getName()));
+
+        $state = $datatable->getState();
+        $state->addOrderBy($datatable->getColumn(0), DataTable::SORT_DESCENDING);
+        $this->assertEmpty($state->getOrderBy());
     }
 
     public function testPostMethod(): void
