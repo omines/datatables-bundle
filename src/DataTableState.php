@@ -182,7 +182,7 @@ final class DataTableState
     public function addOrderBy(AbstractColumn $column, string $direction = DataTable::SORT_ASCENDING): static
     {
         if (false !== $this->dataTable->getOption('ordering')) {
-            $direction = DataTable::SORT_ASCENDING === $direction ? DataTable::SORT_ASCENDING : DataTable::SORT_DESCENDING;
+            $direction = DataTable::SORT_ASCENDING === mb_strtolower($direction) ? DataTable::SORT_ASCENDING : DataTable::SORT_DESCENDING;
             $this->orderBy[] = [$column, $direction];
         }
 

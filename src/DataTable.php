@@ -175,7 +175,7 @@ class DataTable
             $column = is_int($column) ? $this->getColumn($column) : $this->getColumnByName((string) $column);
         }
         if (false !== $this->getOption('ordering')) {
-            $direction = self::SORT_ASCENDING === $direction ? self::SORT_ASCENDING : self::SORT_DESCENDING;
+            $direction = self::SORT_ASCENDING === mb_strtolower($direction) ? self::SORT_ASCENDING : self::SORT_DESCENDING;
             $this->options['order'][] = [$column->getIndex(), $direction];
         }
 
