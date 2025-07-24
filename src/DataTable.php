@@ -265,21 +265,16 @@ class DataTable
 
     public function isCallback(): bool
     {
-        return (null === $this->state) ? false : $this->state->isCallback();
+        return null !== $this->state && $this->state->isCallback();
     }
 
     public function handleRequest(Request $request): static
     {
-        switch ($this->getMethod()) {
-            case Request::METHOD_GET:
-                $parameters = $request->query;
-                break;
-            case Request::METHOD_POST:
-                $parameters = $request->request;
-                break;
-            default:
-                throw new InvalidConfigurationException(sprintf("Unknown request method '%s'", $this->getMethod()));
-        }
+        $parameters = match ($this->getMethod()) {
+            Request::METHOD_GET => $request->query,
+            Request::METHOD_POST => $request->request,
+            default => throw new InvalidConfigurationException(sprintf("Unknown request method '%s'", $this->getMethod())),
+        };
         if ($this->getName() === $parameters->get('_dt')) {
             if (null === $this->state) {
                 $this->state = DataTableState::fromDefaults($this);
