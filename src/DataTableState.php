@@ -92,8 +92,12 @@ final class DataTableState
         if ($parameters->has('order')) {
             $this->orderBy = [];
             foreach ($parameters->all()['order'] ?? [] as $order) {
-                $column = $this->getDataTable()->getColumn((int) $order['column']);
-                $this->addOrderBy($column, $order['dir'] ?? DataTable::SORT_ASCENDING);
+                try {
+                    $column = $this->getDataTable()->getColumn((int) $order['column']);
+                    $this->addOrderBy($column, $order['dir'] ?? DataTable::SORT_ASCENDING);
+                } catch (\Throwable $t) {
+                    // Column index and direction can be corrupted by malicious clients, ignore any exceptions thus caused
+                }
             }
         }
     }

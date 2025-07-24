@@ -24,12 +24,10 @@ return $config
         'declare_strict_types' => true,
         'strict_param' => true,
         'strict_comparison' => true,
-        'array_syntax' => ['syntax' => 'short'],
         'concat_space' => ['spacing' => 'one'],
         'header_comment' => ['header' => $header, 'location' => 'after_open'],
 
         'mb_str_functions' => true,
-        //'ordered_class_elements' => true,
         'ordered_imports' => true,
         'phpdoc_align' => false,
         'phpdoc_separation' => false,

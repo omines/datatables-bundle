@@ -148,6 +148,16 @@ class DataTableTest extends TestCase
             ->createMockDataTable()
             ->add('foo', TextColumn::class, ['searchable' => true])
         ;
+        $datatable->handleRequest(Request::create('/foo', Request::METHOD_POST, ['_dt' => $datatable->getName(), 'draw' => 684]));
+        $datatable->getState()->addOrderBy($datatable->getColumn(0), 'foo');
+    }
+
+    public function testInvalidSortParametersAreIgnored(): void
+    {
+        $datatable = $this
+            ->createMockDataTable()
+            ->add('foo', TextColumn::class, ['searchable' => true])
+        ;
         $datatable->handleRequest(Request::create('/foo', Request::METHOD_POST, [
             '_dt' => $datatable->getName(),
             'draw' => 684,
@@ -156,6 +166,7 @@ class DataTableTest extends TestCase
                 'dir' => 'foo',
             ]],
         ]));
+        $this->assertEmpty($datatable->getState()->getOrderBy());
     }
 
     public function testPostMethod(): void
