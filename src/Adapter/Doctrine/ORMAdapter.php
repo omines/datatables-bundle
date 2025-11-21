@@ -143,8 +143,9 @@ class ORMAdapter extends AbstractAdapter
 
                 list($origin, $target) = explode('.', $join->getJoin());
 
+                assert(is_string($alias = $join->getAlias()));
                 $mapping = $aliases[$origin][1]->getAssociationMapping($target);
-                $aliases[$join->getAlias()] = [$join->getJoin(), $this->manager->getMetadataFactory()->getMetadataFor($mapping['targetEntity'])];
+                $aliases[$alias] = [$join->getJoin(), $this->manager->getMetadataFactory()->getMetadataFor($mapping['targetEntity'])];
             }
         }
 
