@@ -41,7 +41,6 @@
         "doctrine/persistence": "^3.4.0|^4.1.1",
         "friendsofphp/php-cs-fixer": "^3.90.0",
         "mongodb/mongodb": "^1.20.0|^2.1.2",
-        "ocramius/package-versions": "^2.10",
         "openspout/openspout": "^4.28.5",
         "phpoffice/phpspreadsheet": "^2.3.3|^3.9.2|^4.5.0|^5.2.0",
         "phpstan/extension-installer": "^1.4.3",
@@ -91,5 +90,6 @@
         "branch-alias": {
             "dev-master": "0.10-dev"
         }
-    }
+    },
+    "minimum-stability": "beta"
 }
