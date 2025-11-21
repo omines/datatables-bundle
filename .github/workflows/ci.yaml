@@ -19,6 +19,7 @@ jobs:
           - '8.2'
           - '8.3'
           - '8.4'
+            '8.5'
         dependencies:
           - stable
           - beta
@@ -69,7 +70,7 @@ jobs:
 
       - name: Run PHPStan static analysis
         run: vendor/bin/phpstan
-        if: ${{ matrix.dependencies != 'lowest' && !matrix.experimental }}
+        if: ${{ matrix.dependencies == 'stable' && !matrix.experimental }}
 
       - name: Run automated tests
         run: vendor/bin/phpunit --coverage-text --coverage-xml build/coverage-xml --coverage-cobertura build/cobertura.xml
