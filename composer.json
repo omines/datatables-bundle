@@ -36,7 +36,7 @@
         "ext-pdo_sqlite": "*",
         "ext-zip": "*",
         "doctrine/common": "^3.5.0",
-        "doctrine/doctrine-bundle": "^2.18.1",
+        "doctrine/doctrine-bundle": "^3.0.0",
         "doctrine/orm": "^2.19.3|^3.5.7",
         "doctrine/persistence": "^3.4.0|^4.1.1",
         "friendsofphp/php-cs-fixer": "^3.90.0",
