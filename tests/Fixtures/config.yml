@@ -31,12 +31,8 @@ doctrine:
         path: '%kernel.project_dir%/data.sqlite'
 
     orm:
-        auto_generate_proxy_classes: '%kernel.debug%'
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
-        enable_lazy_ghost_objects: true
-
         auto_mapping: true
-        report_fields_where_declared: true
         query_cache_driver:
             type: pool
             pool: doctrine.system_cache_pool
@@ -47,9 +43,6 @@ doctrine:
         mappings:
             AppBundle:
                 type: attribute
-
-        controller_resolver:
-            auto_mapping: true
 
 twig:
     debug: '%kernel.debug%'
