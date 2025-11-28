@@ -48,7 +48,7 @@ class DataTablesExtension extends AbstractExtension
     private function getLanguageSettings(DataTable $dataTable)
     {
         if ($dataTable->isLanguageFromCDN() && null !== ($cdnFile = $this->getCDNLanguageFile())) {
-            return ['url' => '//cdn.datatables.net/plug-ins/1.10.15/i18n/' . $cdnFile];
+            return ['url' => 'https://cdn.datatables.net/plug-ins/1.10.15/i18n/' . $cdnFile];
         }
 
         $domain = $dataTable->getTranslationDomain();
