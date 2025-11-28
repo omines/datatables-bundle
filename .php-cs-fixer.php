@@ -15,8 +15,10 @@ $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__.'/tests')->exclude('Fixtures/var')
 ;
 
-$config = new PhpCsFixer\Config();
-return $config
+return (new PhpCsFixer\Config())
+    ->setParallelConfig(PhpCsFixer\Runner\Parallel\ParallelConfigFactory::detect())
+    ->setUnsupportedPhpVersionAllowed(true)
+
     ->setRiskyAllowed(true)
     ->setRules([
         '@Symfony' => true,

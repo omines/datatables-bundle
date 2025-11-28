@@ -4,10 +4,9 @@ cd $(dirname $0)/..
 
 export APP_ENV=test
 export APP_DEBUG=1
-export PHP_CS_FIXER_IGNORE_ENV=true
 export XDEBUG_MODE=coverage
 
-vendor/bin/php-cs-fixer fix
+vendor/bin/php-cs-fixer fix --quiet
 vendor/bin/phpstan
 
 # Clear cache manually to avoid locking up with corrupted container

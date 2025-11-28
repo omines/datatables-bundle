@@ -5,6 +5,9 @@ parameters:
     ignoreErrors:
         - '#FetchJoinORMOptions contains unresolvable type#'
 
+        # Symfony Config component is not compatible with high PHPstan levels yet
+        - '#Symfony\\Component\\Config\\Definition\\Builder#'
+
         # New PHPStan 2 errors
         - { identifier: missingType.generics }
     excludePaths:
