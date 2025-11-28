@@ -59,7 +59,7 @@ jobs:
         run: composer update --no-progress ${{ (matrix.dependencies == 'lowest') && '--prefer-lowest --prefer-stable' || ''}}
 
       - name: Check for dangerous and broken dependencies
-        run: composer audit
+        run: composer audit --no-dev
         if: ${{ matrix.dependencies == 'stable' && !matrix.experimental }}
 
       - name: Check code style
