@@ -9,8 +9,12 @@ parameters:
         - '#Symfony\\Component\\Config\\Definition\\Builder#'
 
         # Silence some errors until config modernization is complete
-        - '#EntityManager::getRepository#'
-        - '#Mapping\\ClassMetadata>#'
+        -
+            message: '#EntityManager::getRepository#'
+            reportUnmatched: false
+        -
+            message: '#Mapping\\ClassMetadata>#'
+            reportUnmatched: false
 
         # New PHPStan 2 errors
         - { identifier: missingType.generics }
