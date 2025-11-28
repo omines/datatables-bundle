@@ -130,7 +130,9 @@ class ORMAdapter extends AbstractAdapter
 
         /** @var Query\Expr\From $from */
         foreach ($builder->getDQLPart('from') as $from) {
-            $aliases[$from->getAlias()] = [null, $this->manager->getMetadataFactory()->getMetadataFor($from->getFrom())];
+            /** @var class-string $fromClass */
+            $fromClass = $from->getFrom();
+            $aliases[$from->getAlias()] = [null, $this->manager->getMetadataFactory()->getMetadataFor($fromClass)];
         }
 
         // Alias all joins
