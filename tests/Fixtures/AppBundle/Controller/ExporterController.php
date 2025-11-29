@@ -168,7 +168,7 @@ class ExporterController extends AbstractController
                     'boolColumn' => true,
                     'dateTimeColumn' => new \DateTimeImmutable('2021-01-01 00:00:00'),
                     'nullColumn' => null,
-                    'typeWithToStringColumn' => new class {
+                    'typeWithToStringColumn' => new class implements \Stringable {
                         public function __toString(): string
                         {
                             return 'toStringValue';
