@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use Omines\DataTablesBundle\Adapter\AdapterInterface;
+use Omines\DataTablesBundle\DataTableFactory;
 use Omines\DataTablesBundle\DataTablesBundle;
 use Omines\DataTablesBundle\DependencyInjection\Configuration;
 use Omines\DataTablesBundle\DependencyInjection\Instantiator;
@@ -20,6 +21,8 @@ use Omines\DataTablesBundle\Exception\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\ArrayNode;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * DependencyInjectionTest.
@@ -43,12 +46,19 @@ class DependencyInjectionTest extends TestCase
         $this->assertSame('datatables', $extension->getAlias());
 
         $container = new ContainerBuilder();
+        $bundle->build($container);
         $extension->load([], $container);
 
         // Verify default config, options should be empty
         $config = $container->getParameter('datatables.config');
         $this->assertTrue($config['language_from_cdn']);
         $this->assertEmpty($config['options']);
+
+        $container->register('event_dispatcher', EventDispatcherInterface::class);
+        $container->register('translator', TranslatorInterface::class);
+        $container->compile();
+
+        $this->assertTrue($container->has(DataTableFactory::class));
     }
 
     public function testInstantiatorTypeChecks(): void
