@@ -68,10 +68,13 @@
             }).done(function(data) {
                 var baseState;
 
-                function requestDeferredCount(dt, request, settings, originalResponse) {
+                function requestDeferredCount(dt, request, settings, originalResponse, drawCallback) {
                     if (!originalResponse.countDeferred) {
                         return;
                     }
+
+                    // Hide the info element while the real counts are loading
+                    $(settings.nTableWrapper).find('.dataTables_info').css('visibility', 'hidden');
 
                     var countRequest = $.extend(true, {}, request);
                     countRequest._dt = config.name;
@@ -87,10 +90,14 @@
                             return;
                         }
 
-                        settings._iRecordsTotal = countData.recordsTotal;
-                        settings._iRecordsDisplay = countData.recordsFiltered;
-
-                        api.draw(false);
+                        // Update counts in the original response and re-draw the table
+                        // so DataTables fully recalculates info text and pagination
+                        originalResponse.recordsTotal = countData.recordsTotal;
+                        originalResponse.recordsFiltered = countData.recordsFiltered;
+                        delete originalResponse.countDeferred;
+                        drawCallback(originalResponse);
+                    }).always(function() {
+                        $(settings.nTableWrapper).find('.dataTables_info').css('visibility', '');
                     });
                 }
 
@@ -100,7 +107,7 @@
                         if (data) {
                             data.draw = request.draw;
                             drawCallback(data);
-                            requestDeferredCount(null, request, settings, data);
+                            requestDeferredCount(null, request, settings, data, drawCallback);
                             data = null;
                             if (Object.keys(state).length) {
                                 var api = new $.fn.dataTable.Api( settings );
@@ -119,7 +126,7 @@
                                 data: request
                             }).done(function(data) {
                                 drawCallback(data);
-                                requestDeferredCount(dt, request, settings, data);
+                                requestDeferredCount(dt, request, settings, data, drawCallback);
                             });
                         }
                     }

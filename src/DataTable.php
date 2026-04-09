@@ -325,11 +325,12 @@ class DataTable
 
             return new JsonResponse($response);
         }
+        $data = iterator_to_array($resultSet->getData());
         $response = [
             'draw' => $state->getDraw(),
             'recordsTotal' => $resultSet->getTotalRecords(),
             'recordsFiltered' => $resultSet->getTotalDisplayRecords(),
-            'data' => iterator_to_array($resultSet->getData()),
+            'data' => $data,
         ];
         if ($resultSet->isCountDeferred()) {
             $response['countDeferred'] = true;
