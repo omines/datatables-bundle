@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatableInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -123,7 +124,10 @@ class DataTableExporterManager
         $columns = [];
 
         foreach ($this->dataTable->getColumns() as $column) {
-            $columns[] = $this->translator->trans($column->getLabel(), [], $this->dataTable->getTranslationDomain());
+            $label = $column->getLabel();
+            $columns[] = $label instanceof TranslatableInterface
+                ? $label->trans($this->translator)
+                : $this->translator->trans($label, [], $this->dataTable->getTranslationDomain());
         }
 
         return $columns;
