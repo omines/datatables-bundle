@@ -344,6 +344,74 @@ class DataTableTest extends TestCase
             ->createFromType('foo');
     }
 
+    public function testCountRequestFlag(): void
+    {
+        $datatable = $this->createMockDataTable()
+            ->add('foo', TextColumn::class);
+
+        $this->assertFalse($datatable->isCountRequest());
+
+        $datatable->handleRequest(Request::create('/foo', Request::METHOD_POST, [
+            '_dt' => $datatable->getName(),
+            '_dt_count' => 1,
+            'draw' => 1,
+        ]));
+
+        $this->assertTrue($datatable->isCountRequest());
+    }
+
+    public function testCountRequestFlagDefaultsToFalse(): void
+    {
+        $datatable = $this->createMockDataTable()
+            ->add('foo', TextColumn::class);
+
+        $datatable->handleRequest(Request::create('/foo', Request::METHOD_POST, [
+            '_dt' => $datatable->getName(),
+            'draw' => 1,
+        ]));
+
+        $this->assertFalse($datatable->isCountRequest());
+    }
+
+    public function testCountRequestReturnsMinimalResponse(): void
+    {
+        $datatable = $this->createMockDataTable()
+            ->add('foo', TextColumn::class)
+            ->createAdapter(ArrayAdapter::class);
+
+        $datatable->handleRequest(Request::create('/foo', Request::METHOD_POST, [
+            '_dt' => $datatable->getName(),
+            '_dt_count' => 1,
+            'draw' => 42,
+        ]));
+
+        $response = $datatable->getResponse();
+        $data = json_decode($response->getContent(), true);
+
+        $this->assertSame(42, $data['draw']);
+        $this->assertArrayHasKey('recordsTotal', $data);
+        $this->assertArrayHasKey('recordsFiltered', $data);
+        $this->assertArrayNotHasKey('data', $data);
+    }
+
+    public function testNormalResponseDoesNotIncludeCountDeferred(): void
+    {
+        $datatable = $this->createMockDataTable()
+            ->add('foo', TextColumn::class)
+            ->createAdapter(ArrayAdapter::class);
+
+        $datatable->handleRequest(Request::create('/foo', Request::METHOD_POST, [
+            '_dt' => $datatable->getName(),
+            'draw' => 1,
+        ]));
+
+        $response = $datatable->getResponse();
+        $data = json_decode($response->getContent(), true);
+
+        $this->assertArrayNotHasKey('countDeferred', $data);
+        $this->assertArrayHasKey('data', $data);
+    }
+
     private function createMockDataTable(array $options = []): DataTable
     {
         return new DataTable($this->createMock(EventDispatcher::class), $this->createMock(DataTableExporterManager::class), $options);

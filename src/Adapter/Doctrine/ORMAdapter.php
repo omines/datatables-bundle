@@ -45,7 +45,7 @@ interface_exists(QueryBuilderProcessorInterface::class);
  * @author Robbert Beesems <robbert.beesems@omines.com>
  *
  * @phpstan-type HydrationMode AbstractQuery::HYDRATE_*
- * @phpstan-type ORMOptions array{entity: class-string, hydrate: HydrationMode, query: QueryBuilderProcessorInterface[], criteria: QueryBuilderProcessorInterface[]}
+ * @phpstan-type ORMOptions array{entity: class-string, hydrate: HydrationMode, query: QueryBuilderProcessorInterface[], criteria: QueryBuilderProcessorInterface[], lazy_total_count: bool, lazy_filtered_count: bool}
  */
 class ORMAdapter extends AbstractAdapter
 {
@@ -63,6 +63,10 @@ class ORMAdapter extends AbstractAdapter
 
     /** @var QueryBuilderProcessorInterface[] */
     protected array $criteriaProcessors = [];
+
+    private bool $lazyTotalCount = false;
+
+    private bool $lazyFilteredCount = false;
 
     public function __construct(?ManagerRegistry $registry = null)
     {
@@ -109,11 +113,24 @@ class ORMAdapter extends AbstractAdapter
         /** @var Query\Expr\From $fromClause */
         $fromClause = $builder->getDQLPart('from')[0];
         $identifier = "{$fromClause->getAlias()}.{$this->metadata->getSingleIdentifierFieldName()}";
-        $query->setTotalRows($this->getCount($builder, $identifier));
+        $isCountRequest = $state->getDataTable()->isCountRequest();
+        if ($this->lazyTotalCount && !$isCountRequest) {
+            $query->setTotalRows(0);
+        } else {
+            $query->setTotalRows($this->getCount($builder, $identifier));
+        }
 
         // Get record count after filtering
         $this->buildCriteria($builder, $state);
-        $query->setFilteredRows($this->getCount($builder, $identifier));
+        if ($this->lazyFilteredCount && !$isCountRequest) {
+            $query->setFilteredRows(0);
+        } else {
+            $query->setFilteredRows($this->getCount($builder, $identifier));
+        }
+
+        if (!$isCountRequest && ($this->lazyTotalCount || $this->lazyFilteredCount)) {
+            $query->setCountDeferred(true);
+        }
 
         // Perform mapping of all referred fields and implied fields
         $aliases = $this->getAliases($query);
@@ -292,12 +309,16 @@ class ORMAdapter extends AbstractAdapter
                 'criteria' => function (Options $options) {
                     return [new SearchCriteriaProvider()];
                 },
+                'lazy_total_count' => false,
+                'lazy_filtered_count' => false,
             ])
             ->setRequired('entity')
             ->setAllowedTypes('entity', ['string'])
             ->setAllowedTypes('hydrate', 'int')
             ->setAllowedTypes('query', [QueryBuilderProcessorInterface::class, 'array', 'callable'])
             ->setAllowedTypes('criteria', [QueryBuilderProcessorInterface::class, 'array', 'callable', 'null'])
+            ->setAllowedTypes('lazy_total_count', 'bool')
+            ->setAllowedTypes('lazy_filtered_count', 'bool')
             ->setNormalizer('query', $providerNormalizer)
             ->setNormalizer('criteria', $providerNormalizer)
         ;
@@ -323,6 +344,8 @@ class ORMAdapter extends AbstractAdapter
         $this->hydrationMode = $options['hydrate'];
         $this->queryBuilderProcessors = $options['query'];
         $this->criteriaProcessors = $options['criteria'];
+        $this->lazyTotalCount = $options['lazy_total_count'];
+        $this->lazyFilteredCount = $options['lazy_filtered_count'];
     }
 
     private function normalizeProcessor(callable|QueryBuilderProcessorInterface $provider): QueryBuilderProcessorInterface

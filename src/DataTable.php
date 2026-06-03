@@ -92,6 +92,13 @@ class DataTable
     private ?DataTableState $state = null;
     private Instantiator $instantiator;
 
+    private bool $countRequest = false;
+
+    public function isCountRequest(): bool
+    {
+        return $this->countRequest;
+    }
+
     /**
      * @param array<string, mixed> $options
      */
@@ -279,6 +286,9 @@ class DataTable
             if (null === $this->state) {
                 $this->state = DataTableState::fromDefaults($this);
             }
+
+            $this->countRequest = (bool) $parameters->get('_dt_count', false);
+
             $this->state->applyParameters($parameters);
         }
 
@@ -303,12 +313,28 @@ class DataTable
         }
 
         $resultSet = $this->getResultSet();
+
+        if ($this->countRequest) {
+            $response = [
+                'draw' => $state->getDraw(),
+                'recordsTotal' => $resultSet->getTotalRecords(),
+                'recordsFiltered' => $resultSet->getTotalDisplayRecords(),
+            ];
+
+            $this->eventDispatcher->dispatch(new DataTablePostResponseEvent($this), DataTableEvents::POST_RESPONSE);
+
+            return new JsonResponse($response);
+        }
+        $data = iterator_to_array($resultSet->getData());
         $response = [
             'draw' => $state->getDraw(),
             'recordsTotal' => $resultSet->getTotalRecords(),
             'recordsFiltered' => $resultSet->getTotalDisplayRecords(),
-            'data' => iterator_to_array($resultSet->getData()),
+            'data' => $data,
         ];
+        if ($resultSet->isCountDeferred()) {
+            $response['countDeferred'] = true;
+        }
         if ($state->isInitial()) {
             $response['options'] = $this->getInitialResponse();
             $response['template'] = $this->renderer->renderDataTable($this, $this->template, $this->templateParams);

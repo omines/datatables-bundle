@@ -28,6 +28,7 @@ class ResultSet implements ResultSetInterface
         private readonly \Iterator $data,
         private readonly int $totalRows,
         private readonly int $totalFilteredRows,
+        private readonly bool $countDeferred = false,
     ) {
     }
 
@@ -39,6 +40,11 @@ class ResultSet implements ResultSetInterface
     public function getTotalDisplayRecords(): int
     {
         return $this->totalFilteredRows;
+    }
+
+    public function isCountDeferred(): bool
+    {
+        return $this->countDeferred;
     }
 
     public function getData(): \Iterator
