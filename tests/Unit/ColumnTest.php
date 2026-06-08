@@ -24,6 +24,7 @@ use Omines\DataTablesBundle\Exception\MissingDependencyException;
 use Omines\DataTablesBundle\Exporter\DataTableExporterManager;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\Translation\TranslatableMessage;
 use Twig\Environment as Twig;
 
 /**
@@ -78,6 +79,21 @@ class ColumnTest extends TestCase
         $this->assertFalse($column->isRaw());
         $this->assertSame('foobar', $column->transform(null));
         $this->assertSame('foo', $column->getDataTable()->getName());
+    }
+
+    /**
+     * Tests that a TranslatableInterface is accepted as column label.
+     */
+    public function testTextColumnWithTranslatableLabel(): void
+    {
+        $label = new TranslatableMessage('foo');
+
+        $column = new TextColumn();
+        $column->initialize('test', 1, [
+            'label' => $label,
+        ], $this->createDataTable()->setName('foo'));
+
+        $this->assertSame($label, $column->getLabel());
     }
 
     public function testBoolColumn(): void

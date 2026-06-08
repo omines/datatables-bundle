@@ -16,6 +16,7 @@ use Omines\DataTablesBundle\DataTable;
 use Omines\DataTablesBundle\DataTableState;
 use Omines\DataTablesBundle\Filter\AbstractFilter;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * AbstractColumn.
@@ -105,7 +106,7 @@ abstract class AbstractColumn
                 'enableRawExport' => false,
                 'exporterOptions' => [],
             ])
-            ->setAllowedTypes('label', ['null', 'string'])
+            ->setAllowedTypes('label', ['null', 'string', TranslatableInterface::class])
             ->setAllowedTypes('data', ['null', 'string', 'callable'])
             ->setAllowedTypes('field', ['null', 'string'])
             ->setAllowedTypes('propertyPath', ['null', 'string'])
@@ -139,7 +140,7 @@ abstract class AbstractColumn
         return $this->name;
     }
 
-    public function getLabel(): string
+    public function getLabel(): string|TranslatableInterface
     {
         return $this->options['label'] ?? "{$this->dataTable->getName()}.columns.{$this->getName()}";
     }
