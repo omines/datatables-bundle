@@ -41,7 +41,8 @@ class ExcelExporter extends AbstractDataTableExporter
         foreach ($data as $row) {
             $colIndex = 1;
             foreach ($row as $value) {
-                $sheet->getCell(CellAddress::fromColumnAndRow($colIndex++, $rowIndex))->setValue($htmlHelper->toRichTextObject($value ?? ''));
+                $value = '<span>' . ($value ?? '') . '</span>';
+                $sheet->getCell(CellAddress::fromColumnAndRow($colIndex++, $rowIndex))->setValue($htmlHelper->toRichTextObject($value));
             }
             ++$rowIndex;
         }
