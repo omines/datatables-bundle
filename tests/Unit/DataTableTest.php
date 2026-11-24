@@ -148,7 +148,7 @@ class DataTableTest extends TestCase
     public function testSortDirectionValidationInTable(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessageIsOrContains('direction must be one of');
+        $this->expectExceptionMessage('direction must be one of');
 
         $datatable = $this
             ->createMockDataTable()
@@ -160,7 +160,7 @@ class DataTableTest extends TestCase
     public function testSortDirectionValidationInState(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessageIsOrContains('direction must be one of');
+        $this->expectExceptionMessage('direction must be one of');
 
         $datatable = $this
             ->createMockDataTable()
@@ -173,7 +173,7 @@ class DataTableTest extends TestCase
     public function testRemovingInvalidColumn(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessageIsOrContains('no column with name');
+        $this->expectExceptionMessage('no column with name');
 
         $datatable = $this
             ->createMockDataTable()
@@ -238,7 +238,7 @@ class DataTableTest extends TestCase
     public function testFactoryFailsOnInvalidType(): void
     {
         $this->expectException(\LogicException::class);
-        $this->expectExceptionMessageIsOrContains('Could not resolve type');
+        $this->expectExceptionMessage('Could not resolve type');
 
         $dummy = new ServiceLocator([]);
         $container = new ContainerBuilder();
@@ -272,7 +272,7 @@ class DataTableTest extends TestCase
     public function testDuplicateColumnNameThrows(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessageIsOrContains('There already is a column with name');
+        $this->expectExceptionMessage('There already is a column with name');
 
         $this->createMockDataTable()
             ->add('foo', TextColumn::class)
@@ -283,7 +283,7 @@ class DataTableTest extends TestCase
     public function testInvalidAdapterThrows(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessageIs('Could not resolve type "foo\\bar" to a service or class, are you missing a use statement? Or is it implemented but does it not correctly derive from "Omines\\DataTablesBundle\\Adapter\\AdapterInterface"?');
+        $this->expectExceptionMessage('Could not resolve type "foo\\bar" to a service or class, are you missing a use statement? Or is it implemented but does it not correctly derive from "Omines\\DataTablesBundle\\Adapter\\AdapterInterface"?');
 
         $this->createMockDataTable()->createAdapter('foo\bar');
     }
@@ -291,7 +291,7 @@ class DataTableTest extends TestCase
     public function testInvalidColumnThrows(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessageIs('Could not resolve type "bar" to a service or class, are you missing a use statement? Or is it implemented but does it not correctly derive from "Omines\\DataTablesBundle\\Column\\AbstractColumn"?');
+        $this->expectExceptionMessage('Could not resolve type "bar" to a service or class, are you missing a use statement? Or is it implemented but does it not correctly derive from "Omines\\DataTablesBundle\\Column\\AbstractColumn"?');
 
         $this->createMockDataTable()->add('foo', 'bar');
     }

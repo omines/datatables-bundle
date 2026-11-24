@@ -27,7 +27,7 @@ class AdapterTest extends KernelTestCase
     public function testInvalidEntity(): void
     {
         $this->expectException(InvalidConfigurationException::class);
-        $this->expectExceptionMessageIsOrContains('Doctrine has no valid entity manager for entity "foobar"');
+        $this->expectExceptionMessage('Doctrine has no valid entity manager for entity "foobar"');
 
         /** @var Registry $registryMock */
         $registryMock = $this->createStub(Registry::class);

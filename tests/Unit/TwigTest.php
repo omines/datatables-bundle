@@ -38,7 +38,7 @@ class TwigTest extends TestCase
     public function testMissingTwigBundleThrows(): void
     {
         $this->expectException(MissingDependencyException::class);
-        $this->expectExceptionMessageIsOrContains('You must have symfony/twig-bundle installed');
+        $this->expectExceptionMessage('You must have symfony/twig-bundle installed');
 
         new TwigRenderer();
     }
