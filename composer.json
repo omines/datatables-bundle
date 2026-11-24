@@ -20,7 +20,7 @@
       "issues": "https://github.com/omines/datatables-bundle/issues"
     },
     "require": {
-        "php": ">=8.2",
+        "php": ">=8.3",
         "symfony/event-dispatcher": "^6.4.25|^7.3|^8.0",
         "symfony/framework-bundle": "^6.4.27|^7.3|^8.0",
         "symfony/options-resolver": "^6.4.49|^7.3|^8.0",
@@ -48,7 +48,7 @@
         "phpstan/phpstan-doctrine": "^2.0.23",
         "phpstan/phpstan-phpunit": "^2.0.16",
         "phpstan/phpstan-symfony": "^2.0.19",
-        "phpunit/phpunit": "^11.5.44|^12.5.7|^13.1.13",
+        "phpunit/phpunit": "^12.5.7|^13.1.13",
         "ruflin/elastica": "^7.3.2",
         "symfony/browser-kit": "^6.4.13|^7.3|^8.0.4",
         "symfony/css-selector": "^6.4.13|^7.3|^8.0",
