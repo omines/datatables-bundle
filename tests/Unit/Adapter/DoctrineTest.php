@@ -35,7 +35,7 @@ class DoctrineTest extends TestCase
 {
     public function testSearchCriteriaProvider(): void
     {
-        $table = new DataTable($this->createMock(EventDispatcher::class), $this->createMock(DataTableExporterManager::class));
+        $table = new DataTable($this->createStub(EventDispatcher::class), $this->createStub(DataTableExporterManager::class));
         $table
             ->add('firstName', TextColumn::class)
             ->add('lastName', TextColumn::class)
@@ -48,7 +48,7 @@ class DoctrineTest extends TestCase
             ->setColumnSearch($table->getColumn(0), 'bar')
         ;
 
-        $qb = $this->createMock(QueryBuilder::class);
+        $qb = $this->createStub(QueryBuilder::class);
         $qb
             ->method('expr')
             ->willReturnCallback(function () { return new Query\Expr(); });
@@ -73,7 +73,7 @@ class DoctrineTest extends TestCase
         $this->expectException(\TypeError::class);
         $this->expectExceptionMessage('QueryBuilderProcessorInterface|callable');
 
-        (new ORMAdapter($this->createMock(ManagerRegistry::class)))
+        (new ORMAdapter($this->createStub(ManagerRegistry::class)))
             ->configure([
                 'entity' => 'bar',
                 'query' => ['foo'],
@@ -85,12 +85,12 @@ class DoctrineTest extends TestCase
         $this->expectException(InvalidConfigurationException::class);
         $this->expectExceptionMessage("Field name 'invalid' must consist at least of an alias and a field");
 
-        $query = $this->createMock(AdapterQuery::class);
+        $query = $this->createStub(AdapterQuery::class);
         $query->method('get')->willReturn([]);
         $column = new TextColumn();
-        $column->initialize('foo', 0, ['field' => 'invalid'], $this->createMock(DataTable::class));
+        $column->initialize('foo', 0, ['field' => 'invalid'], $this->createStub(DataTable::class));
 
-        $mock = new class($this->createMock(ManagerRegistry::class)) extends ORMAdapter {
+        $mock = new class($this->createStub(ManagerRegistry::class)) extends ORMAdapter {
             public function foo($query, $column)
             {
                 return $this->mapPropertyPath($query, $column);

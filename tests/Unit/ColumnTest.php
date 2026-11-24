@@ -49,7 +49,7 @@ class ColumnTest extends TestCase
         ], $this->createDataTable()->setName('foo'));
 
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('format separator does not match');
+        $this->expectExceptionMessageIsOrContains('format separator does not match');
         $column->transform('2015-04-03');
     }
 
@@ -63,7 +63,7 @@ class ColumnTest extends TestCase
 
         $this->assertSame('19.02.2020 22:30:34', $column->transform('2020-02-19T22:30:34+00:00'));
 
-        $this->expectExceptionMessage('four digit year');
+        $this->expectExceptionMessageIsOrContains('four digit year');
         $column->transform('foo.bar');
     }
 
@@ -180,7 +180,7 @@ class ColumnTest extends TestCase
     public function testTwigDependencyDetection(): void
     {
         $this->expectException(MissingDependencyException::class);
-        $this->expectExceptionMessage('You must have TwigBundle installed to use');
+        $this->expectExceptionMessageIsOrContains('You must have TwigBundle installed to use');
 
         new TwigColumn();
     }
@@ -188,13 +188,13 @@ class ColumnTest extends TestCase
     public function testTwigStringColumnExtensionDetection(): void
     {
         $this->expectException(MissingDependencyException::class);
-        $this->expectExceptionMessage('You must have StringLoaderExtension enabled to use');
+        $this->expectExceptionMessageIsOrContains('You must have StringLoaderExtension enabled to use');
 
-        new TwigStringColumn($this->createMock(Twig::class));
+        new TwigStringColumn($this->createStub(Twig::class));
     }
 
     private function createDataTable(): DataTable
     {
-        return new DataTable($this->createMock(EventDispatcher::class), $this->createMock(DataTableExporterManager::class));
+        return new DataTable($this->createStub(EventDispatcher::class), $this->createStub(DataTableExporterManager::class));
     }
 }

@@ -170,7 +170,7 @@ class ExcelOpenSpoutExporterTest extends WebTestCase
         static::assertSame('toStringValue', $sheet->getCell('H2')->getValue()->getPlainText());
 
         // This cell contains the exception message thrown when trying to cast an object without a __toString method to a string
-        static::assertSame('Object of class class@anonymous could not be converted to string', $sheet->getCell('I2')->getValue()->getPlainText());
+        static::assertStringStartsWith('Object of class class@anonymous', $sheet->getCell('I2')->getValue()->getPlainText());
 
         static::assertEquals('&lt;a href=&quot;https://example.org&quot;&gt;link with special character &amp;lt;&lt;/a&gt;', $sheet->getCell('J2')->getValue()->getPlainText());
     }

@@ -28,7 +28,7 @@ class DataTableExporterManagerTest extends TestCase
 {
     public function testTranslatorInjection(): void
     {
-        $exporterCollectionMock = $this->createMock(DataTableExporterCollection::class);
+        $exporterCollectionMock = $this->createStub(DataTableExporterCollection::class);
 
         static::expectException(\TypeError::class);
         new DataTableExporterManager($exporterCollectionMock, null);

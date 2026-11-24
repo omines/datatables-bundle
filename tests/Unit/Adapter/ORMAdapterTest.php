@@ -37,7 +37,7 @@ class ORMAdapterTest extends KernelTestCase
     public function testCountGroupedDataTable(): void
     {
         $this->expectException(QueryException::class);
-        $this->expectExceptionMessage('Iterate with fetch join in class Tests\Fixtures\AppBundle\Entity\Employee using association company not allowed.');
+        $this->expectExceptionMessageIs('Iterate with fetch join in class Tests\Fixtures\AppBundle\Entity\Employee using association company not allowed.');
 
         $datatable = $this->factory->createFromType(GroupedTableType::class);
         /** @var ORMAdapter $adapter */
@@ -74,7 +74,7 @@ class ORMAdapterTest extends KernelTestCase
 
     public function testORMAdapterQueryEvent(): void
     {
-        $query = $this->createMock(Query::class);
+        $query = $this->createStub(Query::class);
         $event = new ORMAdapterQueryEvent($query);
         $this->assertSame($query, $event->getQuery());
     }

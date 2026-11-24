@@ -69,7 +69,7 @@ class ElasticaTest extends TestCase
         ;
 
         // Set up a dummy table
-        $table = (new DataTable($this->createMock(EventDispatcher::class), $this->createMock(DataTableExporterManager::class)))
+        $table = (new DataTable($this->createStub(EventDispatcher::class), $this->createStub(DataTableExporterManager::class)))
             ->setName('foo')
             ->setMethod(Request::METHOD_GET)
             ->add('foo', TextColumn::class, ['field' => 'foo', 'globalSearchable' => true])

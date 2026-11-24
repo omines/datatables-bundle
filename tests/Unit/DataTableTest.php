@@ -50,7 +50,7 @@ class DataTableTest extends TestCase
 
     public function testFactory(): void
     {
-        $factory = new DataTableFactory(['language_from_cdn' => false], $this->createMock(TwigRenderer::class), new Instantiator(), $this->createMock(EventDispatcher::class), $this->createMock(DataTableExporterManager::class));
+        $factory = new DataTableFactory(['language_from_cdn' => false], $this->createStub(TwigRenderer::class), new Instantiator(), $this->createStub(EventDispatcher::class), $this->createStub(DataTableExporterManager::class));
 
         $table = $factory->create(['pageLength' => 684, 'dom' => 'bar']);
         $this->assertSame(684, $table->getOption('pageLength'));
@@ -64,11 +64,10 @@ class DataTableTest extends TestCase
 
     public function testFactoryRemembersInstances(): void
     {
-        $factory = new DataTableFactory([], $this->createMock(TwigRenderer::class), new Instantiator(), $this->createMock(EventDispatcher::class), $this->createMock(DataTableExporterManager::class));
+        $factory = new DataTableFactory([], $this->createStub(TwigRenderer::class), new Instantiator(), $this->createStub(EventDispatcher::class), $this->createStub(DataTableExporterManager::class));
 
         $reflection = new \ReflectionClass(DataTableFactory::class);
         $property = $reflection->getProperty('resolvedTypes');
-        $property->setAccessible(true);
 
         $this->assertEmpty($property->getValue($factory));
         $factory->createFromType(RegularPersonTableType::class);
@@ -149,7 +148,7 @@ class DataTableTest extends TestCase
     public function testSortDirectionValidationInTable(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('direction must be one of');
+        $this->expectExceptionMessageIsOrContains('direction must be one of');
 
         $datatable = $this
             ->createMockDataTable()
@@ -161,7 +160,7 @@ class DataTableTest extends TestCase
     public function testSortDirectionValidationInState(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('direction must be one of');
+        $this->expectExceptionMessageIsOrContains('direction must be one of');
 
         $datatable = $this
             ->createMockDataTable()
@@ -174,7 +173,7 @@ class DataTableTest extends TestCase
     public function testRemovingInvalidColumn(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('no column with name');
+        $this->expectExceptionMessageIsOrContains('no column with name');
 
         $datatable = $this
             ->createMockDataTable()
@@ -239,13 +238,13 @@ class DataTableTest extends TestCase
     public function testFactoryFailsOnInvalidType(): void
     {
         $this->expectException(\LogicException::class);
-        $this->expectExceptionMessage('Could not resolve type');
+        $this->expectExceptionMessageIsOrContains('Could not resolve type');
 
         $dummy = new ServiceLocator([]);
         $container = new ContainerBuilder();
         (new DataTablesExtension())->load([], $container);
 
-        $factory = new DataTableFactory($container->getParameter('datatables.config'), $this->createMock(TwigRenderer::class), new Instantiator(), $this->createMock(EventDispatcher::class), $this->createMock(DataTableExporterManager::class));
+        $factory = new DataTableFactory($container->getParameter('datatables.config'), $this->createStub(TwigRenderer::class), new Instantiator(), $this->createStub(EventDispatcher::class), $this->createStub(DataTableExporterManager::class));
         $factory->createFromType('foobar');
     }
 
@@ -273,7 +272,7 @@ class DataTableTest extends TestCase
     public function testDuplicateColumnNameThrows(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('There already is a column with name');
+        $this->expectExceptionMessageIsOrContains('There already is a column with name');
 
         $this->createMockDataTable()
             ->add('foo', TextColumn::class)
@@ -284,7 +283,7 @@ class DataTableTest extends TestCase
     public function testInvalidAdapterThrows(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Could not resolve type "foo\\bar" to a service or class, are you missing a use statement? Or is it implemented but does it not correctly derive from "Omines\\DataTablesBundle\\Adapter\\AdapterInterface"?');
+        $this->expectExceptionMessageIs('Could not resolve type "foo\\bar" to a service or class, are you missing a use statement? Or is it implemented but does it not correctly derive from "Omines\\DataTablesBundle\\Adapter\\AdapterInterface"?');
 
         $this->createMockDataTable()->createAdapter('foo\bar');
     }
@@ -292,7 +291,7 @@ class DataTableTest extends TestCase
     public function testInvalidColumnThrows(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Could not resolve type "bar" to a service or class, are you missing a use statement? Or is it implemented but does it not correctly derive from "Omines\\DataTablesBundle\\Column\\AbstractColumn"?');
+        $this->expectExceptionMessageIs('Could not resolve type "bar" to a service or class, are you missing a use statement? Or is it implemented but does it not correctly derive from "Omines\\DataTablesBundle\\Column\\AbstractColumn"?');
 
         $this->createMockDataTable()->add('foo', 'bar');
     }
@@ -340,12 +339,12 @@ class DataTableTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Could not resolve type "foo" to a service or class');
 
-        (new DataTableFactory([], $this->createMock(DataTableRendererInterface::class), new Instantiator(), $this->createMock(EventDispatcher::class), $this->createMock(DataTableExporterManager::class)))
+        (new DataTableFactory([], $this->createStub(DataTableRendererInterface::class), new Instantiator(), $this->createStub(EventDispatcher::class), $this->createStub(DataTableExporterManager::class)))
             ->createFromType('foo');
     }
 
     private function createMockDataTable(array $options = []): DataTable
     {
-        return new DataTable($this->createMock(EventDispatcher::class), $this->createMock(DataTableExporterManager::class), $options);
+        return new DataTable($this->createStub(EventDispatcher::class), $this->createStub(DataTableExporterManager::class), $options);
     }
 }

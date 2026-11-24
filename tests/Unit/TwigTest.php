@@ -29,7 +29,7 @@ class TwigTest extends TestCase
     public function testExtensionName(): void
     {
         /** @var TranslatorInterface $translator */
-        $translator = $this->createMock(Translator::class);
+        $translator = $this->createStub(Translator::class);
 
         $twig = new DataTablesExtension($translator);
         $this->assertSame('DataTablesBundle', $twig->getName());
@@ -38,7 +38,7 @@ class TwigTest extends TestCase
     public function testMissingTwigBundleThrows(): void
     {
         $this->expectException(MissingDependencyException::class);
-        $this->expectExceptionMessage('You must have symfony/twig-bundle installed');
+        $this->expectExceptionMessageIsOrContains('You must have symfony/twig-bundle installed');
 
         new TwigRenderer();
     }
