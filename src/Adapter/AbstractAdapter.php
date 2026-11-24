@@ -64,7 +64,7 @@ abstract class AbstractAdapter implements AdapterInterface
             throw new \LogicException('Adapter did not set row counts');
         }
 
-        return new ResultSet($data, $query->getTotalRows(), $query->getFilteredRows());
+        return new ResultSet($data, $query->getTotalRows(), $query->getFilteredRows(), $query->isCountDeferred());
     }
 
     /**

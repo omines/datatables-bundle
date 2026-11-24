@@ -25,6 +25,7 @@ class AdapterQuery
     private ?int $totalRows;
     private ?int $filteredRows;
     private ?string $identifierPropertyPath = null;
+    private bool $countDeferred = false;
 
     /** @var array<string, mixed> */
     private array $data;
@@ -70,6 +71,18 @@ class AdapterQuery
     public function setIdentifierPropertyPath(?string $identifierPropertyPath): static
     {
         $this->identifierPropertyPath = $identifierPropertyPath;
+
+        return $this;
+    }
+
+    public function isCountDeferred(): bool
+    {
+        return $this->countDeferred;
+    }
+
+    public function setCountDeferred(bool $countDeferred): static
+    {
+        $this->countDeferred = $countDeferred;
 
         return $this;
     }

@@ -30,6 +30,11 @@ interface ResultSetInterface
     public function getTotalDisplayRecords(): int;
 
     /**
+     * Returns whether the count was deferred and should be fetched separately.
+     */
+    public function isCountDeferred(): bool;
+
+    /**
      * Returns the raw data in the result set.
      */
     public function getData(): \Iterator;

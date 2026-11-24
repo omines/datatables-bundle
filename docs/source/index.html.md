@@ -318,6 +318,32 @@ $table->addEventListener(ORMAdapterEvents::PRE_QUERY, function(ORMAdapterQueryEv
 The `PRE_QUERY` event is dispatched after the QueryBuilder built the Query
 and before the iteration starts. It can be useful to configure the cache.
 
+### Lazy count loading
+
+```php?start_inline=1
+$table->createAdapter(ORMAdapter::class, [
+    'entity' => Employee::class,
+    'lazy_total_count' => true,
+    'lazy_filtered_count' => true,
+]);
+```
+On large tables, `COUNT` queries can be a significant performance bottleneck. The lazy count options
+let you defer these expensive queries so the table renders immediately with its row data, while the
+record counts (used for the info text and pagination) are fetched in a separate background request.
+
+Option | Type | Default | Description
+------ | ---- | ------- | -----------
+lazy_total_count | bool | `false` | Defer the total record count query.
+lazy_filtered_count | bool | `false` | Defer the filtered record count query.
+
+When either option is enabled, the initial response is sent without waiting for the count query.
+The bundled JavaScript automatically fires a lightweight follow-up request to retrieve the real
+counts and updates the table's info text and pagination once they arrive. During this brief
+loading period the info text is hidden to avoid displaying placeholder values.
+
+You can enable one or both options depending on your use case. For tables where the unfiltered
+count is fast but filtering is slow, `lazy_filtered_count` alone may be sufficient.
+
 ## Elastica
 
 ```php?start_inline=1
