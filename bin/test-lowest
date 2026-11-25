@@ -1,0 +1,21 @@
+#!/bin/sh
+set -e
+cd $(dirname $0)/..
+
+export APP_ENV=test
+export APP_DEBUG=1
+export XDEBUG_MODE=coverage
+
+PHP_VERSION=$(jq -r '.require.php' composer.json | grep -oE '[0-9]+(\.[0-9]+)*' | head -n1)
+PHP_EXEC=$(command -v "php${PHP_VERSION}") || {
+    echo "PHP executable for ${PHP_VERSION} not found" >&2
+    exit 1
+}
+echo "Running on $("$PHP_EXEC" -v | head -1)"
+
+# Clear cache manually to avoid locking up with corrupted container
+rm -rf tests/Fixtures/var/cache/test
+$PHP_EXEC `which composer` update --prefer-lowest --prefer-stable
+$PHP_EXEC -d "zend.assertions=1" vendor/bin/phpunit --testdox --coverage-text
+
+echo "All good, ready for commit!"

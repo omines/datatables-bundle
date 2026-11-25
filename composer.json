@@ -40,8 +40,8 @@
         "doctrine/persistence": "^3.4.0|^4.1.1",
         "friendsofphp/php-cs-fixer": "^3.93.0",
         "mongodb/mongodb": "^1.20.0|^2.1.2",
-        "openspout/openspout": "^4.28.5",
-        "phpoffice/phpspreadsheet": "^2.3.3|^3.9.2|^4.5.0|^5.4.0",
+        "openspout/openspout": "^4.32.0|^5.14.1",
+        "phpoffice/phpspreadsheet": "^4.5.0|^5.12.0",
         "phpstan/extension-installer": "^1.4.3",
         "phpstan/phpstan": "^2.2.1",
         "phpstan/phpstan-doctrine": "^2.0.23",
@@ -63,6 +63,7 @@
     },
     "conflict": {
         "doctrine/orm": "^3.0 <3.3",
+        "phpoffice/phpspreadsheet": "<4.5",
         "symfony/twig-bridge": "<6.4.19"
     },
     "suggest": {
